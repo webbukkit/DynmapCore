@@ -6,19 +6,8 @@
   </formats>
   <fileSets>
     <fileSet>
-      <directory>${project.basedir}/web/</directory>
-      <outputDirectory>/web/</outputDirectory>
-	  <includes>
-		<include>version.js</include>
-	  </includes>
-      <filtered>true</filtered>
-    </fileSet>
-    <fileSet>
       <directory>${project.basedir}/web</directory>
       <outputDirectory>/web</outputDirectory>
-	  <excludes>
-		<exclude>version.js</exclude>
-	  </excludes>
     </fileSet>
     <fileSet>
       <directory>${project.basedir}/colorschemes</directory>
