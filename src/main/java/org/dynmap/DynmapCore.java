@@ -1171,6 +1171,10 @@ public class DynmapCore {
         return version;
     }
 
+    public String getDynmapPluginVersion() {
+        return plugin_ver;
+    }
+
     public int triggerRenderOfBlock(String wid, int x, int y, int z) {
         if(mapManager != null)
             mapManager.touch(wid, x, y, z, "api");

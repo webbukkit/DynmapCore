@@ -22,7 +22,7 @@ public class ClientConfigurationComponent extends Component {
                 s(t, "webprefix", unescapeString(c.getString("webprefix", "[WEB] ")));
                 s(t, "defaultzoom", c.getInteger("defaultzoom", 0));
                 s(t, "sidebaropened", c.getString("sidebaropened", "false"));
-                s(t, "dynmapversion", core.getDynmapCoreVersion());
+                s(t, "dynmapversion", core.getDynmapPluginVersion());
                 s(t, "cyrillic", c.getBoolean("cyrillic-support", false));
                 s(t, "showlayercontrol", c.getString("showlayercontrol", "true"));
                 s(t, "grayplayerswhenhidden", c.getBoolean("grayplayerswhenhidden", true));
