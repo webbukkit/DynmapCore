@@ -24,7 +24,6 @@ public class FileLockResourceHandler extends ResourceHandler {
         if (file == null) {
             return;
         }
-        Log.info("FILE: " + file.getPath());
         if (!FileLockManager.getReadLock(file, 5000)) {
             Log.severe("Timeout waiting for lock on file '" + file.getPath() + "' while handling HTTP-request.");
             response.sendError(HttpStatus.REQUEST_TIMEOUT_408);
