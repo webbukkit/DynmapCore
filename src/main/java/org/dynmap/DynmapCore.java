@@ -635,7 +635,7 @@ public class DynmapCore {
                 int radius = 0;
                 String mapname = null;
                 DynmapLocation loc = null;
-                if(args.length == 2) {  /* Just radius */
+                if((args.length == 2) || (args.length == 3)) {  /* Just radius, or <radius> <map> */
                     radius = Integer.parseInt(args[1]); /* Parse radius */
                     if(radius < 0)
                         radius = 0;

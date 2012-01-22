@@ -185,10 +185,18 @@ public class FlatMap extends MapType {
                     }
                 }
                 int data = 0;
-                Color[] colors = colorScheme.colors[blockType];
-                if(colorScheme.datacolors[blockType] != null) {
-                    data = mapiter.getBlockData();
-                    colors = colorScheme.datacolors[blockType][data];
+                Color[] colors;
+                try {
+                    if(colorScheme.datacolors[blockType] != null) {
+                        data = mapiter.getBlockData();
+                        colors = colorScheme.datacolors[blockType][data];
+                    }
+                    else {
+                        colors = colorScheme.colors[blockType];
+                    }
+                } catch (ArrayIndexOutOfBoundsException aioobx) {
+                    colorScheme.resizeColorArray(blockType);
+                    colors = null;
                 }
                 if (colors == null)
                     continue;

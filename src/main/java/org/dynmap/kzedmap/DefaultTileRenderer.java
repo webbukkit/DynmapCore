@@ -421,9 +421,15 @@ public class DefaultTileRenderer implements MapTileRenderer {
             if(isnether) {    /* Make bedrock ceiling into air in nether */
                 if(id != 0) {
                     /* Remember first color we see, in case we wind up solid */
-                    if(result.isTransparent())
-                        if(colorScheme.colors[id] != null)
-                            result.setColor(colorScheme.colors[id][seq]);
+                    if(result.isTransparent()) {
+                        try {
+                            if(colorScheme.colors[id] != null) {
+                                result.setColor(colorScheme.colors[id][seq]);
+                            }
+                        } catch (ArrayIndexOutOfBoundsException aioobx) {
+                            colorScheme.resizeColorArray(id);
+                        }
+                    }
                     id = 0;
                 }
                 else
@@ -432,8 +438,12 @@ public class DefaultTileRenderer implements MapTileRenderer {
             if(id != 0) {       /* No update needed for air */
                 switch(biomecolored) {
                     case NONE:
-                        if(colorScheme.datacolors[id] != null) {    /* If data colored */
-                            data = mapiter.getBlockData();
+                        try {
+                            if(colorScheme.datacolors[id] != null) {    /* If data colored */
+                                data = mapiter.getBlockData();
+                            }
+                        } catch (ArrayIndexOutOfBoundsException aioobx) {
+                            colorScheme.resizeColorArray(id);
                         }
                         break;
                     case BIOME:
@@ -484,10 +494,14 @@ public class DefaultTileRenderer implements MapTileRenderer {
                 Color[] colors = null;
                 switch(biomecolored) {
                     case NONE:
-                        if(data != 0)
-                            colors = colorScheme.datacolors[id][data];
-                        else
-                            colors = colorScheme.colors[id];
+                        try {
+                            if(data != 0)
+                                colors = colorScheme.datacolors[id][data];
+                            else
+                                colors = colorScheme.colors[id];
+                        } catch (ArrayIndexOutOfBoundsException aioobx) {
+                            colorScheme.resizeColorArray(id);
+                        }
                         break;
                     case BIOME:
                         if(bio != null)
