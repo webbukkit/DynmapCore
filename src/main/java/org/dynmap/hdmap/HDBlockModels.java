@@ -29,14 +29,32 @@ public class HDBlockModels {
     
     private static HashMap<Integer, HDBlockModels> models_by_id_data = new HashMap<Integer, HDBlockModels>();
     
+    
+    private static void resizeTable(int idx) {
+        int cnt = idx+1;
+        int[] newlinkalg = new int[cnt];
+        System.arraycopy(linkalg, 0, newlinkalg, 0, linkalg.length);
+        linkalg = newlinkalg;
+        int[][] newlinkmap = new int[cnt][];
+        System.arraycopy(linkmap, 0, newlinkmap, 0, linkmap.length);
+        linkmap = newlinkmap;
+    }
+    
     public static class HDScaledBlockModels {
         private short[][][] modelvectors;
         
         public final short[] getScaledModel(int blocktype, int blockdata, int blockrenderdata) {
-            if(modelvectors[blocktype] == null) {
+            try {
+                if(modelvectors[blocktype] == null) {
+                    return null;
+                }
+                return modelvectors[blocktype][(blockrenderdata>=0)?blockrenderdata:blockdata];
+            } catch (ArrayIndexOutOfBoundsException aioobx) {
+                short[][][] newmodels = new short[blocktype+1][][];
+                System.arraycopy(modelvectors, 0, newmodels, 0, modelvectors.length);
+                modelvectors = newmodels;
                 return null;
             }
-            return modelvectors[blocktype][(blockrenderdata>=0)?blockrenderdata:blockdata];
         }
     }
     
@@ -83,7 +101,12 @@ public class HDBlockModels {
      * @return 0=no link alg
      */
     public static final int getLinkAlgID(int blkid) {
-        return linkalg[blkid];
+        try {
+            return linkalg[blkid];
+        } catch (ArrayIndexOutOfBoundsException aioobx) {
+            resizeTable(blkid);
+            return 0;
+        }
     }
     /**
      * Get link block IDs
@@ -91,7 +114,12 @@ public class HDBlockModels {
      * @return array of block IDs to link with
      */
     public static final int[] getLinkIDs(int blkid) {
-        return linkmap[blkid];
+        try {
+            return linkmap[blkid];
+        } catch (ArrayIndexOutOfBoundsException aioobx) {
+            resizeTable(blkid);
+            return null;
+        }
     }
     /**
      * Get scaled map of block: will return array of alpha levels, corresponding to how much of the
