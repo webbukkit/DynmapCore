@@ -30,12 +30,12 @@ import org.dynmap.hdmap.HDMapManager;
 import org.dynmap.hdmap.TexturePack;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.impl.MarkerAPIImpl;
+import org.dynmap.servlet.FileLockResourceHandler;
 import org.dynmap.web.BanIPFilter;
 import org.dynmap.web.CustomHeaderFilter;
 import org.dynmap.web.FilterHandler;
 import org.dynmap.web.HandlerRouter;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.FileResource;
 import org.yaml.snakeyaml.Yaml;
@@ -419,13 +419,13 @@ public class DynmapCore {
         int maxconnections = configuration.getInteger("max-sessions", 30);
         if(maxconnections < 2) maxconnections = 2;
         router = new HandlerRouter() {{
-            this.addHandler("/", new ResourceHandler() {{
+            this.addHandler("/", new FileLockResourceHandler() {{
                 this.setAliases(allow_symlinks);
                 this.setWelcomeFiles(new String[] { "index.html" });
                 this.setDirectoriesListed(true);
                 this.setBaseResource(createFileResource(getFile(getWebPath()).getAbsolutePath()));
             }});
-            this.addHandler("/tiles/*", new ResourceHandler() {{
+            this.addHandler("/tiles/*", new FileLockResourceHandler() {{
                 this.setAliases(allow_symlinks);
                 this.setWelcomeFiles(new String[] { });
                 this.setDirectoriesListed(true);
