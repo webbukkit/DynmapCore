@@ -1328,6 +1328,10 @@ public class MapManager {
     public boolean getBetterGrass() {
         return core.bettergrass;
     }
+    
+    public boolean getSmoothBiomeShading() {
+        return core.smooth_biome_shading;
+    }
 
     public CompassMode getCompassMode() {
         return core.compassmode;

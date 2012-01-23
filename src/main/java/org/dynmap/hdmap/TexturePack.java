@@ -1142,7 +1142,7 @@ public class TexturePack {
      * Read color for given subblock coordinate, with given block id and data and face
      */
     public final void readColor(final HDPerspectiveState ps, final MapIterator mapiter, final Color rslt, final int blkid, final int lastblocktype,
-            TexturePackHDShader.ShaderState ss) {
+            final TexturePackHDShader.ShaderState ss) {
         int blkdata = ps.getBlockData();
         HDTextureMap map = HDTextureMap.getMap(blkid, blkdata, ps.getBlockRenderData());
         BlockStep laststep = ps.getLastBlockStep();
@@ -1340,7 +1340,13 @@ public class TexturePack {
                 li = imgs[IMG_FOLIAGECOLOR];
                 break;
             case COLORMOD_WATERTONED:
-                if(ss.do_swamp_shading && (mapiter.getBiome() == BiomeMap.SWAMPLAND))
+                if(ss.do_smooth_biome_shading) {
+                    int swamps = mapiter.countSmoothedSwampBiomes();
+                    if(swamps != 0) {
+                        clrmult = smooth_water_mult[swamps];
+                    }
+                }
+                else if(ss.do_swamp_shading && (mapiter.getBiome() == BiomeMap.SWAMPLAND))
                     clrmult = 0xFFE0FF70;
                 break;
             case COLORMOD_BIRCHTONED:
@@ -1364,8 +1370,18 @@ public class TexturePack {
             else {
                 clrmult = biomeLookup(li.argb, li.width, mapiter.getRawBiomeRainfall(), mapiter.getRawBiomeTemperature());
             }
-            if(ss.do_swamp_shading && (mapiter.getBiome() == BiomeMap.SWAMPLAND))
+            if(ss.do_smooth_biome_shading) {
+                int swamps = mapiter.countSmoothedSwampBiomes();
+                if(swamps != 0) {
+                    int r1 = ((18-swamps) * ((clrmult >> 16) & 0xFF) + (swamps * 0x4E)) / 18;
+                    int g1 = ((18-swamps) * ((clrmult >> 8) & 0xFF) + (swamps * 0x0E)) / 18;
+                    int b1 = ((18-swamps) * (clrmult & 0xFF) + (swamps * 0x4E)) / 18;
+                    clrmult = (clrmult & 0xFF000000) | (r1 << 16) | (g1 << 8) | b1;
+                }
+            }
+            else if(ss.do_swamp_shading && (mapiter.getBiome() == BiomeMap.SWAMPLAND)) {
                 clrmult = (clrmult & 0xFF000000) | (((clrmult & 0x00FEFEFE) + 0x4E0E4E) / 2);
+            }
         }
         if((clrmult != -1) && (clrmult != 0)) {
             rslt.blendColor(clrmult);
@@ -1807,7 +1823,21 @@ public class TexturePack {
             imgs[IMG_FIRE].argb[k] = cc.getARGB();
 
         }
-
-}
-
+    }
+    private static final int[] smooth_water_mult = new int[10];
+    
+    static {
+        /*
+         * Generate smoothed swamp multipliers (indexed by swamp biome count)
+         */
+        Color c = new Color();
+        for(int i = 0; i < 10; i++) {
+            /* Use water color multiplier base for 1.1 (E0FFAE) */
+            int r = (((9-i) * 0xFF) + (i * 0xE0)) / 9;
+            int g = 0xFF;
+            int b = (((9-i) * 0xFF) + (i * 0xAE)) / 9;
+            c.setRGBA(r & 0xFE, g & 0xFE, b & 0xFE, 0xFF);
+            smooth_water_mult[i] = c.getARGB();
+        }
+    }
 }

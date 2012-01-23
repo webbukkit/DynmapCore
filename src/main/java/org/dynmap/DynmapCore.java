@@ -60,6 +60,7 @@ public class DynmapCore {
     boolean waterbiomeshading = false;
     boolean fencejoin = false;
     boolean bettergrass = false;
+    boolean smooth_biome_shading = false;
     private HashSet<String> enabledTriggers = new HashSet<String>();
         
     public CompassMode compassmode = CompassMode.PRE19;
@@ -269,6 +270,8 @@ public class DynmapCore {
         waterbiomeshading = configuration.getBoolean("waterbiomeshaded", post_1_8);
         /* Default fence-to-block-join off for 1.8, on after */
         fencejoin = configuration.getBoolean("fence-to-block-join", post_1_8);
+        /* Default smooth biome shading to off */
+        smooth_biome_shading = configuration.getBoolean("smooth-biome-shading", false);
         /* Get snapshot cache size */
         snapshotcachesize = configuration.getInteger("snapshotcachesize", 500);
         /* Default compassmode to pre19, to newrose after */

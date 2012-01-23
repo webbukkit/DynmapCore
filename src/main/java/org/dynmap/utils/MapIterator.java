@@ -54,6 +54,10 @@ public interface MapIterator {
      */
     public BiomeMap getBiome();
     /**
+     * Count biomes in and adjacent to block matching SWAMPLAND
+     */
+    public int  countSmoothedSwampBiomes();
+    /**
      * Get raw temperature data (0.0-1.0)
      */
     public double getRawBiomeTemperature();
