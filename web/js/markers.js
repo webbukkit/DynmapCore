@@ -130,7 +130,7 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 		}
 		area.timestamp = ts;
 		if(area.label != "") {
-			var popup = document.createElement('div');
+			var popup = document.createElement('span');
 			if(area.desc) {
 				$(popup).addClass('AreaPopup').append(area.desc);
 			}
@@ -140,7 +140,7 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 			else {
 				$(popup).text(area.label);
 			}
-			area.our_area.bindPopup(popup, {});
+			area.our_area.bindPopup($(popup).html(), {});
 		}
 		if((set.minzoom < 1) || (dynmap.map.getZoom() >= set.minzoom)) {
 			set.layergroup.addLayer(area.our_area);
