@@ -1,0 +1,22 @@
+# Industrial Craft 2 Advanced Machines Block mapping
+# define ic2-advancedmachines-support: true in configuration.txt to enable
+enabled:ic2-advancedmachines-support
+# variables: set in configuration.txt to override
+var:ic2-adv-blockAdvancedMachine=188,ic2-adv-blockSolarArray=189
+# Files
+texturefile:id=blk0,filename=ic2/sprites/block_0.png,xcount=16,ycount=16
+# Blocks
+# blockAdvancedMachine=188
+#  data=0 (Rotary Macerator)
+block:id=ic2-adv-blockAdvancedMachine,data=0,top=20,bottom86,south=19,north=86,east=86,west=86,txtid=blk0
+#  data=1 (Signularity Compressor)
+block:id=ic2-adv-blockAdvancedMachine,data=1,top=26,bottom=86,south=27,north=86,east=86,west=86,txtid=blk0
+#  data=2 (Centrifuge Extractor)
+block:id=ic2-adv-blockAdvancedMachine,data=2,top=86,bottom=86,south=22,north=24,east=24,west=24,txtid=blk0
+# blockSollarArray=189
+#  data=0 (HV Solar Array)
+block:id=ic2-adv-blockSolarArray,data=0,top=52,bottom=70,allsides=1,txtid=blk0
+#  data=1 (MV Solar Array)
+block:id=ic2-adv-blockSolarArray,data=1,top=52,bottom=69,allsides=1,txtid=blk0
+#  data=2 (LV Solar Array)
+block:id=ic2-adv-blockSolarArray,data=2,top=52,bottom=72,allsides=1,txtid=blk0
