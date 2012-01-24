@@ -31,7 +31,7 @@ templates:
         prefix: t
         perspective: iso_SE_60_lowres
         shader: stdtexture
-        lighting: default
+        lighting: shadows
         # Adjust extra zoom in levels - default is 2
         mapzoomin: 2
       - class: org.dynmap.hdmap.HDMap
