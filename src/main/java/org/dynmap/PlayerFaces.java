@@ -24,6 +24,7 @@ public class PlayerFaces {
     private File faces8x8dir;
     private File faces16x16dir;
     private File faces32x32dir;
+    private File body32x32dir;
     private boolean fetchskins;
     private boolean refreshskins;
     
@@ -36,10 +37,12 @@ public class PlayerFaces {
             File img_8x8 = new File(faces8x8dir, playername + ".png");
             File img_16x16 = new File(faces16x16dir, playername + ".png");
             File img_32x32 = new File(faces32x32dir, playername + ".png");
+            File body = new File(body32x32dir, playername + ".png");
             boolean has_8x8 = img_8x8.exists();
             boolean has_16x16 = img_16x16.exists();
             boolean has_32x32 = img_32x32.exists();
-            boolean missing_any = !(has_8x8 && has_16x16 && has_32x32);
+            boolean has_body = body.exists();
+            boolean missing_any = !(has_8x8 && has_16x16 && has_32x32 && has_body);
             
             BufferedImage img = null;
             try {
@@ -128,8 +131,37 @@ public class PlayerFaces {
                 FileLockManager.releaseWriteLock(img_32x32);
                 DynmapBufferedImage.freeBufferedImage(face32x32);
             }
-            
+
+            /* Write body file */
+            if(refreshskins || (!has_body)) {
+                /* Make 32x32 version */
+                DynmapBufferedImage body32x32 = DynmapBufferedImage.allocateBufferedImage(32, 32);
+                /* Copy face at 12,0 to 20,8 (already handled accessory) */
+                for(int i = 0; i < 8; i++) {
+                    for(int j = 0; j < 8; j++) {
+                        body32x32.argb_buf[i*32+j+12] = face8x8.argb_buf[i*8 + j];
+                    }
+                }
+                /* Copy body at 12,8 to 20,20 */
+                img.getRGB(20, 20, 8, 12, body32x32.argb_buf, 8*32+12, 32); /* Read body from image */
+                /* Copy legs at 12,20 to 16,32 and 16,20 to 20,32 */
+                img.getRGB(4, 20, 4, 12, body32x32.argb_buf, 20*32+12, 32); /* Read right leg from image */
+                img.getRGB(4, 20, 4, 12, body32x32.argb_buf, 20*32+16, 32); /* Read left leg from image */
+                /* Copy arms at 8,8 to 12,20 and 20,8 to 24,20 */
+                img.getRGB(44, 20, 4, 12, body32x32.argb_buf, 8*32+8, 32); /* Read right leg from image */
+                img.getRGB(44, 20, 4, 12, body32x32.argb_buf, 8*32+20, 32); /* Read left leg from image */
+                FileLockManager.getWriteLock(body);
+                try {
+                    FileLockManager.imageIOWrite(body32x32.buf_img, ImageFormat.FORMAT_PNG, body);
+                } catch (IOException iox) {
+                    Log.severe("Cannot write player icon " + body.getPath());
+                }
+                FileLockManager.releaseWriteLock(body);
+                DynmapBufferedImage.freeBufferedImage(body32x32);
+            }
+
             DynmapBufferedImage.freeBufferedImage(face8x8);
+            img.flush();
             /* TODO: signal update for player icon to client */
         }
     }
@@ -156,5 +188,7 @@ public class PlayerFaces {
         faces16x16dir.mkdirs();
         faces32x32dir = new File(facesdir, "32x32");
         faces32x32dir.mkdirs();
+        body32x32dir = new File(facesdir, "body");
+        body32x32dir.mkdirs();
     }
 }

@@ -33,6 +33,14 @@ componentconstructors['playermarkers'] = function(dynmap, configuration) {
 						playerImage.remove();
 					});
 				}
+				else if(configuration.showplayerbody) {
+					getMinecraftHead(player.account, 'body', function(head) {
+						$(head)
+							.addClass('playerIcon')
+						.prependTo(div);
+						playerImage.remove();
+					});
+				}
 				else {
 					getMinecraftHead(player.account, 32, function(head) {
 						$(head)
