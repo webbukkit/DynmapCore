@@ -37,6 +37,7 @@ import org.dynmap.web.FilterHandler;
 import org.dynmap.web.HandlerRouter;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.util.resource.FileResource;
 import org.yaml.snakeyaml.Yaml;
 
@@ -412,8 +413,10 @@ public class DynmapCore {
             return null;
         }
     }
-    
+
     public void loadWebserver() {
+        org.eclipse.jetty.util.log.Log.setLog(new org.eclipse.jetty.util.log.JavaUtilLog("Minecraft"));
+
         webServer = new Server(new InetSocketAddress(configuration.getString("webserver-bindaddress", "0.0.0.0"), configuration.getInteger("webserver-port", 8123)));
         webServer.setStopAtShutdown(true);
         webServer.setGracefulShutdown(1000);
