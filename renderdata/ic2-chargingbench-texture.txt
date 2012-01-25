@@ -1,0 +1,14 @@
+# Industrial Craft 2 Charging Bench Block mapping
+# define ic2-chargingbench-support: true in configuration.txt to enable
+enabled:ic2-chargingbench-support
+# variables: set in configuration.txt to override
+var:ic2-blockChargingBench=189
+# Files
+texturefile:id=blk0,filename=ic2/sprites/ChargingBench.png,xcount=16,ycount=16
+# Blocks
+# Mk1 bench (blockChargingBench:0)
+block:id=ic2-blockChargingBench,data=0,top=4016,bottom=0,south=32,north=48,east=64,west=80,txtid=blk0
+# Mk2 bench (blockChargingBench:1)
+block:id=ic2-blockChargingBench,data=1,top=4017,bottom=1,south=33,north=49,east=65,west=81,txtid=blk0
+# Mk2 bench (blockChargingBench:2)
+block:id=ic2-blockChargingBench,data=2,top=4018,bottom=2,south=34,north=50,east=66,west=82,txtid=blk0
