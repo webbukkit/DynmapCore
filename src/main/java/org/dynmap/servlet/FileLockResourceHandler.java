@@ -31,8 +31,6 @@ public class FileLockResourceHandler extends ResourceHandler {
         }
         try {
             super.handle(target, baseRequest, request, response);
-        } catch(IOException ex) {
-            Log.severe("Unable read the file '"+file.getPath()+"' or respond to the HTTP-request.", ex);
         } finally {
             FileLockManager.releaseReadLock(file);
         }
