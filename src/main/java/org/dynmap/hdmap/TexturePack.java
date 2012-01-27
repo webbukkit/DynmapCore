@@ -1392,8 +1392,14 @@ public class TexturePack {
         int w = width-1;
         int t = (int)((1.0-temp)*w);
         int h = (int)((1.0 - (temp*rainfall))*w);
-        if(h > w) h = w;
-        if(t > w) t = w;
+        if(h > w) 
+        	h = w;
+        else if(h < 0)
+        	h = 0;
+        if(t > w)
+        	t = w;
+        else if(t < 0)
+        	t = 0;
         return argb[width*h + t];
     }
     
