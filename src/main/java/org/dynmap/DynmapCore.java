@@ -31,6 +31,7 @@ import org.dynmap.hdmap.TexturePack;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.impl.MarkerAPIImpl;
 import org.dynmap.servlet.FileLockResourceHandler;
+import org.dynmap.servlet.JettyNullLogger;
 import org.dynmap.web.BanIPFilter;
 import org.dynmap.web.CustomHeaderFilter;
 import org.dynmap.web.FilterHandler;
@@ -415,7 +416,7 @@ public class DynmapCore {
     }
 
     public void loadWebserver() {
-        org.eclipse.jetty.util.log.Log.setLog(new org.eclipse.jetty.util.log.JavaUtilLog("Minecraft"));
+        org.eclipse.jetty.util.log.Log.setLog(new JettyNullLogger());
 
         webServer = new Server(new InetSocketAddress(configuration.getString("webserver-bindaddress", "0.0.0.0"), configuration.getInteger("webserver-port", 8123)));
         webServer.setStopAtShutdown(true);
