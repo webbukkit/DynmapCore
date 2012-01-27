@@ -12,11 +12,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 public class FileLockResourceHandler extends ResourceHandler {
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        Resource resource = getResource(target);
+        Resource resource;
+        try {
+            resource = getResource(target);
+        } catch(MalformedURLException ex) {
+            return;
+        }
         if (resource == null) {
             return;
         }
