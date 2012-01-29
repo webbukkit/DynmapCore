@@ -989,29 +989,27 @@ public class IsoHDPerspective implements HDPerspective {
         /* Make corners for volume: 0 = bottom-lower-left, 1 = top-lower-left, 2=bottom-upper-left, 3=top-upper-left
          * 4 = bottom-lower-right, 5 = top-lower-right, 6 = bottom-upper-right, 7 = top-upper-right */  
         Vector3D corners[] = new Vector3D[8];
-        int[] chunk_x = new int[8];
-        int[] chunk_z = new int[8];
-        int dx = -1, dy = -1;
+        double dx = -scale, dy = -scale;    /* Add 1 block on each axis */
         for(int x = t.tx, idx = 0; x <= (t.tx+1); x++) {
-            dy = -1;
+            dy = -scale;
             for(int y = t.ty; y <= (t.ty+1); y++) {
                 for(int z = 0; z <= 1; z++) {
                     corners[idx] = new Vector3D();
                     corners[idx].x = x*tileWidth + dx; corners[idx].y = y*tileHeight + dy; corners[idx].z = z*128;
                     map_to_world.transform(corners[idx]);
                     /* Compute chunk coordinates of corner */
-                    chunk_x[idx] = (int)Math.floor(corners[idx].x / 16);
-                    chunk_z[idx] = (int)Math.floor(corners[idx].z / 16);
+                    int cx = (int)Math.floor(corners[idx].x / 16);
+                    int cz = (int)Math.floor(corners[idx].z / 16);
                     /* Compute min/max of chunk coordinates */
-                    if(min_chunk_x > chunk_x[idx]) min_chunk_x = chunk_x[idx];
-                    if(max_chunk_x < chunk_x[idx]) max_chunk_x = chunk_x[idx];
-                    if(min_chunk_z > chunk_z[idx]) min_chunk_z = chunk_z[idx];
-                    if(max_chunk_z < chunk_z[idx]) max_chunk_z = chunk_z[idx];
+                    if(min_chunk_x > cx) min_chunk_x = cx;
+                    if(max_chunk_x < cx) max_chunk_x = cx;
+                    if(min_chunk_z > cz) min_chunk_z = cz;
+                    if(max_chunk_z < cz) max_chunk_z = cz;
                     idx++;
                 }
-                dy = 1;
+                dy = scale;
             }
-            dx = 1;
+            dx = scale;
         }
         /* Make rectangles of X-Z projection of each side of the tile volume, 0 = top, 1 = bottom, 2 = left, 3 = right,
          * 4 = upper, 5 = lower */
