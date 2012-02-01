@@ -43,6 +43,7 @@ public class ConfigurationNode implements Map<String, Object> {
 
             options.setIndent(4);
             options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+            options.setPrettyFlow(true);
 
             yaml = new Yaml(new SafeConstructor(), new EmptyNullRepresenter(), options);
         }
@@ -271,21 +272,34 @@ public class ConfigurationNode implements Map<String, Object> {
             extendMap(this, other);
     }
     
+    private final static Object copyValue(Object v) {
+        if(v instanceof Map) {
+            Map<String, Object> mv = (Map<String, Object>)v;
+            HashMap<String, Object> newv = new HashMap<String,Object>();
+            for(Map.Entry<String, Object> me : mv.entrySet()) {
+                newv.put(me.getKey(), copyValue(me.getValue()));
+            }
+            return newv;
+        }
+        else if(v instanceof List) {
+            List<Object> lv = (List<Object>)v;
+            ArrayList<Object> newv = new ArrayList<Object>();
+            for(int i = 0; i < lv.size(); i++) {
+                newv.add(copyValue(lv.get(i)));
+            }
+            return newv;
+        }
+        else {
+            return v;
+        }
+    }
     @SuppressWarnings("unchecked")
     private final static void extendMap(Map<String, Object> left, Map<String, Object> right) {
         ConfigurationNode original = new ConfigurationNode(left);
         for(Map.Entry<String, Object> entry : right.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
-            if (value instanceof Map<?, ?>) {
-                ConfigurationNode subnode = original.getNode(key);
-                if (subnode == null) {
-                    original.put(key, subnode = new ConfigurationNode());
-                }
-                extendMap(subnode, (Map<String, Object>)value);
-            } else {
-                original.put(key, value);
-            }
+            original.put(key, copyValue(value));
         }
     }
     

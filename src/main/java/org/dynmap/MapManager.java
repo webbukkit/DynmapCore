@@ -963,6 +963,10 @@ public class MapManager {
         /* Now, restore any pending renders for this world */
         if(saverestorepending)
             loadPending(dynmapWorld);
+
+        /* Save worlds.txt */
+        //TODO - core.world_config.save();
+        
         return true;
     }
 

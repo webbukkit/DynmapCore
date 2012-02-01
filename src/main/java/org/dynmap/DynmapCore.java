@@ -53,6 +53,7 @@ public class DynmapCore {
     public MapManager mapManager = null;
     public PlayerList playerList;
     public ConfigurationNode configuration;
+    public ConfigurationNode world_config;
     public ComponentManager componentManager = new ComponentManager();
     public DynmapListenerManager listenerManager = new DynmapListenerManager(this);
     public PlayerFaces playerfacemgr;
@@ -256,9 +257,8 @@ public class DynmapCore {
         if(!createDefaultFileFromResource("/worlds.txt", f)) {
             return false;
         }
-        ConfigurationNode cn = new ConfigurationNode(f);
-        cn.load();
-        mergeConfigurationBranch(cn, "worlds", true, true);
+        world_config = new ConfigurationNode(f);
+        world_config.load();
 
         /* Now, process templates */
         loadTemplates();
@@ -887,11 +887,12 @@ public class DynmapCore {
     }
 
     public ConfigurationNode getWorldConfiguration(DynmapWorld world) {
+        String wname = world.getName();
         ConfigurationNode finalConfiguration = new ConfigurationNode();
-        finalConfiguration.put("name", world.getName());
-        finalConfiguration.put("title", world.getName());
+        finalConfiguration.put("name", wname);
+        finalConfiguration.put("title", wname);
         
-        ConfigurationNode worldConfiguration = getWorldConfigurationNode(world.getName());
+        ConfigurationNode worldConfiguration = getWorldConfigurationNode(wname);
         
         // Get the template.
         ConfigurationNode templateConfiguration = null;
@@ -915,7 +916,21 @@ public class DynmapCore {
         for(Map.Entry<String, Object> e : finalConfiguration.entrySet()) {
             Log.verboseinfo(e.getKey() + ": " + e.getValue());
         }
-        
+        /* Update world_config with final */
+        List<Map<String,Object>> worlds = world_config.getMapList("worlds");
+        if(worlds == null) {
+            worlds = new ArrayList<Map<String,Object>>();
+            world_config.put("worlds", worlds);
+        }
+        for(int idx = 0; idx < worlds.size(); idx++) {
+            Map<String,Object> m = worlds.get(idx);
+            if(wname.equals(m.get("name"))) {
+                worlds.remove(idx);
+                break;
+            }
+        }
+        worlds.add(finalConfiguration);
+                
         return finalConfiguration;
     }
     
@@ -929,7 +944,7 @@ public class DynmapCore {
     }
     
     private ConfigurationNode getWorldConfigurationNode(String worldName) {
-        for(ConfigurationNode worldNode : configuration.getNodes("worlds")) {
+        for(ConfigurationNode worldNode : world_config.getNodes("worlds")) {
             if (worldName.equals(worldNode.getString("name"))) {
                 return worldNode;
             }
