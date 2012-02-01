@@ -1,0 +1,103 @@
+# Railcraft Block mapping
+# define railcraft-support: true in configuration.txt to enable
+enabled:railcraft-support
+# variables: set in configuration.txt to override
+var:railcraft-detectorBlock=202,railcraft-utilityBlock=204,railcraft-railAdvBlock=205,
+var:railcraft-elevatorBlock=207,railcraft-structureBlock=208
+# Files
+texturefile:id=blk0,filename=railcraft/railcraft.png,xcount=16,ycount=16
+# Blocks
+# (railcraft-detectorBlock:0) Detector - Storage
+block:id=railcraft-detectorBlock,data=0,top=6013,bottom=6013,south=14,north=13,east=13,west=13,txtid=blk0
+# (railcraft-detectorBlock:1) Detector - Any
+block:id=railcraft-detectorBlock,data=1,top=6029,bottom=6029,south=30,north=29,east=29,west=29,txtid=blk0
+# (railcraft-detectorBlock:2) Detector - Empty
+block:id=railcraft-detectorBlock,data=2,top=6045,bottom=6045,south=46,north=45,east=45,west=45,txtid=blk0
+# (railcraft-detectorBlock:3) Detector - Mob
+block:id=railcraft-detectorBlock,data=3,top=6061,bottom=6061,south=62,north=61,east=61,west=61,txtid=blk0
+# (railcraft-detectorBlock:4) Detector - Powered
+block:id=railcraft-detectorBlock,data=4,top=6077,bottom=6077,south=78,north=77,east=77,west=77,txtid=blk0
+# (railcraft-detectorBlock:5) Detector - Player
+block:id=railcraft-detectorBlock,data=5,top=6093,bottom=6093,south=94,north=93,east=93,west=93,txtid=blk0
+# (railcraft-detectorBlock:6) Detector - Explosive
+block:id=railcraft-detectorBlock,data=6,top=6109,bottom=6109,south=110,north=109,east=109,west=109,txtid=blk0
+# (railcraft-detectorBlock:7) Detector - Animal
+block:id=railcraft-detectorBlock,data=7,top=6125,bottom=6125,south=126,north=125,east=125,west=125,txtid=blk0
+# (railcraft-detectorBlock:8) Detector - Tank
+block:id=railcraft-detectorBlock,data=8,top=6141,bottom=6141,south=142,north=141,east=141,west=141,txtid=blk0
+# (railcraft-detectorBlock:9) Detector - Advanced
+block:id=railcraft-detectorBlock,data=9,top=6157,bottom=6157,south=158,north=157,east=157,west=157,txtid=blk0
+# (railcraft-elevatorBlock:2) Elevator - Facing East - unpowered
+block:id=railcraft-elevatorBlock,data=2,east=85,transparency=TRANSPARENT,txtid=blk0
+# (railcraft-elevatorBlock:3) Elevator - Facing West - unpowered
+block:id=railcraft-elevatorBlock,data=3,west=85,transparency=TRANSPARENT,txtid=blk0
+# (railcraft-elevatorBlock:4) Elevator - Facing North - unpowered
+block:id=railcraft-elevatorBlock,data=4,north=85,transparency=TRANSPARENT,txtid=blk0
+# (railcraft-elevatorBlock:5) Elevator - Facing South - unpowered
+block:id=railcraft-elevatorBlock,data=5,south=85,transparency=TRANSPARENT,txtid=blk0
+# (railcraft-elevatorBlock:10) Elevator - Facing East - powered
+block:id=railcraft-elevatorBlock,data=10,east=84,transparency=TRANSPARENT,txtid=blk0
+# (railcraft-elevatorBlock:11) Elevator - Facing West - powered
+block:id=railcraft-elevatorBlock,data=11,west=84,transparency=TRANSPARENT,txtid=blk0
+# (railcraft-elevatorBlock:12) Elevator - Facing North - powered
+block:id=railcraft-elevatorBlock,data=12,north=84,transparency=TRANSPARENT,txtid=blk0
+# (railcraft-elevatorBlock:13) Elevator - Facing South - powered
+block:id=railcraft-elevatorBlock,data=13,south=84,transparency=TRANSPARENT,txtid=blk0
+# Adv Rail - heading east-west
+block:id=railcraft-railAdvBlock,data=0,top=4009,bottom=4009,transparency=TRANSPARENT,txtid=blk0
+# Adv Rail - incline to east
+# Adv Rail - incline to west
+block:id=railcraft-railAdvBlock,data=4,data=5,top=4009,bottom=4009,east=9,west=9,transparency=TRANSPARENT,txtid=blk0
+# Adv Rail - heading north-south
+block:id=railcraft-railAdvBlock,data=1,top=9,bottom=9,transparency=TRANSPARENT,txtid=blk0
+# Adv Rail - incline to north
+# Adv Rail - incline to south
+block:id=railcraft-railAdvBlock,data=2,data=3,top=9,bottom=9,north=9,south=9,transparency=TRANSPARENT,txtid=blk0
+# Adv Rails - northeast corner
+block:id=railcraft-railAdvBlock,data=6,topbottom=6023,transparency=TRANSPARENT,txtid=blk0
+# Adv Rails - southeast corner
+block:id=railcraft-railAdvBlock,data=7,topbottom=5023,transparency=TRANSPARENT,txtid=blk0
+# Adv Rails - southwest corner
+block:id=railcraft-railAdvBlock,data=8,topbottom=4023,transparency=TRANSPARENT,txtid=blk0
+# Adv Rails - northwest corner
+block:id=railcraft-railAdvBlock,data=9,topbottom=23,transparency=TRANSPARENT,txtid=blk0
+# (railcraft-utilityBlock) Item loader (need entity data for others)
+block:id=railcraft-utilityBlock,data=0,top=10,bottom=12,allsides=11,txtid=blk0
+# (railcraft-utilityBlock:1) Item unloader
+block:id=railcraft-utilityBlock,data=1,top=156,bottom=154,allsides=155,txtid=blk0
+# (railcraft-utilityBlock:2) Item loader advanced
+block:id=railcraft-utilityBlock,data=2,top=122,bottom=122,north=123,south=124,east=123,west=123,txtid=blk0
+# (railcraft-utilityBlock:3) Liquid loader
+block:id=railcraft-utilityBlock,data=3,top=26,bottom=28,allsides=27,txtid=blk0
+# (railcraft-utilityBlock:4) Liquid unloader
+block:id=railcraft-utilityBlock,data=4,top=28,bottom=26,allsides=27,txtid=blk0
+# (railcraft-utilityBlock:5) Item unloader advanced
+block:id=railcraft-utilityBlock,data=5,top=138,bottom=138,north=139,south=140,east=139,west=139,txtid=blk0
+# (railcraft-utilityBlock:6) Minecraft dispenser
+block:id=railcraft-utilityBlock,data=6,top=106,bottom=106,north=107,south=108,east=107,west=107,txtid=blk0
+# (railcraft-utilityBlock:7) Coke oven
+block:id=railcraft-utilityBlock,data=7,allfaces=170,txtid=blk0
+# (railcraft-utilityBlock:8) Rolling machnie
+block:id=railcraft-utilityBlock,data=8,top=188,bottom=186,allsides=187,txtid=blk0
+# (railcraft-structureBlock:0) iron post
+block:id=railcraft-structureBlock,data=0,allfaces=169,txtid=blk0,transparency=TRANSPARENT
+# (railcraft-structureBlock:1) dual head signal block
+block:id=railcraft-structureBlock,data=1,topbottom=56,north=56,south=72,east=56,west=56,txtid=blk0,transparency=TRANSPARENT
+# (railcraft-structureBlock:2) switch motor
+block:id=railcraft-structureBlock,data=2,allfaces=42,txtid=blk0,transparency=TRANSPARENT
+# (railcraft-structureBlock:3) signal light
+block:id=railcraft-structureBlock,data=3,allfaces=55,txtid=blk0,transparency=TRANSPARENT
+# (railcraft-structureBlock:4) switch
+block:id=railcraft-structureBlock,data=4,allfaces=42,txtid=blk0,transparency=TRANSPARENT
+# (railcraft-structureBlock:5) wood post
+block:id=railcraft-structureBlock,data=5,allfaces=87,txtid=blk0,transparency=TRANSPARENT
+# (railcraft-structureBlock:6) stone post
+block:id=railcraft-structureBlock,data=6,allfaces=103,txtid=blk0,transparency=TRANSPARENT
+# (railcraft-structureBlock:7) concrete post
+block:id=railcraft-structureBlock,data=7,allfaces=103,txtid=blk0,transparency=TRANSPARENT
+# (railcraft-structureBlock:8) signal box receiver
+block:id=railcraft-structureBlock,data=8,topbottom=120,allsides=88,txtid=blk0,transparency=TRANSPARENT
+# (railcraft-structureBlock:9) signal box controller
+block:id=railcraft-structureBlock,data=9,topbottom=119,allsides=88,txtid=blk0,transparency=TRANSPARENT
+# (railcraft-structureBlock:10) distant signal light
+block:id=railcraft-structureBlock,data=10,allfaces=55,txtid=blk0,transparency=TRANSPARENT
