@@ -48,10 +48,6 @@ public interface MapChunkCache {
      */
     byte getBlockData(int x, int y, int z);
     /**
-     *  Get highest block Y
-     */
-    int getHighestBlockYAt(int x, int z);
-    /**
      *  Get sky light level
      */
     int getBlockSkyLight(int x, int y, int z);

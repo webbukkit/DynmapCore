@@ -46,8 +46,18 @@ public abstract class DynmapWorld {
     private boolean cancelled;
     private String wname;
     
-    protected DynmapWorld(String wname) {
+    /* World height data */
+    public final int worldheight;
+    public final int heightshift;
+    public final int heightmask;
+    
+    protected DynmapWorld(String wname, int worldheight) {
         this.wname = wname;
+        this.worldheight = worldheight;
+        int shift;
+        for(shift = 0; ((1 << shift) < worldheight); shift++) {}
+        heightshift = shift;
+        heightmask = (1 << shift) - 1;
     }
     @SuppressWarnings("unchecked")
     public void setExtraZoomOutLevels(int lvl) {

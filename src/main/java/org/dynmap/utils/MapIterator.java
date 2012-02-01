@@ -35,11 +35,6 @@ public interface MapIterator {
      */
     int getBlockData();
     /**
-     * Get highest block Y coordinate at current X,Z
-     * @return highest block coord 
-     */
-    int getHighestBlockYAt();
-    /**
      * Get block sky light level at current coordinate
      * @return sky light level
      */
@@ -104,4 +99,8 @@ public interface MapIterator {
      * Get last step taken
      */
     BlockStep getLastStep();
+    /**
+     * Get world height
+     */
+    int getWorldHeight();
 }

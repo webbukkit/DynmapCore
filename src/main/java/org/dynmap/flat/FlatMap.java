@@ -33,7 +33,7 @@ public class FlatMap extends MapType {
     private String prefix;
     private String name;
     private ColorScheme colorScheme;
-    private int maximumHeight = 127;
+    private int maximumHeight = -1;
     private int ambientlight = 15;;
     private int shadowscale[] = null;
     private boolean night_and_day;    /* If true, render both day (prefix+'-day') and night (prefix) tiles */
@@ -50,8 +50,6 @@ public class FlatMap extends MapType {
         Object o = configuration.get("maximumheight");
         if (o != null) {
             maximumHeight = Integer.parseInt(String.valueOf(o));
-            if (maximumHeight > 127)
-                maximumHeight = 127;
         }
         o = configuration.get("shadowstrength");
         if(o != null) {
@@ -131,7 +129,13 @@ public class FlatMap extends MapType {
 
     public boolean render(MapChunkCache cache, MapTile tile, File outputFile) {
         FlatMapTile t = (FlatMapTile) tile;
-        boolean isnether = t.getDynmapWorld().isNether() && (maximumHeight == 127);
+        int maxheight = maximumHeight;
+        int worldheight = tile.getDynmapWorld().worldheight - 1;
+        int hshift = tile.getDynmapWorld().heightshift - 7;
+        
+        if(maxheight < 0)
+            maxheight = worldheight;
+        boolean isnether = t.getDynmapWorld().isNether() && (maxheight == worldheight);
 
         boolean didwrite = false;
         Color rslt = new Color();
@@ -146,17 +150,17 @@ public class FlatMap extends MapType {
             argb_buf_day = im_day.argb_buf;
             pixel_day = new int[4];
         }
-        MapIterator mapiter = cache.getIterator(t.x * t.size, 127, t.y * t.size);
+        MapIterator mapiter = cache.getIterator(t.x * t.size, worldheight, t.y * t.size);
         for (int x = 0; x < t.size; x++) {
-            mapiter.initialize(t.x * t.size + x, 127, t.y * t.size);
+            mapiter.initialize(t.x * t.size + x, worldheight, t.y * t.size);
             for (int y = 0; y < t.size; y++, mapiter.stepPosition(BlockStep.Z_PLUS)) {
                 int blockType;
-                mapiter.setY(127);
+                mapiter.setY(worldheight);
                 if(isnether) {
                     while((blockType = mapiter.getBlockTypeID()) != 0) {
                         mapiter.stepPosition(BlockStep.Y_MINUS);
                         if(mapiter.getY() < 0) {    /* Solid - use top */
-                            mapiter.setY(127);
+                            mapiter.setY(worldheight);
                             blockType = mapiter.getBlockTypeID();
                             break;
                         }
@@ -172,16 +176,12 @@ public class FlatMap extends MapType {
                     }
                 }
                 else {
-                    int my = mapiter.getHighestBlockYAt();
-                    if(my > maximumHeight) my = maximumHeight;
+                    int my = maxheight;
                     mapiter.setY(my);
-                    blockType = mapiter.getBlockTypeID();
-                    if(blockType == 0) {    /* If air, go down one - fixes ice */
+                    while((blockType = mapiter.getBlockTypeID()) == 0) {
                         my--;
-                        if(my < 0)
-                            continue;
-                        mapiter.setY(my);
-                        blockType = mapiter.getBlockTypeID();
+                        if(my < 0) break;
+                        mapiter.stepPosition(BlockStep.Y_MINUS);
                     }
                 }
                 int data = 0;
@@ -223,7 +223,7 @@ public class FlatMap extends MapType {
                 }
                 /* If ambient light less than 15, do scaling */
                 else if((shadowscale != null) && (ambientlight < 15)) {
-                    if(mapiter.getY() < 127) 
+                    if(mapiter.getY() < worldheight) 
                         mapiter.stepPosition(BlockStep.Y_PLUS);
                     if(night_and_day) { /* Use unscaled color for day (no shadows from above) */
                         pixel_day[0] = pixel[0];    
@@ -238,10 +238,11 @@ public class FlatMap extends MapType {
                     pixel[3] = 255;
                 }
                 else {  /* Only do height keying if we're not messing with ambient light */
-                    boolean below = mapiter.getY() < 64;
+                    int ys = mapiter.getY() >> hshift;  /* Normalize to 0-127 */
+                    boolean below = ys < 64;
 
                     // Make height range from 0 - 1 (1 - 0 for below and 0 - 1 above)
-                    float height = (below ? 64 - mapiter.getY() : mapiter.getY() - 64) / 64.0f;
+                    float height = (below ? 64 - ys : ys - 64) / 64.0f;
 
                     // Defines the 'step' in coloring.
                     float step = 10 / 128.0f;

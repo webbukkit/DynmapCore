@@ -58,11 +58,18 @@ public class CaveHDShader implements HDShader {
         protected MapIterator mapiter;
         protected HDMap map;
         private boolean air;
+        private int yshift;
         
         private OurShaderState(MapIterator mapiter, HDMap map) {
             this.mapiter = mapiter;
             this.map = map;
             this.color = new Color();
+            int wheight = mapiter.getWorldHeight();
+            yshift = 0;
+            while(wheight > 128) {
+                wheight >>= 1;
+                yshift++;
+            }
         }
         /**
          * Get our shader
@@ -121,12 +128,13 @@ public class CaveHDShader implements HDShader {
                 int cr, cg, cb;
                 int mult = 256;
 
-                if (mapiter.getY() < 64) {
+                int ys = mapiter.getY() >> yshift;
+                if (ys < 64) {
                     cr = 0;
-                    cg = 64 + mapiter.getY() * 3;
-                    cb = 255 - mapiter.getY() * 4;
+                    cg = 64 + ys * 3;
+                    cb = 255 - ys * 4;
                 } else {
-                    cr = (mapiter.getY() - 64) * 4;
+                    cr = (ys - 64) * 4;
                     cg = 255;
                     cb = 0;
                 }

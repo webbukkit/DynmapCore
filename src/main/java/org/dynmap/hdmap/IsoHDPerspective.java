@@ -126,10 +126,16 @@ public class IsoHDPerspective implements HDPerspective {
         boolean skiptoair;
         int skylevel = -1;
         int emitlevel = -1;
+        int worldheight;
+        int heightmask;
 
         public OurPerspectiveState(MapIterator mi, boolean isnether) {
             mapiter = mi;
             this.isnether = isnether;
+            worldheight = mapiter.getWorldHeight();
+            int shift;
+            for(shift = 0; (1<<shift) < worldheight; shift++) {}
+            heightmask = (1<<shift) - 1;
         }
         private final void updateSemitransparentLight() {
     		BlockStep [] steps = { BlockStep.Y_PLUS, BlockStep.X_MINUS, BlockStep.X_PLUS, 
@@ -159,7 +165,7 @@ public class IsoHDPerspective implements HDPerspective {
             	case OPAQUE:
         			if(HDTextureMap.getTransparency(lastblocktypeid) != BlockTransparency.SEMITRANSPARENT) {
                 		mapiter.unstepPosition(laststep);  /* Back up to block we entered on */
-                		if(mapiter.getY() < 128) {
+                		if(mapiter.getY() < worldheight) {
                 			emitlevel = mapiter.getBlockEmittedLight();
                 			skylevel = mapiter.getBlockSkyLight();
                 		} else {
@@ -639,8 +645,8 @@ public class IsoHDPerspective implements HDPerspective {
                     t_next_y += dt_dy;
                     laststep = stepy;
                     mapiter.stepPosition(laststep);
-                    /* If outside 0-127 range */
-                    if((y & (~0x7F)) != 0) return;
+                    /* If outside 0-(height-1) range */
+                    if((y & (~heightmask)) != 0) return;
                 }
                 /* If X step is next best */
                 else if((t_next_x <= t_next_y) && (t_next_x <= t_next_z)) {
@@ -778,8 +784,7 @@ public class IsoHDPerspective implements HDPerspective {
         if(scale < MIN_SCALE) scale = MIN_SCALE;
         if(scale > MAX_SCALE) scale = MAX_SCALE;
         /* Get max and min height */
-        maxheight = configuration.getInteger("maximumheight", 127);
-        if(maxheight > 127) maxheight = 127;
+        maxheight = configuration.getInteger("maximumheight", -1);
         minheight = configuration.getInteger("minimumheight", 0);
         if(minheight < 0) minheight = 0;
         /* Fence-to-block-join setting */
@@ -995,7 +1000,7 @@ public class IsoHDPerspective implements HDPerspective {
             for(int y = t.ty; y <= (t.ty+1); y++) {
                 for(int z = 0; z <= 1; z++) {
                     corners[idx] = new Vector3D();
-                    corners[idx].x = x*tileWidth + dx; corners[idx].y = y*tileHeight + dy; corners[idx].z = z*128;
+                    corners[idx].x = x*tileWidth + dx; corners[idx].y = y*tileHeight + dy; corners[idx].z = z*t.getDynmapWorld().worldheight;
                     map_to_world.transform(corners[idx]);
                     /* Compute chunk coordinates of corner */
                     int cx = (int)Math.floor(corners[idx].x / 16);
@@ -1089,13 +1094,17 @@ public class IsoHDPerspective implements HDPerspective {
         double ybase = tile.ty * tileHeight;
         boolean shaderdone[] = new boolean[numshaders];
         boolean rendered[] = new boolean[numshaders];
+        double height = maxheight;
+        if(height < 0) {    /* Not set - assume world height - 1 */
+            height = tile.getDynmapWorld().worldheight - 1;
+        }
         
         for(int x = 0; x < tileWidth; x++) {
             ps.px = x;
             for(int y = 0; y < tileHeight; y++) {
-                ps.top.x = ps.bottom.x = xbase + x + 0.5;    /* Start at center of pixel at Y=127.5, bottom at Y=-0.5 */
+                ps.top.x = ps.bottom.x = xbase + x + 0.5;    /* Start at center of pixel at Y=height+0.5, bottom at Y=-0.5 */
                 ps.top.y = ps.bottom.y = ybase + y + 0.5;
-                ps.top.z = maxheight + 0.5; ps.bottom.z = minheight - 0.5;
+                ps.top.z = height + 0.5; ps.bottom.z = minheight - 0.5;
                 map_to_world.transform(ps.top);            /* Transform to world coordinates */
                 map_to_world.transform(ps.bottom);
                 ps.py = y;
