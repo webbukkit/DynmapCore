@@ -37,14 +37,13 @@ public class ClientConfigurationComponent extends Component {
                 String defmap = null;
                 for(DynmapWorld world : core.mapManager.getWorlds()) {
                     if (defaultWorld == null) defaultWorld = world;
-                    ConfigurationNode wn = world.configuration;
                     JSONObject wo = new JSONObject();
-                    s(wo, "name", wn.getString("name"));
-                    s(wo, "title", wn.getString("title"));
-                    DynmapLocation spawn = world.getSpawnLocation();
-                    s(wo, "center/x", wn.getDouble("center/x", spawn.x));
-                    s(wo, "center/y", wn.getDouble("center/y", spawn.y));
-                    s(wo, "center/z", wn.getDouble("center/z", spawn.z));
+                    s(wo, "name", world.getName());
+                    s(wo, "title", world.getTitle());
+                    DynmapLocation center = world.getCenterLocation();
+                    s(wo, "center/x", center.x);
+                    s(wo, "center/y", center.y);
+                    s(wo, "center/z", center.z);
                     s(wo, "bigworld", world.bigworld);
                     s(wo, "extrazoomout", world.getExtraZoomOutLevels());
                     a(t, "worlds", wo);

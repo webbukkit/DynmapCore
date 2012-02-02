@@ -856,86 +856,12 @@ public class MapManager {
     }
     
     public boolean activateWorld(DynmapWorld dynmapWorld) {
-        ConfigurationNode worldConfiguration = core.getWorldConfiguration(dynmapWorld);
-        if (!worldConfiguration.getBoolean("enabled", false)) {
-            Log.info("World '" + dynmapWorld.getName() + "' disabled");
+        String worldname = dynmapWorld.getName();
+        ConfigurationNode worldconfig = core.getWorldConfiguration(dynmapWorld);
+        if(!dynmapWorld.loadConfiguration(core, worldconfig)) {
+            Log.info("World '" + worldname + "' disabled");
             return false;
         }
-        String worldName = dynmapWorld.getName();
-
-        dynmapWorld.configuration = worldConfiguration;
-        Log.verboseinfo("Loading maps of world '" + worldName + "'...");
-        for(MapType map : worldConfiguration.<MapType>createInstances("maps", new Class<?>[] { DynmapCore.class }, new Object[] { core })) {
-            if(map.getName() != null)
-                dynmapWorld.maps.add(map);
-        }
-        Log.info("Loaded " + dynmapWorld.maps.size() + " maps of world '" + worldName + "'.");
-        
-        List<ConfigurationNode> loclist = worldConfiguration.getNodes("fullrenderlocations");
-        dynmapWorld.seedloc = new ArrayList<DynmapLocation>();
-        dynmapWorld.servertime = (int)(dynmapWorld.getTime() % 24000);
-        dynmapWorld.sendposition = worldConfiguration.getBoolean("sendposition", true);
-        dynmapWorld.sendhealth = worldConfiguration.getBoolean("sendhealth", true);
-        dynmapWorld.bigworld = worldConfiguration.getBoolean("bigworld", false);
-        dynmapWorld.setExtraZoomOutLevels(worldConfiguration.getInteger("extrazoomout", 0));
-        dynmapWorld.worldtilepath = new File(core.getTilesFolder(), worldName);
-        if(loclist != null) {
-            for(ConfigurationNode loc : loclist) {
-                DynmapLocation lx = new DynmapLocation(worldName, loc.getInteger("x", 0), loc.getInteger("y", 64), loc.getInteger("z", 0));
-                dynmapWorld.seedloc.add(lx);
-            }
-        }
-        /* Load visibility limits, if any are defined */
-        List<ConfigurationNode> vislimits = worldConfiguration.getNodes("visibilitylimits");
-        if(vislimits != null) {
-            dynmapWorld.visibility_limits = new ArrayList<MapChunkCache.VisibilityLimit>();
-            for(ConfigurationNode vis : vislimits) {
-                MapChunkCache.VisibilityLimit lim = new MapChunkCache.VisibilityLimit();
-                lim.x0 = vis.getInteger("x0", 0);
-                lim.x1 = vis.getInteger("x1", 0);
-                lim.z0 = vis.getInteger("z0", 0);
-                lim.z1 = vis.getInteger("z1", 0);
-                dynmapWorld.visibility_limits.add(lim);
-                /* Also, add a seed location for the middle of each visible area */
-                dynmapWorld.seedloc.add(new DynmapLocation(worldName, (lim.x0+lim.x1)/2, 64, (lim.z0+lim.z1)/2));
-            }            
-        }
-        /* Load hidden limits, if any are defined */
-        List<ConfigurationNode> hidelimits = worldConfiguration.getNodes("hiddenlimits");
-        if(hidelimits != null) {
-            dynmapWorld.hidden_limits = new ArrayList<MapChunkCache.VisibilityLimit>();
-            for(ConfigurationNode vis : hidelimits) {
-                MapChunkCache.VisibilityLimit lim = new MapChunkCache.VisibilityLimit();
-                lim.x0 = vis.getInteger("x0", 0);
-                lim.x1 = vis.getInteger("x1", 0);
-                lim.z0 = vis.getInteger("z0", 0);
-                lim.z1 = vis.getInteger("z1", 0);
-                dynmapWorld.hidden_limits.add(lim);
-            }            
-        }
-        String autogen = worldConfiguration.getString("autogenerate-to-visibilitylimits", "none");
-        if(autogen.equals("permanent")) {
-            dynmapWorld.do_autogenerate = AutoGenerateOption.PERMANENT;
-        }
-        else if(autogen.equals("map-only")) {
-            dynmapWorld.do_autogenerate = AutoGenerateOption.FORMAPONLY;
-        }
-        else {
-            dynmapWorld.do_autogenerate = AutoGenerateOption.NONE;
-        }
-        if((dynmapWorld.do_autogenerate != AutoGenerateOption.NONE) && (dynmapWorld.visibility_limits == null)) {
-            Log.info("Warning: Automatic world generation to visible limits option requires that visibitylimits be set - option disabled");
-            dynmapWorld.do_autogenerate = AutoGenerateOption.NONE;
-        }
-        String hiddenchunkstyle = worldConfiguration.getString("hidestyle", "stone");
-        if(hiddenchunkstyle.equals("air"))
-            dynmapWorld.hiddenchunkstyle = MapChunkCache.HiddenChunkStyle.FILL_AIR;
-        else if(hiddenchunkstyle.equals("ocean"))
-            dynmapWorld.hiddenchunkstyle = MapChunkCache.HiddenChunkStyle.FILL_OCEAN;
-        else
-            dynmapWorld.hiddenchunkstyle = MapChunkCache.HiddenChunkStyle.FILL_STONE_PLAIN;
-            
-    
         // TODO: Make this less... weird...
         // Insert the world on the same spot as in the configuration.
         HashMap<String, Integer> indexLookup = new HashMap<String, Integer>();
@@ -944,7 +870,7 @@ public class MapManager {
             ConfigurationNode node = nodes.get(i);
             indexLookup.put(node.getString("name"), i);
         }
-        Integer worldIndex = indexLookup.get(worldName);
+        Integer worldIndex = indexLookup.get(worldname);
         if(worldIndex == null) {
         	worlds.add(dynmapWorld);	/* Put at end if no world section */
         }
@@ -958,14 +884,11 @@ public class MapManager {
         	}
         	worlds.add(insertIndex, dynmapWorld);
         }
-        worldsLookup.put(worldName, dynmapWorld);
+        worldsLookup.put(worldname, dynmapWorld);
         core.events.trigger("worldactivated", dynmapWorld);
         /* Now, restore any pending renders for this world */
         if(saverestorepending)
             loadPending(dynmapWorld);
-
-        /* Save worlds.txt */
-        //TODO - core.world_config.save();
         
         return true;
     }

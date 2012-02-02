@@ -733,8 +733,11 @@ public class DynmapCore {
                         }
                         w = mapManager.getWorld(wname);
                         if(w != null) {
-                            DynmapLocation spawn = w.getSpawnLocation();
-                            DynmapLocation loc = new DynmapLocation(wname, w.configuration.getDouble("center/x", spawn.x), w.configuration.getDouble("center/y", spawn.y), w.configuration.getDouble("center/z", spawn.z));
+                            DynmapLocation loc;
+                            if(w.center != null)
+                                loc = w.center;
+                            else
+                                loc = w.getSpawnLocation();
                             mapManager.renderFullWorld(loc,sender, map, false);
                         }
                         else

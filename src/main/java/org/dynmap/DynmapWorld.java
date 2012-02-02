@@ -2,7 +2,9 @@ package org.dynmap;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.dynmap.debug.Debug;
 import org.dynmap.utils.DynmapBufferedImage;
@@ -27,8 +29,10 @@ public abstract class DynmapWorld {
     }
     public List<MapType> maps = new ArrayList<MapType>();
     public UpdateQueue updates = new UpdateQueue();
-    public ConfigurationNode configuration;
-    public List<DynmapLocation> seedloc;
+    public DynmapLocation center;
+    public List<DynmapLocation> seedloc;    /* All seed location - both direct and based on visibility limits */
+    private List<DynmapLocation> seedloccfg;    /* Configured full render seeds only */
+    
     public List<MapChunkCache.VisibilityLimit> visibility_limits;
     public List<MapChunkCache.VisibilityLimit> hidden_limits;
     public AutoGenerateOption do_autogenerate;
@@ -45,6 +49,8 @@ public abstract class DynmapWorld {
     private boolean checkts = true;	/* Check timestamps on first run with new configuration */
     private boolean cancelled;
     private String wname;
+    private String title;
+    private boolean is_enabled;
     
     /* World height data */
     public final int worldheight;
@@ -532,4 +538,203 @@ public abstract class DynmapWorld {
      */
     public abstract MapChunkCache getChunkCache(List<DynmapChunk> chunks);
 
+    /**
+     * Get title for world
+     */
+    public String getTitle() {
+        return title;
+    }
+    /**
+     * Get center location
+     */
+    public DynmapLocation getCenterLocation() {
+        if(center != null)
+            return center;
+        else
+            return getSpawnLocation();
+    }
+    
+    /* Load world configuration from configuration node */
+    public boolean loadConfiguration(DynmapCore core, ConfigurationNode worldconfig) {
+        is_enabled = worldconfig.getBoolean("enabled", false); 
+        if (!is_enabled) {
+            return false;
+        }
+        title = worldconfig.getString("title", wname);
+        ConfigurationNode ctr = worldconfig.getNode("center");
+        int mid_y = worldheight/2;
+        if(ctr != null)
+            center = new DynmapLocation(wname, ctr.getDouble("x", 0.0), ctr.getDouble("y", mid_y), ctr.getDouble("z", 0));
+        else
+            center = null;
+        Log.verboseinfo("Loading maps of world '" + wname + "'...");
+        for(MapType map : worldconfig.<MapType>createInstances("maps", new Class<?>[] { DynmapCore.class }, new Object[] { core })) {
+            if(map.getName() != null)
+                maps.add(map);
+        }
+        Log.info("Loaded " + maps.size() + " maps of world '" + wname + "'.");
+        
+        List<ConfigurationNode> loclist = worldconfig.getNodes("fullrenderlocations");
+        seedloc = new ArrayList<DynmapLocation>();
+        seedloccfg = new ArrayList<DynmapLocation>();
+        servertime = (int)(getTime() % 24000);
+        sendposition = worldconfig.getBoolean("sendposition", true);
+        sendhealth = worldconfig.getBoolean("sendhealth", true);
+        bigworld = worldconfig.getBoolean("bigworld", false);
+        setExtraZoomOutLevels(worldconfig.getInteger("extrazoomout", 0));
+        worldtilepath = new File(core.getTilesFolder(), wname);
+        if(loclist != null) {
+            for(ConfigurationNode loc : loclist) {
+                DynmapLocation lx = new DynmapLocation(wname, loc.getInteger("x", 0), loc.getInteger("y", mid_y), loc.getInteger("z", 0));
+                seedloc.add(lx); /* Add to both combined and configured seed list */
+                seedloccfg.add(lx);
+            }
+        }
+        /* Load visibility limits, if any are defined */
+        List<ConfigurationNode> vislimits = worldconfig.getNodes("visibilitylimits");
+        if(vislimits != null) {
+            visibility_limits = new ArrayList<MapChunkCache.VisibilityLimit>();
+            for(ConfigurationNode vis : vislimits) {
+                MapChunkCache.VisibilityLimit lim = new MapChunkCache.VisibilityLimit();
+                lim.x0 = vis.getInteger("x0", 0);
+                lim.x1 = vis.getInteger("x1", 0);
+                lim.z0 = vis.getInteger("z0", 0);
+                lim.z1 = vis.getInteger("z1", 0);
+                visibility_limits.add(lim);
+                /* Also, add a seed location for the middle of each visible area */
+                seedloc.add(new DynmapLocation(wname, (lim.x0+lim.x1)/2, 64, (lim.z0+lim.z1)/2));
+            }            
+        }
+        /* Load hidden limits, if any are defined */
+        List<ConfigurationNode> hidelimits = worldconfig.getNodes("hiddenlimits");
+        if(hidelimits != null) {
+            hidden_limits = new ArrayList<MapChunkCache.VisibilityLimit>();
+            for(ConfigurationNode vis : hidelimits) {
+                MapChunkCache.VisibilityLimit lim = new MapChunkCache.VisibilityLimit();
+                lim.x0 = vis.getInteger("x0", 0);
+                lim.x1 = vis.getInteger("x1", 0);
+                lim.z0 = vis.getInteger("z0", 0);
+                lim.z1 = vis.getInteger("z1", 0);
+                hidden_limits.add(lim);
+            }            
+        }
+        String autogen = worldconfig.getString("autogenerate-to-visibilitylimits", "none");
+        if(autogen.equals("permanent")) {
+            do_autogenerate = AutoGenerateOption.PERMANENT;
+        }
+        else if(autogen.equals("map-only")) {
+            do_autogenerate = AutoGenerateOption.FORMAPONLY;
+        }
+        else {
+            do_autogenerate = AutoGenerateOption.NONE;
+        }
+        if((do_autogenerate != AutoGenerateOption.NONE) && (visibility_limits == null)) {
+            Log.info("Warning: Automatic world generation to visible limits option requires that visibitylimits be set - option disabled");
+            do_autogenerate = AutoGenerateOption.NONE;
+        }
+        String hiddenchunkstyle = worldconfig.getString("hidestyle", "stone");
+        if(hiddenchunkstyle.equals("air"))
+            this.hiddenchunkstyle = MapChunkCache.HiddenChunkStyle.FILL_AIR;
+        else if(hiddenchunkstyle.equals("ocean"))
+            this.hiddenchunkstyle = MapChunkCache.HiddenChunkStyle.FILL_OCEAN;
+        else
+            this.hiddenchunkstyle = MapChunkCache.HiddenChunkStyle.FILL_STONE_PLAIN;
+        
+        return true;
+    }
+    /*
+     * Make configuration node for saving world
+     */
+    public ConfigurationNode saveConfiguration() {
+        ConfigurationNode node = new ConfigurationNode();
+        /* Add name and title */
+        node.put("name", wname);
+        node.put("title", getTitle());
+        node.put("enabled", is_enabled);
+        /* Add center */
+        if(center != null) {
+            ConfigurationNode c = new ConfigurationNode();
+            c.put("x", center.x);
+            c.put("y", center.y);
+            c.put("z", center.z);
+            node.put("center", c.entries);
+        }
+        /* Add seed locations, if any */
+        if(seedloccfg.size() > 0) {
+            ArrayList<Map<String,Object>> locs = new ArrayList<Map<String,Object>>();
+            for(int i = 0; i < seedloccfg.size(); i++) {
+                DynmapLocation dl = seedloccfg.get(i);
+                ConfigurationNode ll = new ConfigurationNode();
+                ll.put("x", dl.x);
+                ll.put("y", dl.y);
+                ll.put("z", dl.z);
+                locs.add(ll.entries);
+            }
+            node.put("fullrenderlocations", locs);
+        }
+        /* Add flags */
+        node.put("sendposition", sendposition);
+        node.put("sendhealth", sendhealth);
+        node.put("bigworld", bigworld);
+        node.put("extrazoomout", extrazoomoutlevels);
+        /* Save visibility limits, if defined */
+        if(visibility_limits != null) {
+            ArrayList<Map<String,Object>> lims = new ArrayList<Map<String,Object>>();
+            for(int i = 0; i < visibility_limits.size(); i++) {
+                MapChunkCache.VisibilityLimit lim = visibility_limits.get(i);
+                LinkedHashMap<String, Object> lv = new LinkedHashMap<String,Object>();
+                lv.put("x0", lim.x0);
+                lv.put("z0", lim.z0);
+                lv.put("x1", lim.x1);
+                lv.put("z1", lim.z1);
+                lims.add(lv);
+            }
+            node.put("visibilitylimits", lims);
+        }
+        /* Save hidden limits, if defined */
+        if(hidden_limits != null) {
+            ArrayList<Map<String,Object>> lims = new ArrayList<Map<String,Object>>();
+            for(int i = 0; i < hidden_limits.size(); i++) {
+                MapChunkCache.VisibilityLimit lim = visibility_limits.get(i);
+                LinkedHashMap<String, Object> lv = new LinkedHashMap<String,Object>();
+                lv.put("x0", lim.x0);
+                lv.put("z0", lim.z0);
+                lv.put("x1", lim.x1);
+                lv.put("z1", lim.z1);
+                lims.add(lv);
+            }
+            node.put("hiddenlimits", lims);
+        }
+        /* Save auto-generate settings */
+        String autogen = "none";
+        switch(do_autogenerate) {
+        case PERMANENT:
+            autogen = "permanent";
+            break;
+        case FORMAPONLY:
+            autogen = "map-only";
+            break;
+        }
+        node.put("autogenerate-to-visibilitylimits", autogen);
+        /* Handle hide style */
+        String hide = "stone";
+        switch(hiddenchunkstyle) {
+        case FILL_AIR:
+            hide = "air";
+            break;
+        case FILL_OCEAN:
+            hide = "ocean";
+            break;
+        }
+        node.put("hidestyle", hide);
+        /* Handle map settings */
+        ArrayList<Map<String,Object>> mapinfo = new ArrayList<Map<String,Object>>();
+        for(MapType mt : maps) {
+            ConfigurationNode mnode = mt.saveConfiguration();
+            mapinfo.add(mnode);
+        }
+        node.put("maps", mapinfo);
+
+        return node;
+    }
 }

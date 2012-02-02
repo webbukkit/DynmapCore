@@ -2,6 +2,7 @@ package org.dynmap.kzedmap;
 
 import java.io.File;
 
+import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapWorld;
 import org.dynmap.utils.MapChunkCache;
 
@@ -18,4 +19,6 @@ public interface MapTileRenderer {
     boolean isBiomeDataNeeded();
     boolean isRawBiomeDataNeeded();
     boolean isNightAndDayEnabled();
+    
+    ConfigurationNode saveConfiguration();
 }

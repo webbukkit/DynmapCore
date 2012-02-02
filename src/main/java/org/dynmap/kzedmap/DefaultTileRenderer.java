@@ -32,7 +32,6 @@ public class DefaultTileRenderer implements MapTileRenderer {
     protected static final Color translucent = new Color(0, 0, 0, 0);
     protected String name;
     protected String prefix;
-    protected ConfigurationNode configuration;
     protected int maximumHeight = 127;
     protected ColorScheme colorScheme;
 
@@ -43,6 +42,16 @@ public class DefaultTileRenderer implements MapTileRenderer {
     protected int   lightscale[];   /* scale skylight level (light = lightscale[skylight] */
     protected boolean night_and_day;    /* If true, render both day (prefix+'-day') and night (prefix) tiles */
     protected boolean transparency; /* Is transparency support active? */
+
+    private String title;
+    private String icon;
+    private String bg_cfg;
+    private String bg_day_cfg;
+    private String bg_night_cfg;
+    private int mapzoomin;
+    private double shadowstrength;
+    private int ambientlight;
+    
     public enum BiomeColorOption {
         NONE, BIOME, TEMPERATURE, RAINFALL
     }
@@ -60,39 +69,29 @@ public class DefaultTileRenderer implements MapTileRenderer {
     public boolean isNightAndDayEnabled() { return night_and_day; }
 
     public DefaultTileRenderer(DynmapCore core, ConfigurationNode configuration) {
-        this.configuration = configuration;
         name = configuration.getString("name", null);
         prefix = configuration.getString("prefix", name);
-        Object o = configuration.get("maximumheight");
-        if (o != null) {
-            maximumHeight = Integer.parseInt(String.valueOf(o));
-            if (maximumHeight > 127)
-                maximumHeight = 127;
-        }
-        o = configuration.get("shadowstrength");
-        if(o != null) {
-            double shadowweight = Double.parseDouble(String.valueOf(o));
-            if(shadowweight > 0.0) {
-                shadowscale = new int[16];
-                shadowscale[15] = 256;
-                /* Normal brightness weight in MC is a 20% relative dropoff per step */
-                for(int i = 14; i >= 0; i--) {
-                    double v = shadowscale[i+1] * (1.0 - (0.2 * shadowweight));
-                    shadowscale[i] = (int)v;
-                    if(shadowscale[i] > 256) shadowscale[i] = 256;
-                    if(shadowscale[i] < 0) shadowscale[i] = 0;
-                }
+        maximumHeight = configuration.getInteger("maximumheight", 127);
+        shadowstrength = configuration.getDouble("shadowstrength", 0.0);
+        if(shadowstrength > 0.0) {
+            shadowscale = new int[16];
+            shadowscale[15] = 256;
+            /* Normal brightness weight in MC is a 20% relative dropoff per step */
+            for(int i = 14; i >= 0; i--) {
+                double v = shadowscale[i+1] * (1.0 - (0.2 * shadowstrength));
+                shadowscale[i] = (int)v;
+                if(shadowscale[i] > 256) shadowscale[i] = 256;
+                if(shadowscale[i] < 0) shadowscale[i] = 0;
             }
         }
-        o = configuration.get("ambientlight");
-        if(o != null) {
-            int v = Integer.parseInt(String.valueOf(o));
+        ambientlight = configuration.getInteger("ambientlight", 15);
+        if(ambientlight < 15) {
             lightscale = new int[16];
             for(int i = 0; i < 16; i++) {
-                if(i < (15-v))
+                if(i < (15-ambientlight))
                     lightscale[i] = 0;
                 else
-                    lightscale[i] = i - (15-v);
+                    lightscale[i] = i - (15-ambientlight);
             }
         }
         colorScheme = ColorScheme.getScheme(core, (String)configuration.get("colorscheme"));
@@ -111,7 +110,55 @@ public class DefaultTileRenderer implements MapTileRenderer {
         else {
             biomecolored = BiomeColorOption.NONE;
         }
+        
+        title = configuration.getString("title");
+        icon = configuration.getString("icon");
+        bg_cfg = configuration.getString("background");
+        bg_day_cfg = configuration.getString("backgroundday");
+        bg_night_cfg = configuration.getString("backgroundnight");
+        mapzoomin = configuration.getInteger("mapzoomin", 2);
     }
+    
+    @Override
+    public ConfigurationNode saveConfiguration() {
+        ConfigurationNode cn = new ConfigurationNode();
+        cn.put("class", this.getClass().getName());
+        cn.put("name", name);
+        if(title != null)
+            cn.put("title", title);
+        if(icon != null)
+            cn.put("icon", icon);
+        cn.put("maximumheight", maximumHeight);
+        cn.put("shadowstrength", shadowstrength);
+        cn.put("ambientlight", ambientlight);
+        if(colorScheme != null)
+            cn.put("colorscheme", colorScheme.name);
+        cn.put("night-and-day", night_and_day);
+        cn.put("transparency", transparency);
+        String bcolor = "none";
+        switch(biomecolored) {
+        case BIOME:
+            bcolor = "biome";
+            break;
+        case TEMPERATURE:
+            bcolor = "temperature";
+            break;
+        case RAINFALL:
+            bcolor = "rainfall";
+            break;
+        }
+        cn.put("biomecolored", bcolor);
+        if(bg_cfg != null)
+            cn.put("background", bg_cfg);
+        if(bg_day_cfg != null)
+            cn.put("backgroundday", bg_day_cfg);
+        if(bg_night_cfg != null)
+            cn.put("backgroundnight", bg_night_cfg);
+        cn.put("mapzoomin", mapzoomin);
+
+        return cn;
+    }
+
     public boolean isBiomeDataNeeded() { return biomecolored.equals(BiomeColorOption.BIOME); }
     public boolean isRawBiomeDataNeeded() { 
         return biomecolored.equals(BiomeColorOption.RAINFALL) || biomecolored.equals(BiomeColorOption.TEMPERATURE);
@@ -586,19 +633,18 @@ public class DefaultTileRenderer implements MapTileRenderer {
 
     @Override
     public void buildClientConfiguration(JSONObject worldObject, DynmapWorld world, KzedMap map) {
-        ConfigurationNode c = configuration;
         JSONObject o = new JSONObject();
         s(o, "type", "KzedMapType");
-        s(o, "name", c.getString("name"));
-        s(o, "title", c.getString("title"));
-        s(o, "icon", c.getString("icon"));
-        s(o, "prefix", c.getString("prefix"));
-        s(o, "background", c.getString("background"));
-        s(o, "nightandday", c.getBoolean("night-and-day", false));
-        s(o, "backgroundday", c.getString("backgroundday"));
-        s(o, "backgroundnight", c.getString("backgroundnight"));
+        s(o, "name", name);
+        s(o, "title", title);
+        s(o, "icon", icon);
+        s(o, "prefix", prefix);
+        s(o, "background", bg_cfg);
+        s(o, "nightandday", night_and_day);
+        s(o, "backgroundday", bg_day_cfg);
+        s(o, "backgroundnight", bg_night_cfg);
         s(o, "bigmap", map.isBigWorldMap(world));
-        s(o, "mapzoomin", c.getInteger("mapzoomin", 2));
+        s(o, "mapzoomin", mapzoomin);
         s(o, "mapzoomout", world.getExtraZoomOutLevels()+1);
         if(MapManager.mapman.getCompassMode() != CompassMode.PRE19)
             s(o, "compassview", "NE");   /* Always from northeast */

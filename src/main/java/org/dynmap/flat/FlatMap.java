@@ -29,7 +29,6 @@ import org.dynmap.utils.MapIterator.BlockStep;
 import org.json.simple.JSONObject;
 
 public class FlatMap extends MapType {
-    private ConfigurationNode configuration;
     private String prefix;
     private String name;
     private ColorScheme colorScheme;
@@ -41,35 +40,34 @@ public class FlatMap extends MapType {
     private enum Texture { NONE, SMOOTH, DITHER };
     private Texture textured = Texture.NONE;
     private boolean isbigmap;
+    private String title;
+    private String icon;
+    private String bg_cfg;
+    private String bg_day_cfg;
+    private String bg_night_cfg;
+    private int mapzoomin;
+    private double shadowstrength;
     
     public FlatMap(DynmapCore core, ConfigurationNode configuration) {
-        this.configuration = configuration;
         name = configuration.getString("name", null);
         prefix = configuration.getString("prefix", name);
         colorScheme = ColorScheme.getScheme(core, (String) configuration.get("colorscheme"));
-        Object o = configuration.get("maximumheight");
-        if (o != null) {
-            maximumHeight = Integer.parseInt(String.valueOf(o));
-        }
-        o = configuration.get("shadowstrength");
-        if(o != null) {
-            double shadowweight = Double.parseDouble(String.valueOf(o));
-            if(shadowweight > 0.0) {
-                shadowscale = new int[16];
-                shadowscale[15] = 256;
-                /* Normal brightness weight in MC is a 20% relative dropoff per step */
-                for(int i = 14; i >= 0; i--) {
-                    double v = shadowscale[i+1] * (1.0 - (0.2 * shadowweight));
-                    shadowscale[i] = (int)v;
-                    if(shadowscale[i] > 256) shadowscale[i] = 256;
-                    if(shadowscale[i] < 0) shadowscale[i] = 0;
-                }
+        maximumHeight = configuration.getInteger("maximumheight", 127);
+
+        shadowstrength = configuration.getDouble("shadowstrength", 0.0);
+        if(shadowstrength > 0.0) {
+            shadowscale = new int[16];
+            shadowscale[15] = 256;
+            /* Normal brightness weight in MC is a 20% relative dropoff per step */
+            for(int i = 14; i >= 0; i--) {
+                double v = shadowscale[i+1] * (1.0 - (0.2 * shadowstrength));
+                shadowscale[i] = (int)v;
+                if(shadowscale[i] > 256) shadowscale[i] = 256;
+                if(shadowscale[i] < 0) shadowscale[i] = 0;
             }
         }
-        o = configuration.get("ambientlight");
-        if(o != null) {
-            ambientlight = Integer.parseInt(String.valueOf(o));
-        }
+        ambientlight = configuration.getInteger("ambientlight", 15);
+        
         night_and_day = configuration.getBoolean("night-and-day", false);
         transparency = configuration.getBoolean("transparency", false);  /* Default off */
         String tex = configuration.getString("textured", "none");
@@ -80,6 +78,46 @@ public class FlatMap extends MapType {
         else
             textured = Texture.SMOOTH;
         isbigmap = configuration.getBoolean("isbigmap", false);
+
+        title = configuration.getString("title");
+        icon = configuration.getString("icon");
+        bg_cfg = configuration.getString("background");
+        bg_day_cfg = configuration.getString("backgroundday");
+        bg_night_cfg = configuration.getString("backgroundnight");
+        mapzoomin = configuration.getInteger("mapzoomin", 3);
+    }
+    
+    @Override
+    public ConfigurationNode saveConfiguration() {
+        ConfigurationNode cn = super.saveConfiguration();
+        if(title != null)
+            cn.put("title", title);
+        cn.put("prefix", prefix);
+        if(icon != null)
+            cn.put("icon", icon);
+        if(colorScheme != null)
+            cn.put("colorscheme", colorScheme.name);
+        cn.put("maximumheight", maximumHeight);
+        cn.put("shadowstrength", shadowstrength);
+        cn.put("ambientlgith", ambientlight);
+        cn.put("night-and-day", night_and_day);
+        cn.put("transparency", transparency);
+        String txt = "none";
+        if(textured == Texture.DITHER)
+            txt = "dither";
+        else if(textured == Texture.SMOOTH)
+            txt = "smooth";
+        cn.put("textured", txt);
+        cn.put("isbigmap", isbigmap);
+        if(bg_cfg != null)
+            cn.put("background", bg_cfg);
+        if(bg_day_cfg != null)
+            cn.put("backgroundday", bg_day_cfg);
+        if(bg_night_cfg != null)
+            cn.put("backgroundnight", bg_night_cfg);
+        cn.put("mapzoomin", mapzoomin);
+
+        return cn;
     }
 
     @Override
@@ -577,19 +615,18 @@ public class FlatMap extends MapType {
     
     @Override
     public void buildClientConfiguration(JSONObject worldObject, DynmapWorld world) {
-        ConfigurationNode c = configuration;
         JSONObject o = new JSONObject();
         s(o, "type", "FlatMapType");
-        s(o, "name", c.getString("name"));
-        s(o, "title", c.getString("title"));
-        s(o, "icon", c.getString("icon"));
-        s(o, "prefix", c.getString("prefix"));
-        s(o, "background", c.getString("background"));
-        s(o, "nightandday", c.getBoolean("night-and-day",false));
-        s(o, "backgroundday", c.getString("backgroundday"));
-        s(o, "backgroundnight", c.getString("backgroundnight"));
+        s(o, "name", name);
+        s(o, "title", title);
+        s(o, "icon", icon);
+        s(o, "prefix", prefix);
+        s(o, "background", bg_cfg);
+        s(o, "nightandday", night_and_day);
+        s(o, "backgroundday", bg_day_cfg);
+        s(o, "backgroundnight", bg_night_cfg);
         s(o, "bigmap", this.isBigWorldMap(world));
-        s(o, "mapzoomin", c.getInteger("mapzoomin", 3));
+        s(o, "mapzoomin", mapzoomin);
         s(o, "mapzoomout", world.getExtraZoomOutLevels());
         if(MapManager.mapman.getCompassMode() != CompassMode.PRE19)
             s(o, "compassview", "E");   /* Always from east */

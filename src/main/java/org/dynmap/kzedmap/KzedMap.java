@@ -5,7 +5,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
+import java.util.Map;
 
 import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapChunk;
@@ -17,9 +17,6 @@ import org.dynmap.utils.MapChunkCache;
 import org.json.simple.JSONObject;
 
 public class KzedMap extends MapType {
-    protected static final Logger log = Logger.getLogger("Minecraft");
-    protected static final String LOG_PREFIX = "[dynmap] ";
-
     /* dimensions of a map tile */
     public static final int tileWidth = 128;
     public static final int tileHeight = 128;
@@ -48,6 +45,19 @@ public class KzedMap extends MapType {
         isbigmap = configuration.getBoolean("isbigmap", false);
     }
 
+    @Override
+    public ConfigurationNode saveConfiguration() {
+        ConfigurationNode cn = super.saveConfiguration();
+
+        cn.put("isbigmap", isbigmap);
+        ArrayList<Map<String,Object>> rendinfo = new ArrayList<Map<String,Object>>();
+        for(int i = 0; i < renderers.length; i++) {
+            ConfigurationNode rcn = renderers[i].saveConfiguration();
+            rendinfo.add(rcn.entries);
+        }
+        
+        return cn;
+    }
     @Override
     public MapTile[] getTiles(DynmapWorld world, int x, int y, int z) {
         int dx = x - anchorx;

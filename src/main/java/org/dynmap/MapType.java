@@ -109,4 +109,11 @@ public abstract class MapType {
             }
         }
     }
+    
+    public ConfigurationNode saveConfiguration() {
+        ConfigurationNode cn = new ConfigurationNode();
+        cn.put("class", this.getClass().getName()); /* Add class */
+        cn.put("name", getName());  /* Get map name */
+        return cn;
+    }
 }

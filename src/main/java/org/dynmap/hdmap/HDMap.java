@@ -26,11 +26,17 @@ public class HDMap extends MapType {
     private HDPerspective perspective;
     private HDShader shader;
     private HDLighting lighting;
-    private ConfigurationNode configuration;
+//    private ConfigurationNode configuration;
     private int mapzoomout;
     private MapType.ImageFormat imgformat;
     private int bgcolornight;
     private int bgcolorday;
+    private String title;
+    private String icon;
+    private String bg_cfg;
+    private String bg_day_cfg;
+    private String bg_night_cfg;
+    private int mapzoomin;
 
     public static final String IMGFORMAT_PNG = "png";
     public static final String IMGFORMAT_JPG = "jpg";
@@ -83,7 +89,7 @@ public class HDMap extends MapType {
             }
         }
         prefix = configuration.getString("prefix", name);
-        this.configuration = configuration;
+//        this.configuration = configuration;
         
         /* Compute extra zoom outs needed for this map */
         double scale = perspective.getScale();
@@ -121,8 +127,40 @@ public class HDMap extends MapType {
             bgcolorday |= 0xFF000000;
             bgcolornight |= 0xFF000000;
         }
+        this.title = configuration.getString("title", name);
+        this.icon = configuration.getString("icon");
+        this.bg_cfg = configuration.getString("background");
+        this.bg_day_cfg = configuration.getString("backgroundday");
+        this.bg_night_cfg = configuration.getString("backgroundnight");
+        this.mapzoomin = configuration.getInteger("mapzoomin", 2);
     }
 
+    public ConfigurationNode saveConfiguration() {
+        ConfigurationNode cn = super.saveConfiguration();
+        cn.put("title", title);
+        if(icon != null)
+            cn.put("icon", icon);
+        cn.put("prefix", prefix);
+        if(perspective != null)
+            cn.put("perspective", perspective.getName());
+        if(shader != null)
+            cn.put("shader", shader.getName());
+        if(lighting != null)
+            cn.put("lighting", lighting.getName());
+        if(imgformat != null) {
+            cn.put("image-format", imgformat.getID());
+        }
+        cn.put("mapzoomin", mapzoomin);
+        if(bg_cfg != null)
+            cn.put("background", bg_cfg);
+        if(bg_day_cfg != null)
+            cn.put("backgroundday", bg_day_cfg);
+        if(bg_night_cfg != null)
+            cn.put("backgroundnight", bg_night_cfg);
+        
+        return cn;
+    }
+    
     public HDShader getShader() { return shader; }
     public HDPerspective getPerspective() { return perspective; }
     public HDLighting getLighting() { return lighting; }
@@ -221,19 +259,18 @@ public class HDMap extends MapType {
     
     @Override
     public void buildClientConfiguration(JSONObject worldObject, DynmapWorld world) {
-        ConfigurationNode c = configuration;
         JSONObject o = new JSONObject();
         s(o, "type", "HDMapType");
         s(o, "name", name);
-        s(o, "title", c.getString("title"));
-        s(o, "icon", c.getString("icon"));
+        s(o, "title", title);
+        s(o, "icon", icon);
         s(o, "prefix", prefix);
-        s(o, "background", c.getString("background"));
-        s(o, "backgroundday", c.getString("backgroundday"));
-        s(o, "backgroundnight", c.getString("backgroundnight"));
+        s(o, "background", bg_cfg);
+        s(o, "backgroundday", bg_day_cfg);
+        s(o, "backgroundnight", bg_night_cfg);
         s(o, "bigmap", true);
         s(o, "mapzoomout", (world.getExtraZoomOutLevels()+mapzoomout));
-        s(o, "mapzoomin", c.getInteger("mapzoomin", 2));
+        s(o, "mapzoomin", mapzoomin);
         s(o, "image-format", imgformat.getFileExt());
         perspective.addClientConfiguration(o);
         shader.addClientConfiguration(o);

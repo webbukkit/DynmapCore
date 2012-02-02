@@ -9,7 +9,7 @@ import java.io.OutputStreamWriter;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,7 +34,7 @@ public class ConfigurationNode implements Map<String, Object> {
     private Yaml yaml;
     
     public ConfigurationNode() {
-        entries = new HashMap<String, Object>();
+        entries = new LinkedHashMap<String, Object>();
     }
 
     private void initparse() {
@@ -51,7 +51,7 @@ public class ConfigurationNode implements Map<String, Object> {
 
     public ConfigurationNode(File f) {
         this.f = f;
-        entries = new HashMap<String, Object>();
+        entries = new LinkedHashMap<String, Object>();
     }
     
     public ConfigurationNode(Map<String, Object> map) {
@@ -274,14 +274,16 @@ public class ConfigurationNode implements Map<String, Object> {
     
     private final static Object copyValue(Object v) {
         if(v instanceof Map) {
+            @SuppressWarnings("unchecked")
             Map<String, Object> mv = (Map<String, Object>)v;
-            HashMap<String, Object> newv = new HashMap<String,Object>();
+            LinkedHashMap<String, Object> newv = new LinkedHashMap<String,Object>();
             for(Map.Entry<String, Object> me : mv.entrySet()) {
                 newv.put(me.getKey(), copyValue(me.getValue()));
             }
             return newv;
         }
         else if(v instanceof List) {
+            @SuppressWarnings("unchecked")
             List<Object> lv = (List<Object>)v;
             ArrayList<Object> newv = new ArrayList<Object>();
             for(int i = 0; i < lv.size(); i++) {
@@ -293,7 +295,7 @@ public class ConfigurationNode implements Map<String, Object> {
             return v;
         }
     }
-    @SuppressWarnings("unchecked")
+
     private final static void extendMap(Map<String, Object> left, Map<String, Object> right) {
         ConfigurationNode original = new ConfigurationNode(left);
         for(Map.Entry<String, Object> entry : right.entrySet()) {
