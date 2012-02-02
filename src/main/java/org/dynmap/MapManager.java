@@ -889,7 +889,7 @@ public class MapManager {
         /* Now, restore any pending renders for this world */
         if(saverestorepending)
             loadPending(dynmapWorld);
-        
+
         return true;
     }
 
