@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -408,7 +409,10 @@ public class DynmapCore {
 
     private FileResource createFileResource(String path) {
         try {
-            return new FileResource(new URL("file://" + path));
+        	File f = new File(path);
+        	URI uri = f.toURI();
+        	URL url = uri.toURL();
+            return new FileResource(url);
         } catch(Exception e) {
             Log.info("Could not create file resource");
             return null;
