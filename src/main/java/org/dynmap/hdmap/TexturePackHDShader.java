@@ -37,7 +37,7 @@ public class TexturePackHDShader implements HDShader {
     
     @Override
     public boolean isBiomeDataNeeded() { 
-        return swamp_shaded; 
+        return swamp_shaded || smooth_biome_shading || biome_shaded || waterbiomeshaded; 
     }
     
     @Override

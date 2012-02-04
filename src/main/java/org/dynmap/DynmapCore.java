@@ -487,6 +487,18 @@ public class DynmapCore {
     public void disableCore() {
         if(persist_ids_by_ip)
             saveIDsByIP();
+        
+        if (webServer != null) {
+            try {
+                webServer.stop();
+                while(webServer.isStopping())
+                    Thread.sleep(100);
+            } catch (Exception e) {
+                Log.severe("Failed to stop WebServer!", e);
+            }
+            webServer = null;
+        }
+
         if (componentManager != null) {
             int componentCount = componentManager.components.size();
             for(Component component : componentManager.components) {
@@ -501,16 +513,6 @@ public class DynmapCore {
             mapManager = null;
         }
 
-        if (webServer != null) {
-            try {
-                webServer.stop();
-                while(webServer.isStopping())
-                    Thread.sleep(100);
-            } catch (Exception e) {
-                Log.severe("Failed to stop WebServer!", e);
-            }
-            webServer = null;
-        }
         playerfacemgr = null;
         /* Clean up registered listeners */
         listenerManager.cleanup();
