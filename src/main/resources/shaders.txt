@@ -58,6 +58,12 @@ shaders:
     name: stdtexture-nobiome
     texturepack: standard
     biomeshaded: false
+
+  # Texture pack based shader for standard Minecraft textures, with grid for region file borders (512x512)
+  - class: org.dynmap.hdmap.TexturePackHDShader
+    name: stdtexture-mcr-grid
+    texturepack: standard
+    grid-scale: 512
     
   # Topological map shader    
   - class: org.dynmap.hdmap.TopoHDShader

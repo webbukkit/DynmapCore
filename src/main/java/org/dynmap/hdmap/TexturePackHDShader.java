@@ -12,14 +12,15 @@ import org.dynmap.utils.MapIterator;
 import org.json.simple.JSONObject;
 
 public class TexturePackHDShader implements HDShader {
-    private String tpname;
-    private String name;
-    private TexturePack tp;
-    private boolean biome_shaded;
-    private boolean swamp_shaded;
-    private boolean waterbiomeshaded;
-    private boolean bettergrass;
-    private boolean smooth_biome_shading;
+    private final String tpname;
+    private final String name;
+    private final TexturePack tp;
+    private final boolean biome_shaded;
+    private final boolean swamp_shaded;
+    private final boolean waterbiomeshaded;
+    private final boolean bettergrass;
+    private final boolean smooth_biome_shading;
+    private final int gridscale;
     
     public TexturePackHDShader(DynmapCore core, ConfigurationNode configuration) {
         tpname = configuration.getString("texturepack", "minecraft");
@@ -30,6 +31,7 @@ public class TexturePackHDShader implements HDShader {
         waterbiomeshaded = configuration.getBoolean("waterbiomeshaded", MapManager.mapman.getWaterBiomeShading());
         bettergrass = configuration.getBoolean("better-grass", MapManager.mapman.getBetterGrass());
         smooth_biome_shading = configuration.getBoolean("smooth-biome-shading", MapManager.mapman.getSmoothBiomeShading());
+        gridscale = configuration.getInteger("grid-scale", 0);
         if(tp == null) {
             Log.severe("Error: shader '" + name + "' cannot load texture pack '" + tpname + "'");
         }
@@ -171,15 +173,17 @@ public class TexturePackHDShader implements HDShader {
                 }
                 /* Handle light level, if needed */
                 lighting.applyLighting(ps, this, c, tmpcolor);
-                /* If we got alpha from subblock model, use it instead if it is lower */
-                /* (disable for now: weighting is wrong, as crosssection is 2D, not 3D based) */
-//                if(subalpha >= 0) {
-//                    for(Color clr : tmpcolor) {
-//                    	int a = clr.getAlpha();
-//                    	if(subalpha < a)
-//                    		clr.setAlpha(subalpha);
-//                    }
-//                }
+                /* If grid scale, add it */
+                if(gridscale > 0) {
+                    int xx = mapiter.getX() % gridscale;
+                    int zz = mapiter.getZ() % gridscale;
+                    if(((xx == 0) && ((zz & 2) == 0)) || ((zz == 0) && ((xx & 2) == 0))) {
+                        for(int i = 0; i < tmpcolor.length; i++) {
+                            int v = tmpcolor[i].getARGB();
+                            tmpcolor[i].setARGB((v & 0xFF000000) | ((v & 0xFEFEFE) >> 1) | 0x808080);
+                        }
+                    }
+                }
                 /* If no previous color contribution, use new color */
                 if(color[0].isTransparent()) {
                     for(int i = 0; i < color.length; i++)
