@@ -737,4 +737,7 @@ public abstract class DynmapWorld {
 
         return node;
     }
+    public boolean isEnabled() {
+        return is_enabled;
+    }
 }

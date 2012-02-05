@@ -37,6 +37,7 @@ public class MapManager {
     private static final int DEFAULT_CHUNKS_PER_TICK = 200;
     private static final int DEFAULT_ZOOMOUT_PERIOD = 60;
     public List<DynmapWorld> worlds = new ArrayList<DynmapWorld>();
+    private List<String> disabled_worlds = new ArrayList<String>();
     public Map<String, DynmapWorld> worldsLookup = new HashMap<String, DynmapWorld>();
     private DynmapCore core;
     private long timeslice_int = 0; /* In milliseconds */
@@ -136,6 +137,10 @@ public class MapManager {
     
     public Collection<DynmapWorld> getWorlds() {
         return worlds;
+    }
+    
+    public Collection<String> getDisabledWorlds() {
+        return disabled_worlds;
     }
 
     private static class OurThreadFactory implements ThreadFactory {
@@ -860,8 +865,14 @@ public class MapManager {
         ConfigurationNode worldconfig = core.getWorldConfiguration(dynmapWorld);
         if(!dynmapWorld.loadConfiguration(core, worldconfig)) {
             Log.info("World '" + worldname + "' disabled");
+            disabled_worlds.add(worldname);   /* Add to disabled world list */
+            DynmapWorld oldw = worldsLookup.remove(worldname);
+            if(oldw != null)
+                worlds.remove(oldw);
             return false;
         }
+        /* Remove from disabled, if it was there before */
+        disabled_worlds.remove(worldname);
         // TODO: Make this less... weird...
         // Insert the world on the same spot as in the configuration.
         HashMap<String, Integer> indexLookup = new HashMap<String, Integer>();
@@ -894,7 +905,13 @@ public class MapManager {
     }
 
     public void deactivateWorld(String wname) {
-        Log.warning("World unloading not properly supported");
+        cancelRender(wname, null);  /* Cancel any render */
+        
+        DynmapWorld w = worldsLookup.remove(wname); /* Remove from lookup */
+        if(w != null) { /* If found, remove from active list */
+            worlds.remove(w);
+        }
+        disabled_worlds.remove(wname);
     }
 
     private void loadPending(DynmapWorld w) {

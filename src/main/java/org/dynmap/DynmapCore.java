@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -60,6 +61,7 @@ public class DynmapCore {
     public PlayerFaces playerfacemgr;
     public Events events = new Events();
     public String deftemplatesuffix = "";
+    private DynmapMapCommands dmapcmds = new DynmapMapCommands();
     boolean swampshading = false;
     boolean waterbiomeshading = false;
     boolean fencejoin = false;
@@ -614,6 +616,9 @@ public class DynmapCore {
     public boolean processCommand(DynmapCommandSender sender, String cmd, String commandLabel, String[] args) {
         if(cmd.equalsIgnoreCase("dmarker")) {
             return MarkerAPIImpl.onCommand(this, sender, cmd, commandLabel, args);
+        }
+        if (cmd.equalsIgnoreCase("dmap")) {
+            return dmapcmds.processCommand(sender, cmd, commandLabel, args, this);
         }
         if (!cmd.equalsIgnoreCase("dynmap"))
             return false;
@@ -1234,6 +1239,73 @@ public class DynmapCore {
     /* Called by plugin when world loaded */
     public boolean processWorldLoad(DynmapWorld w) {
         return mapManager.activateWorld(w);
+    }
+    /* Enable/disable world */
+    public boolean setWorldEnable(String wname, boolean isenab) {
+        List<Map<String,Object>> worlds = world_config.getMapList("worlds");
+        for(Map<String,Object> m : worlds) {
+            String wn = (String)m.get("name");
+            if((wn != null) && (wn.equals(wname))) {
+                m.put("enabled", isenab);
+                return true;
+            }
+        }
+        /* If not found, and disable, add disable node */
+        if(isenab == false) {
+            Map<String,Object> newworld = new LinkedHashMap<String,Object>();
+            newworld.put("name", wname);
+            newworld.put("enabled", isenab);
+        }
+        return true;
+    }
+    public boolean setWorldZoomOut(String wname, int xzoomout) {
+        List<Map<String,Object>> worlds = world_config.getMapList("worlds");
+        for(Map<String,Object> m : worlds) {
+            String wn = (String)m.get("name");
+            if((wn != null) && (wn.equals(wname))) {
+                m.put("extrazoomout", xzoomout);
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean setWorldCenter(String wname, DynmapLocation loc) {
+        List<Map<String,Object>> worlds = world_config.getMapList("worlds");
+        for(Map<String,Object> m : worlds) {
+            String wn = (String)m.get("name");
+            if((wn != null) && (wn.equals(wname))) {
+                if(loc != null) {
+                    Map<String,Object> c = new LinkedHashMap<String,Object>();
+                    c.put("x", loc.x);
+                    c.put("y", loc.y);
+                    c.put("z", loc.z);
+                    m.put("center", c);
+                }
+                else {
+                    m.remove("center");
+                }
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean saveWorldConfig() {
+        boolean rslt = world_config.save();    /* Save world config */
+        updateConfigHashcode(); /* Update config hashcode */
+        return rslt;
+    }
+    
+    /* Refresh world config */
+    public boolean refreshWorld(String wname) {
+        saveWorldConfig();
+        if(mapManager != null) {
+            mapManager.deactivateWorld(wname);  /* Clean it up */
+            DynmapWorld w = getServer().getWorldByName(wname);  /* Get new instance */
+            if(w != null)
+                mapManager.activateWorld(w);    /* And activate it again */
+        }
+        return true;
     }
     
     /* Load core version */

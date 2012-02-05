@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
+import org.dynmap.DynmapWorld;
 import org.dynmap.common.DynmapListenerManager.EventType;
 
 /**
@@ -83,4 +84,8 @@ public interface DynmapServerInterface {
      * Reset cache stats
      */
     public void resetCacheStats();
+    /**
+     * Get world by name
+     */
+    public DynmapWorld getWorldByName(String wname);
 }
