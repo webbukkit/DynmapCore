@@ -1,16 +1,29 @@
 package org.dynmap;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.common.DynmapPlayer;
+import org.dynmap.kzedmap.KzedMap;
+import org.dynmap.kzedmap.MapTileRenderer;
 
 /**
  * Handler for world and map edit commands (via /dmap)
  */
 public class DynmapMapCommands {
 
+    private boolean checkIfActive(DynmapCore core, DynmapCommandSender sender, String wname) {
+        MapManager mm = core.getMapManager();
+        if((mm != null) && mm.isRenderJobActive(wname)) {
+            sender.sendMessage("Cannot edit map data while render job active.  Run /dynmap cancelrender " + wname);
+            return true;
+        }
+        return false;
+    }
+    
     public boolean processCommand(DynmapCommandSender sender, String cmd, String commandLabel, String[] args, DynmapCore core) {
         /* Re-parse args - handle doublequotes */
         args = DynmapCore.parseArgs(args, sender);
@@ -22,6 +35,12 @@ public class DynmapMapCommands {
         }
         else if(cmd.equalsIgnoreCase("worldset")) {
             return handleWorldSet(sender, args, core);
+        }
+        else if(cmd.equalsIgnoreCase("maplist")) {
+            return handleMapList(sender, args, core);
+        }
+        else if(cmd.equalsIgnoreCase("mapdelete")) {
+            return handleMapDelete(sender, args, core);
         }
         return false;
     }
@@ -59,14 +78,20 @@ public class DynmapMapCommands {
         
         return true;
     }
+
     private boolean handleWorldSet(DynmapCommandSender sender, String[] args, DynmapCore core) {
         if(!core.checkPlayerPermission(sender, "dmap.worldset"))
             return true;
         if(args.length < 3) {
             sender.sendMessage("World name and setting:newvalue required");
-            return false;
+            return true;
         }
         String wname = args[1]; /* Get world name */
+        /* Test if render active - quit if so */
+        if(checkIfActive(core, sender, wname)) {
+            return true;
+        }
+        
         DynmapWorld w = core.getWorld(wname);   /* Try to get world */
         
         boolean did_update = false;
@@ -130,11 +155,128 @@ public class DynmapMapCommands {
                 }
                 did_update |= core.setWorldCenter(wname, loc);
             }
+            else if(tok[0].equalsIgnoreCase("order")) {
+                if(w == null) {
+                    sender.sendMessage("Cannot set center on disabled or undefined world");
+                    return true;
+                }
+                int order = -1;
+                try {
+                    order = Integer.valueOf(tok[1]);
+                } catch (NumberFormatException nfx) {}
+                if(order < 1) {
+                    sender.sendMessage("Order value must be number from 1 to number of worlds");
+                    return true;
+                }
+                did_update |= core.setWorldOrder(wname, order-1);
+            }
         }
         /* If world updatd, refresh it */
         if(did_update) {
             sender.sendMessage("Refreshing configuration for world " + wname);
             core.refreshWorld(wname);
+        }
+        
+        return true;
+    }
+    
+    private boolean handleMapList(DynmapCommandSender sender, String[] args, DynmapCore core) {
+        if(!core.checkPlayerPermission(sender, "dmap.maplist"))
+            return true;
+        if(args.length < 2) {
+            sender.sendMessage("World name is required");
+            return true;
+        }
+        String wname = args[1]; /* Get world name */
+        
+        DynmapWorld w = core.getWorld(wname);   /* Try to get world */
+        if(w == null) { 
+            sender.sendMessage("Only loaded world can be listed");
+            return true;
+        }
+        List<MapType> maps = w.maps;
+        for(MapType mt : maps) {
+            if(mt instanceof KzedMap) {
+                KzedMap km = (KzedMap)mt;
+                for(MapTileRenderer r : km.renderers) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("map ").append(r.getName()).append(": class=").append(r.getClass().getName());
+                    sender.sendMessage(sb.toString());
+                }
+            }
+            else {
+                StringBuilder sb = new StringBuilder();
+                sb.append("map ").append(mt.getName()).append(": class=").append(mt.getClass().getName());
+                sender.sendMessage(sb.toString());
+            }
+        }
+        
+        return true;
+    }
+    private boolean handleMapDelete(DynmapCommandSender sender, String[] args, DynmapCore core) {
+        if(!core.checkPlayerPermission(sender, "dmap.mapdelete"))
+            return true;
+        if(args.length < 2) {
+            sender.sendMessage("World:map name required");
+            return true;
+        }
+        for(int i = 1; i < args.length; i++) {
+            String world_map_name = args[i];
+            String[] tok = world_map_name.split(":");
+            if(tok.length != 2) {
+                sender.sendMessage("Invalid world:map name: " + world_map_name);
+                return true;
+            }
+            String wname = tok[0];
+            String mname = tok[1];
+            /* Test if render active - quit if so */
+            if(checkIfActive(core, sender, wname)) {
+                return true;
+            }
+            DynmapWorld w = core.getWorld(wname);   /* Try to get world */
+            if(w == null) {
+                sender.sendMessage("Cannot delete maps from disabled or unloaded world: " + wname);
+                return true;
+            }
+            List<MapType> maps = new ArrayList<MapType>(w.maps);
+            boolean done = false;
+            for(int idx = 0; (!done) && (idx < maps.size()); idx++) {
+                MapType mt = maps.get(idx);
+                if(mt instanceof KzedMap) {
+                    KzedMap km = (KzedMap)mt;
+                    MapTileRenderer[] rnd = km.renderers;
+                    for(int ridx = 0; (!done) && (ridx < rnd.length); ridx++) {
+                        if(rnd[ridx].getName().equals(mname)) {
+                            /* If last one, delete whole map */
+                            if(rnd.length == 1) {
+                                w.maps.remove(mt);
+                            }
+                            else {  /* Remove from list */
+                                MapTileRenderer[] newrnd = new MapTileRenderer[rnd.length-1];
+                                for(int k = 0; k < ridx; k++) {
+                                    newrnd[k] = rnd[k];
+                                }
+                                for(int k = ridx; k < newrnd.length - 1; k++) {
+                                    newrnd[k] = rnd[k+1];
+                                }
+                                km.renderers = newrnd;
+                            }
+                            done = true;
+                        }
+                    }
+                }
+                else if(mt.getName().equals(mname)) {
+                    w.maps.remove(mt);
+                    done = true;
+                }
+            }
+            /* If done, save updated config for world */
+            if(done) {
+                if(core.updateWorldConfig(w)) {
+                    sender.sendMessage("Refreshing configuration for world " + wname);
+                    core.refreshWorld(wname);
+                }
+            }
         }
         
         return true;

@@ -936,14 +936,17 @@ public class DynmapCore {
             worlds = new ArrayList<Map<String,Object>>();
             world_config.put("worlds", worlds);
         }
+        boolean did_upd = false;
         for(int idx = 0; idx < worlds.size(); idx++) {
             Map<String,Object> m = worlds.get(idx);
             if(wname.equals(m.get("name"))) {
-                worlds.remove(idx);
+                worlds.set(idx, finalConfiguration);
+                did_upd = true;
                 break;
             }
         }
-        worlds.add(finalConfiguration);
+        if(!did_upd)
+            worlds.add(finalConfiguration);
                 
         return finalConfiguration;
     }
@@ -1284,6 +1287,46 @@ public class DynmapCore {
                 else {
                     m.remove("center");
                 }
+                return true;
+            }
+        }
+        return false;
+    }
+    public boolean setWorldOrder(String wname, int order) {
+        List<Map<String,Object>> worlds = world_config.getMapList("worlds");
+        ArrayList<Map<String,Object>> newworlds = new ArrayList<Map<String,Object>>(worlds);
+
+        Map<String,Object> w = null;
+        for(Map<String,Object> m : worlds) {
+            String wn = (String)m.get("name");
+            if((wn != null) && (wn.equals(wname))) {
+                w = m;
+                newworlds.remove(m);   /* Remove from list */
+                break;
+            }
+        }
+        if(w != null) { /* If found it, add back at right pount */
+            if(order >= newworlds.size()) {    /* At end? */
+                newworlds.add(w);
+            }
+            else {
+                newworlds.add(order, w);
+            }
+            world_config.put("worlds", newworlds);
+            return true;
+        }
+        return false;
+        
+    }
+    public boolean updateWorldConfig(DynmapWorld w) {
+        ConfigurationNode cn = w.saveConfiguration();
+        List<Map<String,Object>> worlds = world_config.getMapList("worlds");
+        String wname = w.getName();
+        for(int i = 0; i < worlds.size(); i++) {
+            Map<String,Object> m = worlds.get(i);
+            String wn = (String)m.get("name");
+            if((wn != null) && (wn.equals(wname))) {
+                worlds.set(i, cn.entries);  /* Replace */
                 return true;
             }
         }

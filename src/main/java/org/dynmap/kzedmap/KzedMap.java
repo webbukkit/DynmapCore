@@ -33,7 +33,7 @@ public class KzedMap extends MapType {
     public static final int anchory = 127;
     public static final int anchorz = 0;
     
-    MapTileRenderer[] renderers;
+    public MapTileRenderer[] renderers;
     private boolean isbigmap;
 
     public KzedMap(DynmapCore core, ConfigurationNode configuration) {
