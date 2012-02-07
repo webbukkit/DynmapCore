@@ -216,7 +216,7 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                     JSONObject o = (JSONObject) iter.next();
                     String ts = String.valueOf(o.get("timestamp"));
                     if(ts.equals("null")) ts = "0";
-                    if (Long.parseLong(ts) >= (lastTimestamp)) {
+                    if (Long.parseLong(ts) > (lastTimestamp)) {
                         String name = String.valueOf(o.get("name"));
                         String ip = String.valueOf(o.get("ip"));
                         boolean isip = true;
