@@ -22,6 +22,7 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
     protected long jsonInterval;
     protected long currentTimestamp = 0;
     protected long lastTimestamp = 0;
+    protected long lastChatTimestamp = 0;
     protected JSONParser parser = new JSONParser();
     private boolean hidewebchatip;
     private boolean useplayerloginip;
@@ -216,10 +217,12 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                     JSONObject o = (JSONObject) iter.next();
                     String ts = String.valueOf(o.get("timestamp"));
                     if(ts.equals("null")) ts = "0";
-                    if (Long.parseLong(ts) > (lastTimestamp)) {
+                    long cts = Long.parseLong(ts);
+                    if (cts > lastChatTimestamp) {
                         String name = String.valueOf(o.get("name"));
                         String ip = String.valueOf(o.get("ip"));
                         boolean isip = true;
+                        lastChatTimestamp = cts;
                         if((!trust_client_name) || (name == null) || (name.equals(""))) {
                             if(ip != null)
                                 name = ip;
