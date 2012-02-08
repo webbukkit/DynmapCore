@@ -494,8 +494,13 @@ public class DynmapCore {
         if (webServer != null) {
             try {
                 webServer.stop();
-                while(webServer.isStopping())
-                    Thread.sleep(100);
+                for(int i = 0; i < 100; i++) {	/* Limit wait to 10 seconds */
+                	if(webServer.isStopping())
+                		Thread.sleep(100);
+                }
+                if(webServer.isStopping()) {
+                	Log.warning("Graceful shutdown timed out - continuing to terminate");
+                }
             } catch (Exception e) {
                 Log.severe("Failed to stop WebServer!", e);
             }
