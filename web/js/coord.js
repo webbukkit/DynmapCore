@@ -2,6 +2,7 @@ componentconstructors['coord'] = function(dynmap, configuration) {
 	
 	var Coord = L.Class.extend({
 		valfield: $('<span/>'),
+		mcrfield: $('<span/>'),
 		
 		onAdd: function(map) {
 			if(configuration.hidey)
@@ -12,7 +13,10 @@ componentconstructors['coord'] = function(dynmap, configuration) {
 			$('<span/>').addClass('coord-control-label').text((configuration.label || 'x,y,z') + ': ').appendTo(this._container);
 			$('<br/>').appendTo(this._container);
 			this.valfield.addClass('coord-control-value').text('').appendTo(this._container);
-			
+			if(configuration['show-mcr']) {
+				$('<br/>').appendTo(this._container);
+				this.mcrfield.addClass('coord-control-value').text('').appendTo(this._container);
+			}
 			this._update();
 		},
 	
@@ -38,6 +42,8 @@ componentconstructors['coord'] = function(dynmap, configuration) {
 			coord.valfield.text(Math.round(loc.x) + ',' + Math.round(loc.z));
 		else
 			coord.valfield.text(Math.round(loc.x) + ',' + loc.y + ',' + Math.round(loc.z));
+		if(configuration['show-mcr'])
+			coord.mcrfield.text('r.' + Math.round(loc.x/512) + '.' + Math.round(loc.z/512) + '.mcr');
 	});
 	dynmap.map.on('mouseout', function(mevent) {
 		if(!dynmap.map) return;
@@ -45,5 +51,7 @@ componentconstructors['coord'] = function(dynmap, configuration) {
 			coord.valfield.text('---,---');
 		else
 			coord.valfield.text('---,---,---');
+		if(configuration['show-mcr'])
+			coord.mcrfield.text('--------');
 	});
 };

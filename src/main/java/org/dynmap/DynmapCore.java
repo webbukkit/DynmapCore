@@ -359,7 +359,7 @@ public class DynmapCore {
     private void playerJoined(DynmapPlayer p) {
         playerList.updateOnlinePlayers(null);
         if(fullrenderplayerlimit > 0) {
-            if((getServer().getOnlinePlayers().length+1) >= fullrenderplayerlimit) {
+            if(getServer().getOnlinePlayers().length >= fullrenderplayerlimit) {
                 if(getPauseFullRadiusRenders() == false) {  /* If not paused, pause it */
                     setPauseFullRadiusRenders(true);
                     Log.info("Pause full/radius renders - player limit reached");
@@ -391,7 +391,8 @@ public class DynmapCore {
     private void playerQuit(DynmapPlayer p) {
         playerList.updateOnlinePlayers(p.getName());
         if(fullrenderplayerlimit > 0) {
-            if((getServer().getOnlinePlayers().length-1) < fullrenderplayerlimit) {
+            /* Quitting player is still online at this moment, so discount count by 1 */
+            if((getServer().getOnlinePlayers().length - 1) < fullrenderplayerlimit) {
                 if(didfullpause) {  /* Only unpause if we did the pause */
                     setPauseFullRadiusRenders(false);
                     Log.info("Resume full/radius renders - below player limit");
