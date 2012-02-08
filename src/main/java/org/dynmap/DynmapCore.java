@@ -1191,6 +1191,10 @@ public class DynmapCore {
         return playerList.isVisiblePlayer(player);
     }
 
+    public void assertPlayerInvisibility(String player, boolean is_invisible, String plugin_id) {
+        playerList.assertInvisiblilty(player, is_invisible, plugin_id);
+    }
+
     public void postPlayerMessageToWeb(String playerid, String playerdisplay, String message) {
         if(playerdisplay == null) playerdisplay = playerid;
         if(mapManager != null)
