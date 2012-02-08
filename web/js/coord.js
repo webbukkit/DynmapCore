@@ -43,7 +43,7 @@ componentconstructors['coord'] = function(dynmap, configuration) {
 		else
 			coord.valfield.text(Math.round(loc.x) + ',' + loc.y + ',' + Math.round(loc.z));
 		if(configuration['show-mcr'])
-			coord.mcrfield.text('r.' + Math.round(loc.x/512) + '.' + Math.round(loc.z/512) + '.mcr');
+			coord.mcrfield.text('r.' + Math.floor(loc.x/512) + '.' + Math.floor(loc.z/512) + '.mcr');
 	});
 	dynmap.map.on('mouseout', function(mevent) {
 		if(!dynmap.map) return;
