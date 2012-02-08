@@ -48,6 +48,9 @@ public class DynmapMapCommands {
         else if(cmd.equalsIgnoreCase("lightinglist")) {
             rslt = handleLightingList(sender, args, core);
         }
+        else if(cmd.equalsIgnoreCase("maplist")) {
+            rslt = handleMapList(sender, args, core);
+        }
         /* Other commands are edits - must be paused to run these */
         else if(checkIfActive(core, sender)) {
             rslt = true;
@@ -55,9 +58,6 @@ public class DynmapMapCommands {
         else {
             if(cmd.equalsIgnoreCase("worldset")) {
                 rslt = handleWorldSet(sender, args, core);
-            }
-            else if(cmd.equalsIgnoreCase("maplist")) {
-                rslt = handleMapList(sender, args, core);
             }
             else if(cmd.equalsIgnoreCase("mapdelete")) {
                 rslt = handleMapDelete(sender, args, core);

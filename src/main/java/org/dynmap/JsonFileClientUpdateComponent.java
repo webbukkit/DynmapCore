@@ -213,6 +213,7 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
 
             if (jsonMsgs != null) {
                 Iterator<?> iter = jsonMsgs.iterator();
+                boolean init_skip = (lastChatTimestamp == 0);
                 while (iter.hasNext()) {
                     JSONObject o = (JSONObject) iter.next();
                     String ts = String.valueOf(o.get("timestamp"));
@@ -223,6 +224,8 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                         String ip = String.valueOf(o.get("ip"));
                         boolean isip = true;
                         lastChatTimestamp = cts;
+                        if(init_skip)
+                            continue;
                         if((!trust_client_name) || (name == null) || (name.equals(""))) {
                             if(ip != null)
                                 name = ip;
