@@ -740,4 +740,7 @@ public abstract class DynmapWorld {
     public boolean isEnabled() {
         return is_enabled;
     }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 }

@@ -951,7 +951,7 @@ public class DynmapCore {
         return finalConfiguration;
     }
     
-    private ConfigurationNode getDefaultTemplateConfigurationNode(DynmapWorld world) {
+    ConfigurationNode getDefaultTemplateConfigurationNode(DynmapWorld world) {
         String environmentName = world.getEnvironment();
         if(deftemplatesuffix.length() > 0) {
             environmentName += "-" + deftemplatesuffix;
@@ -969,7 +969,7 @@ public class DynmapCore {
         return new ConfigurationNode();
     }
     
-    private ConfigurationNode getTemplateConfigurationNode(String templateName) {
+    ConfigurationNode getTemplateConfigurationNode(String templateName) {
         ConfigurationNode templatesNode = configuration.getNode("templates");
         if (templatesNode != null) {
             return templatesNode.getNode(templateName);
@@ -1316,12 +1316,19 @@ public class DynmapCore {
             return true;
         }
         return false;
-        
     }
+    
     public boolean updateWorldConfig(DynmapWorld w) {
         ConfigurationNode cn = w.saveConfiguration();
+        return replaceWorldConfig(w.getName(), cn);
+    }
+
+    public boolean replaceWorldConfig(String wname, ConfigurationNode cn) {
         List<Map<String,Object>> worlds = world_config.getMapList("worlds");
-        String wname = w.getName();
+        if(worlds == null) {
+            worlds = new ArrayList<Map<String,Object>>();
+            world_config.put("worlds", worlds);
+        }
         for(int i = 0; i < worlds.size(); i++) {
             Map<String,Object> m = worlds.get(i);
             String wn = (String)m.get("name");

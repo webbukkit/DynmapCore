@@ -369,4 +369,62 @@ public class HDMap extends MapType {
             walkMapTree(basedir, cb, true);
         }
     }
+    
+    public String getTitle() {
+        return title;
+    }
+    public int getMapZoomIn() {
+        return mapzoomin;
+    }
+    
+    public boolean setPrefix(String s) {
+        if(!s.equals(prefix)) {
+            prefix = s;
+            return true;
+        }
+        return false;
+    }
+    
+    public boolean setTitle(String s) {
+        if(!s.equals(title)) {
+            title = s;
+            return true;
+        }
+        return false;
+    }
+    public boolean setMapZoomIn(int mzi) {
+        if(mzi != mapzoomin) {
+            mapzoomin = mzi;
+            return true;
+        }
+        return false;
+    }
+    public boolean setPerspective(HDPerspective p) {
+        if(perspective != p) {
+            perspective = p;
+            return true;
+        }
+        return false;
+    }
+    public boolean setShader(HDShader p) {
+        if(shader != p) {
+            shader = p;
+            return true;
+        }
+        return false;
+    }
+    public boolean setLighting(HDLighting p) {
+        if(lighting != p) {
+            lighting = p;
+            return true;
+        }
+        return false;
+    }
+    public boolean setImageFormat(MapType.ImageFormat f) {
+        if(f != imgformat) {
+            imgformat = f;
+            return true;
+        }
+        return false;
+    }
 }
