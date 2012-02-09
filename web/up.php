@@ -23,6 +23,7 @@ curl_setopt($session, CURLOPT_RETURNTRANSFER, true);
 $body = curl_exec($session);
 
 header("Content-Type: ".curl_getinfo($session, CURLINFO_CONTENT_TYPE));
+header("X-Forwarded-For: ".client_addr);
 
 echo $body;
 curl_close($session);
