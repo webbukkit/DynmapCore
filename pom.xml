@@ -7,7 +7,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<BUILD_NUMBER>dev</BUILD_NUMBER>
 	</properties>
-	<version>0.31</version>
+	<version>0.32</version>
 	<url>http://github.com/webbukkit/DynmapCore/</url>
 	<issueManagement>
 		<system>GitHub</system>
