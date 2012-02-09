@@ -376,6 +376,9 @@ public class HDMap extends MapType {
     public int getMapZoomIn() {
         return mapzoomin;
     }
+    public String getIcon() {
+        return (icon == null)?"":icon;
+    }
     
     public boolean setPrefix(String s) {
         if(!s.equals(prefix)) {
@@ -426,5 +429,10 @@ public class HDMap extends MapType {
             return true;
         }
         return false;
+    }
+    public boolean setIcon(String v) {
+        if("".equals(v)) v = null;
+        icon = v;
+        return true;
     }
 }

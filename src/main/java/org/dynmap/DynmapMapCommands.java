@@ -260,7 +260,7 @@ public class DynmapMapCommands {
                 sb.append("map ").append(mt.getName()).append(": prefix=").append(hdmt.getPrefix()).append(", title=").append(hdmt.getTitle());
                 sb.append(", perspective=").append(hdmt.getPerspective().getName()).append(", shader=").append(hdmt.getShader().getName());
                 sb.append(", lighting=").append(hdmt.getLighting().getName()).append(", mapzoomin=").append(hdmt.getMapZoomIn());
-                sb.append(", img-format=").append(hdmt.getImageFormat().getID());
+                sb.append(", img-format=").append(hdmt.getImageFormat().getID()).append(", icon=").append(hdmt.getIcon());
                 sender.sendMessage(sb.toString());
             }
         }
@@ -441,6 +441,9 @@ public class DynmapMapCommands {
             }
             else if(tok[0].equalsIgnoreCase("title")) {
                 did_update |= mt.setTitle(tok[1]);
+            }
+            else if(tok[0].equalsIgnoreCase("icon")) {
+                did_update |= mt.setIcon(tok[1]);
             }
             else if(tok[0].equalsIgnoreCase("mapzoomin")) {
                 int mzi = -1;
