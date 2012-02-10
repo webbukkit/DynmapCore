@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -124,8 +125,6 @@ public class IsoHDPerspective implements HDPerspective {
         MapIterator mapiter;
         boolean isnether;
         boolean skiptoair;
-        int skylevel = -1;
-        int emitlevel = -1;
         int worldheight;
         int heightmask;
 
@@ -137,70 +136,74 @@ public class IsoHDPerspective implements HDPerspective {
             for(shift = 0; (1<<shift) < worldheight; shift++) {}
             heightmask = (1<<shift) - 1;
         }
-        private final void updateSemitransparentLight() {
+        private final LightLevels updateSemitransparentLight() {
     		BlockStep [] steps = { BlockStep.Y_PLUS, BlockStep.X_MINUS, BlockStep.X_PLUS, 
     				BlockStep.Z_MINUS, BlockStep.Z_PLUS };
-        	emitlevel = skylevel = 0;
+        	int emitted = 0, sky = 0;
         	for(int i = 0; i < steps.length; i++) {
         	    BlockStep s = steps[i];
         		mapiter.stepPosition(s);
         		int v = mapiter.getBlockEmittedLight();
-        		if(v > emitlevel) emitlevel = v;
+        		if(v > emitted) emitted = v;
         		v = mapiter.getBlockSkyLight();
-        		if(v > skylevel) skylevel = v;
+        		if(v > sky) sky = v;
         		mapiter.unstepPosition(s);
         	}
+        	return new LightLevels(sky,emitted);
         }
         /**
          * Update sky and emitted light 
          */
-        private final void updateLightLevel() {
+        private final LightLevels updateLightLevel() {
+            LightLevels ll;
             /* Look up transparency for current block */
             BlockTransparency bt = HDTextureMap.getTransparency(blocktypeid);
             switch(bt) {
             	case TRANSPARENT:
-            		skylevel = mapiter.getBlockSkyLight();
-            		emitlevel = mapiter.getBlockEmittedLight();
+            		ll = new LightLevels( mapiter.getBlockSkyLight(), mapiter.getBlockEmittedLight());
             		break;
             	case OPAQUE:
         			if(HDTextureMap.getTransparency(lastblocktypeid) != BlockTransparency.SEMITRANSPARENT) {
                 		mapiter.unstepPosition(laststep);  /* Back up to block we entered on */
                 		if(mapiter.getY() < worldheight) {
-                			emitlevel = mapiter.getBlockEmittedLight();
-                			skylevel = mapiter.getBlockSkyLight();
+                			ll = new LightLevels(mapiter.getBlockSkyLight(), mapiter.getBlockEmittedLight());
                 		} else {
-                			emitlevel = 0;
-                			skylevel = 15;
+                		    ll = new LightLevels(15, 0);
                 		}
                 		mapiter.stepPosition(laststep);
         			}
         			else {
                 		mapiter.unstepPosition(laststep);  /* Back up to block we entered on */
-                		updateSemitransparentLight();
+                		ll = updateSemitransparentLight();
                 		mapiter.stepPosition(laststep);
         			}
         			break;
             	case SEMITRANSPARENT:
-            		updateSemitransparentLight();
+            		ll = updateSemitransparentLight();
             		break;
+        		default:
+                    ll = new LightLevels( mapiter.getBlockSkyLight(), mapiter.getBlockEmittedLight());
+                    break;
             }
+            return ll;
+        }
+        /**
+         * Get light level - only available if shader requested it
+         */
+        public final LightLevels getLightLevels() {
+            return updateLightLevel();
         }
         /**
          * Get sky light level - only available if shader requested it
          */
-        public final int getSkyLightLevel() {
-            if(skylevel < 0) {
-                updateLightLevel();
-            }
-            return skylevel;
-        }
-        /**
-         * Get emitted light level - only available if shader requested it
-         */
-        public final int getEmittedLightLevel() {
-            if(emitlevel < 0)
-                updateLightLevel();
-            return emitlevel;
+        public final LightLevels  getLightLevelsAtStep(BlockStep step) {
+            BlockStep blast = laststep;
+            mapiter.stepPosition(step);
+            laststep = blast;
+            LightLevels ll = updateLightLevel();
+            mapiter.unstepPosition(step);
+            laststep = blast;
+            return ll;
         }
         /**
          * Get current block type ID
@@ -551,7 +554,6 @@ public class IsoHDPerspective implements HDPerspective {
             
             while(!raytraceSubblock(model, firststep)) {
                 boolean done = true;
-                skylevel = emitlevel = -1;
                 for(int i = 0; i < shaderstate.length; i++) {
                     if(!shaderdone[i])
                         shaderdone[i] = shaderstate[i].processBlock(this);
@@ -610,7 +612,6 @@ public class IsoHDPerspective implements HDPerspective {
                 }
                 else {
                     boolean done = true;
-                    skylevel = emitlevel = -1;
                     subalpha = -1;
                     for(int i = 0; i < shaderstate.length; i++) {
                         if(!shaderdone[i])

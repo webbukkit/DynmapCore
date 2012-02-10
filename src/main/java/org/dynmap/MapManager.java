@@ -1269,6 +1269,10 @@ public class MapManager {
         return core.waterbiomeshading;
     }
 
+    public boolean getSmoothLighting() {
+        return core.smoothlighting;
+    }
+    
     public boolean getFenceJoin() {
         return core.fencejoin;
     }

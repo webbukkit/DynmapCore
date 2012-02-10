@@ -103,4 +103,8 @@ public interface MapIterator {
      * Get world height
      */
     int getWorldHeight();
+    /**
+     * Get block key for current position (unique ID for block within cache being iterated)
+     */
+    long getBlockKey();
 }

@@ -66,6 +66,7 @@ public class DynmapCore {
     boolean waterbiomeshading = false;
     boolean fencejoin = false;
     boolean bettergrass = false;
+    boolean smoothlighting = false;
     boolean smooth_biome_shading = false;
     private HashSet<String> enabledTriggers = new HashSet<String>();
         
@@ -249,23 +250,7 @@ public class DynmapCore {
         HDMapManager.usegeneratedtextures = configuration.getBoolean("use-generated-textures", false);
         HDMapManager.waterlightingfix = configuration.getBoolean("correct-water-lighting", false);
         HDMapManager.biomeshadingfix = configuration.getBoolean("correct-biome-shading", false);
-
-        /* Load block models */
-        HDBlockModels.loadModels(dataDirectory, configuration);
-        /* Load texture mappings */
-        TexturePack.loadTextureMapping(dataDirectory, configuration);
-        
-        /* Now, process worlds.txt - merge it in as an override of existing values (since it is only user supplied values) */
-        f = new File(dataDirectory, "worlds.txt");
-        if(!createDefaultFileFromResource("/worlds.txt", f)) {
-            return false;
-        }
-        world_config = new ConfigurationNode(f);
-        world_config.load();
-
-        /* Now, process templates */
-        loadTemplates();
-
+        smoothlighting = configuration.getBoolean("smooth-lighting", false);
         Log.verbose = configuration.getBoolean("verbose", true);
         deftemplatesuffix = configuration.getString("deftemplatesuffix", "");
         /* Default swamp shading off for 1.8, on after */
@@ -291,6 +276,23 @@ public class DynmapCore {
         bettergrass = configuration.getBoolean("better-grass", false);
         /* Load full render processing player limit */
         fullrenderplayerlimit = configuration.getInteger("fullrenderplayerlimit", 0);
+
+        /* Load block models */
+        HDBlockModels.loadModels(dataDirectory, configuration);
+        /* Load texture mappings */
+        TexturePack.loadTextureMapping(dataDirectory, configuration);
+        
+        /* Now, process worlds.txt - merge it in as an override of existing values (since it is only user supplied values) */
+        f = new File(dataDirectory, "worlds.txt");
+        if(!createDefaultFileFromResource("/worlds.txt", f)) {
+            return false;
+        }
+        world_config = new ConfigurationNode(f);
+        world_config.load();
+
+        /* Now, process templates */
+        loadTemplates();
+
         /* If we're persisting ids-by-ip, load it */
         persist_ids_by_ip = configuration.getBoolean("persist-ids-by-ip", true);
         if(persist_ids_by_ip)

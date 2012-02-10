@@ -5,14 +5,22 @@ import org.dynmap.utils.MapIterator.BlockStep;
 import org.dynmap.utils.Vector3D;
 
 public interface HDPerspectiveState {
+    public static class LightLevels {
+        public final int sky;
+        public final int emitted;
+        public LightLevels(int sky, int emitted) {
+            this.sky = sky;
+            this.emitted = emitted;
+        }
+    }
+    /**
+     * Get light levels - only available if shader requested it
+     */
+    LightLevels getLightLevels();
     /**
      * Get sky light level - only available if shader requested it
      */
-    int getSkyLightLevel();
-    /**
-     * Get emitted light level - only available if shader requested it
-     */
-    int getEmittedLightLevel();
+    LightLevels getLightLevelsAtStep(BlockStep step);
     /**
      * Get current block type ID
      */
