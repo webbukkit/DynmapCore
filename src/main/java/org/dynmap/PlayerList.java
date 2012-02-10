@@ -128,7 +128,7 @@ public class PlayerList {
             if(p == null) continue;
             String pname = p.getName().toLowerCase();
             if ((useWhitelist ^ hiddenPlayerNames.contains(pname)) ||
-                    (invisibility_asserts.containsKey(pname) == false)) {
+                    invisibility_asserts.containsKey(pname)) {
                 hidden.add(p);
             }
         }
