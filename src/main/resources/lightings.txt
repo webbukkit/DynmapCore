@@ -38,3 +38,36 @@ lightings:
       name: nethershadows
       shadowstrength: 0.5
       ambientlight: 4
+    # Shadows enabled day mode  (smooth lighting)
+    - class: org.dynmap.hdmap.ShadowHDLighting
+      name: shadows-smooth
+      shadowstrength: 1.0
+      smooth-lighting: true
+    # Night view (default moonight level is 4)  (smooth lighting)
+    - class: org.dynmap.hdmap.ShadowHDLighting
+      name: night-smooth
+      shadowstrength: 1.0
+      ambientlight: 4
+      smooth-lighting: true
+    # A 'bright' night view (easier to see unlit landscape dimly)  (smooth lighting)
+    - class: org.dynmap.hdmap.ShadowHDLighting
+      name: brightnight-smooth
+      shadowstrength: 1.0
+      ambientlight: 8
+      smooth-lighting: true
+    # Night and day view (smooth lighting)
+    - class: org.dynmap.hdmap.ShadowHDLighting
+      name: nightandday-smooth
+      shadowstrength: 1.0
+      ambientlight: 4
+      night-and-day: true
+      smooth-lighting: true
+    # 'Bright' Night and day view  (smooth lighting)
+    - class: org.dynmap.hdmap.ShadowHDLighting
+      name: brightnightandday-smooth
+      shadowstrength: 1.0
+      ambientlight: 8
+      night-and-day: true
+      smooth-lighting: true
+      
+      
