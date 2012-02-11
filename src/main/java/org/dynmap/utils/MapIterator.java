@@ -53,6 +53,10 @@ public interface MapIterator {
      */
     public int  countSmoothedSwampBiomes();
     /**
+     * Count of swamplands, interpolated - return count times scale times 2
+     */
+    public int  countSmoothedSwampBiomes(int sx, int sz, int scale);
+    /**
      * Get raw temperature data (0.0-1.0)
      */
     public double getRawBiomeTemperature();

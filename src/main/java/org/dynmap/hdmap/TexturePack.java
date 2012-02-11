@@ -1341,9 +1341,9 @@ public class TexturePack {
                 break;
             case COLORMOD_WATERTONED:
                 if(ss.do_smooth_biome_shading) {
-                    int swamps = mapiter.countSmoothedSwampBiomes();
+                    int swamps = mapiter.countSmoothedSwampBiomes(xyz[0], xyz[2], native_scale);
                     if(swamps != 0) {
-                        clrmult = smooth_water_mult[swamps];
+                        clrmult = smooth_water_mult[swamps/(native_scale*2)];
                     }
                 }
                 else if(ss.do_swamp_shading && (mapiter.getBiome() == BiomeMap.SWAMPLAND))
@@ -1371,11 +1371,12 @@ public class TexturePack {
                 clrmult = biomeLookup(li.argb, li.width, mapiter.getRawBiomeRainfall(), mapiter.getRawBiomeTemperature());
             }
             if(ss.do_smooth_biome_shading) {
-                int swamps = mapiter.countSmoothedSwampBiomes();
+                int swamps = mapiter.countSmoothedSwampBiomes(xyz[0], xyz[2], native_scale);
                 if(swamps != 0) {
-                    int r1 = ((18-swamps) * ((clrmult >> 16) & 0xFF) + (swamps * 0x4E)) / 18;
-                    int g1 = ((18-swamps) * ((clrmult >> 8) & 0xFF) + (swamps * 0x0E)) / 18;
-                    int b1 = ((18-swamps) * (clrmult & 0xFF) + (swamps * 0x4E)) / 18;
+                    int sc = 36 * native_scale;
+                    int r1 = ((sc-swamps) * ((clrmult >> 16) & 0xFF) + (swamps * 0x4E)) / sc;
+                    int g1 = ((sc-swamps) * ((clrmult >> 8) & 0xFF) + (swamps * 0x0E)) / sc;
+                    int b1 = ((sc-swamps) * (clrmult & 0xFF) + (swamps * 0x4E)) / sc;
                     clrmult = (clrmult & 0xFF000000) | (r1 << 16) | (g1 << 8) | b1;
                 }
             }
