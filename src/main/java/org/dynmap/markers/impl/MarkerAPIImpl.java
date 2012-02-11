@@ -171,11 +171,13 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         public String label;
         public int layerprio;
         public int minzoom;
+        public Boolean showlabels;
         public MarkerSetUpdated(MarkerSet markerset, boolean deleted) {
             this.id = markerset.getMarkerSetID();
             this.label = markerset.getMarkerSetLabel();
             this.layerprio = markerset.getLayerPriority();
             this.minzoom = markerset.getMinZoom();
+            this.showlabels = markerset.getLabelShow();
             if(deleted)
                 msg = "setdeleted";
             else
@@ -645,6 +647,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     private static final String ARG_FILLOPACITY = "fillopacity";
     private static final String ARG_YTOP = "ytop";
     private static final String ARG_YBOTTOM = "ybottom";
+    private static final String ARG_SHOWLABEL = "showlabels";
     
     /* Parse argument strings : handle 'attrib:value' and quoted strings */
     private static Map<String,String> parseArgs(String[] args, DynmapCommandSender snd) {
@@ -980,6 +983,13 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                     String h = parms.get(ARG_HIDE);
                     if((h != null) && (h.equals("true")))
                         set.setHideByDefault(true);
+                    String showlabels = parms.get(ARG_SHOWLABEL);
+                    if(showlabels != null) {
+                        if(showlabels.equals("true"))
+                            set.setLabelShow(true);
+                        else if(showlabels.equals("false"))
+                            set.setLabelShow(false);
+                    }
                     if(prio != null) {
                         try {
                             set.setLayerPriority(Integer.valueOf(prio));
@@ -1043,6 +1053,16 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 if(hide != null) {
                     set.setHideByDefault(hide.equals("true"));
                 }
+                String showlabels = parms.get(ARG_SHOWLABEL);
+                if(showlabels != null) {
+                    if(showlabels.equals("true"))
+                        set.setLabelShow(true);
+                    else if(showlabels.equals("false"))
+                        set.setLabelShow(false);
+                    else
+                        set.setLabelShow(null);
+                }
+
                 if(prio != null) {
                     try {
                         set.setLayerPriority(Integer.valueOf(prio));
@@ -1108,7 +1128,9 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             Set<String> setids = new TreeSet<String>(api.markersets.keySet());
             for(String s : setids) {
                 MarkerSet set = api.markersets.get(s);
-                sender.sendMessage(set.getMarkerSetID() + ": label:\"" + set.getMarkerSetLabel() + "\", hide:" + set.getHideByDefault() + ", prio:" + set.getLayerPriority() + ", minzoom:" + set.getMinZoom());
+                Boolean b = set.getLabelShow();
+                sender.sendMessage(set.getMarkerSetID() + ": label:\"" + set.getMarkerSetLabel() + "\", hide:" + set.getHideByDefault() + ", prio:" + set.getLayerPriority() + ", minzoom:" + set.getMinZoom() + 
+                        ", showlabels=" + ((b != null)?b:"null"));
             }
         }
         /* Add new icon */
@@ -1517,6 +1539,9 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             msdata.put("hide", ms.getHideByDefault());
             msdata.put("layerprio", ms.getLayerPriority());
             msdata.put("minzoom", ms.getMinZoom());
+            if(ms.getLabelShow() != null) {
+                msdata.put("showlabels", ms.getLabelShow());
+            }
             HashMap<String, Object> markers = new HashMap<String, Object>();
             for(Marker m : ms.getMarkers()) {
                 if(m.getWorld().equals(wname) == false) continue;

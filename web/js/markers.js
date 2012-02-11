@@ -22,9 +22,11 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 		$.getJSON(dynmap.options.tileUrl+'_markers_/marker_'+world+'.json', function(data) {
 			var ts = data.timestamp;
 			$.each(data.sets, function(name, markerset) {
+				if(markerset.showlabels == undefined) markerset.showlabels = configuration.showlabel;
 				var ms = dynmapmarkersets[name];
 				if(!ms) {
-					ms = { id: name, label: markerset.label, hide: markerset.hide, layerprio: markerset.layerprio, minzoom: markerset.minzoom, markers: {}, areas: {} } ;
+					ms = { id: name, label: markerset.label, hide: markerset.hide, layerprio: markerset.layerprio, minzoom: markerset.minzoom, 
+						showlabels: markerset.showlabels, markers: {}, areas: {} } ;
 					createMarkerSet(ms, ts);
 				}
 				else {
@@ -37,6 +39,7 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 					ms.markers = {};
 					ms.areas = {};
 					ms.hide = markerset.hide;
+					ms.showlabels = markerset.showlabels;
 					ms.timestamp = ts;
 				}
 				dynmapmarkersets[name] = ms;
@@ -73,14 +76,14 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 				.append($('<img/>').addClass('markerIcon'+marker.dim).attr({ src: dynmap.options.tileUrl+'_markers_/'+marker.icon+'.png' }));
 			if(marker.markup) {
 				$(div).append($('<span/>')
-					.addClass(configuration.showlabel?'markerName-show':'markerName')
+					.addClass(set.showlabels?'markerName-show':'markerName')
 					.addClass('markerName_' + set.id)
 					.addClass('markerName' + marker.dim)
 					.append(marker.label));
 			}
 			else if(marker.label != "")
 				$(div).append($('<span/>')
-					.addClass(configuration.showlabel?'markerName-show':'markerName')
+					.addClass(set.showlabels?'markerName-show':'markerName')
 					.addClass('markerName_' + set.id)
 					.addClass('markerName' + marker.dim)
 					.text(marker.label));
@@ -247,14 +250,18 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 			delete dynmapmarkersets[msg.set].markers[msg.id];
 		}
 		else if(msg.msg == 'setupdated') {
+			if(msg.showlabels == undefined) msg.showlabels = configuration.showlabel;
 			if(!dynmapmarkersets[msg.id]) {
-				dynmapmarkersets[msg.id] = { id: msg.id, label: msg.label, layerprio: msg.layerprio, minzoom: msg.minzoom, markers:{} };
+				dynmapmarkersets[msg.id] = { id: msg.id, label: msg.label, layerprio: msg.layerprio, minzoom: msg.minzoom, 
+					showlabels: msg.showlabels, markers:{} };
 				createMarkerSet(dynmapmarkersets[msg.id]);
 			}
 			else {
-				if((dynmapmarkersets[msg.id].label != msg.label) || (dynmapmarkersets[msg.id].layerprio != msg.layerprio)) {
+				if((dynmapmarkersets[msg.id].label != msg.label) || (dynmapmarkersets[msg.id].layerprio != msg.layerprio) ||
+				   (dynmapmarkersets[msg.id].showlabels != msg.showlabels)) {
 					dynmapmarkersets[msg.id].label = msg.label;
 					dynmapmarkersets[msg.id].layerprio = msg.layerprio;
+					dynmapmarkersets[msg.id].showlabels = msg.showlabels;
 					//dynmap.layercontrol.removeLayer(dynmapmarkersets[msg.id].layergroup);
 					//dynmap.layercontrol.addOverlay(dynmapmarkersets[msg.id].layergroup, dynmapmarkersets[msg.id].label);
 					dynmap.addToLayerSelector(dynmapmarkersets[msg.id].layergroup, dynmapmarkersets[msg.id].label, 

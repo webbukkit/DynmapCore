@@ -25,6 +25,7 @@ class MarkerSetImpl implements MarkerSet {
     private boolean ispersistent;
     private int prio = 0;
     private int minzoom = 0;
+    private Boolean showlabels = null;
     
     MarkerSetImpl(String id) {
         setid = id;
@@ -251,6 +252,8 @@ class MarkerSetImpl implements MarkerSet {
         setnode.put("hide", hide_by_def);
         setnode.put("layerprio", prio);
         setnode.put("minzoom", minzoom);
+        if(showlabels != null)
+            setnode.put("showlabels", showlabels);
         return setnode;
     }
 
@@ -299,6 +302,11 @@ class MarkerSetImpl implements MarkerSet {
         hide_by_def = node.getBoolean("hide", false);
         prio = node.getInteger("layerprio", 0);
         minzoom = node.getInteger("minzoom", 0);
+        if(node.containsKey("showlabels"))
+            showlabels = node.getBoolean("showlabels", false);
+        else
+            showlabels = null;
+        
         ispersistent = true;
         
         return true;
@@ -385,5 +393,18 @@ class MarkerSetImpl implements MarkerSet {
     public int getMinZoom() {
         return this.minzoom;
     }
-
+    @Override
+    public void setLabelShow(Boolean show) {
+        if(show == showlabels) return;
+        if((show == null) || (show.equals(showlabels) == false)) {
+            showlabels = show;
+            MarkerAPIImpl.markerSetUpdated(this, MarkerUpdate.UPDATED);
+            if(ispersistent)
+                MarkerAPIImpl.saveMarkers();
+        }
+    }
+    @Override
+    public Boolean getLabelShow() {
+        return showlabels;
+    }
 }
