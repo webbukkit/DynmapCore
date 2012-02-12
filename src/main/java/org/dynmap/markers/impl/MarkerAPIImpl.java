@@ -1377,9 +1377,9 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             }
             List<DynmapLocation> ll = api.pointaccum.get(id); /* Find list */
             
-            if(args.length > 2) {   /* Enough for coord */
+            if(args.length > 3) {   /* Enough for coord */
                 String w = null;
-                if(args.length == 3) {  /* No world */
+                if(args.length == 4) {  /* No world */
                     if(ll == null) {    /* No points?  Error */
                         sender.sendMessage("First added corner needs world ID after coordinates");
                         return true;
@@ -1389,21 +1389,21 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                     }
                 }
                 else {  /* Get world ID */
-                    w = args[3];
+                    w = args[4];
                     if(api.core.getWorld(w) == null) {
                         sender.sendMessage("Invalid world ID: " + args[3]);
                         return true;
                     }
                 }
                 try {
-                    loc = new DynmapLocation(w, Double.parseDouble(args[1]), 64.0, Double.parseDouble(args[2]));
+                    loc = new DynmapLocation(w, Double.parseDouble(args[1]), Double.parseDouble(args[2]), Double.parseDouble(args[3]));
                 } catch (NumberFormatException nfx) {
-                    sender.sendMessage("Bad format: /dmarker addcorner <x> <z> <world>");
+                    sender.sendMessage("Bad format: /dmarker addcorner <x> <y> <z> <world>");
                     return true;
                 }
             }
             if(loc == null) {
-                sender.sendMessage("Console must supply corner coordinates: <x> <z> <world>");
+                sender.sendMessage("Console must supply corner coordinates: <x> <y> <z> <world>");
                 return true;
             }
             if(ll == null) {
