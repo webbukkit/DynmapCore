@@ -1,0 +1,30 @@
+# Forestry Block mapping
+# define forestry-support: true in configuration.txt to enable
+enabled:forestry-support
+# variables: set in configuration.txt to override
+var:forestry-humus=197,forestry-resource=198,forestry-beehives=199,forestry-oreTin=200
+var:forestry-planter=201,forestry-firsapling=202,forestry-harvester=203,forestry-engine=204
+var:forestry-machine=205,forestry-mill=208
+# Files
+texturefile:id=blk0,filename=forestry/blocks.png,xcount=16,ycount=16
+# Blocks
+# forestry-humus:0,4,8,12 - Humus
+block:id=forestry-humus,data=0,data=4,data=8,data=12,allfaces=1,txtid=blk0
+# forestry-humus:1,5,9 - Bog Earth
+block:id=forestry-humus,data=1,data=5,data=9,allfaces=13,txtid=blk0
+# forestry-humus:13 - Peat
+block:id=forestry-humus,data=13,allfaces=15,txtid=blk0
+# forestry-resource:0 - Apatite Ore
+block:id=forestry-resource,data=0,allfaces=0,txtid=blk0
+# forestry-resource:1 - Copper Ore
+block:id=forestry-resource,data=1,allfaces=3,txtid=blk0
+# forestry-resource:2 - Tin Ore
+block:id=forestry-resource,data=2,allfaces=10,txtid=blk0
+# forestry-beehives:0 - Copper Ore
+block:id=forestry-beehives,data=0,allfaces=3,txtid=blk0
+# forestry-oreTin:0 - Tin Ore
+block:id=forestry-oreTin,data=0,allfaces=10,txtid=blk0
+# forestry-beehives:1 - Forest Beehive
+block:id=forestry-beehives,data=1,allsides=2,topbottom=5,txtid=blk0
+# forestry-beehives:2 - Meadows Beehive
+block:id=forestry-beehives,data=2,allsides=4,topbottom=6,txtid=blk0
