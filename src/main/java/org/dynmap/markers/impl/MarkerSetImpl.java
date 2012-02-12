@@ -10,6 +10,7 @@ import java.util.Set;
 import org.dynmap.ConfigurationNode;
 import org.dynmap.Log;
 import org.dynmap.markers.AreaMarker;
+import org.dynmap.markers.PolyLineMarker;
 import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerIcon;
 import org.dynmap.markers.MarkerSet;
@@ -18,6 +19,7 @@ import org.dynmap.markers.impl.MarkerAPIImpl.MarkerUpdate;
 class MarkerSetImpl implements MarkerSet {
     private HashMap<String, MarkerImpl> markers = new HashMap<String, MarkerImpl>();
     private HashMap<String, AreaMarkerImpl> areamarkers = new HashMap<String, AreaMarkerImpl>();
+    private HashMap<String, PolyLineMarkerImpl> linemarkers = new HashMap<String, PolyLineMarkerImpl>();
     private String setid;
     private String label;
     private HashMap<String, MarkerIconImpl> allowedicons = null;
@@ -54,6 +56,8 @@ class MarkerSetImpl implements MarkerSet {
             m.cleanup();
         for(AreaMarkerImpl m : areamarkers.values())
             m.cleanup();
+        for(PolyLineMarkerImpl m : linemarkers.values())
+            m.cleanup();
         markers.clear();
     }
     
@@ -65,6 +69,11 @@ class MarkerSetImpl implements MarkerSet {
     @Override
     public Set<AreaMarker> getAreaMarkers() {
         return new HashSet<AreaMarker>(areamarkers.values());
+    }
+
+    @Override
+    public Set<PolyLineMarker> getPolyLineMarkers() {
+        return new HashSet<PolyLineMarker>(linemarkers.values());
     }
 
     @Override
@@ -218,6 +227,18 @@ class MarkerSetImpl implements MarkerSet {
         }
         MarkerAPIImpl.areaMarkerUpdated(marker, MarkerUpdate.DELETED);
     }
+    /**
+     * Remove marker from set
+     * 
+     * @param marker
+     */
+    void removePolyLineMarker(PolyLineMarkerImpl marker) {
+        linemarkers.remove(marker.getMarkerID());   /* Remove from set */
+        if(ispersistent && marker.isPersistentMarker()) {   /* If persistent */
+            MarkerAPIImpl.saveMarkers();        /* Drive save */
+        }
+        MarkerAPIImpl.polyLineMarkerUpdated(marker, MarkerUpdate.DELETED);
+    }
 
     /**
      * Get configuration node to be saved
@@ -240,6 +261,13 @@ class MarkerSetImpl implements MarkerSet {
                 anode.put(id, m.getPersistentData());
             }
         }
+        HashMap<String, Object> lnode = new HashMap<String, Object>();
+        for(String id : linemarkers.keySet()) {
+            PolyLineMarkerImpl m = linemarkers.get(id);
+            if(m.isPersistentMarker()) {
+                lnode.put(id, m.getPersistentData());
+            }
+        }
         /* Make top level node */
         HashMap<String, Object> setnode = new HashMap<String, Object>();
         setnode.put("label", label);
@@ -249,6 +277,7 @@ class MarkerSetImpl implements MarkerSet {
         }
         setnode.put("markers", node);
         setnode.put("areas", anode);
+        setnode.put("lines", lnode);
         setnode.put("hide", hide_by_def);
         setnode.put("layerprio", prio);
         setnode.put("minzoom", minzoom);
@@ -285,6 +314,19 @@ class MarkerSetImpl implements MarkerSet {
                 }
                 else {
                     Log.info("Error loading area marker '" + id + "' for set '" + setid + "'");
+                    marker.cleanup();
+                }
+            }
+        }
+        ConfigurationNode linemarkernode = node.getNode("lines");
+        if(linemarkernode != null) {
+            for(String id : linemarkernode.keySet()) {
+                PolyLineMarkerImpl marker = new PolyLineMarkerImpl(id, this);   /* Make and load marker */
+                if(marker.loadPersistentData(linemarkernode.getNode(id))) {
+                    linemarkers.put(id, marker);
+                }
+                else {
+                    Log.info("Error loading line marker '" + id + "' for set '" + setid + "'");
                     marker.cleanup();
                 }
             }
@@ -370,6 +412,48 @@ class MarkerSetImpl implements MarkerSet {
         AreaMarker match = null;
         int matchlen = Integer.MAX_VALUE;
         for(AreaMarker m : areamarkers.values()) {
+            if(m.getLabel().contains(lbl)) {
+                if(matchlen > m.getLabel().length()) {
+                    match = m;
+                    matchlen = m.getLabel().length();
+                }
+            }
+        }
+        return match;
+    }
+
+    @Override
+    public PolyLineMarker createPolyLineMarker(String id, String lbl, boolean markup, String world, double[] x, double[] y, double[] z, boolean persistent) {
+        if(id == null) {    /* If not defined, generate unique one */
+            int i = 0;
+            do {
+                i++;
+                id = "line_" + i; 
+            } while(linemarkers.containsKey(id));
+        }
+        if(linemarkers.containsKey(id)) return null;    /* Duplicate ID? */
+        /* Create marker */
+        persistent = persistent && this.ispersistent;
+        PolyLineMarkerImpl marker = new PolyLineMarkerImpl(id, lbl, markup, world, x, y, z, persistent, this);
+        linemarkers.put(id, marker);    /* Add to set */
+        if(persistent)
+            MarkerAPIImpl.saveMarkers();
+        
+        MarkerAPIImpl.polyLineMarkerUpdated(marker, MarkerUpdate.CREATED);  /* Signal create */
+
+        return marker;
+    }
+
+    @Override
+    public PolyLineMarker findPolyLineMarker(String id) {
+        return linemarkers.get(id);
+    }
+
+    @Override
+    public PolyLineMarker findPolyLineMarkerByLabel(String lbl) {
+        PolyLineMarker match = null;
+        int matchlen = Integer.MAX_VALUE;
+        for(PolyLineMarker m : linemarkers.values()) {
             if(m.getLabel().contains(lbl)) {
                 if(matchlen > m.getLabel().length()) {
                     match = m;

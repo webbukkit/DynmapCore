@@ -36,6 +36,7 @@ import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerIcon;
 import org.dynmap.markers.MarkerIcon.MarkerSize;
 import org.dynmap.markers.MarkerSet;
+import org.dynmap.markers.PolyLineMarker;
 import org.dynmap.web.Json;
 
 /**
@@ -155,6 +156,56 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         public boolean equals(Object o) {
             if(o instanceof AreaMarkerUpdated) {
                 AreaMarkerUpdated m = (AreaMarkerUpdated)o;
+                return m.id.equals(id) && m.set.equals(set);
+            }
+            return false;
+        }
+        @Override
+        public int hashCode() {
+            return id.hashCode() ^ set.hashCode();
+        }
+    }
+
+    public static class PolyLineMarkerUpdated extends MarkerComponentMessage {
+        public String msg;
+        public double[] x;
+        public double[] y;
+        public double[] z;
+        public int weight;
+        public double opacity;
+        public String color;
+        public String id;
+        public String label;
+        public String set;
+        public String desc;
+        
+        public PolyLineMarkerUpdated(PolyLineMarker m, boolean deleted) {
+            this.id = m.getMarkerID();
+            this.label = m.getLabel();
+            int cnt = m.getCornerCount();
+            x = new double[cnt];
+            y = new double[cnt];
+            z = new double[cnt];
+            for(int i = 0; i < cnt; i++) {
+                x[i] = m.getCornerX(i);
+                y[i] = m.getCornerY(i);
+                z[i] = m.getCornerZ(i);
+            }
+            color = String.format("#%06X", m.getLineColor());
+            weight = m.getLineWeight();
+            opacity = m.getLineOpacity();
+            desc = m.getDescription();
+            
+            this.set = m.getMarkerSet().getMarkerSetID();
+            if(deleted) 
+                msg = "polydeleted";
+            else
+                msg = "polyupdated";
+        }
+        @Override
+        public boolean equals(Object o) {
+            if(o instanceof PolyLineMarkerUpdated) {
+                PolyLineMarkerUpdated m = (PolyLineMarkerUpdated)o;
                 return m.id.equals(id) && m.set.equals(set);
             }
             return false;
@@ -556,6 +607,19 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             MapManager.mapman.pushUpdate(marker.getWorld(), new AreaMarkerUpdated(marker, update == MarkerUpdate.DELETED));
     }
     /**
+     * Signal poly-line marker update
+     * @param marker - updated marker
+     * @param update - type of update
+     */
+    static void polyLineMarkerUpdated(PolyLineMarkerImpl marker, MarkerUpdate update) {
+        /* Freshen marker file for the world for this marker */
+        if(api != null)
+            api.dirty_worlds.add(marker.getWorld());
+        /* Enqueue client update */
+        if(MapManager.mapman != null)
+            MapManager.mapman.pushUpdate(marker.getWorld(), new PolyLineMarkerUpdated(marker, update == MarkerUpdate.DELETED));
+    }
+    /**
      * Signal marker set update
      * @param markerset - updated marker set
      * @param update - type of update
@@ -585,41 +649,65 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     private static boolean processAreaArgs(DynmapCommandSender sender, AreaMarker marker, Map<String,String> parms) {
         String val = null;
         try {
-        double ytop = marker.getTopY();
-        double ybottom = marker.getBottomY();
-        int scolor = marker.getLineColor();
-        int fcolor = marker.getFillColor();
-        double sopacity = marker.getLineOpacity();
-        double fopacity = marker.getFillOpacity();
-        int sweight = marker.getLineWeight();
+            double ytop = marker.getTopY();
+            double ybottom = marker.getBottomY();
+            int scolor = marker.getLineColor();
+            int fcolor = marker.getFillColor();
+            double sopacity = marker.getLineOpacity();
+            double fopacity = marker.getFillOpacity();
+            int sweight = marker.getLineWeight();
 
-        val = parms.get(ARG_STROKECOLOR);
-        if(val != null)
-            scolor = Integer.parseInt(val, 16);
-        val = parms.get(ARG_FILLCOLOR);
-        if(val != null)
-            fcolor = Integer.parseInt(val, 16);
-        val = parms.get(ARG_STROKEOPACITY);
-        if(val != null)
-            sopacity = Double.parseDouble(val);
-        val = parms.get(ARG_FILLOPACITY);
-        if(val != null)
-            fopacity = Double.parseDouble(val);
-        val = parms.get(ARG_STROKEWEIGHT);
-        if(val != null)
-            sweight = Integer.parseInt(val);
-        val = parms.get(ARG_YTOP);
-        if(val != null)
-            ytop = Double.parseDouble(val);
-        val = parms.get(ARG_YBOTTOM);
-        if(val != null)
-            ybottom = Double.parseDouble(val);
-        marker.setLineStyle(sweight, sopacity, scolor);
-        marker.setFillStyle(fopacity, fcolor);
-        if(ytop >= ybottom)
-            marker.setRangeY(ytop, ybottom);
-        else
-            marker.setRangeY(ybottom, ytop);
+            val = parms.get(ARG_STROKECOLOR);
+            if(val != null)
+                scolor = Integer.parseInt(val, 16);
+            val = parms.get(ARG_FILLCOLOR);
+            if(val != null)
+                fcolor = Integer.parseInt(val, 16);
+            val = parms.get(ARG_STROKEOPACITY);
+            if(val != null)
+                sopacity = Double.parseDouble(val);
+            val = parms.get(ARG_FILLOPACITY);
+            if(val != null)
+                fopacity = Double.parseDouble(val);
+            val = parms.get(ARG_STROKEWEIGHT);
+            if(val != null)
+                sweight = Integer.parseInt(val);
+            val = parms.get(ARG_YTOP);
+            if(val != null)
+                ytop = Double.parseDouble(val);
+            val = parms.get(ARG_YBOTTOM);
+            if(val != null)
+                ybottom = Double.parseDouble(val);
+            marker.setLineStyle(sweight, sopacity, scolor);
+            marker.setFillStyle(fopacity, fcolor);
+            if(ytop >= ybottom)
+                marker.setRangeY(ytop, ybottom);
+            else
+                marker.setRangeY(ybottom, ytop);
+        } catch (NumberFormatException nfx) {
+            sender.sendMessage("Invalid parameter format: " + val);
+            return false;
+        }
+        return true;
+    }
+
+    private static boolean processPolyArgs(DynmapCommandSender sender, PolyLineMarker marker, Map<String,String> parms) {
+        String val = null;
+        try {
+            int scolor = marker.getLineColor();
+            double sopacity = marker.getLineOpacity();
+            int sweight = marker.getLineWeight();
+
+            val = parms.get(ARG_STROKECOLOR);
+            if(val != null)
+                scolor = Integer.parseInt(val, 16);
+            val = parms.get(ARG_STROKEOPACITY);
+            if(val != null)
+                sopacity = Double.parseDouble(val);
+            val = parms.get(ARG_STROKEWEIGHT);
+            if(val != null)
+                sweight = Integer.parseInt(val);
+            marker.setLineStyle(sweight, sopacity, scolor);
         } catch (NumberFormatException nfx) {
             sender.sendMessage("Invalid parameter format: " + val);
             return false;
@@ -629,7 +717,8 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
 
     private static final Set<String> commands = new HashSet<String>(Arrays.asList(new String[] {
         "add", "movehere", "update", "delete", "list", "icons", "addset", "updateset", "deleteset", "listsets", "addicon", "updateicon",
-        "deleteicon", "addcorner", "clearcorners", "addarea", "listareas", "deletearea", "updatearea"
+        "deleteicon", "addcorner", "clearcorners", "addarea", "listareas", "deletearea", "updatearea",
+        "addline", "listlines", "deleteline", "updateline"
     }));
     private static final String ARG_LABEL = "label";
     private static final String ARG_ID = "id";
@@ -707,8 +796,6 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         }
         return rslt;
     }
-    
-
     
     public static boolean onCommand(DynmapCore plugin, DynmapCommandSender sender, String cmd, String commandLabel, String[] args) {
         String id, setid, file, label, newlabel, iconid, prio, minzoom;
@@ -1515,6 +1602,183 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 sender.sendMessage("<label> or id:<area-id> required");
             }
         }
+        
+        else if(c.equals("addline") && plugin.checkPlayerPermission(sender, "marker.addline")) {
+            String pid;
+            if(player == null) {
+                pid = "-console-";
+            }
+            else {
+                pid = player.getName();
+            }
+            List<DynmapLocation> ll = api.pointaccum.get(pid); /* Find list */
+            if((ll == null) || (ll.size() < 2)) {   /* Not enough points? */
+                sender.sendMessage("At least two corners must be added with /dmarker addcorner before a line can be added");
+                return true;
+            }
+            /* Parse arguements */
+            Map<String,String> parms = parseArgs(args, sender);
+            if(parms == null) return true;
+            setid = parms.get(ARG_SET);
+            id = parms.get(ARG_ID);
+            label = parms.get(ARG_LABEL);
+            /* Fill in defaults for missing parameters */
+            if(setid == null) {
+                setid = MarkerSet.DEFAULT;
+            }
+            /* Add new marker */
+            MarkerSet set = api.getMarkerSet(setid);
+            if(set == null) {
+                sender.sendMessage("Error: invalid set - " + setid);
+                return true;
+            }
+            /* Make coord list */
+            double[] xx = new double[ll.size()];
+            double[] yy = new double[ll.size()];
+            double[] zz = new double[ll.size()];
+            for(int i = 0; i < ll.size(); i++) {
+                DynmapLocation loc = ll.get(i);
+                xx[i] = loc.x;
+                yy[i] = loc.y;
+                zz[i] = loc.z;
+            }
+            /* Make poly-line marker */
+            PolyLineMarker m = set.createPolyLineMarker(id, label, false, ll.get(0).world, xx, yy, zz, true);
+            if(m == null) {
+                sender.sendMessage("Error creating line");
+            }
+            else {
+                /* Process additional attributes, if any */
+                processPolyArgs(sender, m, parms);
+                
+                sender.sendMessage("Added line id:'" + m.getMarkerID() + "' (" + m.getLabel() + ") to set '" + set.getMarkerSetID() + "'");
+                api.pointaccum.remove(pid); /* Clear corner list */
+            }
+        }
+        /* List poly-lines */
+        else if(c.equals("listlines") && plugin.checkPlayerPermission(sender, "marker.listlines")) {
+            /* Parse arguements */
+            Map<String,String> parms = parseArgs(args, sender);
+            if(parms == null) return true;
+            setid = parms.get(ARG_SET);
+            if(setid == null) {
+                setid = MarkerSet.DEFAULT;
+            }
+            MarkerSet set = api.getMarkerSet(setid);
+            if(set == null) {
+                sender.sendMessage("Error: invalid set - " + setid);
+                return true;
+            }
+            Set<PolyLineMarker> markers = set.getPolyLineMarkers();
+            TreeMap<String, PolyLineMarker> sortmarkers = new TreeMap<String, PolyLineMarker>();
+            for(PolyLineMarker m : markers) {
+                sortmarkers.put(m.getMarkerID(), m);
+            }
+            for(String s : sortmarkers.keySet()) {
+                PolyLineMarker m = sortmarkers.get(s);
+                String ptlist = "{ ";
+                for(int i = 0; i < m.getCornerCount(); i++) {
+                    ptlist += "{" + m.getCornerX(i) + "," + m.getCornerY(i) + "," + m.getCornerZ(i) + "} ";
+                }
+                ptlist += "}";
+                sender.sendMessage(m.getMarkerID() + ": label:\"" + m.getLabel() + "\", set:" + m.getMarkerSet().getMarkerSetID() + 
+                                   ", world:" + m.getWorld() + ", corners:" + ptlist + 
+                                   ", weight: " + m.getLineWeight() + ", color:" + String.format("%06x", m.getLineColor()) +
+                                   ", opacity: " + m.getLineOpacity());
+            }
+        }
+        /* Delete poly-line - must have ID parameter */
+        else if(c.equals("deleteline") && plugin.checkPlayerPermission(sender, "marker.deleteline")) {
+            if(args.length > 1) {
+                /* Parse arguements */
+                Map<String,String> parms = parseArgs(args, sender);
+                if(parms == null) return true;
+                id = parms.get(ARG_ID);
+                label = parms.get(ARG_LABEL);
+                setid = parms.get(ARG_SET);
+                if((id == null) && (label == null)) {
+                    sender.sendMessage("<label> or id:<line-id> required");
+                    return true;
+                }
+                if(setid == null) {
+                    setid = MarkerSet.DEFAULT;
+                }
+                MarkerSet set = api.getMarkerSet(setid);
+                if(set == null) {
+                    sender.sendMessage("Error: invalid set - " + setid);
+                    return true;
+                }
+                PolyLineMarker marker;
+                if(id != null) {
+                    marker = set.findPolyLineMarker(id);
+                    if(marker == null) {    /* No marker */
+                        sender.sendMessage("Error: line not found - " + id);
+                        return true;
+                    }
+                }
+                else {
+                    marker = set.findPolyLineMarkerByLabel(label);
+                    if(marker == null) {    /* No marker */
+                        sender.sendMessage("Error: line not found - " + label);
+                        return true;
+                    }
+                }
+                marker.deleteMarker();
+                sender.sendMessage("Deleted poly-line id:" + marker.getMarkerID() + " (" + marker.getLabel() + ")");
+            }
+            else {
+                sender.sendMessage("<label> or id:<line-id> required");
+            }
+        }
+        /* Update other attributes of poly-line - must have ID parameter */
+        else if(c.equals("updateline") && plugin.checkPlayerPermission(sender, "marker.updateline")) {
+            if(args.length > 1) {
+                /* Parse arguements */
+                Map<String,String> parms = parseArgs(args, sender);
+                if(parms == null) return true;
+                id = parms.get(ARG_ID);
+                label = parms.get(ARG_LABEL);
+                setid = parms.get(ARG_SET);
+                if((id == null) && (label == null)) {
+                    sender.sendMessage("<label> or id:<line-id> required");
+                    return true;
+                }
+                if(setid == null) {
+                    setid = MarkerSet.DEFAULT;
+                }
+                MarkerSet set = api.getMarkerSet(setid);
+                if(set == null) {
+                    sender.sendMessage("Error: invalid set - " + setid);
+                    return true;
+                }
+                PolyLineMarker marker;
+                if(id != null) {
+                    marker = set.findPolyLineMarker(id);
+                    if(marker == null) {    /* No marker */
+                        sender.sendMessage("Error: line not found - " + id);
+                        return true;
+                    }
+                }
+                else {
+                    marker = set.findPolyLineMarkerByLabel(label);
+                    if(marker == null) {    /* No marker */
+                        sender.sendMessage("Error: line not found - " + label);
+                        return true;
+                    }
+                }
+                newlabel = parms.get(ARG_NEWLABEL);
+                if(newlabel != null) {    /* Label set? */
+                    marker.setLabel(newlabel);
+                }
+                if(!processPolyArgs(sender,marker, parms))
+                    return true;
+                sender.sendMessage("Updated line id:" + marker.getMarkerID() + " (" + marker.getLabel() + ")");
+            }
+            else {
+                sender.sendMessage("<label> or id:<line-id> required");
+            }
+        }
+
         else {
             return false;
         }
@@ -1591,7 +1855,36 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 areas.put(m.getMarkerID(), mdata);
             }
             msdata.put("areas", areas); /* Add areamarkers to set data */
-            
+
+            HashMap<String, Object> lines = new HashMap<String, Object>();
+            for(PolyLineMarker m : ms.getPolyLineMarkers()) {
+                if(m.getWorld().equals(wname) == false) continue;
+                
+                HashMap<String, Object> mdata = new HashMap<String, Object>();
+                int cnt = m.getCornerCount();
+                List<Double> xx = new ArrayList<Double>();
+                List<Double> yy = new ArrayList<Double>();
+                List<Double> zz = new ArrayList<Double>();
+                for(int i = 0; i < cnt; i++) {
+                    xx.add(m.getCornerX(i));
+                    yy.add(m.getCornerY(i));
+                    zz.add(m.getCornerZ(i));
+                }
+                mdata.put("x", xx);
+                mdata.put("y", yy);
+                mdata.put("z", zz);
+                mdata.put("color", String.format("#%06X", m.getLineColor()));
+                mdata.put("opacity", m.getLineOpacity());
+                mdata.put("weight", m.getLineWeight());
+                mdata.put("label", m.getLabel());
+                mdata.put("markup", m.isLabelMarkup());
+                if(m.getDescription() != null)
+                    mdata.put("desc", m.getDescription());
+                /* Add to markers */
+                lines.put(m.getMarkerID(), mdata);
+            }
+            msdata.put("lines", lines); /* Add polylinemarkers to set data */
+
             markerdata.put(ms.getMarkerSetID(), msdata);    /* Add marker set data to world marker data */
         }
         worlddata.put("sets", markerdata);
