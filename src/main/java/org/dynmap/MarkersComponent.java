@@ -1,5 +1,10 @@
 package org.dynmap;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import org.dynmap.common.DynmapListenerManager.EventType;
 import org.dynmap.common.DynmapListenerManager.WorldEventListener;
 import org.dynmap.common.DynmapListenerManager.PlayerEventListener;
@@ -23,6 +28,8 @@ public class MarkersComponent extends ClientComponent {
     private MarkerSet spawnbedset;
     private MarkerIcon spawnbedicon;
     private String spawnbedformat;
+    private long maxofflineage;
+    private HashMap<String, Long> offline_times = new HashMap<String, Long>();
     private static final String OFFLINE_PLAYERS_SETID = "offline_players";
     private static final String PLAYER_SPAWN_BED_SETID = "spawn_beds";
     
@@ -79,7 +86,26 @@ public class MarkersComponent extends ClientComponent {
             offlineset.setMinZoom(configuration.getInteger("offlineminzoom", 0));
             
             offlineicon = api.getMarkerIcon(configuration.getString("offlineicon", "offlineuser"));
-            
+            maxofflineage = 60000L * configuration.getInteger("maxofflinetime", 30); /* 30 minutes */
+            if(maxofflineage > 0) {
+                core.getServer().scheduleServerTask(new Runnable() {
+                    public void run() {
+                        long ts = System.currentTimeMillis();
+                        ArrayList<String> deleted = new ArrayList<String>();
+                        for(Map.Entry<String,Long> me : offline_times.entrySet()) {
+                            if(ts > me.getValue()) {
+                                deleted.add(me.getKey());
+                            }
+                        }
+                        for(String id : deleted) {
+                            Marker m = offlineset.findMarker(id);
+                            if(m != null)
+                                m.deleteMarker();
+                        }
+                        core.getServer().scheduleServerTask(this, 30 * 20);
+                    }
+                }, 30 * 20);    /* Check every 30 seconds */
+            }
             /* Add listener for players coming and going */
             core.listenerManager.addListener(EventType.PLAYER_JOIN, new PlayerEventListener() {
                 @Override
@@ -87,6 +113,7 @@ public class MarkersComponent extends ClientComponent {
                     Marker m = offlineset.findMarker(p.getName());
                     if(m != null) {
                         m.deleteMarker();
+                        offline_times.remove(p.getName());
                     }
                 }
             });
@@ -97,11 +124,14 @@ public class MarkersComponent extends ClientComponent {
                     Marker m = offlineset.findMarker(pname);
                     if(m != null) {
                         m.deleteMarker();
+                        offline_times.remove(p.getName());
                     }
                     if(core.playerList.isVisiblePlayer(pname)) {
                         DynmapLocation loc = p.getLocation();
                         m = offlineset.createMarker(p.getName(), core.getServer().stripChatColor(p.getDisplayName()), false,
                                                 loc.world, loc.x, loc.y, loc.z, offlineicon, true);
+                        if(maxofflineage > 0)
+                            offline_times.put(p.getName(), System.currentTimeMillis() + maxofflineage);
                     }
                 }
             });
