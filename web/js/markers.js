@@ -14,6 +14,10 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 				set.layergroup.removeLayer(area.our_area);
 			});
 			set.areas = {};			
+			$.each(set.lines, function(lname, line) {
+				set.layergroup.removeLayer(line.our_line);
+			});
+			set.lines = {};			
 		});
 	}
 			
@@ -26,18 +30,17 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 				var ms = dynmapmarkersets[name];
 				if(!ms) {
 					ms = { id: name, label: markerset.label, hide: markerset.hide, layerprio: markerset.layerprio, minzoom: markerset.minzoom, 
-						showlabels: markerset.showlabels, markers: {}, areas: {} } ;
+						showlabels: markerset.showlabels, markers: {}, areas: {}, lines: {} } ;
 					createMarkerSet(ms, ts);
 				}
 				else {
 					if(ms.label != markerset.label) {
 						ms.label = markerset.label;
-						//dynmap.layercontrol.removeLayer(ms.layergroup);
-						//dynmap.layercontrol.addOverlay(ms.layergroup, ms.label);
 						dynmap.addToLayerSelector(ms.layergroup, ms.label, ms.layerprio || 0);
 					}
 					ms.markers = {};
 					ms.areas = {};
+					ms.lines = {};
 					ms.hide = markerset.hide;
 					ms.showlabels = markerset.showlabels;
 					ms.timestamp = ts;
@@ -53,6 +56,11 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 						ytop: area.ytop, ybottom: area.ybottom, color: area.color, weight: area.weight, opacity: area.opacity,
 						fillcolor: area.fillcolor, fillopacity: area.fillopacity };
 					createArea(ms, ms.areas[aname], ts);
+				});
+				$.each(markerset.lines, function(lname, line) {
+					ms.lines[lname] = { label: line.label, markup: line.markup, desc: line.desc, x: line.x, y: line.y, z: line.z,
+						color: line.color, weight: line.weight, opacity: line.opacity };
+					createLine(ms, ms.lines[lname], ts);
 				});
 			});
 		});
@@ -147,6 +155,37 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 		}
 		if((set.minzoom < 1) || (dynmap.map.getZoom() >= set.minzoom)) {
 			set.layergroup.addLayer(area.our_area);
+		}
+	}
+
+	function createLine(set, line, ts) {
+		var style = { color: line.color, opacity: line.opacity, weight: line.weight, smoothFactor: 0.0 };
+
+		if(line.our_line && dynmap.map.hasLayer(line.our_line))
+			set.layergroup.removeLayer(line.our_line);
+
+		var llist = [];
+		var i;
+		for(i = 0; i < line.x.length; i++) {
+			llist[i] = latlng(line.x[i], line.y[i], line.z[i]);
+		}
+		line.our_line = new L.Polyline(llist, style);
+		line.timestamp = ts;
+		if(line.label != "") {
+			var popup = document.createElement('span');
+			if(line.desc) {
+				$(popup).addClass('LinePopup').append(line.desc);
+			}
+			else if(line.markup) {
+				$(popup).addClass('LinePopup').append(line.label);
+			}
+			else {
+				$(popup).text(line.label);
+			}
+			line.our_line.bindPopup($(popup).html(), {});
+		}
+		if((set.minzoom < 1) || (dynmap.map.getZoom() >= set.minzoom)) {
+			set.layergroup.addLayer(line.our_line);
 		}
 	}
 
@@ -298,6 +337,24 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 			}
 			delete dynmapmarkersets[msg.set].areas[msg.id];
 		}
+		else if(msg.msg == 'polyupdated') {
+			var line = dynmapmarkersets[msg.set].lines[msg.id];
+			if(line && line.our_line) {
+				dynmapmarkersets[msg.set].layergroup.removeLayer(line.our_line);
+				delete line.our_line;
+			}
+			line = { x: msg.x, y: msg.y, z: msg.z, label: msg.label, markup: msg.markup, desc: msg.desc,
+				color: msg.color, weight: msg.weight, opacity: msg.opacity };
+			dynmapmarkersets[msg.set].lines[msg.id] = line;
+			createLine(dynmapmarkersets[msg.set], line, msg.timestamp);
+		}
+		else if(msg.msg == 'linedeleted') {
+			var line = dynmapmarkersets[msg.set].lines[msg.id];
+			if(line && line.our_line) {
+				dynmapmarkersets[msg.set].layergroup.removeLayer(line.our_line);
+			}
+			delete dynmapmarkersets[msg.set].lines[msg.id];
+		}
 	});
 	
     // Remove marker on start of map change
@@ -308,6 +365,9 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 			});
 			$.each(set.areas, function(aname, area) {
 				set.layergroup.removeLayer(area.our_area);
+			});
+			$.each(set.lines, function(lname, line) {
+				set.layergroup.removeLayer(line.our_line);
 			});
 		});
 	});
@@ -325,6 +385,9 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 				});
 				$.each(set.areas, function(aname, area) {
 					createArea(set, area, area.timestamp);
+				});
+				$.each(set.lines, function(lname, line) {
+					createLine(set, line, line.timestamp);
 				});
 			}
 		});
@@ -346,6 +409,11 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 							set.layergroup.removeLayer(area.our_area);
 						createArea(set, area, area.timestamp);
 					});
+					$.each(set.lines, function(lname, line) {
+						if(dynmap.map.hasLayer(line.our_line))
+							set.layergroup.removeLayer(line.our_line);
+						createLine(set, line, line.timestamp);
+					});
 				}
 				else {
 					$.each(set.markers, function(mname, marker) {
@@ -353,6 +421,9 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 					});
 					$.each(set.areas, function(aname, area) {
 						set.layergroup.removeLayer(area.our_area);
+					});
+					$.each(set.lines, function(lname, line) {
+						set.layergroup.removeLayer(line.our_line);
 					});
 				}
 			}
