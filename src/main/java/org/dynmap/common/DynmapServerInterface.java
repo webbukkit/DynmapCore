@@ -40,6 +40,13 @@ public interface DynmapServerInterface {
      */
     public DynmapPlayer getPlayer(String name);
     /**
+     * Get offline player
+     * @param name - player name
+     * @reurn player (offline or not)
+     */
+    public DynmapPlayer getOfflinePlayer(String name);
+    
+    /**
      * Get banned IPs
      */
     public Set<String> getIPBans();

@@ -84,9 +84,27 @@ public class MarkersComponent extends ClientComponent {
             }
             offlineset.setHideByDefault(configuration.getBoolean("offlinehidebydefault", true));
             offlineset.setMinZoom(configuration.getInteger("offlineminzoom", 0));
-            
-            offlineicon = api.getMarkerIcon(configuration.getString("offlineicon", "offlineuser"));
             maxofflineage = 60000L * configuration.getInteger("maxofflinetime", 30); /* 30 minutes */
+            /* Now, see if existing offline markers - check for last login on their users */
+            if(maxofflineage > 0) {
+                Set<Marker> prev_m = offlineset.getMarkers();
+                for(Marker m : prev_m) {
+                    DynmapPlayer p = core.getServer().getOfflinePlayer(m.getMarkerID());
+                    if(p != null) {
+                        long ageout = p.getLastLoginTime() + maxofflineage;
+                        if(ageout < System.currentTimeMillis()) {
+                            m.deleteMarker();
+                        }
+                        else {
+                           offline_times.put(p.getName(), ageout);
+                        }
+                    }
+                    else {
+                        m.deleteMarker();
+                    }
+                }
+            }
+            offlineicon = api.getMarkerIcon(configuration.getString("offlineicon", "offlineuser"));
             if(maxofflineage > 0) {
                 core.getServer().scheduleServerTask(new Runnable() {
                     public void run() {

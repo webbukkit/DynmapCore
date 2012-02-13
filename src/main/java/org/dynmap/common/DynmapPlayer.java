@@ -53,4 +53,14 @@ public interface DynmapPlayer extends DynmapCommandSender {
      * Get spawn bed location
      */
     public DynmapLocation getBedSpawnLocation();
+    /**
+     * Get last login time
+     * @return UTC time (msec) of last login
+     */
+    public long getLastLoginTime();
+    /**
+     * Get first login time
+     * @return UTC time (msec) of first login
+     */
+    public long getFirstLoginTime();
 }
