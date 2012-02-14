@@ -737,6 +737,11 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     private static final String ARG_YTOP = "ytop";
     private static final String ARG_YBOTTOM = "ybottom";
     private static final String ARG_SHOWLABEL = "showlabels";
+    private static final String ARG_X = "x";
+    private static final String ARG_Y = "y";
+    private static final String ARG_Z = "z";
+    private static final String ARG_WORLD = "world";
+    
     
     /* Parse argument strings : handle 'attrib:value' and quoted strings */
     private static Map<String,String> parseArgs(String[] args, DynmapCommandSender snd) {
@@ -799,6 +804,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     
     public static boolean onCommand(DynmapCore plugin, DynmapCommandSender sender, String cmd, String commandLabel, String[] args) {
         String id, setid, file, label, newlabel, iconid, prio, minzoom;
+        String x, y, z, world;
         
         if(api == null) {
             sender.sendMessage("Markers component is not enabled.");
@@ -816,10 +822,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         }
         /* Process commands */
         if(c.equals("add") && api.core.checkPlayerPermission(sender, "marker.add")) {
-            if(player == null) {
-                sender.sendMessage("Command can only be used by player");
-            }
-            else if(args.length > 1) {
+            if(args.length > 1) {
                 /* Parse arguements */
                 Map<String,String> parms = parseArgs(args, sender);
                 if(parms == null) return true;
@@ -827,8 +830,36 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 setid = parms.get(ARG_SET);
                 id = parms.get(ARG_ID);
                 label = parms.get(ARG_LABEL);
-                
-                DynmapLocation loc = player.getLocation();
+                x = parms.get(ARG_X);
+                y = parms.get(ARG_Y);
+                z = parms.get(ARG_Z);
+                world = parms.get(ARG_WORLD);
+                if(world != null) {
+                    if(api.core.getWorld(world) == null) {
+                        sender.sendMessage("Invalid world ID: " + world);
+                        return true;
+                    }
+                }
+                DynmapLocation loc = null;
+                if((x == null) && (y == null) && (z == null) && (world == null)) {
+                    if(player == null) {
+                        sender.sendMessage("Must be issued by player, or x, y, z, and world parameters are required");
+                        return true;
+                    }
+                    loc = player.getLocation();
+                }
+                else if((x != null) && (y != null) && (z != null) && (world != null)) {
+                    try {
+                        loc = new DynmapLocation(world, Double.valueOf(x), Double.valueOf(y), Double.valueOf(z));
+                    } catch (NumberFormatException nfx) {
+                        sender.sendMessage("Coordinates x, y, and z must be numbers");
+                        return true;
+                    }
+                }
+                else {
+                    sender.sendMessage("Must be issued by player, or x, y, z, and world parameters are required");
+                    return true;
+                }
                 /* Fill in defaults for missing parameters */
                 if(iconid == null) {
                     iconid = MarkerIcon.DEFAULT;
@@ -916,6 +947,26 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 id = parms.get(ARG_ID);
                 label = parms.get(ARG_LABEL);
                 setid = parms.get(ARG_SET);
+                x = parms.get(ARG_X);
+                y = parms.get(ARG_Y);
+                z = parms.get(ARG_Z);
+                world = parms.get(ARG_WORLD);
+                if(world != null) {
+                    if(api.core.getWorld(world) == null) {
+                        sender.sendMessage("Invalid world ID: " + world);
+                        return true;
+                    }
+                }
+                DynmapLocation loc = null;
+                if((x != null) && (y != null) && (z != null) && (world != null)) {
+                    try {
+                        loc = new DynmapLocation(world, Double.valueOf(x), Double.valueOf(y), Double.valueOf(z));
+                    } catch (NumberFormatException nfx) {
+                        sender.sendMessage("Coordinates x, y, and z must be numbers");
+                        return true;
+                    }
+                }
+
                 if((id == null) && (label == null)) {
                     sender.sendMessage("<label> or id:<marker-id> required");
                     return true;
@@ -956,6 +1007,9 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                     }
                     marker.setMarkerIcon(ico);
                 }
+                if(loc != null)
+                    marker.setLocation(loc.world, loc.x, loc.y, loc.z);
+                
                 sender.sendMessage("Updated marker id:" + marker.getMarkerID() + " (" + marker.getLabel() + ")");
             }
             else {
