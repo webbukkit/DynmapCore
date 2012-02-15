@@ -93,7 +93,10 @@ class AreaMarkerImpl implements AreaMarker {
         }
         world = node.getString("world", "world");
         desc = node.getString("desc", null);
-        lineweight = node.getInteger("strokeWeight", 3);
+        lineweight = node.getInteger("strokeWeight", -1);
+        if(lineweight == -1) {	/* Handle typo-saved value */
+        	 lineweight = node.getInteger("stokeWeight", 3);
+        }
         lineopacity = node.getDouble("strokeOpacity", 0.8);
         linecolor = node.getInteger("strokeColor", 0xFF0000);
         fillopacity = node.getDouble("fillOpacity", 0.35);
@@ -171,7 +174,7 @@ class AreaMarkerImpl implements AreaMarker {
         node.put("world", world);
         if(desc != null)
             node.put("desc", desc);
-        node.put("stokeWeight", lineweight);
+        node.put("strokeWeight", lineweight);
         node.put("strokeOpacity", lineopacity);
         node.put("strokeColor", linecolor);
         node.put("fillOpacity", fillopacity);
