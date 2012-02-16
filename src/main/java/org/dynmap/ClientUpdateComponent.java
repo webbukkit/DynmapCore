@@ -38,21 +38,21 @@ public class ClientUpdateComponent extends Component {
         s(u, "players", new JSONArray());
         List<DynmapPlayer> players = core.playerList.getVisiblePlayers();
         for(DynmapPlayer p : players) {
+            boolean hide = false;
             DynmapLocation pl = p.getLocation();
             DynmapWorld pw = core.getWorld(pl.world);
-            if(pw == null)
-                continue;
+            if(pw != null)
+                hide = true;
             JSONObject jp = new JSONObject();
-            boolean hide = false;
             
             s(jp, "type", "player");
             s(jp, "name", Client.stripColor(p.getDisplayName()));
             s(jp, "account", p.getName());
-            if(hideifshadow < 15) {
+            if((!hide) && (hideifshadow < 15)) {
                 if(pw.getLightLevel((int)pl.x, (int)pl.y, (int)pl.z) <= hideifshadow)
                     hide = true;
             }
-            if(hideifunder < 15) {
+            if((!hide) && (hideifunder < 15)) {
                 if(pw.canGetSkyLightLevel()) { /* If we can get real sky level */
                     if(pw.getSkyLightLevel((int)pl.x, (int)pl.y, (int)pl.z) <= hideifunder)
                         hide = true;
@@ -62,7 +62,7 @@ public class ClientUpdateComponent extends Component {
                         hide = true;
                 }
             }
-            if(hideifsneaking && p.isSneaking())
+            if((!hide) && hideifsneaking && p.isSneaking())
                 hide = true;
             
             /* Don't leak player location for world not visible on maps, or if sendposition disbaled */
