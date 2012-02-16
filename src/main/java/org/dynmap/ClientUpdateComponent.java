@@ -41,7 +41,7 @@ public class ClientUpdateComponent extends Component {
             boolean hide = false;
             DynmapLocation pl = p.getLocation();
             DynmapWorld pw = core.getWorld(pl.world);
-            if(pw != null)
+            if(pw == null)
                 hide = true;
             JSONObject jp = new JSONObject();
             
