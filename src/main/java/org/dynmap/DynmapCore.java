@@ -429,7 +429,7 @@ public class DynmapCore {
 
         webServer = new Server(new InetSocketAddress(configuration.getString("webserver-bindaddress", "0.0.0.0"), configuration.getInteger("webserver-port", 8123)));
         webServer.setStopAtShutdown(true);
-        webServer.setGracefulShutdown(1000);
+        //webServer.setGracefulShutdown(1000);
         
         final boolean allow_symlinks = configuration.getBoolean("allow-symlinks", false);
         int maxconnections = configuration.getInteger("max-sessions", 30);
