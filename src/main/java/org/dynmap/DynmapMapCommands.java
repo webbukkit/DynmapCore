@@ -200,6 +200,7 @@ public class DynmapMapCommands {
                     else if(tok[1].equalsIgnoreCase("here")) {
                         if(sender instanceof DynmapPlayer) {
                             loc = ((DynmapPlayer)sender).getLocation();
+                            good = true;
                         }
                         else {
                             sender.sendMessage("Setting center to 'here' requires player");

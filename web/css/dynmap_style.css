@@ -552,6 +552,14 @@
  * players on the map
  */
 
+/* smooth player movements (contrib from KillahKiwi) */
+.dynmap .playerMarker {
+   -moz-transition: all 0.6s ease-in-out 0s;
+   -webkit-transition: all 0.6s ease-in-out 0s;
+   -o-transition: all 0.6s ease-in-out 0s;
+   transition: all 0.6s ease-in-out 0s;
+}
+
 .dynmap .playerIcon {
 	margin-top: -16px;
 	margin-left: -16px;
@@ -932,3 +940,4 @@
 .dynmap .dynmap-link-button {
 	background-image: url(images/link.png);
 	}
+
