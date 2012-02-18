@@ -136,6 +136,18 @@ componentconstructors['playermarkers'] = function(dynmap, configuration) {
 			}
 		}
 	});
+    // Remove marker on start of map change
+	$(dynmap).bind('zoomchanged', function(event) {
+		var name;
+		for(name in dynmap.players) {
+			var player = dynmap.players[name];
+			// Turn marker off and on 
+			if(dynmap.map.hasLayer(player.marker)) {
+				dynmap.playermarkergroup.removeLayer(player.marker);
+				dynmap.playermarkergroup.addLayer(player.marker);
+			}
+		}
+	});
 	dynmap.playermarkergroup = new L.LayerGroup();
 	if(!configuration.hidebydefault)
 		dynmap.map.addLayer(dynmap.playermarkergroup);
