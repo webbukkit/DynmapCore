@@ -68,6 +68,10 @@ public interface MapChunkCache {
      */
     public double getRawBiomeRainfall(int x, int z);
     /**
+     * Test if section (16 x 16 x 16) at given coord is empty (all air)
+     */
+    boolean isEmptySection(int x, int y, int z);
+    /**
      * Get cache iterator
      */
     public MapIterator getIterator(int x, int y, int z);

@@ -111,4 +111,8 @@ public interface MapIterator {
      * Get block key for current position (unique ID for block within cache being iterated)
      */
     long getBlockKey();
+    /**
+     * Test if current section (16 x 16 x 16) is empty (all air)
+     */
+    boolean isEmptySection();
 }
