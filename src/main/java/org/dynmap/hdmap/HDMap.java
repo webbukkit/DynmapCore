@@ -28,6 +28,7 @@ public class HDMap extends MapType {
     private HDLighting lighting;
 //    private ConfigurationNode configuration;
     private int mapzoomout;
+    private String imgfmtstring;
     private MapType.ImageFormat imgformat;
     private int bgcolornight;
     private int bgcolorday;
@@ -37,12 +38,14 @@ public class HDMap extends MapType {
     private String bg_day_cfg;
     private String bg_night_cfg;
     private int mapzoomin;
+    public DynmapCore core;
 
     public static final String IMGFORMAT_PNG = "png";
     public static final String IMGFORMAT_JPG = "jpg";
     
     
     public HDMap(DynmapCore core, ConfigurationNode configuration) {
+        this.core = core;
         name = configuration.getString("name", null);
         if(name == null) {
             Log.severe("HDMap missing required attribute 'name' - disabled");
@@ -98,16 +101,15 @@ public class HDMap extends MapType {
             mapzoomout++;
             scale = scale / 2.0;
         }
-        String fmt = configuration.getString("image-format", "png");
-        /* Only allow png or jpg */
-        for(ImageFormat f : ImageFormat.values()) {
-            if(fmt.equals(f.getID())) {
-                imgformat = f;
-                break;
-            }
+        imgfmtstring = configuration.getString("image-format", "default");
+        if(imgfmtstring.equals("default")) {
+            imgformat = ImageFormat.fromID(core.getDefImageFormat());
+        }
+        else {
+            imgformat = ImageFormat.fromID(imgfmtstring);
         }
         if(imgformat == null) {
-            Log.severe("HDMap '"+name+"' set invalid image-format: " + fmt);
+            Log.severe("HDMap '"+name+"' set invalid image-format: " + imgfmtstring);
             imgformat = ImageFormat.FORMAT_PNG;
         }
         /* Get color info */
@@ -147,9 +149,7 @@ public class HDMap extends MapType {
             cn.put("shader", shader.getName());
         if(lighting != null)
             cn.put("lighting", lighting.getName());
-        if(imgformat != null) {
-            cn.put("image-format", imgformat.getID());
-        }
+        cn.put("image-format", imgfmtstring);
         cn.put("mapzoomin", mapzoomin);
         if(bg_cfg != null)
             cn.put("background", bg_cfg);
@@ -423,12 +423,23 @@ public class HDMap extends MapType {
         }
         return false;
     }
-    public boolean setImageFormat(MapType.ImageFormat f) {
-        if(f != imgformat) {
-            imgformat = f;
-            return true;
+    public boolean setImageFormatSetting(String f) {
+        if(imgfmtstring.equals(f) == false) {
+            MapType.ImageFormat newfmt;
+            if(f.equals("default"))
+                newfmt = MapType.ImageFormat.fromID(core.getDefImageFormat());
+            else
+                newfmt = MapType.ImageFormat.fromID(f);
+            if(newfmt != null) {
+                imgformat = newfmt;
+                imgfmtstring = f;
+                return true;
+            }
         }
         return false;
+    }
+    public String getImageFormatSetting() {
+        return imgfmtstring;
     }
     public boolean setIcon(String v) {
         if("".equals(v)) v = null;

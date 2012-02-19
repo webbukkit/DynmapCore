@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.dynmap.MapType.ImageFormat;
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.common.DynmapListenerManager;
 import org.dynmap.common.DynmapListenerManager.EventType;
@@ -68,6 +69,7 @@ public class DynmapCore {
     boolean bettergrass = false;
     boolean smoothlighting = false;
     boolean smooth_biome_shading = false;
+    private String def_image_format = "png";
     private HashSet<String> enabledTriggers = new HashSet<String>();
         
     public CompassMode compassmode = CompassMode.PRE19;
@@ -250,6 +252,14 @@ public class DynmapCore {
         HDMapManager.usegeneratedtextures = configuration.getBoolean("use-generated-textures", false);
         HDMapManager.waterlightingfix = configuration.getBoolean("correct-water-lighting", false);
         HDMapManager.biomeshadingfix = configuration.getBoolean("correct-biome-shading", false);
+        /* Get default image format */
+        def_image_format = configuration.getString("image-format", "png");
+        MapType.ImageFormat fmt = MapType.ImageFormat.fromID(def_image_format);
+        if(fmt == null) {
+            Log.severe("Invalid image-format: " + def_image_format);
+            def_image_format = "png";
+        }
+        
         smoothlighting = configuration.getBoolean("smooth-lighting", false);
         Log.verbose = configuration.getBoolean("verbose", true);
         deftemplatesuffix = configuration.getString("deftemplatesuffix", "");
@@ -1387,4 +1397,6 @@ public class DynmapCore {
     }
     
     public int getSnapShotCacheSize() { return snapshotcachesize; }
+    
+    public String getDefImageFormat() { return def_image_format; }
 }

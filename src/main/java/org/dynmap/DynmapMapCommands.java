@@ -261,7 +261,7 @@ public class DynmapMapCommands {
                 sb.append("map ").append(mt.getName()).append(": prefix=").append(hdmt.getPrefix()).append(", title=").append(hdmt.getTitle());
                 sb.append(", perspective=").append(hdmt.getPerspective().getName()).append(", shader=").append(hdmt.getShader().getName());
                 sb.append(", lighting=").append(hdmt.getLighting().getName()).append(", mapzoomin=").append(hdmt.getMapZoomIn());
-                sb.append(", img-format=").append(hdmt.getImageFormat().getID()).append(", icon=").append(hdmt.getIcon());
+                sb.append(", img-format=").append(hdmt.getImageFormatSetting()).append(", icon=").append(hdmt.getIcon());
                 sender.sendMessage(sb.toString());
             }
         }
@@ -489,18 +489,11 @@ public class DynmapMapCommands {
                 }
             }
             else if(tok[0].equalsIgnoreCase("img-format")) {
-                MapType.ImageFormat img = null;
-                for(MapType.ImageFormat imgf : MapType.ImageFormat.values()) {
-                    if(imgf.getID().equals(tok[1])) {
-                        img = imgf;
-                        break;
-                    }
-                }
-                if(img == null) {
+                if((!tok[1].equals("default")) && (MapType.ImageFormat.fromID(tok[1]) == null)) {
                     sender.sendMessage("Image format not found: " + tok[1]);
                     return true;
                 }
-                did_update |= mt.setImageFormat(img);
+                did_update |= mt.setImageFormatSetting(tok[1]);
             }
             else if(tok[0].equalsIgnoreCase("order")) {
                 int idx = -1;

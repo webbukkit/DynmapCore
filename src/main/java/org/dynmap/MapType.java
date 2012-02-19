@@ -29,6 +29,15 @@ public abstract class MapType {
         public String getID() { return id; }
         public String getFileExt() { return ext; }
         public float getQuality() { return qual; }
+
+        public static ImageFormat fromID(String imgfmt) {
+            for(ImageFormat i_f : MapType.ImageFormat.values()) {
+                if(i_f.getID().equals(imgfmt)) {
+                    return i_f;
+                }
+            }
+            return null;
+        }
     };
     
     public static class ZoomInfo {
