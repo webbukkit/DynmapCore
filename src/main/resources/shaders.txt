@@ -48,6 +48,11 @@ shaders:
   - class: org.dynmap.hdmap.CaveHDShader
     name: cave
 
+  # Cave view shader - only lit caves
+  - class: org.dynmap.hdmap.CaveHDShader
+    name: lit-cave
+    onlyiflit: true
+    
   # Texture pack based shader for standard Minecraft textures
   - class: org.dynmap.hdmap.TexturePackHDShader
     name: stdtexture
