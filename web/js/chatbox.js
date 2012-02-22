@@ -32,8 +32,16 @@ componentconstructors['chatbox'] = function(dynmap, configuration) {
 						chatinput.val('');
 					}
 				}
-			})
-			.appendTo(chat);
+			});
+		if(configuration.sendbutton) {
+			var chatbutton = $('<button/>').addClass('chatsendbutton').click(function(event) {
+			  if(chatinput.val() != '') {
+				$(dynmap).trigger('sendchat', [chatinput.val()]);
+				chatinput.val('');
+			  }
+			}).text("+").appendTo(chat);
+		}
+		chatinput.appendTo(chat);
 
 		if (configuration.scrollback) {
 			chatinput.click(function(){ 

@@ -770,6 +770,10 @@
 	padding: 1px 1px 1px 15px;
 }
 
+.chatsendbutton {
+    background-color: #bbb;
+}
+
 .messagelist {
 	color: white;
 	overflow: hidden;
