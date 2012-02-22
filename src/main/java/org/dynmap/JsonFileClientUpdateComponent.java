@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 import org.dynmap.web.Json;
 import org.json.simple.JSONArray;
@@ -260,20 +262,11 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                             name = n;
                         }
                         String message = String.valueOf(o.get("message"));
-                        webChat(name, message);
+                        core.webChat(name, message);
                     }
                 }
             }
         }
-    }
-    
-    protected void webChat(String name, String message) {
-        if(core.mapManager == null) return;
-        // TODO: Change null to something meaningful.
-        core.mapManager.pushUpdate(new Client.ChatMessage("web", null, name, message, null));
-        Log.info(unescapeString(core.configuration.getString("webprefix", "\u00A2[WEB] ")) + name + ": " + unescapeString(core.configuration.getString("websuffix", "\u00A7f")) + message);
-        ChatEvent event = new ChatEvent("web", name, message);
-        core.events.trigger("webchat", event);
     }
     
     @Override

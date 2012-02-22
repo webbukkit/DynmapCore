@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import org.dynmap.MapType.ImageFormat;
 import org.dynmap.common.DynmapCommandSender;
@@ -1399,4 +1400,27 @@ public class DynmapCore {
     public int getSnapShotCacheSize() { return snapshotcachesize; }
     
     public String getDefImageFormat() { return def_image_format; }
+    
+    public void webChat(final String name, final String message) {
+        if(mapManager == null)
+            return;
+        Runnable c = new Runnable() {
+            @Override
+            public void run() {
+                mapManager.pushUpdate(new Client.ChatMessage("web", null, name, message, null));
+                String msgfmt = configuration.getString("webmsgformat", null);
+                if(msgfmt != null) {
+                    msgfmt = ClientComponent.unescapeString(msgfmt);
+                    Log.info(msgfmt.replace("%playername%", name).replace("%message%", message));
+                }
+                else {
+                    Log.info(ClientComponent.unescapeString(configuration.getString("webprefix", "\u00A72[WEB] ")) + name + ": " + ClientComponent.unescapeString(configuration.getString("websuffix", "\u00A7f")) + message);
+                }
+                ChatEvent event = new ChatEvent("web", name, message);
+                events.trigger("webchat", event);
+            }
+        };
+        getServer().scheduleServerTask(c, 1);
+    }
+
 }

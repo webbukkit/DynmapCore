@@ -1,5 +1,7 @@
 package org.dynmap;
 
+import java.util.concurrent.Callable;
+
 import org.dynmap.servlet.ClientUpdateServlet;
 import org.dynmap.servlet.SendMessageServlet;
 import org.json.simple.JSONObject;
@@ -43,7 +45,7 @@ public class InternalClientUpdateComponent extends ClientUpdateComponent {
                 onMessageReceived.addListener(new Event.Listener<Message> () {
                     @Override
                     public void triggered(Message t) {
-                        webChat(t.name, t.message);
+                        core.webChat(t.name, t.message);
                     }
                 });
             }};
@@ -51,13 +53,4 @@ public class InternalClientUpdateComponent extends ClientUpdateComponent {
         }
     }
 
-    protected void webChat(String name, String message) {
-        if(core.mapManager == null)
-            return;
-        // TODO: Change null to something meaningful.
-        core.mapManager.pushUpdate(new Client.ChatMessage("web", null, name, message, null));
-        Log.info(unescapeString(core.configuration.getString("webprefix", "\u00A72[WEB] ")) + name + ": " + unescapeString(core.configuration.getString("websuffix", "\u00A7f")) + message);
-                ChatEvent event = new ChatEvent("web", name, message);
-        core.events.trigger("webchat", event);
-    }
 }
