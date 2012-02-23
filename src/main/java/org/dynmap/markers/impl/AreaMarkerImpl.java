@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.dynmap.ConfigurationNode;
+import org.dynmap.DynmapCore;
+import org.dynmap.DynmapWorld;
+import org.dynmap.MapManager;
 import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.MarkerSet;
 import org.dynmap.markers.impl.MarkerAPIImpl.MarkerUpdate;
@@ -60,6 +63,12 @@ class AreaMarkerImpl implements AreaMarker {
         this.desc = null;
         ispersistent = persistent;
         markerset = set;
+        if(MapManager.mapman != null) {
+            DynmapWorld w = MapManager.mapman.getWorld(world);
+            if(w != null) {
+                ytop = ybottom = w.sealevel+1;    /* Default to world sealevel */
+            }
+        }
     }
     /**
      * Make bare area marker - used for persistence load
