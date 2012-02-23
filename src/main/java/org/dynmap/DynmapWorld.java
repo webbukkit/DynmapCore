@@ -56,10 +56,12 @@ public abstract class DynmapWorld {
     public final int worldheight;
     public final int heightshift;
     public final int heightmask;
+    public final int sealevel;
     
-    protected DynmapWorld(String wname, int worldheight) {
+    protected DynmapWorld(String wname, int worldheight, int sealevel) {
         this.wname = wname;
         this.worldheight = worldheight;
+        this.sealevel = sealevel;
         int shift;
         for(shift = 0; ((1 << shift) < worldheight); shift++) {}
         heightshift = shift;
