@@ -72,6 +72,7 @@ public class DynmapCore {
     boolean smooth_biome_shading = false;
     private String def_image_format = "png";
     private HashSet<String> enabledTriggers = new HashSet<String>();
+    public boolean disable_chat_to_web = false;
         
     public CompassMode compassmode = CompassMode.PRE19;
     private int     config_hashcode;    /* Used to signal need to reload web configuration (world changes, config update, etc) */
@@ -1421,6 +1422,15 @@ public class DynmapCore {
             }
         };
         getServer().scheduleServerTask(c, 1);
+    }
+    /**
+     * Disable chat message processing (used by mods that will handle sending chat to the web themselves, via sendBroadcastToWeb()
+     * @param disable - if true, suppress internal chat-to-web messages
+     */
+    public boolean setDisableChatToWebProcessing(boolean disable) {
+        boolean prev = disable_chat_to_web;
+        disable_chat_to_web = disable;
+        return prev;
     }
 
 }

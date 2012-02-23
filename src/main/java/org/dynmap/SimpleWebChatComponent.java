@@ -16,6 +16,7 @@ public class SimpleWebChatComponent extends Component {
             @Override
             public void triggered(ChatEvent t) {
                 if(plugin.getServer().sendWebChatEvent(t.source, t.name, t.message)) {
+                    if(core.disable_chat_to_web) return;
                     String msg;
                     String msgfmt = plugin.configuration.getString("webmsgformat", null);
                     if(msgfmt != null) {
@@ -41,6 +42,7 @@ public class SimpleWebChatComponent extends Component {
             plugin.listenerManager.addListener(EventType.PLAYER_CHAT, new ChatEventListener() {
                 @Override
                 public void chatEvent(DynmapPlayer p, String msg) {
+                    if(core.disable_chat_to_web) return;
                     if(core.mapManager != null)
                         core.mapManager.pushUpdate(new Client.ChatMessage("player", "", p.getDisplayName(), msg, p.getName()));
                 }
@@ -48,6 +50,7 @@ public class SimpleWebChatComponent extends Component {
             plugin.listenerManager.addListener(EventType.PLAYER_JOIN, new DynmapListenerManager.PlayerEventListener() {
                 @Override
                 public void playerEvent(DynmapPlayer p) {
+                    if(core.disable_chat_to_web) return;
                     if((core.mapManager != null) && (core.playerList != null) && (core.playerList.isVisiblePlayer(p.getName()))) {
                         core.mapManager.pushUpdate(new Client.PlayerJoinMessage(p.getDisplayName(), p.getName()));
                     }
@@ -56,6 +59,7 @@ public class SimpleWebChatComponent extends Component {
             plugin.listenerManager.addListener(EventType.PLAYER_QUIT, new DynmapListenerManager.PlayerEventListener() {
                 @Override
                 public void playerEvent(DynmapPlayer p) {
+                    if(core.disable_chat_to_web) return;
                     if((core.mapManager != null) && (core.playerList != null) && (core.playerList.isVisiblePlayer(p.getName()))) {
                         core.mapManager.pushUpdate(new Client.PlayerQuitMessage(p.getDisplayName(), p.getName()));
                     }
