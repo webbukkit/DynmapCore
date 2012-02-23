@@ -1221,7 +1221,7 @@ public class DynmapCore {
     public void postPlayerMessageToWeb(String playerid, String playerdisplay, String message) {
         if(playerdisplay == null) playerdisplay = playerid;
         if(mapManager != null)
-            mapManager.pushUpdate(new Client.ChatMessage("player", "", playerid, message, playerdisplay));
+            mapManager.pushUpdate(new Client.ChatMessage("player", "", playerdisplay, message, playerid));
     }
 
     public void postPlayerJoinQuitToWeb(String playerid, String playerdisplay, boolean isjoin) {
