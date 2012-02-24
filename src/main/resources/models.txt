@@ -31,6 +31,39 @@ rotate:id=53,data=0,rot=90
 # Nether brick stair - up east
 block:id=53,id=67,id=108,id=109,id=114,data=3,scale=2
 rotate:id=53,data=0,rot=270
+# Wood Stair - inverted up south
+# Cobblestone Stair - inverted up south
+# Brick Stair - inverted up south
+# Stone Brick Stair - inverted up south
+# Nether brick stair - inverted up south
+block:id=53,id=67,id=108,id=109,id=114,data=4,scale=2
+layer:1
+**
+**
+layer:0
+--
+**  
+# Wood Stair - inverted up north
+# Cobblestone Stair - inverted up north
+# Brick Stair - inverted up north
+# Stone Brick Stair - inverted up north
+# Nether brick stair - inverted up north
+block:id=53,id=67,id=108,id=109,id=114,data=5,scale=2
+rotate:id=53,data=4,rot=180
+# Wood Stair - inverted up west
+# Cobblestone Stair - inverted up west
+# Brick Stair - inverted up west
+# Stone Brick Stair - inverted up west
+# Nether brick stair - inverted up west
+block:id=53,id=67,id=108,id=109,id=114,data=6,scale=2
+rotate:id=53,data=4,rot=90
+# Wood Stair - inverted up east
+# Cobblestone Stair - inverted up east
+# Brick Stair - inverted up east
+# Stone Brick Stair - inverted up east
+# Nether brick stair - inverted up east
+block:id=53,id=67,id=108,id=109,id=114,data=7,scale=2
+rotate:id=53,data=4,rot=270
 # Chest - set render alg
 linkmap:id=54,linkalg=2
 # Slab (stone, sandstone, wood, cobblestone)
