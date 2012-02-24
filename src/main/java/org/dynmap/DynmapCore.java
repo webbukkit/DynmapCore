@@ -439,27 +439,13 @@ public class DynmapCore {
 
     private InetSocketAddress getWebBindAddress(String bind, int port) {
         InetSocketAddress addr = null;
-        /* Apparently can't trust InetSocketAddress(string) with dotted decimal on windows server - try parsing it ourselves */
         try {
-            String[] dotsplit = bind.split(".");
-            if(dotsplit.length == 4) {
-                byte[] addrbytes = new byte[4];
-                boolean bad = false;
-                for(int i = 0; i < 4; i++) {
-                    try {
-                        int v = Integer.parseInt(dotsplit[i]);
-                        if((v >= 0) && (v < 256))
-                            addrbytes[i] = (byte)v;
-                    } catch (NumberFormatException nfx) {
-                        bad = true;
-                    }
-                }
-                if(!bad) {
-                    addr = new InetSocketAddress(InetAddress.getByAddress(addrbytes), port);
-                }
+            if(bind.equals("0.0.0.0")) {
+                addr = new InetSocketAddress(port);
             }
-            if(addr == null) {
-                addr = new InetSocketAddress(InetAddress.getByName(bind), port);
+            else {
+                InetAddress a = InetAddress.getByName(bind);
+                addr = new InetSocketAddress(a, port);
             }
         } catch (UnknownHostException uhx) {
             Log.severe("Bad webserver_bindaddress: " + bind);
