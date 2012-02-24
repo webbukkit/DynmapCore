@@ -53,6 +53,7 @@ public class DynmapCore {
     private DynmapServerInterface server;
     private String version;
     private Server webServer = null;
+    private InetSocketAddress webServerAddress = null;
     private HandlerRouter router = null;
     public MapManager mapManager = null;
     public PlayerList playerList;
@@ -436,10 +437,42 @@ public class DynmapCore {
         }
     }
 
+    private InetSocketAddress getWebBindAddress(String bind, int port) {
+        InetSocketAddress addr = null;
+        /* Apparently can't trust InetSocketAddress(string) with dotted decimal on windows server - try parsing it ourselves */
+        try {
+            String[] dotsplit = bind.split(".");
+            if(dotsplit.length == 4) {
+                byte[] addrbytes = new byte[4];
+                boolean bad = false;
+                for(int i = 0; i < 4; i++) {
+                    try {
+                        int v = Integer.parseInt(dotsplit[i]);
+                        if((v >= 0) && (v < 256))
+                            addrbytes[i] = (byte)v;
+                    } catch (NumberFormatException nfx) {
+                        bad = true;
+                    }
+                }
+                if(!bad) {
+                    addr = new InetSocketAddress(InetAddress.getByAddress(addrbytes), port);
+                }
+            }
+            if(addr == null) {
+                addr = new InetSocketAddress(InetAddress.getByName(bind), port);
+            }
+        } catch (UnknownHostException uhx) {
+            Log.severe("Bad webserver_bindaddress: " + bind);
+            addr = null;
+        }
+        return addr;
+    }
     public void loadWebserver() {
         org.eclipse.jetty.util.log.Log.setLog(new JettyNullLogger());
-
-        webServer = new Server(new InetSocketAddress(configuration.getString("webserver-bindaddress", "0.0.0.0"), configuration.getInteger("webserver-port", 8123)));
+        webServerAddress = getWebBindAddress(configuration.getString("webserver-bindaddress", "0.0.0.0"), configuration.getInteger("webserver-port", 8123));
+        if(webServerAddress == null)
+            return;
+        webServer = new Server(webServerAddress);
         webServer.setStopAtShutdown(true);
         //webServer.setGracefulShutdown(1000);
         
@@ -495,9 +528,12 @@ public class DynmapCore {
     
     public void startWebserver() {
         try {
-            webServer.start();
+            if(webServer != null) {
+                webServer.start();
+                Log.info("Web server started on address " + webServerAddress.getAddress().getHostAddress() + ":" + webServerAddress.getPort());
+            }
         } catch (Exception e) {
-            Log.severe("Failed to start WebServer!", e);
+            Log.severe("Failed to start WebServer on address " + webServerAddress.getAddress().getHostAddress() + ":" + webServerAddress.getPort() + " : " + e.getMessage());
         }
     }
 
