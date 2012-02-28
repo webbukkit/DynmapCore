@@ -40,7 +40,9 @@ import org.dynmap.web.BanIPFilter;
 import org.dynmap.web.CustomHeaderFilter;
 import org.dynmap.web.FilterHandler;
 import org.dynmap.web.HandlerRouter;
+import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.util.resource.FileResource;
@@ -53,7 +55,8 @@ public class DynmapCore {
     private DynmapServerInterface server;
     private String version;
     private Server webServer = null;
-    private InetSocketAddress webServerAddress = null;
+    private String webhostname = null;
+    private int webport = 0;
     private HandlerRouter router = null;
     public MapManager mapManager = null;
     public PlayerList playerList;
@@ -437,28 +440,19 @@ public class DynmapCore {
         }
     }
 
-    private InetSocketAddress getWebBindAddress(String bind, int port) {
-        InetSocketAddress addr = null;
-        try {
-            if(bind.equals("0.0.0.0")) {
-                addr = new InetSocketAddress(port);
-            }
-            else {
-                InetAddress a = InetAddress.getByName(bind);
-                addr = new InetSocketAddress(a, port);
-            }
-        } catch (UnknownHostException uhx) {
-            Log.severe("Bad webserver_bindaddress: " + bind);
-            addr = null;
-        }
-        return addr;
-    }
     public void loadWebserver() {
         org.eclipse.jetty.util.log.Log.setLog(new JettyNullLogger());
-        webServerAddress = getWebBindAddress(configuration.getString("webserver-bindaddress", "0.0.0.0"), configuration.getInteger("webserver-port", 8123));
-        if(webServerAddress == null)
-            return;
-        webServer = new Server(webServerAddress);
+        webhostname = configuration.getString("webserver-bindaddress", "0.0.0.0");
+        webport = configuration.getInteger("webserver-port", 8123);
+        
+        webServer = new Server();
+        
+        Connector connector=new SelectChannelConnector();
+        if(webhostname.equals("0.0.0.0") == false)
+            connector.setHost(webhostname);
+        connector.setPort(webport);
+        webServer.setConnectors(new Connector[]{connector});
+
         webServer.setStopAtShutdown(true);
         //webServer.setGracefulShutdown(1000);
         
@@ -516,10 +510,10 @@ public class DynmapCore {
         try {
             if(webServer != null) {
                 webServer.start();
-                Log.info("Web server started on address " + webServerAddress.getAddress().getHostAddress() + ":" + webServerAddress.getPort());
+                Log.info("Web server started on address " + webhostname + ":" + webport);
             }
         } catch (Exception e) {
-            Log.severe("Failed to start WebServer on address " + webServerAddress.getAddress().getHostAddress() + ":" + webServerAddress.getPort() + " : " + e.getMessage());
+            Log.severe("Failed to start WebServer on address " + webhostname + ":" + webport + " : " + e.getMessage());
         }
     }
 
