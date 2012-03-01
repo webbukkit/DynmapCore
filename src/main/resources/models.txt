@@ -67,22 +67,106 @@ rotate:id=53,data=4,rot=270
 # Chest - set render alg
 linkmap:id=54,linkalg=2
 # Slab (stone, sandstone, wood, cobblestone)
-block:id=44,data=*,scale=4
+block:id=44,data=0,data=1,data=2,data=3,data=4,data=5,data=6,data=7,scale=4
 layer:0,1
 ****
 ****
 ****
 ****
 layer:2,3
---
---
+----
+----
+----
+----
+# Top Slab (stone, sandstone, wood, cobblestone)
+block:id=44,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,scale=4
+layer:0,1
+----
+----
+----
+----
+layer:2,3
+****
+****
+****
+****
 # Snow
-block:id=78,data=*,scale=4
+block:id=78,data=0,data=8,scale=8
 layer:0
-****
-****
-****
-****
+********
+********
+********
+********
+********
+********
+********
+********
+# Snow
+block:id=78,data=1,data=9,scale=8
+layer:0,1
+********
+********
+********
+********
+********
+********
+********
+********
+# Snow
+block:id=78,data=2,data=10,scale=8
+layer:0,1,2
+********
+********
+********
+********
+********
+********
+********
+********
+# Snow
+block:id=78,data=3,data=11,scale=8
+layer:0,1,2,3
+********
+********
+********
+********
+********
+********
+********
+********
+# Snow
+block:id=78,data=4,data=12,scale=8
+layer:0,1,2,3,4
+********
+********
+********
+********
+********
+********
+********
+********
+# Snow
+block:id=78,data=5,data=13,scale=8
+layer:0,1,2,3,4,5
+********
+********
+********
+********
+********
+********
+********
+********
+# Snow
+block:id=78,data=6,data=14,scale=8
+layer:0,1,2,3,4,5,6
+********
+********
+********
+********
+********
+********
+********
+********
 # Torch - up
 # Redstone torch on - up
 # Redstone torch off - up
