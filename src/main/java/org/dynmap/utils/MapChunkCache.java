@@ -70,7 +70,7 @@ public interface MapChunkCache {
     /**
      * Test if section (16 x 16 x 16) at given coord is empty (all air)
      */
-    boolean isEmptySection(int x, int y, int z);
+    boolean isEmptySection(int sx, int sy, int sz);
     /**
      * Get cache iterator
      */
