@@ -202,7 +202,8 @@ public class IsoHDPerspective implements HDPerspective {
          * Get sky light level - only available if shader requested it
          */
         public final LightLevels  getLightLevelsAtStep(BlockStep step) {
-            if((step == BlockStep.Y_MINUS) && (y == 0)) {
+            if(((step == BlockStep.Y_MINUS) && (y == 0)) ||
+                    ((step == BlockStep.Y_PLUS) && (y == worldheight))) {
                 return getLightLevels();
             }
             BlockStep blast = laststep;
