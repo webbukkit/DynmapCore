@@ -744,7 +744,7 @@ public class IsoHDPerspective implements HDPerspective {
                 }
                 else {
                     t_next_y = t + (yy - y) * dt_dy;
-                    n += y - fastFloor(bottom.x);
+                    n += y - fastFloor(bottom.y);
                 }
             }
             if(t_next_z != Double.MAX_VALUE) {
@@ -754,7 +754,7 @@ public class IsoHDPerspective implements HDPerspective {
                 }
                 else {
                     t_next_z = t + (zz - z) * dt_dz;
-                    n += z - fastFloor(bottom.x);
+                    n += z - fastFloor(bottom.z);
                 }
             }
         }
