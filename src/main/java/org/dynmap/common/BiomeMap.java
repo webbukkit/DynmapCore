@@ -29,5 +29,7 @@ public enum BiomeMap {
     DESERT_HILLS,
     FOREST_HILLS,
     TAIGA_HILLS,
-    SMALL_MOUNTAINS
+    SMALL_MOUNTAINS,
+    JUNGLE,
+    JUNGLE_HILLS
 }
