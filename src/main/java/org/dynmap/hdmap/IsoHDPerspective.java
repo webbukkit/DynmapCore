@@ -1190,6 +1190,9 @@ public class IsoHDPerspective implements HDPerspective {
         if(height < 0) {    /* Not set - assume world height - 1 */
             height = tile.getDynmapWorld().worldheight - 1;
         }
+        if(isnether && (height > 128)) {
+            height = 127;
+        }
         
         for(int x = 0; x < tileWidth; x++) {
             ps.px = x;
