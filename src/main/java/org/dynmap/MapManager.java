@@ -132,6 +132,8 @@ public class MapManager {
 
     public DynmapWorld getWorld(String name) {
         DynmapWorld world = worldsLookup.get(name);
+        if(world == null)
+            world = worldsLookup.get(DynmapWorld.normalizeWorldName(name));
         return world;
     }
     

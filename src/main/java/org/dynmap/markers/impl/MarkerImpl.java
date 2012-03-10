@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.dynmap.ConfigurationNode;
+import org.dynmap.DynmapWorld;
 import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerIcon;
 import org.dynmap.markers.MarkerSet;
@@ -18,6 +19,7 @@ class MarkerImpl implements Marker {
     private MarkerSetImpl markerset;
     private double x, y, z;
     private String world;
+    private String normalized_world;
     private MarkerIconImpl icon;
     private boolean ispersistent;
     
@@ -42,6 +44,7 @@ class MarkerImpl implements Marker {
         this.markup = markup;
         this.x = x; this.y = y; this.z = z;
         this.world = world;
+        this.normalized_world = DynmapWorld.normalizeWorldName(world);
         this.icon = icon;
         this.desc = null;
         ispersistent = persistent;
@@ -58,7 +61,7 @@ class MarkerImpl implements Marker {
         label = id;
         markup = false;
         desc = null;
-        x = z = 0; y = 64; world = "world";
+        x = z = 0; y = 64; world = normalized_world = "world";
         icon = MarkerAPIImpl.getMarkerIconImpl(MarkerIcon.DEFAULT);
     }
     /**
@@ -72,6 +75,7 @@ class MarkerImpl implements Marker {
         y = node.getDouble("y", 64);
         z = node.getDouble("z", 0);
         world = node.getString("world", "world");
+        normalized_world = DynmapWorld.normalizeWorldName(world);
         desc = node.getString("desc", null);
         icon = MarkerAPIImpl.getMarkerIconImpl(node.getString("icon", MarkerIcon.DEFAULT)); 
         ispersistent = true;    /* Loaded from config, so must be */
@@ -170,6 +174,10 @@ class MarkerImpl implements Marker {
     @Override
     public String getWorld() {
         return world;
+    }
+    @Override
+    public String getNormalizedWorld() {
+        return normalized_world;
     }
     @Override
     public double getX() {

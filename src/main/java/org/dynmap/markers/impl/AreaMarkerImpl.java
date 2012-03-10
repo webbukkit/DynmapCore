@@ -20,6 +20,7 @@ class AreaMarkerImpl implements AreaMarker {
     private String desc;
     private MarkerSetImpl markerset;
     private String world;
+    private String normalized_world;
     private boolean ispersistent;
     private ArrayList<Coord> corners;
     private int lineweight = 3;
@@ -60,6 +61,7 @@ class AreaMarkerImpl implements AreaMarker {
             this.corners.add(new Coord(x[i], z[i]));
         }
         this.world = world;
+        this.normalized_world = DynmapWorld.normalizeWorldName(world);
         this.desc = null;
         ispersistent = persistent;
         markerset = set;
@@ -82,7 +84,7 @@ class AreaMarkerImpl implements AreaMarker {
         markup = false;
         desc = null;
         corners = new ArrayList<Coord>();
-        world = "world";
+        world = normalized_world = "world";
     }
     /**
      *  Load marker from configuration node
@@ -101,6 +103,7 @@ class AreaMarkerImpl implements AreaMarker {
                 corners.add(new Coord(xx.get(i), zz.get(i)));
         }
         world = node.getString("world", "world");
+        normalized_world = DynmapWorld.normalizeWorldName(world);
         desc = node.getString("desc", null);
         lineweight = node.getInteger("strokeWeight", -1);
         if(lineweight == -1) {	/* Handle typo-saved value */
@@ -194,6 +197,10 @@ class AreaMarkerImpl implements AreaMarker {
     @Override
     public String getWorld() {
         return world;
+    }
+    @Override
+    public String getNormalizedWorld() {
+        return normalized_world;
     }
     @Override
     public boolean isLabelMarkup() {

@@ -49,6 +49,7 @@ public abstract class DynmapWorld {
     private boolean checkts = true;	/* Check timestamps on first run with new configuration */
     private boolean cancelled;
     private String wname;
+    private String raw_wname;
     private String title;
     private boolean is_enabled;
     
@@ -59,7 +60,8 @@ public abstract class DynmapWorld {
     public final int sealevel;
     
     protected DynmapWorld(String wname, int worldheight, int sealevel) {
-        this.wname = wname;
+        this.raw_wname = wname;
+        this.wname = normalizeWorldName(wname);
         this.worldheight = worldheight;
         this.sealevel = sealevel;
         int shift;
@@ -744,5 +746,11 @@ public abstract class DynmapWorld {
     }
     public void setTitle(String title) {
         this.title = title;
+    }
+    public static String normalizeWorldName(String n) {
+        return n.replace('/', '-');
+    }
+    public String getRawName() {
+        return raw_wname;
     }
 }

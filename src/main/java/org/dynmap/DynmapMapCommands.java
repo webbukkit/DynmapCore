@@ -84,7 +84,7 @@ public class DynmapMapCommands {
         if(args.length > 1) {
             wnames = new HashSet<String>();
             for(int i = 1; i < args.length; i++)
-                wnames.add(args[i]);
+                wnames.add(DynmapWorld.normalizeWorldName(args[i]));
         }
         /* Get active worlds */
         for(DynmapWorld w : core.getMapManager().getWorlds()) {

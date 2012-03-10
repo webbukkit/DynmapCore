@@ -588,10 +588,10 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     static void markerUpdated(MarkerImpl marker, MarkerUpdate update) {
         /* Freshen marker file for the world for this marker */
         if(api != null)
-            api.dirty_worlds.add(marker.getWorld());
+            api.dirty_worlds.add(marker.getNormalizedWorld());
         /* Enqueue client update */
         if(MapManager.mapman != null)
-            MapManager.mapman.pushUpdate(marker.getWorld(), new MarkerUpdated(marker, update == MarkerUpdate.DELETED));
+            MapManager.mapman.pushUpdate(marker.getNormalizedWorld(), new MarkerUpdated(marker, update == MarkerUpdate.DELETED));
     }
     /**
      * Signal area marker update
@@ -601,10 +601,10 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     static void areaMarkerUpdated(AreaMarkerImpl marker, MarkerUpdate update) {
         /* Freshen marker file for the world for this marker */
         if(api != null)
-            api.dirty_worlds.add(marker.getWorld());
+            api.dirty_worlds.add(marker.getNormalizedWorld());
         /* Enqueue client update */
         if(MapManager.mapman != null)
-            MapManager.mapman.pushUpdate(marker.getWorld(), new AreaMarkerUpdated(marker, update == MarkerUpdate.DELETED));
+            MapManager.mapman.pushUpdate(marker.getNormalizedWorld(), new AreaMarkerUpdated(marker, update == MarkerUpdate.DELETED));
     }
     /**
      * Signal poly-line marker update
@@ -614,10 +614,10 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     static void polyLineMarkerUpdated(PolyLineMarkerImpl marker, MarkerUpdate update) {
         /* Freshen marker file for the world for this marker */
         if(api != null)
-            api.dirty_worlds.add(marker.getWorld());
+            api.dirty_worlds.add(marker.getNormalizedWorld());
         /* Enqueue client update */
         if(MapManager.mapman != null)
-            MapManager.mapman.pushUpdate(marker.getWorld(), new PolyLineMarkerUpdated(marker, update == MarkerUpdate.DELETED));
+            MapManager.mapman.pushUpdate(marker.getNormalizedWorld(), new PolyLineMarkerUpdated(marker, update == MarkerUpdate.DELETED));
     }
     /**
      * Signal marker set update
@@ -804,7 +804,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     
     public static boolean onCommand(DynmapCore plugin, DynmapCommandSender sender, String cmd, String commandLabel, String[] args) {
         String id, setid, file, label, newlabel, iconid, prio, minzoom;
-        String x, y, z, world;
+        String x, y, z, world, normalized_world;
         
         if(api == null) {
             sender.sendMessage("Markers component is not enabled.");
@@ -833,9 +833,10 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 x = parms.get(ARG_X);
                 y = parms.get(ARG_Y);
                 z = parms.get(ARG_Z);
-                world = parms.get(ARG_WORLD);
+                world = DynmapWorld.normalizeWorldName(parms.get(ARG_WORLD));
                 if(world != null) {
-                    if(api.core.getWorld(world) == null) {
+                    normalized_world = DynmapWorld.normalizeWorldName(world);
+                    if(api.core.getWorld(normalized_world) == null) {
                         sender.sendMessage("Invalid world ID: " + world);
                         return true;
                     }

@@ -997,6 +997,7 @@ public class DynmapCore {
     }
     
     private ConfigurationNode getWorldConfigurationNode(String worldName) {
+        worldName = DynmapWorld.normalizeWorldName(worldName);
         for(ConfigurationNode worldNode : world_config.getNodes("worlds")) {
             if (worldName.equals(worldNode.getString("name"))) {
                 return worldNode;
@@ -1283,12 +1284,14 @@ public class DynmapCore {
             return mapManager.getWorld(wid);
         return null;
     }
+    
     /* Called by plugin when world loaded */
     public boolean processWorldLoad(DynmapWorld w) {
         return mapManager.activateWorld(w);
     }
     /* Enable/disable world */
     public boolean setWorldEnable(String wname, boolean isenab) {
+        wname = DynmapWorld.normalizeWorldName(wname);
         List<Map<String,Object>> worlds = world_config.getMapList("worlds");
         for(Map<String,Object> m : worlds) {
             String wn = (String)m.get("name");
@@ -1306,6 +1309,7 @@ public class DynmapCore {
         return true;
     }
     public boolean setWorldZoomOut(String wname, int xzoomout) {
+        wname = DynmapWorld.normalizeWorldName(wname);
         List<Map<String,Object>> worlds = world_config.getMapList("worlds");
         for(Map<String,Object> m : worlds) {
             String wn = (String)m.get("name");
@@ -1317,6 +1321,7 @@ public class DynmapCore {
         return false;
     }
     public boolean setWorldCenter(String wname, DynmapLocation loc) {
+        wname = DynmapWorld.normalizeWorldName(wname);
         List<Map<String,Object>> worlds = world_config.getMapList("worlds");
         for(Map<String,Object> m : worlds) {
             String wn = (String)m.get("name");
@@ -1337,6 +1342,7 @@ public class DynmapCore {
         return false;
     }
     public boolean setWorldOrder(String wname, int order) {
+        wname = DynmapWorld.normalizeWorldName(wname);
         List<Map<String,Object>> worlds = world_config.getMapList("worlds");
         ArrayList<Map<String,Object>> newworlds = new ArrayList<Map<String,Object>>(worlds);
 
@@ -1368,6 +1374,7 @@ public class DynmapCore {
     }
 
     public boolean replaceWorldConfig(String wname, ConfigurationNode cn) {
+        wname = DynmapWorld.normalizeWorldName(wname);
         List<Map<String,Object>> worlds = world_config.getMapList("worlds");
         if(worlds == null) {
             worlds = new ArrayList<Map<String,Object>>();
@@ -1392,6 +1399,7 @@ public class DynmapCore {
     
     /* Refresh world config */
     public boolean refreshWorld(String wname) {
+        wname = DynmapWorld.normalizeWorldName(wname);
         saveWorldConfig();
         if(mapManager != null) {
             mapManager.deactivateWorld(wname);  /* Clean it up */
