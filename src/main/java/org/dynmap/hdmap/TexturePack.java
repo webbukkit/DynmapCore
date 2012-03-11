@@ -269,8 +269,6 @@ public class TexturePack {
         ZipFile zf = null;
         File texturedir = getTexturePackDirectory(core);
         boolean use_generate = HDMapManager.usegeneratedtextures;
-        if(HDMapManager.biomeshadingfix == false)
-            water_toned_op = COLORMOD_OLD_WATERSHADED;
 
         /* Set up for enough files */
         imgs = new LoadedImage[IMG_CNT + addonfiles.size()];
@@ -911,21 +909,8 @@ public class TexturePack {
      * Translate face ID - in case we've got options to fix it
      */
     private static int translateFaceID(int id) {
-        int f = (id / 1000);
-        switch(f) {
-            case COLORMOD_PINETONED:
-            case COLORMOD_BIRCHTONED:
-            case COLORMOD_LILYTONED:
-                if(HDMapManager.biomeshadingfix == false) {
-                    id = (COLORMOD_FOLIAGETONED * 1000) + (id % 1000);
-                }
-                break;
-            case COLORMOD_WATERTONED:
-                if(HDMapManager.biomeshadingfix == false) {
-                    id = (COLORMOD_OLD_WATERSHADED * 1000) + (id % 1000);
-                }
-                break;
-        }
+        /* Retired old shading fix=false option */
+        
         return id;
     }
     /**
@@ -1333,79 +1318,45 @@ public class TexturePack {
         /* Read color from texture */
         rslt.setARGB(texture[v*native_scale + u]);
 
-        LoadedImage li = null;
         int clrmult = -1;
         /* Switch based on texture modifier */
         switch(textop) {
             case COLORMOD_GRASSTONED:
-                li = imgs[IMG_GRASSCOLOR];
+                if(ss.do_biome_shading) {
+                    clrmult = mapiter.getSmoothGrassColorMultiplier(imgs[IMG_GRASSCOLOR].argb, imgs[IMG_GRASSCOLOR].width);
+                }
+                else {
+                    clrmult = imgs[IMG_GRASSCOLOR].trivial_color;
+                }
                 break;
             case COLORMOD_FOLIAGETONED:
-                li = imgs[IMG_FOLIAGECOLOR];
+                if(ss.do_biome_shading) {
+                    clrmult = mapiter.getSmoothFoliageColorMultiplier(imgs[IMG_FOLIAGECOLOR].argb, imgs[IMG_FOLIAGECOLOR].width);
+                }
+                else {
+                    clrmult = imgs[IMG_FOLIAGECOLOR].trivial_color;
+                }
                 break;
             case COLORMOD_WATERTONED:
-                if(ss.do_smooth_biome_shading) {
-                    int swamps = mapiter.countSmoothedSwampBiomes(xyz[0], xyz[2], native_scale);
-                    if(swamps != 0) {
-                        clrmult = smooth_water_mult[swamps/(native_scale*2)];
-                    }
+                if(ss.do_biome_shading) {
+                    clrmult = mapiter.getSmoothWaterColorMultiplier();
                 }
-                else if(ss.do_swamp_shading && (mapiter.getBiome() == BiomeMap.SWAMPLAND))
-                    clrmult = 0xFFE0FF70;
                 break;
             case COLORMOD_BIRCHTONED:
-                clrmult = 0xFF80a755;    /* From ColorizerFoliage.java in MCP */
+                clrmult = 0x80a755;    /* From ColorizerFoliage.java in MCP */
                 break;
             case COLORMOD_PINETONED:
-                clrmult = 0xFF619961;    /* From ColorizerFoliage.java in MCP */
+                clrmult = 0x619961;    /* From ColorizerFoliage.java in MCP */
                 break;
             case COLORMOD_LILYTONED:
-                clrmult =  0xFF208030; /* from BlockLilyPad.java in MCP */
+                clrmult =  0x208030; /* from BlockLilyPad.java in MCP */
                 break;
             case COLORMOD_OLD_WATERSHADED:  /* Legacy water shading (wrong, but folks used it */
-                if(ss.do_water_shading)
-                    li = imgs[IMG_WATERCOLOR];                
                 break;
         }
-        if(li != null) {
-            if((li.argb == null) || (!ss.do_biome_shading)) {
-                clrmult = li.trivial_color;
-            }
-            else {
-                clrmult = biomeLookup(li.argb, li.width, mapiter.getRawBiomeRainfall(), mapiter.getRawBiomeTemperature());
-            }
-            if(ss.do_smooth_biome_shading) {
-                int swamps = mapiter.countSmoothedSwampBiomes(xyz[0], xyz[2], native_scale);
-                if(swamps != 0) {
-                    int sc = 36 * native_scale;
-                    int r1 = ((sc-swamps) * ((clrmult >> 16) & 0xFF) + (swamps * 0x4E)) / sc;
-                    int g1 = ((sc-swamps) * ((clrmult >> 8) & 0xFF) + (swamps * 0x0E)) / sc;
-                    int b1 = ((sc-swamps) * (clrmult & 0xFF) + (swamps * 0x4E)) / sc;
-                    clrmult = (clrmult & 0xFF000000) | (r1 << 16) | (g1 << 8) | b1;
-                }
-            }
-            else if(ss.do_swamp_shading && (mapiter.getBiome() == BiomeMap.SWAMPLAND)) {
-                clrmult = (clrmult & 0xFF000000) | (((clrmult & 0x00FEFEFE) + 0x4E0E4E) / 2);
-            }
-        }
         if((clrmult != -1) && (clrmult != 0)) {
-            rslt.blendColor(clrmult);
+            rslt.blendColor(clrmult | 0xFF000000);
         }
-    }
-    
-    private static final int biomeLookup(int[] argb, int width, double rainfall, double temp) {
-        int w = width-1;
-        int t = (int)((1.0-temp)*w);
-        int h = (int)((1.0 - (temp*rainfall))*w);
-        if(h > w) 
-        	h = w;
-        else if(h < 0)
-        	h = 0;
-        if(t > w)
-        	t = w;
-        else if(t < 0)
-        	t = 0;
-        return argb[width*h + t];
     }
     
     private static final void makeAlphaPure(int[] argb) {

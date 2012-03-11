@@ -16,10 +16,7 @@ public class TexturePackHDShader implements HDShader {
     private final String name;
     private final TexturePack tp;
     private final boolean biome_shaded;
-    private final boolean swamp_shaded;
-    private final boolean waterbiomeshaded;
     private final boolean bettergrass;
-    private final boolean smooth_biome_shading;
     private final int gridscale;
     
     public TexturePackHDShader(DynmapCore core, ConfigurationNode configuration) {
@@ -27,10 +24,7 @@ public class TexturePackHDShader implements HDShader {
         name = configuration.getString("name", tpname);
         tp = TexturePack.getTexturePack(core, tpname);
         biome_shaded = configuration.getBoolean("biomeshaded", true);
-        swamp_shaded = configuration.getBoolean("swampshaded", MapManager.mapman.getSwampShading());
-        waterbiomeshaded = configuration.getBoolean("waterbiomeshaded", MapManager.mapman.getWaterBiomeShading());
         bettergrass = configuration.getBoolean("better-grass", MapManager.mapman.getBetterGrass());
-        smooth_biome_shading = configuration.getBoolean("smooth-biome-shading", MapManager.mapman.getSmoothBiomeShading());
         gridscale = configuration.getInteger("grid-scale", 0);
         if(tp == null) {
             Log.severe("Error: shader '" + name + "' cannot load texture pack '" + tpname + "'");
@@ -39,12 +33,12 @@ public class TexturePackHDShader implements HDShader {
     
     @Override
     public boolean isBiomeDataNeeded() { 
-        return swamp_shaded || smooth_biome_shading || biome_shaded || waterbiomeshaded; 
+        return biome_shaded; 
     }
     
     @Override
     public boolean isRawBiomeDataNeeded() { 
-        return biome_shaded; 
+        return false; 
     }
     
     @Override
@@ -82,10 +76,7 @@ public class TexturePackHDShader implements HDShader {
         final private HDLighting lighting;
         private int lastblkid;
         final boolean do_biome_shading;
-        final boolean do_swamp_shading;
-        final boolean do_water_shading;
         final boolean do_better_grass;
-        final boolean do_smooth_biome_shading;
         
         private ShaderState(MapIterator mapiter, HDMap map, MapChunkCache cache) {
             this.mapiter = mapiter;
@@ -103,10 +94,7 @@ public class TexturePackHDShader implements HDShader {
             scaledtp = tp.resampleTexturePack(map.getPerspective().getModelScale());
             /* Biome raw data only works on normal worlds at this point */
             do_biome_shading = biome_shaded; // && (cache.getWorld().getEnvironment() == Environment.NORMAL);
-            do_swamp_shading = do_biome_shading && swamp_shaded;
-            do_water_shading = do_biome_shading && waterbiomeshaded;
             do_better_grass = bettergrass;
-            do_smooth_biome_shading = smooth_biome_shading && do_biome_shading;
         }
         /**
          * Get our shader

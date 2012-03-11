@@ -68,12 +68,8 @@ public class DynmapCore {
     public Events events = new Events();
     public String deftemplatesuffix = "";
     private DynmapMapCommands dmapcmds = new DynmapMapCommands();
-    boolean swampshading = false;
-    boolean waterbiomeshading = false;
-    boolean fencejoin = false;
     boolean bettergrass = false;
     boolean smoothlighting = false;
-    boolean smooth_biome_shading = false;
     private String def_image_format = "png";
     private HashSet<String> enabledTriggers = new HashSet<String>();
     public boolean disable_chat_to_web = false;
@@ -269,19 +265,10 @@ public class DynmapCore {
         smoothlighting = configuration.getBoolean("smooth-lighting", false);
         Log.verbose = configuration.getBoolean("verbose", true);
         deftemplatesuffix = configuration.getString("deftemplatesuffix", "");
-        /* Default swamp shading off for 1.8, on after */
-        boolean post_1_8 = !mc_ver.contains("1.8.");
-        swampshading = configuration.getBoolean("swampshaded", post_1_8);
-        /* Default water biome shading off for 1.8, on after */
-        waterbiomeshading = configuration.getBoolean("waterbiomeshaded", post_1_8);
-        /* Default fence-to-block-join off for 1.8, on after */
-        fencejoin = configuration.getBoolean("fence-to-block-join", post_1_8);
-        /* Default smooth biome shading to off */
-        smooth_biome_shading = configuration.getBoolean("smooth-biome-shading", false);
         /* Get snapshot cache size */
         snapshotcachesize = configuration.getInteger("snapshotcachesize", 500);
-        /* Default compassmode to pre19, to newrose after */
-        String cmode = configuration.getString("compass-mode", post_1_8?"newrose":"pre19");
+        /* Default compassmode to newrose */
+        String cmode = configuration.getString("compass-mode", "newrose");
         if(cmode.equals("newnorth"))
             compassmode = CompassMode.NEWNORTH;
         else if(cmode.equals("newrose"))

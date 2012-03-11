@@ -49,13 +49,17 @@ public interface MapIterator {
      */
     public BiomeMap getBiome();
     /**
-     * Count biomes in and adjacent to block matching SWAMPLAND
+     * Get smoothed grass color multiplier
      */
-    public int  countSmoothedSwampBiomes();
+    public int getSmoothGrassColorMultiplier(int[] colormap, int width);
     /**
-     * Count of swamplands, interpolated - return count times scale times 2
+     * Get smoothed foliage color multiplier
      */
-    public int  countSmoothedSwampBiomes(int sx, int sz, int scale);
+    public int getSmoothFoliageColorMultiplier(int[] colormap, int width);
+    /**
+     * get smoothed water color multiplier
+     */
+    public int getSmoothWaterColorMultiplier();
     /**
      * Get raw temperature data (0.0-1.0)
      */

@@ -1262,31 +1262,15 @@ public class MapManager {
         core.getServer().resetCacheStats();
         sender.sendMessage("Tile Render Statistics reset");
     }    
-    
-    public boolean getSwampShading() {
-        return core.swampshading;
-    }
-
-    public boolean getWaterBiomeShading() {
-        return core.waterbiomeshading;
-    }
 
     public boolean getSmoothLighting() {
         return core.smoothlighting;
     }
     
-    public boolean getFenceJoin() {
-        return core.fencejoin;
-    }
-
     public boolean getBetterGrass() {
         return core.bettergrass;
     }
     
-    public boolean getSmoothBiomeShading() {
-        return core.smooth_biome_shading;
-    }
-
     public CompassMode getCompassMode() {
         return core.compassmode;
     }

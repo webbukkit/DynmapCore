@@ -43,7 +43,6 @@ public class IsoHDPerspective implements HDPerspective {
     public double scale;    /* Scale - tile pixel widths per block */
     public double maxheight;
     public double minheight;
-    private boolean fencejoin;
     /* Coordinate space for tiles consists of a plane (X, Y), corresponding to the projection of each tile on to the
      * plane of the bottom of the world (X positive to the right, Y positive to the top), with Z+ corresponding to the
      * height above this plane on a vector towards the viewer).  Logically, this makes the parallelogram representing the
@@ -366,25 +365,25 @@ public class IsoHDPerspective implements HDPerspective {
             /* Check north */
             id = mapiter.getBlockTypeIDAt(BlockStep.X_MINUS);
             if((id == blkid) || (id == FENCEGATE_BLKTYPEID) || 
-                    (fencejoin && (id > 0) && (HDTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {    /* Fence? */
+                    ((id > 0) && (HDTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {    /* Fence? */
                 blockdata |= 1;
             }
             /* Look east */
             id = mapiter.getBlockTypeIDAt(BlockStep.Z_MINUS);
             if((id == blkid) || (id == FENCEGATE_BLKTYPEID) ||
-                    (fencejoin && (id > 0) && (HDTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {    /* Fence? */
+                    ((id > 0) && (HDTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {    /* Fence? */
                 blockdata |= 2;
             }
             /* Look south */
             id = mapiter.getBlockTypeIDAt(BlockStep.X_PLUS);
             if((id == blkid) || (id == FENCEGATE_BLKTYPEID) ||
-                    (fencejoin && (id > 0) && (HDTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {    /* Fence? */
+                    ((id > 0) && (HDTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {    /* Fence? */
                 blockdata |= 4;
             }
             /* Look west */
             id = mapiter.getBlockTypeIDAt(BlockStep.Z_PLUS);
             if((id == blkid) || (id == FENCEGATE_BLKTYPEID) ||
-                    (fencejoin && (id > 0) && (HDTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {    /* Fence? */
+                    ((id > 0) && (HDTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {    /* Fence? */
                 blockdata |= 8;
             }
             return blockdata;
@@ -879,8 +878,6 @@ public class IsoHDPerspective implements HDPerspective {
         maxheight = configuration.getInteger("maximumheight", -1);
         minheight = configuration.getInteger("minimumheight", 0);
         if(minheight < 0) minheight = 0;
-        /* Fence-to-block-join setting */
-        fencejoin = configuration.getBoolean("fence-to-block-join", MapManager.mapman.getFenceJoin());
 
         /* Generate transform matrix for world-to-tile coordinate mapping */
         /* First, need to fix basic coordinate mismatches before rotation - we want zero azimuth to have north to top
