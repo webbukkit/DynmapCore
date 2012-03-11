@@ -10,6 +10,7 @@ import java.util.Set;
 import org.dynmap.ConfigurationNode;
 import org.dynmap.Log;
 import org.dynmap.markers.AreaMarker;
+import org.dynmap.markers.CircleMarker;
 import org.dynmap.markers.PolyLineMarker;
 import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerIcon;
@@ -20,6 +21,7 @@ class MarkerSetImpl implements MarkerSet {
     private HashMap<String, MarkerImpl> markers = new HashMap<String, MarkerImpl>();
     private HashMap<String, AreaMarkerImpl> areamarkers = new HashMap<String, AreaMarkerImpl>();
     private HashMap<String, PolyLineMarkerImpl> linemarkers = new HashMap<String, PolyLineMarkerImpl>();
+    private HashMap<String, CircleMarkerImpl> circlemarkers = new HashMap<String, CircleMarkerImpl>();
     private String setid;
     private String label;
     private HashMap<String, MarkerIconImpl> allowedicons = null;
@@ -58,6 +60,8 @@ class MarkerSetImpl implements MarkerSet {
             m.cleanup();
         for(PolyLineMarkerImpl m : linemarkers.values())
             m.cleanup();
+        for(CircleMarkerImpl m : circlemarkers.values())
+            m.cleanup();
         markers.clear();
     }
     
@@ -74,6 +78,11 @@ class MarkerSetImpl implements MarkerSet {
     @Override
     public Set<PolyLineMarker> getPolyLineMarkers() {
         return new HashSet<PolyLineMarker>(linemarkers.values());
+    }
+
+    @Override
+    public Set<CircleMarker> getCircleMarkers() {
+        return new HashSet<CircleMarker>(circlemarkers.values());
     }
 
     @Override
@@ -239,6 +248,18 @@ class MarkerSetImpl implements MarkerSet {
         }
         MarkerAPIImpl.polyLineMarkerUpdated(marker, MarkerUpdate.DELETED);
     }
+    /**
+     * Remove marker from set
+     * 
+     * @param marker
+     */
+    void removeCircleMarker(CircleMarkerImpl marker) {
+        circlemarkers.remove(marker.getMarkerID());   /* Remove from set */
+        if(ispersistent && marker.isPersistentMarker()) {   /* If persistent */
+            MarkerAPIImpl.saveMarkers();        /* Drive save */
+        }
+        MarkerAPIImpl.circleMarkerUpdated(marker, MarkerUpdate.DELETED);
+    }
 
     /**
      * Get configuration node to be saved
@@ -268,6 +289,13 @@ class MarkerSetImpl implements MarkerSet {
                 lnode.put(id, m.getPersistentData());
             }
         }
+        HashMap<String, Object> cnode = new HashMap<String, Object>();
+        for(String id : circlemarkers.keySet()) {
+            CircleMarkerImpl m = circlemarkers.get(id);
+            if(m.isPersistentMarker()) {
+                cnode.put(id, m.getPersistentData());
+            }
+        }
         /* Make top level node */
         HashMap<String, Object> setnode = new HashMap<String, Object>();
         setnode.put("label", label);
@@ -278,6 +306,7 @@ class MarkerSetImpl implements MarkerSet {
         setnode.put("markers", node);
         setnode.put("areas", anode);
         setnode.put("lines", lnode);
+        setnode.put("circles", cnode);
         setnode.put("hide", hide_by_def);
         setnode.put("layerprio", prio);
         setnode.put("minzoom", minzoom);
@@ -327,6 +356,19 @@ class MarkerSetImpl implements MarkerSet {
                 }
                 else {
                     Log.info("Error loading line marker '" + id + "' for set '" + setid + "'");
+                    marker.cleanup();
+                }
+            }
+        }
+        ConfigurationNode circlemarkernode = node.getNode("circles");
+        if(circlemarkernode != null) {
+            for(String id : circlemarkernode.keySet()) {
+                CircleMarkerImpl marker = new CircleMarkerImpl(id, this);   /* Make and load marker */
+                if(marker.loadPersistentData(circlemarkernode.getNode(id))) {
+                    circlemarkers.put(id, marker);
+                }
+                else {
+                    Log.info("Error loading circle marker '" + id + "' for set '" + setid + "'");
                     marker.cleanup();
                 }
             }
@@ -490,5 +532,49 @@ class MarkerSetImpl implements MarkerSet {
     @Override
     public Boolean getLabelShow() {
         return showlabels;
+    }
+
+    @Override
+    public CircleMarker createCircleMarker(String id, String lbl,
+            boolean markup, String world, double x, double y, double z,
+            double xr, double zr, boolean persistent) {
+        if(id == null) {    /* If not defined, generate unique one */
+            int i = 0;
+            do {
+                i++;
+                id = "circle_" + i; 
+            } while(circlemarkers.containsKey(id));
+        }
+        if(circlemarkers.containsKey(id)) return null;    /* Duplicate ID? */
+        /* Create marker */
+        persistent = persistent && this.ispersistent;
+        CircleMarkerImpl marker = new CircleMarkerImpl(id, lbl, markup, world, x, y, z, xr, zr, persistent, this);
+        circlemarkers.put(id, marker);    /* Add to set */
+        if(persistent)
+            MarkerAPIImpl.saveMarkers();
+        
+        MarkerAPIImpl.circleMarkerUpdated(marker, MarkerUpdate.CREATED);  /* Signal create */
+
+        return marker;
+    }
+
+    @Override
+    public CircleMarker findCircleMarker(String id) {
+        return circlemarkers.get(id);
+    }
+
+    @Override
+    public CircleMarker findCircleMarkerByLabel(String lbl) {
+        CircleMarker match = null;
+        int matchlen = Integer.MAX_VALUE;
+        for(CircleMarker m : circlemarkers.values()) {
+            if(m.getLabel().contains(lbl)) {
+                if(matchlen > m.getLabel().length()) {
+                    match = m;
+                    matchlen = m.getLabel().length();
+                }
+            }
+        }
+        return match;
     }
 }

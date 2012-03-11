@@ -31,6 +31,7 @@ import org.dynmap.Client.ComponentMessage;
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.common.DynmapPlayer;
 import org.dynmap.markers.AreaMarker;
+import org.dynmap.markers.CircleMarker;
 import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerIcon;
@@ -206,6 +207,58 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         public boolean equals(Object o) {
             if(o instanceof PolyLineMarkerUpdated) {
                 PolyLineMarkerUpdated m = (PolyLineMarkerUpdated)o;
+                return m.id.equals(id) && m.set.equals(set);
+            }
+            return false;
+        }
+        @Override
+        public int hashCode() {
+            return id.hashCode() ^ set.hashCode();
+        }
+    }
+
+    public static class CircleMarkerUpdated extends MarkerComponentMessage {
+        public String msg;
+        public double x;
+        public double y;
+        public double z;
+        public double xr;
+        public double zr;
+        public int weight;
+        public double opacity;
+        public String color;
+        public double fillopacity;
+        public String fillcolor;
+        public String id;
+        public String label;
+        public String set;
+        public String desc;
+        
+        public CircleMarkerUpdated(CircleMarker m, boolean deleted) {
+            this.id = m.getMarkerID();
+            this.label = m.getLabel();
+            this.x = m.getCenterX();
+            this.y = m.getCenterY();
+            this.z = m.getCenterZ();
+            this.xr = m.getRadiusX();
+            this.zr = m.getRadiusZ();
+            color = String.format("#%06X", m.getLineColor());
+            weight = m.getLineWeight();
+            opacity = m.getLineOpacity();
+            fillcolor = String.format("#%06X", m.getFillColor());
+            fillopacity = m.getFillOpacity();
+            desc = m.getDescription();
+            
+            this.set = m.getMarkerSet().getMarkerSetID();
+            if(deleted) 
+                msg = "circledeleted";
+            else
+                msg = "circleupdated";
+        }
+        @Override
+        public boolean equals(Object o) {
+            if(o instanceof CircleMarkerUpdated) {
+                CircleMarkerUpdated m = (CircleMarkerUpdated)o;
                 return m.id.equals(id) && m.set.equals(set);
             }
             return false;
@@ -620,6 +673,19 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             MapManager.mapman.pushUpdate(marker.getNormalizedWorld(), new PolyLineMarkerUpdated(marker, update == MarkerUpdate.DELETED));
     }
     /**
+     * Signal circle marker update
+     * @param marker - updated marker
+     * @param update - type of update
+     */
+    static void circleMarkerUpdated(CircleMarkerImpl marker, MarkerUpdate update) {
+        /* Freshen marker file for the world for this marker */
+        if(api != null)
+            api.dirty_worlds.add(marker.getNormalizedWorld());
+        /* Enqueue client update */
+        if(MapManager.mapman != null)
+            MapManager.mapman.pushUpdate(marker.getNormalizedWorld(), new CircleMarkerUpdated(marker, update == MarkerUpdate.DELETED));
+    }
+    /**
      * Signal marker set update
      * @param markerset - updated marker set
      * @param update - type of update
@@ -715,10 +781,72 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         return true;
     }
 
+    private static boolean processCircleArgs(DynmapCommandSender sender, CircleMarker marker, Map<String,String> parms) {
+        String val = null;
+        try {
+            int scolor = marker.getLineColor();
+            int fcolor = marker.getFillColor();
+            double sopacity = marker.getLineOpacity();
+            double fopacity = marker.getFillOpacity();
+            int sweight = marker.getLineWeight();
+            double xr = marker.getRadiusX();
+            double zr = marker.getRadiusZ();
+            double x = marker.getCenterX();
+            double y = marker.getCenterY();
+            double z = marker.getCenterZ();
+            String world = marker.getWorld();
+            
+            val = parms.get(ARG_STROKECOLOR);
+            if(val != null)
+                scolor = Integer.parseInt(val, 16);
+            val = parms.get(ARG_FILLCOLOR);
+            if(val != null)
+                fcolor = Integer.parseInt(val, 16);
+            val = parms.get(ARG_STROKEOPACITY);
+            if(val != null)
+                sopacity = Double.parseDouble(val);
+            val = parms.get(ARG_FILLOPACITY);
+            if(val != null)
+                fopacity = Double.parseDouble(val);
+            val = parms.get(ARG_STROKEWEIGHT);
+            if(val != null)
+                sweight = Integer.parseInt(val);
+            val = parms.get(ARG_X);
+            if(val != null)
+                x = Double.parseDouble(val);
+            val = parms.get(ARG_Y);
+            if(val != null)
+                y = Double.parseDouble(val);
+            val = parms.get(ARG_Z);
+            if(val != null)
+                z = Double.parseDouble(val);
+            val = parms.get(ARG_WORLD);
+            if(val != null)
+                world = val;
+            val = parms.get(ARG_RADIUSX);
+            if(val != null)
+                xr = Double.parseDouble(val);
+            val = parms.get(ARG_RADIUSZ);
+            if(val != null)
+                zr = Double.parseDouble(val);
+            val = parms.get(ARG_RADIUS);
+            if(val != null)
+                xr = zr = Double.parseDouble(val);
+            marker.setCenter(world, x, y, z);
+            marker.setLineStyle(sweight, sopacity, scolor);
+            marker.setFillStyle(fopacity, fcolor);
+            marker.setRadius(xr, zr);
+        } catch (NumberFormatException nfx) {
+            sender.sendMessage("Invalid parameter format: " + val);
+            return false;
+        }
+        return true;
+    }
+
     private static final Set<String> commands = new HashSet<String>(Arrays.asList(new String[] {
         "add", "movehere", "update", "delete", "list", "icons", "addset", "updateset", "deleteset", "listsets", "addicon", "updateicon",
         "deleteicon", "addcorner", "clearcorners", "addarea", "listareas", "deletearea", "updatearea",
-        "addline", "listlines", "deleteline", "updateline"
+        "addline", "listlines", "deleteline", "updateline", "addcircle", "listcircles", "deletecircle", "updatecircle"
     }));
     private static final String ARG_LABEL = "label";
     private static final String ARG_ID = "id";
@@ -736,6 +864,9 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     private static final String ARG_FILLOPACITY = "fillopacity";
     private static final String ARG_YTOP = "ytop";
     private static final String ARG_YBOTTOM = "ybottom";
+    private static final String ARG_RADIUSX = "radiusx";
+    private static final String ARG_RADIUSZ = "radiusz";
+    private static final String ARG_RADIUS = "radius";
     private static final String ARG_SHOWLABEL = "showlabels";
     private static final String ARG_X = "x";
     private static final String ARG_Y = "y";
@@ -1834,6 +1965,187 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             }
         }
 
+        else if(c.equals("addcircle") && plugin.checkPlayerPermission(sender, "marker.addcircle")) {
+            /* Parse arguements */
+            Map<String,String> parms = parseArgs(args, sender);
+            if(parms == null) return true;
+            setid = parms.get(ARG_SET);
+            id = parms.get(ARG_ID);
+            label = parms.get(ARG_LABEL);
+            x = parms.get(ARG_X);
+            y = parms.get(ARG_Y);
+            z = parms.get(ARG_Z);
+            world = parms.get(ARG_WORLD);
+            if(world != null) {
+                if(api.core.getWorld(world) == null) {
+                    sender.sendMessage("Invalid world ID: " + world);
+                    return true;
+                }
+            }
+            DynmapLocation loc = null;
+            if((x == null) && (y == null) && (z == null) && (world == null)) {
+                if(player == null) {
+                    sender.sendMessage("Must be issued by player, or x, y, z, and world parameters are required");
+                    return true;
+                }
+                loc = player.getLocation();
+            }
+            else if((x != null) && (y != null) && (z != null) && (world != null)) {
+                try {
+                    loc = new DynmapLocation(world, Double.valueOf(x), Double.valueOf(y), Double.valueOf(z));
+                } catch (NumberFormatException nfx) {
+                    sender.sendMessage("Coordinates x, y, and z must be numbers");
+                    return true;
+                }
+            }
+            else {
+                sender.sendMessage("Must be issued by player, or x, y, z, and world parameters are required");
+                return true;
+            }
+            /* Fill in defaults for missing parameters */
+            if(setid == null) {
+                setid = MarkerSet.DEFAULT;
+            }
+            /* Add new marker */
+            MarkerSet set = api.getMarkerSet(setid);
+            if(set == null) {
+                sender.sendMessage("Error: invalid set - " + setid);
+                return true;
+            }
+            
+            /* Make circle marker */
+            CircleMarker m = set.createCircleMarker(id, label, false, loc.world, loc.x, loc.y, loc.z, 1, 1, true);
+            if(m == null) {
+                sender.sendMessage("Error creating circle");
+            }
+            else {
+                /* Process additional attributes, if any */
+                processCircleArgs(sender, m, parms);
+                
+                sender.sendMessage("Added circle id:'" + m.getMarkerID() + "' (" + m.getLabel() + ") to set '" + set.getMarkerSetID() + "'");
+            }
+        }
+        /* List circles */
+        else if(c.equals("listcircles") && plugin.checkPlayerPermission(sender, "marker.listcircles")) {
+            /* Parse arguements */
+            Map<String,String> parms = parseArgs(args, sender);
+            if(parms == null) return true;
+            setid = parms.get(ARG_SET);
+            if(setid == null) {
+                setid = MarkerSet.DEFAULT;
+            }
+            MarkerSet set = api.getMarkerSet(setid);
+            if(set == null) {
+                sender.sendMessage("Error: invalid set - " + setid);
+                return true;
+            }
+            Set<CircleMarker> markers = set.getCircleMarkers();
+            TreeMap<String, CircleMarker> sortmarkers = new TreeMap<String, CircleMarker>();
+            for(CircleMarker m : markers) {
+                sortmarkers.put(m.getMarkerID(), m);
+            }
+            for(String s : sortmarkers.keySet()) {
+                CircleMarker m = sortmarkers.get(s);
+                sender.sendMessage(m.getMarkerID() + ": label:\"" + m.getLabel() + "\", set:" + m.getMarkerSet().getMarkerSetID() + 
+                                   ", world:" + m.getWorld() + ", center:" + m.getCenterX() + "/" + m.getCenterY() + "/" + m.getCenterZ() +
+                                   ", radius:" + m.getRadiusX() + "/" + m.getRadiusZ() +
+                                   ", weight: " + m.getLineWeight() + ", color:" + String.format("%06x", m.getLineColor()) +
+                                   ", opacity: " + m.getLineOpacity() + ", fillcolor: " + String.format("%06x", m.getFillColor()) +
+                                   ", fillopacity: " + m.getFillOpacity());
+            }
+        }
+        /* Delete circle - must have ID parameter */
+        else if(c.equals("deletecircle") && plugin.checkPlayerPermission(sender, "marker.deletecircle")) {
+            if(args.length > 1) {
+                /* Parse arguements */
+                Map<String,String> parms = parseArgs(args, sender);
+                if(parms == null) return true;
+                id = parms.get(ARG_ID);
+                label = parms.get(ARG_LABEL);
+                setid = parms.get(ARG_SET);
+                if((id == null) && (label == null)) {
+                    sender.sendMessage("<label> or id:<circle-id> required");
+                    return true;
+                }
+                if(setid == null) {
+                    setid = MarkerSet.DEFAULT;
+                }
+                MarkerSet set = api.getMarkerSet(setid);
+                if(set == null) {
+                    sender.sendMessage("Error: invalid set - " + setid);
+                    return true;
+                }
+                CircleMarker marker;
+                if(id != null) {
+                    marker = set.findCircleMarker(id);
+                    if(marker == null) {    /* No marker */
+                        sender.sendMessage("Error: circle not found - " + id);
+                        return true;
+                    }
+                }
+                else {
+                    marker = set.findCircleMarkerByLabel(label);
+                    if(marker == null) {    /* No marker */
+                        sender.sendMessage("Error: circle not found - " + label);
+                        return true;
+                    }
+                }
+                marker.deleteMarker();
+                sender.sendMessage("Deleted circle id:" + marker.getMarkerID() + " (" + marker.getLabel() + ")");
+            }
+            else {
+                sender.sendMessage("<label> or id:<circle-id> required");
+            }
+        }
+        /* Update other attributes of circle - must have ID parameter */
+        else if(c.equals("updatecircle") && plugin.checkPlayerPermission(sender, "marker.updatecircle")) {
+            if(args.length > 1) {
+                /* Parse arguements */
+                Map<String,String> parms = parseArgs(args, sender);
+                if(parms == null) return true;
+                id = parms.get(ARG_ID);
+                label = parms.get(ARG_LABEL);
+                setid = parms.get(ARG_SET);
+                if((id == null) && (label == null)) {
+                    sender.sendMessage("<label> or id:<area-id> required");
+                    return true;
+                }
+                if(setid == null) {
+                    setid = MarkerSet.DEFAULT;
+                }
+                MarkerSet set = api.getMarkerSet(setid);
+                if(set == null) {
+                    sender.sendMessage("Error: invalid set - " + setid);
+                    return true;
+                }
+                CircleMarker marker;
+                if(id != null) {
+                    marker = set.findCircleMarker(id);
+                    if(marker == null) {    /* No marker */
+                        sender.sendMessage("Error: circle not found - " + id);
+                        return true;
+                    }
+                }
+                else {
+                    marker = set.findCircleMarkerByLabel(label);
+                    if(marker == null) {    /* No marker */
+                        sender.sendMessage("Error: circle not found - " + label);
+                        return true;
+                    }
+                }
+                newlabel = parms.get(ARG_NEWLABEL);
+                if(newlabel != null) {    /* Label set? */
+                    marker.setLabel(newlabel);
+                }
+                if(!processCircleArgs(sender,marker, parms))
+                    return true;
+                sender.sendMessage("Updated circle id:" + marker.getMarkerID() + " (" + marker.getLabel() + ")");
+            }
+            else {
+                sender.sendMessage("<label> or id:<circle-id> required");
+            }
+        }
+
         else {
             return false;
         }
@@ -1939,6 +2251,30 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 lines.put(m.getMarkerID(), mdata);
             }
             msdata.put("lines", lines); /* Add polylinemarkers to set data */
+
+            HashMap<String, Object> circles = new HashMap<String, Object>();
+            for(CircleMarker m : ms.getCircleMarkers()) {
+                if(m.getWorld().equals(wname) == false) continue;
+                
+                HashMap<String, Object> mdata = new HashMap<String, Object>();
+                mdata.put("x", m.getCenterX());
+                mdata.put("y", m.getCenterY());
+                mdata.put("z", m.getCenterZ());
+                mdata.put("xr", m.getRadiusX());
+                mdata.put("zr", m.getRadiusZ());
+                mdata.put("color", String.format("#%06X", m.getLineColor()));
+                mdata.put("fillcolor", String.format("#%06X", m.getFillColor()));
+                mdata.put("opacity", m.getLineOpacity());
+                mdata.put("fillopacity", m.getFillOpacity());
+                mdata.put("weight", m.getLineWeight());
+                mdata.put("label", m.getLabel());
+                mdata.put("markup", m.isLabelMarkup());
+                if(m.getDescription() != null)
+                    mdata.put("desc", m.getDescription());
+                /* Add to markers */
+                circles.put(m.getMarkerID(), mdata);
+            }
+            msdata.put("circles", circles); /* Add circle markers to set data */
 
             markerdata.put(ms.getMarkerSetID(), msdata);    /* Add marker set data to world marker data */
         }

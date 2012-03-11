@@ -18,6 +18,10 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 				set.layergroup.removeLayer(line.our_line);
 			});
 			set.lines = {};			
+			$.each(set.circles, function(cname, circle) {
+				set.layergroup.removeLayer(circle.our_circle);
+			});
+			set.circles = {};			
 		});
 	}
 			
@@ -30,7 +34,7 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 				var ms = dynmapmarkersets[name];
 				if(!ms) {
 					ms = { id: name, label: markerset.label, hide: markerset.hide, layerprio: markerset.layerprio, minzoom: markerset.minzoom, 
-						showlabels: markerset.showlabels, markers: {}, areas: {}, lines: {} } ;
+						showlabels: markerset.showlabels, markers: {}, areas: {}, lines: {}, circles: {} } ;
 					createMarkerSet(ms, ts);
 				}
 				else {
@@ -41,6 +45,7 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 					ms.markers = {};
 					ms.areas = {};
 					ms.lines = {};
+					ms.circles = {};
 					ms.hide = markerset.hide;
 					ms.showlabels = markerset.showlabels;
 					ms.timestamp = ts;
@@ -61,6 +66,12 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 					ms.lines[lname] = { label: line.label, markup: line.markup, desc: line.desc, x: line.x, y: line.y, z: line.z,
 						color: line.color, weight: line.weight, opacity: line.opacity };
 					createLine(ms, ms.lines[lname], ts);
+				});
+				$.each(markerset.circles, function(cname, circle) {
+					ms.circles[cname] = { label: circle.label, markup: circle.markup, desc: circle.desc, x: circle.x, y: circle.y, z: circle.z,
+						xr: circle.xr, zr: circle.zr, color: circle.color, weight: circle.weight, opacity: circle.opacity,
+						fillcolor: circle.fillcolor, fillopacity: circle.fillopacity };
+					createCircle(ms, ms.circles[cname], ts);
 				});
 			});
 		});
@@ -186,6 +197,39 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 		}
 		if((set.minzoom < 1) || (dynmap.map.getZoom() >= set.minzoom)) {
 			set.layergroup.addLayer(line.our_line);
+		}
+	}
+
+	function createCircle(set, circle, ts) {
+		var style = { color: circle.color, opacity: circle.opacity, weight: circle.weight, fillOpacity: circle.fillopacity, fillColor: circle.fillcolor };
+
+		if(circle.our_circle && dynmap.map.hasLayer(circle.our_circle))
+			set.layergroup.removeLayer(circle.our_circle);
+		var x = [];
+		var z = [];
+		var i;
+		for(i = 0; i < 360; i++) {
+			var rad = i * Math.PI / 180.0;
+			x[i] = circle.xr * Math.sin(rad);
+			z[i] = circle.zr * Math.cos(rad);
+		}
+		circle.our_circle = create2DOutlineLayer(x, circle.y, circle.y, z, style);
+		circle.timestamp = ts;
+		if(circle.label != "") {
+			var popup = document.createElement('span');
+			if(circle.desc) {
+				$(popup).addClass('CirclePopup').append(circle.desc);
+			}
+			else if(circle.markup) {
+				$(popup).addClass('CirclePopup').append(circle.label);
+			}
+			else {
+				$(popup).text(circle.label);
+			}
+			circle.our_circle.bindPopup($(popup).html(), {});
+		}
+		if((set.minzoom < 1) || (dynmap.map.getZoom() >= set.minzoom)) {
+			set.layergroup.addLayer(circle.our_circle);
 		}
 	}
 
@@ -355,6 +399,24 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 			}
 			delete dynmapmarkersets[msg.set].lines[msg.id];
 		}
+		else if(msg.msg == 'circleupdated') {
+			var circle = dynmapmarkersets[msg.set].circles[msg.id];
+			if(circle && circle.our_circle) {
+				dynmapmarkersets[msg.set].layergroup.removeLayer(circle.our_circle);
+				delete circle.our_circle;
+			}
+			circle = { x: msg.x, y: msg.y, z: msg.z, xr: msg.xr, zr: msg.zr, label: msg.label, markup: msg.markup, desc: msg.desc,
+				color: msg.color, weight: msg.weight, opacity: msg.opacity, fillcolor: msg.fillcolor, fillopacity: msg.fillopacity };
+			dynmapmarkersets[msg.set].circles[msg.id] = circle;
+			createCircle(dynmapmarkersets[msg.set], circle, msg.timestamp);
+		}
+		else if(msg.msg == 'circledeleted') {
+			var circle = dynmapmarkersets[msg.set].circles[msg.id];
+			if(circle && circle.our_circle) {
+				dynmapmarkersets[msg.set].layergroup.removeLayer(circle.our_circle);
+			}
+			delete dynmapmarkersets[msg.set].circles[msg.id];
+		}
 	});
 	
     // Remove marker on start of map change
@@ -368,6 +430,9 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 			});
 			$.each(set.lines, function(lname, line) {
 				set.layergroup.removeLayer(line.our_line);
+			});
+			$.each(set.circles, function(cname, circle) {
+				set.layergroup.removeLayer(circle.our_circle);
 			});
 		});
 	});
@@ -388,6 +453,9 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 				});
 				$.each(set.lines, function(lname, line) {
 					createLine(set, line, line.timestamp);
+				});
+				$.each(set.circles, function(cname, circle) {
+					createCircle(set, circle, circle.timestamp);
 				});
 			}
 		});
@@ -414,6 +482,11 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 							set.layergroup.removeLayer(line.our_line);
 						createLine(set, line, line.timestamp);
 					});
+					$.each(set.circles, function(cname, circle) {
+						if(dynmap.map.hasLayer(circle.our_circle))
+							set.layergroup.removeLayer(circle.our_circle);
+						createCircle(set, circle, circle.timestamp);
+					});
 				}
 				else {
 					$.each(set.markers, function(mname, marker) {
@@ -424,6 +497,9 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 					});
 					$.each(set.lines, function(lname, line) {
 						set.layergroup.removeLayer(line.our_line);
+					});
+					$.each(set.circles, function(cname, circle) {
+						set.layergroup.removeLayer(circle.our_circle);
 					});
 				}
 			}
