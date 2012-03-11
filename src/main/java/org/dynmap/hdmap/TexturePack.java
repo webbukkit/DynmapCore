@@ -361,6 +361,8 @@ public class TexturePack {
 
             /* Optional files - process if they exist */
             ze = zf.getEntry(CUSTOMLAVASTILL_PNG);
+            if(ze == null)
+                ze = zf.getEntry("anim/" + CUSTOMLAVASTILL_PNG);
             if(ze != null) {
                 is = zf.getInputStream(ze);
                 loadImage(is, IMG_CUSTOMLAVASTILL);
@@ -368,12 +370,16 @@ public class TexturePack {
                 patchTextureWithImage(IMG_CUSTOMLAVASTILL, TILEINDEX_MOVINGLAVA);
             }
             ze = zf.getEntry(CUSTOMLAVAFLOWING_PNG);
+            if(ze == null)
+                ze = zf.getEntry("anim/" + CUSTOMLAVAFLOWING_PNG);
             if(ze != null) {
                 is = zf.getInputStream(ze);
                 loadImage(is, IMG_CUSTOMLAVAMOVING);
                 patchTextureWithImage(IMG_CUSTOMLAVAMOVING, TILEINDEX_MOVINGLAVA);
             }
             ze = zf.getEntry(CUSTOMWATERSTILL_PNG);
+            if(ze == null)
+                ze = zf.getEntry("anim/" + CUSTOMWATERSTILL_PNG);
             if(ze != null) {
                 is = zf.getInputStream(ze);
                 loadImage(is, IMG_CUSTOMWATERSTILL);
@@ -381,6 +387,8 @@ public class TexturePack {
                 patchTextureWithImage(IMG_CUSTOMWATERSTILL, TILEINDEX_MOVINGWATER);
             }
             ze = zf.getEntry(CUSTOMWATERFLOWING_PNG);
+            if(ze == null)
+                ze = zf.getEntry("anim/" + CUSTOMWATERFLOWING_PNG);
             if(ze != null) {
                 is = zf.getInputStream(ze);
                 loadImage(is, IMG_CUSTOMWATERMOVING);
@@ -469,6 +477,8 @@ public class TexturePack {
             
             /* Optional files - process if they exist */
             f = new File(texturedir, tpname + "/" + CUSTOMLAVASTILL_PNG);
+            if(!f.canRead())
+                f = new File(texturedir, tpname + "/anim/" + CUSTOMLAVASTILL_PNG);
             if(f.canRead()) {
                 fis = new FileInputStream(f);
                 loadImage(fis, IMG_CUSTOMLAVASTILL);
@@ -477,6 +487,8 @@ public class TexturePack {
                 fis.close();
             }
             f = new File(texturedir, tpname + "/" + CUSTOMLAVAFLOWING_PNG);
+            if(!f.canRead())
+                f = new File(texturedir, tpname + "/anim/" + CUSTOMLAVAFLOWING_PNG);
             if(f.canRead()) {
                 fis = new FileInputStream(f);
                 loadImage(fis, IMG_CUSTOMLAVAMOVING);
@@ -484,6 +496,8 @@ public class TexturePack {
                 fis.close();
             }
             f = new File(texturedir, tpname + "/" + IMG_CUSTOMWATERSTILL);
+            if(!f.canRead())
+                f = new File(texturedir, tpname + "/anim/" + CUSTOMWATERSTILL_PNG);
             if(f.canRead()) {
                 fis = new FileInputStream(f);
                 loadImage(fis, IMG_CUSTOMWATERSTILL);
@@ -492,6 +506,8 @@ public class TexturePack {
                 fis.close();
             }
             f = new File(texturedir, tpname + "/" + IMG_CUSTOMWATERMOVING);
+            if(!f.canRead())
+                f = new File(texturedir, tpname + "/anim/" + CUSTOMWATERFLOWING_PNG);
             if(f.canRead()) {
                 fis = new FileInputStream(f);
                 loadImage(fis, IMG_CUSTOMWATERMOVING);
