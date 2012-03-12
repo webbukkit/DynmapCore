@@ -84,6 +84,53 @@ shaders:
     color0: "#696969"
     linecolor: "#000000"
     watercolor: "#0000FF"
+
+  # Topological map shader (spread over 256 height)
+  - class: org.dynmap.hdmap.TopoHDShader
+    name: topo256
+    color255: "#FFFFFF"
+    color222: "#8B4513"
+    color190: "#D2B48C"
+    color158: "#FFFF00"
+    color126: "#008000"
+    color94: "#228B22"
+    color62: "#104010"
+    color30: "#6B8E23"
+    color0: "#696969"
+    linecolor: "#000000"
+    watercolor: "#0000FF"
+
+  # Topological map shader (hide plants and other soft features)    
+  - class: org.dynmap.hdmap.TopoHDShader
+    name: topo-noplants
+    color127: "#FFFFFF"
+    color111: "#8B4513"
+    color95: "#D2B48C"
+    color79: "#FFFF00"
+    color63: "#008000"
+    color47: "#228B22"
+    color31: "#104010"
+    color15: "#6B8E23"
+    color0: "#696969"
+    linecolor: "#000000"
+    watercolor: "#0000FF"
+    hiddenids: [ 6, 17, 18, 31, 32, 37, 38, 39, 40, 50, 55, 78, 81, 83, 86, 99, 100, 103, 104, 105, 111, 115 ]
+ 
+   # Topological map shader (hide plants and other soft features)    
+  - class: org.dynmap.hdmap.TopoHDShader
+    name: topo256-noplants
+    color255: "#FFFFFF"
+    color222: "#8B4513"
+    color190: "#D2B48C"
+    color158: "#FFFF00"
+    color126: "#008000"
+    color94: "#228B22"
+    color62: "#104010"
+    color30: "#6B8E23"
+    color0: "#696969"
+    linecolor: "#000000"
+    watercolor: "#0000FF"
+    hiddenids: [ 6, 17, 18, 31, 32, 37, 38, 39, 40, 50, 55, 78, 81, 83, 86, 99, 100, 103, 104, 105, 111, 115 ]
  
   # Alternate topological map shader (thanks to TerraNetworkOrg!)
   - class: org.dynmap.hdmap.TopoHDShader
