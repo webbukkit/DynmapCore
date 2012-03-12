@@ -779,14 +779,10 @@
 	overflow: hidden;
 
 	width: 622px;
-	max-height: 198px;
+	max-height: 6em;
 
 	margin: 4px 4px 0px 4px;
 	padding: 1px;
-}
-
-.scrollback {
-    max-height:6em !important;
 }
 
 .scrollback:hover {

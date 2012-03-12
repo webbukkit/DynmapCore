@@ -11,6 +11,13 @@ componentconstructors['chatbox'] = function(dynmap, configuration) {
 		.addClass('messagelist')
 		.appendTo(chat);
 
+	if (configuration.visiblelines) {
+		messagelist.css('max-height', configuration.visiblelines + 'em');
+	}
+	else {
+		messagelist.css('max-height', '6em');
+	}	
+
 	if (configuration.scrollback) {
 		messagelist.addClass('scrollback')
 			.click( function() { $(this).hide(); } );		 
