@@ -895,7 +895,7 @@
     border-style: solid;
     
 	padding: 2px;
-	width: 80px;
+	min-width: 80px;
     -moz-border-radius: 5px;
     border-radius: 5px;
 }
