@@ -37,6 +37,7 @@ public class HDMap extends MapType {
     private String bg_cfg;
     private String bg_day_cfg;
     private String bg_night_cfg;
+    private String append_to_world;
     private int mapzoomin;
     public DynmapCore core;
 
@@ -135,6 +136,7 @@ public class HDMap extends MapType {
         this.bg_day_cfg = configuration.getString("backgroundday");
         this.bg_night_cfg = configuration.getString("backgroundnight");
         this.mapzoomin = configuration.getInteger("mapzoomin", 2);
+        this.append_to_world = configuration.getString("append_to_world", "");
     }
 
     public ConfigurationNode saveConfiguration() {
@@ -157,6 +159,7 @@ public class HDMap extends MapType {
             cn.put("backgroundday", bg_day_cfg);
         if(bg_night_cfg != null)
             cn.put("backgroundnight", bg_night_cfg);
+        cn.put("append_to_world", append_to_world);
         
         return cn;
     }
@@ -272,6 +275,8 @@ public class HDMap extends MapType {
         s(o, "mapzoomout", (world.getExtraZoomOutLevels()+mapzoomout));
         s(o, "mapzoomin", mapzoomin);
         s(o, "image-format", imgformat.getFileExt());
+        if(append_to_world.length() > 0)
+            s(o, "append_to_world", append_to_world);
         perspective.addClientConfiguration(o);
         shader.addClientConfiguration(o);
         lighting.addClientConfiguration(o);
@@ -395,6 +400,17 @@ public class HDMap extends MapType {
         }
         return false;
     }
+    public boolean setAppendToWorld(String s) {
+        if(!s.equals(append_to_world)) {
+            append_to_world = s;
+            return true;
+        }
+        return false;
+    }
+    public String getAppendToWorld() {
+        return append_to_world;
+    }
+
     public boolean setMapZoomIn(int mzi) {
         if(mzi != mapzoomin) {
             mapzoomin = mzi;

@@ -262,6 +262,7 @@ public class DynmapMapCommands {
                 sb.append(", perspective=").append(hdmt.getPerspective().getName()).append(", shader=").append(hdmt.getShader().getName());
                 sb.append(", lighting=").append(hdmt.getLighting().getName()).append(", mapzoomin=").append(hdmt.getMapZoomIn());
                 sb.append(", img-format=").append(hdmt.getImageFormatSetting()).append(", icon=").append(hdmt.getIcon());
+                sb.append(", append-to-world=").append(hdmt.getAppendToWorld());
                 sender.sendMessage(sb.toString());
             }
         }
@@ -422,10 +423,12 @@ public class DynmapMapCommands {
         }
         boolean did_update = isnew;
         for(int i = 2; i < args.length; i++) {
-            tok = args[i].split(":");  /* Split at colon */
-            if(tok.length != 2) {
-                sender.sendMessage("Syntax error: " + args[i]);
-                return false;
+            tok = args[i].split(":", 2);  /* Split at colon */
+            if(tok.length < 2) {
+                String[] newtok = new String[2];
+                newtok[0] = tok[0];
+                newtok[1] = "";
+                tok = newtok;
             }
             if(tok[0].equalsIgnoreCase("prefix")) {
                 /* Check to make sure prefix is unique */
@@ -513,6 +516,9 @@ public class DynmapMapCommands {
                 else
                     w.maps.add(mt);
                 did_update = true;
+            }
+            else if(tok[0].equalsIgnoreCase("append-to-world")) {
+                did_update |= mt.setAppendToWorld(tok[1]);
             }
         }
         if(did_update) {

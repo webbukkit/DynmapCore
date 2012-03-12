@@ -224,7 +224,9 @@ DynMap.prototype = {
 			)
 			.append(downbtn_world)
 			.appendTo(panel);
-		
+
+        var maplists = {};
+
 		$.each(me.worlds, function(index, world) {
 			var maplist; 
 			world.element = $('<li/>')
@@ -235,10 +237,21 @@ DynMap.prototype = {
 						)
 				.data('world', world)
 				.appendTo(worldlist);
+			maplists[world.name] = maplist;
+		});
+		        		
+		$.each(me.worlds, function(index, world) {
+			var maplist = maplists[world.name]; 
 			
 			$.each(world.maps, function(mapindex, map) {
 				//me.map.mapTypes.set(map.world.name + '.' + map.name, map);
-				
+				var mlist = null;
+				if(map.options.append_to_world) {
+					mlist = maplists[map.options.append_to_world];
+				}
+				if(!mlist)
+					mlist = maplist;
+					
 				map.element = $('<li/>')
 					.addClass('map')
 					.append($('<a/>')
@@ -251,7 +264,7 @@ DynMap.prototype = {
 						me.selectMap(map);
 					})
 					.data('map', map)
-					.appendTo(maplist);
+					.appendTo(mlist);
 			});
 		});
 		
