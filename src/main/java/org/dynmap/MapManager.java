@@ -1114,9 +1114,11 @@ public class MapManager {
             }
             c.setHiddenFillStyle(w.hiddenchunkstyle);
         }
-        if(c.setChunkDataTypes(blockdata, biome, highesty, rawbiome) == false)
+        if(c.setChunkDataTypes(blockdata, biome, highesty, rawbiome) == false) {
             Log.severe("CraftBukkit build does not support biome APIs");
+        }
         if(chunks.size() == 0) {    /* No chunks to get? */
+            c.loadChunks(0);
             return c;
         }
 
@@ -1142,15 +1144,16 @@ public class MapManager {
         		    return exhausted;
         		}
         	});
-        	boolean delay;
+        	Boolean delay;
         	try {
     	        delay = f.get();
         	} catch (Exception ix) {
         		Log.severe(ix);
         		return null;
         	}
-            if(delay)
+            if((delay != null) && delay.booleanValue()) {
                 try { Thread.sleep(25); } catch (InterruptedException ix) {}
+            }
     	}
         return c;
     }
