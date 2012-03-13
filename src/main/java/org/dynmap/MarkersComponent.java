@@ -239,7 +239,7 @@ public class MarkersComponent extends ClientComponent {
                                 spawnicon, false);
             }
             else {
-                m.setLocation(w.getName(), loc.z, loc.y, loc.z);
+                m.setLocation(w.getName(), loc.x, loc.y, loc.z);
             }
         }
     }
