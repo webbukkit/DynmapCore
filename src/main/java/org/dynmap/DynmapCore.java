@@ -708,8 +708,8 @@ public class DynmapCore {
                 String mapname = null;
                 DynmapLocation loc = null;
                 if(args.length <= 3) {  /* Just command, or command plus map */
-                    if(args.length > 2)
-                        mapname = args[2];
+                    if(args.length > 1)
+                        mapname = args[1];
                     if (player != null)
                         loc = player.getLocation();
                     else
