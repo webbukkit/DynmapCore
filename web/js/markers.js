@@ -210,8 +210,8 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 		var i;
 		for(i = 0; i < 360; i++) {
 			var rad = i * Math.PI / 180.0;
-			x[i] = circle.xr * Math.sin(rad);
-			z[i] = circle.zr * Math.cos(rad);
+			x[i] = circle.xr * Math.sin(rad) + circle.x
+			z[i] = circle.zr * Math.cos(rad) + circle.z;
 		}
 		circle.our_circle = create2DOutlineLayer(x, circle.y, circle.y, z, style);
 		circle.timestamp = ts;
