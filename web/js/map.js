@@ -119,6 +119,10 @@ DynMap.prototype = {
 		var initfollowplayer = me.getParameterByName('playername');
 		if(initfollowplayer != "")
 			me.initfollow = initfollowplayer;
+
+		var sidebaropen = me.getParameterByName('sidebaropened');
+		if(sidebaropen == 'false' || sidebaropen == 'true' || sidebaropen == 'pinned')
+			me.options.sidebaropened = sidebaropen;
 			
 		var map = this.map = new L.Map(mapContainer.get(0), {
 			zoom: me.options.defaultzoom,
