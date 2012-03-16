@@ -19,9 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
-import org.dynmap.MapType.ImageFormat;
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.common.DynmapListenerManager;
 import org.dynmap.common.DynmapListenerManager.EventType;
@@ -40,11 +38,14 @@ import org.dynmap.web.BanIPFilter;
 import org.dynmap.web.CustomHeaderFilter;
 import org.dynmap.web.FilterHandler;
 import org.dynmap.web.HandlerRouter;
+import org.dynmap.web.LoginFilter;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
+import org.eclipse.jetty.server.session.HashSessionIdManager;
+import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.util.log.Logger;
 import org.eclipse.jetty.util.resource.FileResource;
 import org.yaml.snakeyaml.Yaml;
 
@@ -73,6 +74,7 @@ public class DynmapCore {
     private String def_image_format = "png";
     private HashSet<String> enabledTriggers = new HashSet<String>();
     public boolean disable_chat_to_web = false;
+    private WebAuthManager authmgr;
         
     public CompassMode compassmode = CompassMode.PRE19;
     private int     config_hashcode;    /* Used to signal need to reload web configuration (world changes, config update, etc) */
@@ -81,6 +83,8 @@ public class DynmapCore {
     private Map<String, LinkedList<String>> ids_by_ip = new HashMap<String, LinkedList<String>>();
     private boolean persist_ids_by_ip = false;
     private int snapshotcachesize;
+    
+    private boolean loginRequired;
     
     public enum CompassMode {
         PRE19,  /* Default for 1.8 and earlier (east is Z+) */
@@ -239,6 +243,8 @@ public class DynmapCore {
 
         /* Load plugin version info */
         loadVersion();
+        /* Initialize authorization manager */
+        authmgr = new WebAuthManager(this);
         
         /* Initialize confguration.txt if needed */
         File f = new File(dataDirectory, "configuration.txt");
@@ -318,6 +324,8 @@ public class DynmapCore {
         
         updateConfigHashcode(); /* Initialize/update config hashcode */
         
+        loginRequired = configuration.getBoolean("login-required", false);
+            
         loadWebserver();
 
         enabledTriggers.clear();
@@ -433,7 +441,8 @@ public class DynmapCore {
         webport = configuration.getInteger("webserver-port", 8123);
         
         webServer = new Server();
-        
+        webServer.setSessionIdManager(new HashSessionIdManager());
+
         Connector connector=new SelectChannelConnector();
         if(webhostname.equals("0.0.0.0") == false)
             connector.setHost(webhostname);
@@ -473,12 +482,16 @@ public class DynmapCore {
         if (checkbannedips) {
             filters.add(new BanIPFilter(this));
         }
-
+        filters.add(new LoginFilter(this));
+        
         /* Load customized response headers, if any */
         filters.add(new CustomHeaderFilter(configuration.getNode("http-response-headers")));
 
-        webServer.setHandler(new FilterHandler(router, filters));
-
+        FilterHandler fh = new FilterHandler(router, filters);
+        HandlerList hlist = new HandlerList();
+        hlist.setHandlers(new org.eclipse.jetty.server.Handler[] { new SessionHandler(), fh });
+        webServer.setHandler(hlist);
+        
         addServlet("/up/configuration", new org.dynmap.servlet.ClientConfigurationServlet(this));
 
     }
@@ -543,6 +556,8 @@ public class DynmapCore {
         listenerManager.cleanup();
         
         /* Don't clean up markerAPI - other plugins may still be accessing it */
+        
+        authmgr = null;
         
         Debug.clearDebuggers();
     }
@@ -634,7 +649,8 @@ public class DynmapCore {
         "ids-for-ip",
         "ips-for-id",
         "add-id-for-ip",
-        "del-id-for-ip"}));
+        "del-id-for-ip",
+        "webregister"}));
 
     public boolean processCommand(DynmapCommandSender sender, String cmd, String commandLabel, String[] args) {
         if(cmd.equalsIgnoreCase("dmarker")) {
@@ -907,6 +923,9 @@ public class DynmapCore {
                 else {
                     sender.sendMessage("Needs player ID and IP address");
                 }
+            } else if(c.equals("webregister") && checkPlayerPermission(sender, "webregister")) {
+                if(authmgr != null)
+                    return authmgr.processWebRegisterCommand(this, sender, player, args);
             }
             return true;
         }
@@ -1444,4 +1463,18 @@ public class DynmapCore {
         return prev;
     }
 
+    public boolean getLoginRequired() {
+        return loginRequired;
+    }
+    
+    public boolean registerLogin(String uid, String pwd, String passcode) {
+        if(authmgr != null)
+            return authmgr.registerLogin(uid, pwd, passcode);
+        return false;
+    }
+    public boolean checkLogin(String uid, String pwd) {
+        if(authmgr != null)
+            return authmgr.checkLogin(uid, pwd);
+        return false;
+    }
 }
