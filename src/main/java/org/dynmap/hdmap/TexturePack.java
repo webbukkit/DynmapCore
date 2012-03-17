@@ -42,6 +42,8 @@ import org.dynmap.utils.MapIterator;
  *    custom_water_still.png - custom still water animation (optional)
  *    custom_water_flowing.png - custom flowing water animation (optional)
  *    misc/watercolorX.png - custom water color multiplier (optional)
+ *    misc/swampgrasscolor.png - tone for grass color in swamps (optional)
+ *    misc/swampfoliagecolor.png - tone for leaf color in swamps (optional)
  */
 public class TexturePack {
     /* Loaded texture packs */
@@ -56,6 +58,8 @@ public class TexturePack {
     private static final String CUSTOMLAVAFLOWING_PNG = "custom_lava_flowing.png";
     private static final String CUSTOMWATERSTILL_PNG = "custom_water_still.png";
     private static final String CUSTOMWATERFLOWING_PNG = "custom_water_flowing.png";
+    private static final String SWAMPGRASSCOLOR_PNG = "misc/swampgrasscolor.png";
+    private static final String SWAMPFOLIAGECOLOR_PNG = "misc/swampfoliagecolor.png";
 
 	private static final String STANDARDTP = "standard";
     /* Color modifier codes (x1000 for value in mapping code) */
@@ -137,7 +141,9 @@ public class TexturePack {
     private static final int IMG_LAVA = 9;
     private static final int IMG_LAVAMOVING = 10;
     private static final int IMG_FIRE = 11;
-    private static final int IMG_CNT = 12;
+    private static final int IMG_SWAMPGRASSCOLOR = 12;
+    private static final int IMG_SWAMPFOLIAGECOLOR = 13;
+    private static final int IMG_CNT = 14;
     /* 0-(IMG_CNT-1) are fixed, IMG_CNT+x is dynamic file x */
     private LoadedImage[] imgs;
 
@@ -345,7 +351,22 @@ public class TexturePack {
             }
         	loadBiomeShadingImage(is, IMG_FOLIAGECOLOR);
         	is.close();
-            /* Try to find and load misc/watercolor.png */
+
+            /* Try to find and load misc/swampgrasscolor.png */
+            ze = zf.getEntry(SWAMPGRASSCOLOR_PNG);
+            if(ze != null) {
+                is = zf.getInputStream(ze);
+                loadBiomeShadingImage(is, IMG_SWAMPGRASSCOLOR);
+                is.close();
+            }
+            /* Try to find and load misc/swampfoliagecolor.png */
+            ze = zf.getEntry(SWAMPFOLIAGECOLOR_PNG);
+            if(ze != null) {
+                is = zf.getInputStream(ze);
+                loadBiomeShadingImage(is, IMG_SWAMPFOLIAGECOLOR);
+                is.close();
+            }
+        	/* Try to find and load misc/watercolor.png */
             ze = zf.getEntry(WATERCOLORX_PNG);
             if(ze != null) {    /* Fall back to standard file */
                 is = zf.getInputStream(ze);
@@ -460,6 +481,20 @@ public class TexturePack {
             fis = new FileInputStream(f);
             loadBiomeShadingImage(fis, IMG_FOLIAGECOLOR);
             fis.close();
+            /* Check for misc/swampgrasscolor.png */
+            f = new File(texturedir, tpname + "/" + SWAMPGRASSCOLOR_PNG);
+            if(f.canRead()) {
+                fis = new FileInputStream(f);
+                loadBiomeShadingImage(fis, IMG_SWAMPGRASSCOLOR);
+                fis.close();
+            }
+            /* Check for misc/swampfoliagecolor.png */
+            f = new File(texturedir, tpname + "/" + SWAMPFOLIAGECOLOR_PNG);
+            if(f.canRead()) {
+                fis = new FileInputStream(f);
+                loadBiomeShadingImage(fis, IMG_SWAMPFOLIAGECOLOR);
+                fis.close();
+            }
             /* Check for misc/watercolor.png */
             f = new File(texturedir, tpname + "/" + WATERCOLORX_PNG);
             if(f.canRead()) {
@@ -671,7 +706,7 @@ public class TexturePack {
         }
         /* All the same - no biome lookup needed */
         if(same) {
-            imgs[idx].argb = null;
+//            imgs[idx].argb = null;
             li.trivial_color = clr;
         }
         else {  /* Else, calculate color average for lower left quadrant */
@@ -1332,7 +1367,10 @@ public class TexturePack {
         switch(textop) {
             case COLORMOD_GRASSTONED:
                 if(ss.do_biome_shading) {
-                    clrmult = mapiter.getSmoothGrassColorMultiplier(imgs[IMG_GRASSCOLOR].argb, imgs[IMG_GRASSCOLOR].width);
+                    if(imgs[IMG_SWAMPGRASSCOLOR] != null)
+                        clrmult = mapiter.getSmoothColorMultiplier(imgs[IMG_GRASSCOLOR].argb, imgs[IMG_GRASSCOLOR].width, imgs[IMG_SWAMPGRASSCOLOR].argb, imgs[IMG_SWAMPGRASSCOLOR].width);
+                    else
+                        clrmult = mapiter.getSmoothGrassColorMultiplier(imgs[IMG_GRASSCOLOR].argb, imgs[IMG_GRASSCOLOR].width);
                 }
                 else {
                     clrmult = imgs[IMG_GRASSCOLOR].trivial_color;
@@ -1340,7 +1378,10 @@ public class TexturePack {
                 break;
             case COLORMOD_FOLIAGETONED:
                 if(ss.do_biome_shading) {
-                    clrmult = mapiter.getSmoothFoliageColorMultiplier(imgs[IMG_FOLIAGECOLOR].argb, imgs[IMG_FOLIAGECOLOR].width);
+                    if(imgs[IMG_SWAMPFOLIAGECOLOR] != null)
+                        clrmult = mapiter.getSmoothColorMultiplier(imgs[IMG_FOLIAGECOLOR].argb, imgs[IMG_FOLIAGECOLOR].width, imgs[IMG_SWAMPFOLIAGECOLOR].argb, imgs[IMG_SWAMPFOLIAGECOLOR].width);
+                    else
+                        clrmult = mapiter.getSmoothFoliageColorMultiplier(imgs[IMG_FOLIAGECOLOR].argb, imgs[IMG_FOLIAGECOLOR].width);
                 }
                 else {
                     clrmult = imgs[IMG_FOLIAGECOLOR].trivial_color;

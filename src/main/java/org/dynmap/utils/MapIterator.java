@@ -65,6 +65,10 @@ public interface MapIterator {
      */
     public int getSmoothWaterColorMultiplier(int[] colormap, int width);
     /**
+     * Get smoothed color multiplier, given normal and swamp color map
+     */
+    public int getSmoothColorMultiplier(int[] colormap, int width, int[] swampcolormap, int swampwidth);
+    /**
      * Get raw temperature data (0.0-1.0)
      */
     public double getRawBiomeTemperature();
