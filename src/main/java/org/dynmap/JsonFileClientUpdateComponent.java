@@ -36,6 +36,8 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
     private HashMap<String,String> useralias = new HashMap<String,String>();
     private int aliasindex = 1;
     private long last_confighash;
+    private File outputFile;
+    private File outputTempFile;
     	
     private Charset cs_utf8 = Charset.forName("UTF-8");
     public JsonFileClientUpdateComponent(final DynmapCore core, final ConfigurationNode configuration) {
@@ -47,8 +49,10 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
         requireplayerloginip = configuration.getBoolean("require-player-login-ip", false);
         trust_client_name = configuration.getBoolean("trustclientname", false);
         checkuserban = configuration.getBoolean("block-banned-player-chat", true);
+        outputFile = getStandaloneFile("dynmap_config.json");
+        outputTempFile = getStandaloneFile("dynmap_config.json.new");
 
-        MapManager.scheduleDelayedJob(new Runnable() {
+        core.getServer().scheduleServerTask(new Runnable() {
             @Override
             public void run() {
                 currentTimestamp = System.currentTimeMillis();
@@ -60,8 +64,8 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                     handleWebChat();
                 }
                 lastTimestamp = currentTimestamp;
-                MapManager.scheduleDelayedJob(this, jsonInterval);
-            }}, jsonInterval);
+                core.getServer().scheduleServerTask(this, jsonInterval/50);
+            }}, jsonInterval/50);
         
         core.events.addListener("buildclientconfiguration", new Event.Listener<JSONObject>() {
             @Override
@@ -99,51 +103,51 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
     
     private static final int RETRY_LIMIT = 5;
     protected void writeConfiguration() {
-        File outputFile;
-        File outputTempFile;
         JSONObject clientConfiguration = new JSONObject();
         core.events.trigger("buildclientconfiguration", clientConfiguration);
-        outputFile = getStandaloneFile("dynmap_config.json");
-        outputTempFile = getStandaloneFile("dynmap_config.json.new");
         last_confighash = core.getConfigHashcode();
         
-        int retrycnt = 0;
-        boolean done = false;
-        while(!done) {
-            FileOutputStream fos = null;
-            try {
-                fos = new FileOutputStream(outputTempFile);
-                fos.write(clientConfiguration.toJSONString().getBytes("UTF-8"));
-                fos.close();
-                fos = null;
-                outputFile.delete();
-                outputTempFile.renameTo(outputFile);
-                done = true;
-            } catch (IOException ioe) {
-                if(retrycnt < RETRY_LIMIT) {
-                    try { Thread.sleep(20 * (1 << retrycnt)); } catch (InterruptedException ix) {}
-                    retrycnt++;
-                }
-                else {
-                    Log.severe("Exception while writing JSON-configuration-file.", ioe);
-                    done = true;
-                }
-            } finally {
-                if(fos != null) {
+        final byte[] content = clientConfiguration.toJSONString().getBytes(cs_utf8);
+        
+        MapManager.scheduleDelayedJob(new Runnable() {
+            public void run() {
+                int retrycnt = 0;
+                boolean done = false;
+                while(!done) {
+                    FileOutputStream fos = null;
                     try {
+                        fos = new FileOutputStream(outputTempFile);
+                        fos.write(content);
                         fos.close();
-                    } catch (IOException iox) {
+                        fos = null;
+                        outputFile.delete();
+                        outputTempFile.renameTo(outputFile);
+                        done = true;
+                    } catch (IOException ioe) {
+                        if(retrycnt < RETRY_LIMIT) {
+                            try { Thread.sleep(20 * (1 << retrycnt)); } catch (InterruptedException ix) {}
+                            retrycnt++;
+                        }
+                        else {
+                            Log.severe("Exception while writing JSON-configuration-file.", ioe);
+                            done = true;
+                        }
+                    } finally {
+                        if(fos != null) {
+                            try {
+                                fos.close();
+                            } catch (IOException iox) {
+                            }
+                            fos = null;
+                        }
                     }
-                    fos = null;
                 }
             }
-        }
+        }, 0);
     }
     
     @SuppressWarnings("unchecked")
     protected void writeUpdates() {
-        File outputFile;
-        File outputTempFile;
         if(core.mapManager == null) return;
         //Handles Updates
         ArrayList<DynmapWorld> wlist = new ArrayList<DynmapWorld>(core.mapManager.getWorlds());	// Grab copy of world list
@@ -154,43 +158,46 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
             ClientUpdateEvent clientUpdate = new ClientUpdateEvent(currentTimestamp - 30000, dynmapWorld, update);
             core.events.trigger("buildclientupdate", clientUpdate);
 
-            outputFile = getStandaloneFile("dynmap_" + dynmapWorld.getName() + ".json");
-            outputTempFile = getStandaloneFile("dynmap_" + dynmapWorld.getName() + ".json.new");
-            int retrycnt = 0;
-            boolean done = false;
-            while(!done) {
-                FileOutputStream fos = null;
-                try {
-                    fos = new FileOutputStream(outputTempFile);
-                    fos.write(Json.stringifyJson(update).getBytes("UTF-8"));
-                    fos.close();
-                    fos = null;
-                    outputFile.delete();
-                    outputTempFile.renameTo(outputFile);
-                    done = true;
-                } catch (IOException ioe) {
-                    if(retrycnt < RETRY_LIMIT) {
-                        try { Thread.sleep(20 * (1 << retrycnt)); } catch (InterruptedException ix) {}
-                        retrycnt++;
-                    }
-                    else {
-                        Log.severe("Exception while writing JSON-file.", ioe);
-                        done = true;
-                    }
-                } finally {
-                    if(fos != null) {
+            final File outputFile = getStandaloneFile("dynmap_" + dynmapWorld.getName() + ".json");
+            final File outputTempFile = getStandaloneFile("dynmap_" + dynmapWorld.getName() + ".json.new");
+            final byte[] content = Json.stringifyJson(update).getBytes(cs_utf8);
+            
+            MapManager.scheduleDelayedJob(new Runnable() {
+                public void run() {
+                    int retrycnt = 0;
+                    boolean done = false;
+                    while(!done) {
+                        FileOutputStream fos = null;
                         try {
+                            fos = new FileOutputStream(outputTempFile);
+                            fos.write(content);
                             fos.close();
-                        } catch (IOException iox) {
+                            fos = null;
+                            outputFile.delete();
+                            outputTempFile.renameTo(outputFile);
+                            done = true;
+                        } catch (IOException ioe) {
+                            if(retrycnt < RETRY_LIMIT) {
+                                try { Thread.sleep(20 * (1 << retrycnt)); } catch (InterruptedException ix) {}
+                                retrycnt++;
+                            }
+                            else {
+                                Log.severe("Exception while writing JSON-file.", ioe);
+                                done = true;
+                            }
+                        } finally {
+                            if(fos != null) {
+                                try {
+                                    fos.close();
+                                } catch (IOException iox) {
+                                }
+                                fos = null;
+                            }
                         }
-                        fos = null;
                     }
                 }
-            }
-            core.events.<ClientUpdateEvent>trigger("clientupdatewritten", clientUpdate);
+            }, 0);
         }
-        
-        core.events.<Object>trigger("clientupdateswritten", null);
     }
     
     protected void handleWebChat() {
