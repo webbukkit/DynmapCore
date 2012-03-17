@@ -73,7 +73,7 @@ public enum BiomeMap {
             return rawfoliagemult;
         return ((rawfoliagemult & 0xfefefe) + foliagemult) / 2;
     }
-    
+
     public final int getWaterColorMult() {
         return watercolormult;
     }

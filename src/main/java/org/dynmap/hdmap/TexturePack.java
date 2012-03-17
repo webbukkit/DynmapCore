@@ -35,14 +35,13 @@ import org.dynmap.utils.MapIterator;
  *  Texture packs are found in dynmap/texturepacks directory, and either are either ZIP files
  *  or are directories whose content matches the structure of a zipped texture pack:
  *    ./terrain.png - main color data (required)
- *    misc/water.png - still water tile (required))
  *    misc/grasscolor.png - tone for grass color, biome sensitive (required)
  *    misc/foliagecolor.png - tone for leaf color, biome sensitive (required)
- *    misc/watercolor.png - tone for water color, biome sensitive (required)
  *    custom_lava_still.png - custom still lava animation (optional)
  *    custom_lava_flowing.png - custom flowing lava animation (optional)
  *    custom_water_still.png - custom still water animation (optional)
  *    custom_water_flowing.png - custom flowing water animation (optional)
+ *    misc/watercolorX.png - custom water color multiplier (optional)
  */
 public class TexturePack {
     /* Loaded texture packs */
@@ -51,7 +50,7 @@ public class TexturePack {
     private static final String TERRAIN_PNG = "terrain.png";
     private static final String GRASSCOLOR_PNG = "misc/grasscolor.png";
     private static final String FOLIAGECOLOR_PNG = "misc/foliagecolor.png";
-    private static final String WATERCOLOR_PNG = "misc/watercolor.png";
+    private static final String WATERCOLORX_PNG = "misc/watercolorX.png";
     private static final String WATER_PNG = "misc/water.png";
     private static final String CUSTOMLAVASTILL_PNG = "custom_lava_still.png";
     private static final String CUSTOMLAVAFLOWING_PNG = "custom_lava_flowing.png";
@@ -133,7 +132,7 @@ public class TexturePack {
     private static final int IMG_CUSTOMWATERSTILL = 4;
     private static final int IMG_CUSTOMLAVAMOVING = 5;
     private static final int IMG_CUSTOMLAVASTILL = 6;
-    private static final int IMG_WATERCOLOR = 7;
+    private static final int IMG_WATERCOLORX = 7;
     private static final int IMG_WATERMOVING = 8;
     private static final int IMG_LAVA = 9;
     private static final int IMG_LAVAMOVING = 10;
@@ -347,17 +346,12 @@ public class TexturePack {
         	loadBiomeShadingImage(is, IMG_FOLIAGECOLOR);
         	is.close();
             /* Try to find and load misc/watercolor.png */
-            ze = zf.getEntry(WATERCOLOR_PNG);
-            if(ze == null) {    /* Fall back to standard file */
-                /* Check for misc/watercolor.png under standard texture pack*/
-                File ff = new File(texturedir, STANDARDTP + "/" + WATERCOLOR_PNG);
-                is = new FileInputStream(ff);
-            }
-            else {
+            ze = zf.getEntry(WATERCOLORX_PNG);
+            if(ze != null) {    /* Fall back to standard file */
                 is = zf.getInputStream(ze);
+                loadBiomeShadingImage(is, IMG_WATERCOLORX);
+                is.close();
             }
-            loadBiomeShadingImage(is, IMG_WATERCOLOR);
-            is.close();
 
             /* Optional files - process if they exist */
             ze = zf.getEntry(CUSTOMLAVASTILL_PNG);
@@ -467,13 +461,12 @@ public class TexturePack {
             loadBiomeShadingImage(fis, IMG_FOLIAGECOLOR);
             fis.close();
             /* Check for misc/watercolor.png */
-            f = new File(texturedir, tpname + "/" + WATERCOLOR_PNG);
-            if(!f.canRead()) {
-                f = new File(texturedir, STANDARDTP + "/" + WATERCOLOR_PNG);                
+            f = new File(texturedir, tpname + "/" + WATERCOLORX_PNG);
+            if(f.canRead()) {
+                fis = new FileInputStream(f);
+                loadBiomeShadingImage(fis, IMG_WATERCOLORX);
+                fis.close();
             }
-            fis = new FileInputStream(f);
-            loadBiomeShadingImage(fis, IMG_WATERCOLOR);
-            fis.close();
             
             /* Optional files - process if they exist */
             f = new File(texturedir, tpname + "/" + CUSTOMLAVASTILL_PNG);
@@ -1354,8 +1347,17 @@ public class TexturePack {
                 }
                 break;
             case COLORMOD_WATERTONED:
-                if(ss.do_biome_shading) {
-                    clrmult = mapiter.getSmoothWaterColorMultiplier();
+                if(imgs[IMG_WATERCOLORX] != null) {
+                    if(ss.do_biome_shading) {
+                        clrmult = mapiter.getSmoothWaterColorMultiplier(imgs[IMG_WATERCOLORX].argb, imgs[IMG_WATERCOLORX].width);
+                    }
+                    else {
+                        clrmult = imgs[IMG_WATERCOLORX].trivial_color;
+                    }
+                }
+                else {
+                    if(ss.do_biome_shading)
+                        clrmult = mapiter.getSmoothWaterColorMultiplier();
                 }
                 break;
             case COLORMOD_BIRCHTONED:
