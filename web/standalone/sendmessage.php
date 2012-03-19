@@ -12,6 +12,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['lastchat'] < time())
 	$data = json_decode(trim(file_get_contents('php://input')));
 	$data->timestamp = $timestamp;
 	$data->ip = $_SERVER['REMOTE_ADDR'];
+	if(isset($_SESSION['userid'])) {
+		$uid = $_SESSION['userid'];
+		if(strcmp($uid, '-guest-')) {
+		   $data->userid = $uid;
+		}
+	}
 	if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
 		$data->ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
 	$old_messages = json_decode(file_get_contents('dynmap_webchat.json'), true);

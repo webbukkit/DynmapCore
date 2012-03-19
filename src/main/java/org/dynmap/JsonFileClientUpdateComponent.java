@@ -265,39 +265,53 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                     if (cts > lastChatTimestamp) {
                         String name = String.valueOf(o.get("name"));
                         String ip = String.valueOf(o.get("ip"));
+                        String uid = null;
+                        Object usr = o.get("userid");
+                        if(usr != null) {
+                            uid = String.valueOf(usr);
+                        }
                         boolean isip = true;
                         lastChatTimestamp = cts;
                         if(init_skip)
                             continue;
-                        if((!trust_client_name) || (name == null) || (name.equals(""))) {
-                            if(ip != null)
-                                name = ip;
-                        }
-                        if(useplayerloginip) {  /* Try to match using IPs of player logins */
-                            List<String> ids = core.getIDsForIP(name);
-                            if(ids != null) {
-                                name = ids.get(0);
-                                isip = false;
-                                if(checkuserban) {
-                                    if(core.getServer().isPlayerBanned(name)) {
-                                        Log.info("Ignore message from '" + ip + "' - banned player (" + name + ")");
-                                        return;
+                        if(uid == null) {
+                            if((!trust_client_name) || (name == null) || (name.equals(""))) {
+                                if(ip != null)
+                                    name = ip;
+                            }
+                            if(useplayerloginip) {  /* Try to match using IPs of player logins */
+                                List<String> ids = core.getIDsForIP(name);
+                                if(ids != null) {
+                                    name = ids.get(0);
+                                    isip = false;
+                                    if(checkuserban) {
+                                        if(core.getServer().isPlayerBanned(name)) {
+                                            Log.info("Ignore message from '" + ip + "' - banned player (" + name + ")");
+                                            return;
+                                        }
                                     }
                                 }
+                                else if(requireplayerloginip) {
+                                    Log.info("Ignore message from '" + name + "' - no matching player login recorded");
+                                    return;
+                                }
                             }
-                            else if(requireplayerloginip) {
-                                Log.info("Ignore message from '" + name + "' - no matching player login recorded");
-                                return;
+                            if(hidewebchatip && isip) {
+                                String n = useralias.get(name);
+                                if(n == null) { /* Make ID */
+                                    n = String.format("web-%03d", aliasindex);
+                                    aliasindex++;
+                                    useralias.put(name, n);
+                                }
+                                name = n;
                             }
                         }
-                        if(hidewebchatip && isip) {
-                            String n = useralias.get(name);
-                            if(n == null) { /* Make ID */
-                                n = String.format("web-%03d", aliasindex);
-                                aliasindex++;
-                                useralias.put(name, n);
+                        else {
+                            name = uid;
+                            if(core.getServer().isPlayerBanned(uid)) {
+                                Log.info("Ignore message from '" + name + "' - banned user");
+                                return;
                             }
-                            name = n;
                         }
                         String message = String.valueOf(o.get("message"));
                         core.webChat(name, message);
