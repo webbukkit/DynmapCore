@@ -1481,4 +1481,11 @@ public class DynmapCore {
             return authmgr.checkLogin(uid, pwd);
         return false;
     }
+    
+    String getLoginPHP() {
+        if(authmgr != null)
+            return authmgr.getLoginPHP();
+        else
+            return null;
+    }
 }

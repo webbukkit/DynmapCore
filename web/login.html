@@ -8,6 +8,7 @@
 	<link rel="stylesheet" type="text/css" href="css/leaflet.css" />
 	<link rel="stylesheet" type="text/css" href="css/standalone.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="css/dynmap_style.css" media="screen" />
+	<script type="text/javascript" src="config.js"></script>
 	<script type="text/javascript" src="js/jquery.min.js"></script>
 	
 	<script type="text/javascript">
@@ -19,6 +20,8 @@
 				$('<div/>').text('Password Verify Error ').appendTo(status);
 			if(window.location.href.indexOf('error=registerfailed') >= 0)
 				$('<div/>').text('Registration failed (bad passcode?) ').appendTo(status);
+			$('form')[0].setAttribute('action', config.url.login);
+			$('form')[1].setAttribute('action', config.url.register);
 		});
 	</script>
 	
@@ -30,7 +33,7 @@
 <table class='loginregister'>
 <tr><th>Existing User:</th></tr>
 <tr><td class='login'>
-<FORM METHOD=POST ACTION="/up/login">
+<FORM METHOD=POST id=login ACTION="up/login">
 <p>
 Enter user ID and password:
 <BR>
@@ -48,7 +51,7 @@ Enter user ID and password:
 <tr><th>Register New User:</th></tr>
 <tr>
 <td class='register'>
-<FORM METHOD=POST ACTION="/up/register">
+<FORM METHOD=POST id=register ACTION="up/register">
 <p>
 Run '/dynmap webregister' and enter returned registration code, along with userid and password:
 <BR>

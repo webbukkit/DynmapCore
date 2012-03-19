@@ -19,6 +19,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import static org.dynmap.JSONUtils.*;
+
 import java.nio.charset.Charset;
 
 public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
@@ -32,7 +33,7 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
     private boolean requireplayerloginip;
     private boolean trust_client_name;
     private boolean checkuserban;
-    
+    private boolean req_login;
     private HashMap<String,String> useralias = new HashMap<String,String>();
     private int aliasindex = 1;
     private long last_confighash;
@@ -49,6 +50,7 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
         requireplayerloginip = configuration.getBoolean("require-player-login-ip", false);
         trust_client_name = configuration.getBoolean("trustclientname", false);
         checkuserban = configuration.getBoolean("block-banned-player-chat", true);
+        req_login = configuration.getBoolean("webchat-requires-login", false);
         outputFile = getStandaloneFile("dynmap_config.json");
         outputTempFile = getStandaloneFile("dynmap_config.json.new");
 
@@ -72,7 +74,7 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
             public void triggered(JSONObject t) {
                 s(t, "jsonfile", true);
                 s(t, "allowwebchat", allowwebchat);
-                
+                s(t, "webchat-requires-login", req_login);
                 // For 'sendmessage.php'
                 s(t, "webchat-interval", configuration.getFloat("webchat-interval", 5.0f));
             }
@@ -82,6 +84,7 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
             public void triggered(Object t) {
                 writeConfiguration();
                 writeUpdates(); /* Make sure we stay in sync */
+                writeLogins();
             }
         });
         core.events.addListener("worldactivated", new Event.Listener<DynmapWorld>() {
@@ -89,6 +92,12 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
             public void triggered(DynmapWorld t) {
                 writeConfiguration();
                 writeUpdates(); /* Make sure we stay in sync */
+            }
+        });
+        core.events.addListener("loginupdated", new Event.Listener<Object>() {
+            @Override
+            public void triggered(Object t) {
+                writeLogins();
             }
         });
     }
@@ -197,6 +206,28 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                     }
                 }
             }, 0);
+        }
+    }
+    
+    protected void writeLogins() {
+        File loginFile = getStandaloneFile("dynmap_login.php");
+        if(core.isLoginSupportEnabled()) {
+            String s = core.getLoginPHP();
+            if(s != null) {
+                byte[] bytes = s.getBytes(cs_utf8);
+                FileOutputStream fos = null;
+                try {
+                    fos = new FileOutputStream(loginFile);
+                    fos.write(bytes);
+                } catch (IOException iox) {
+                    Log.severe("Error writing " + loginFile.getPath() + ": " + iox.getMessage());
+                } finally {
+                    if(fos != null) { try { fos.close(); } catch (IOException ix) {} }
+                }
+            }
+        }
+        else {
+            loginFile.delete();
         }
     }
     

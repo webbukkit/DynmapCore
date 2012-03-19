@@ -71,6 +71,8 @@ public class WebAuthManager {
         } finally {
             if(fw != null) { try { fw.close(); } catch (IOException iox) {} }
         }
+        if(success) 
+            core.events.trigger("loginupdated", null);
         return success;
     }
     private String makeHash(String pwd) {
@@ -159,6 +161,28 @@ public class WebAuthManager {
         sender.sendMessage("Registration pending for user ID: " + uid);
         sender.sendMessage("Registration code: " + regkey);
         sender.sendMessage("Enter ID and code on registration web page (login.html) to complete registration");
+        core.events.trigger("loginupdated", null);
+        
         return true;
+    }
+    String getLoginPHP() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<?php\n");
+        sb.append("$pwdsalt = '").append(hashsalt).append("';\n");
+        /* Create password hash */
+        sb.append("$pwdhash = array(\n");
+        for(String uid : pwdhash_by_userid.keySet()) {
+            sb.append("  \"").append(uid).append("\" => \"").append(pwdhash_by_userid.get(uid)).append("\",\n");
+        }
+        sb.append(");\n");
+        /* Create registration table */
+        sb.append("$pendingreg = array(\n");
+        for(String uid : pending_registrations.keySet()) {
+            sb.append("  \"").append(uid).append("\" => \"").append(pending_registrations.get(uid)).append("\",\n");
+        }
+        sb.append(");\n");
+        sb.append("?>\n");
+        
+        return sb.toString();
     }
 }

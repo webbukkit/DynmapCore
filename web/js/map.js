@@ -25,7 +25,7 @@ function DynMap(options) {
 	me.options = options;
 	$.getJSON(me.options.url.configuration, function(configuration) {
 		if(configuration.error == 'login-required') {
-			window.location = 'login/login.html';
+			window.location = 'login.html';
 		}
 		else if(configuration.error) {	
 			alert(configuration.error);
@@ -562,7 +562,7 @@ DynMap.prototype = {
 
 				if(update.error) {
 					if(update.error == 'login-required') {
-						window.location = 'login/login.html';
+						window.location = 'login.html';
 					}
 					else {
 						alert(update.error);
@@ -893,7 +893,7 @@ DynMap.prototype = {
 				var c = this._container;
 				if (me.options.loggedin) {
 					c = $('<button/>').addClass('loginbutton').click(function(event) {
-						window.location = "up/login";
+						window.location = config.url.login;
 					}).text('Logout').appendTo(c)[0];
 				}
 				else {
