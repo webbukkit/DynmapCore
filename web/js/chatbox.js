@@ -3,7 +3,6 @@ componentconstructors['chatbox'] = function(dynmap, configuration) {
 	
 	if(dynmap.getBoolParameterByName("hidechat"))
 		return;
-	
 	var chat = $('<div/>')
 		.addClass('chat')
 		.appendTo(dynmap.options.container);
@@ -24,6 +23,7 @@ componentconstructors['chatbox'] = function(dynmap, configuration) {
 	}
 
 	if (dynmap.options.allowwebchat) {
+	  if(dynmap.options.loggedin || !dynmap.options['webchat-requires-login']) {
 		var chatinput = $('<input/>')
 			.addClass('chatinput')
 			.attr({
@@ -49,7 +49,12 @@ componentconstructors['chatbox'] = function(dynmap, configuration) {
 			}).text("+").appendTo(chat);
 		}
 		chatinput.appendTo(chat);
-
+	  }
+	  else {
+	  	var login = $('<button/>').addClass('loginbutton').click(function(event) {
+	  		window.location = 'login.html';
+	  	}).text(dynmap.options['msg-chatrequireslogin']).appendTo(chat);
+	  }
 		if (configuration.scrollback) {
 			chatinput.click(function(){ 
 				var m = $('.messagelist');

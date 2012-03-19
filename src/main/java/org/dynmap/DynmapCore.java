@@ -34,11 +34,11 @@ import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.impl.MarkerAPIImpl;
 import org.dynmap.servlet.FileLockResourceHandler;
 import org.dynmap.servlet.JettyNullLogger;
+import org.dynmap.servlet.LoginServlet;
 import org.dynmap.web.BanIPFilter;
 import org.dynmap.web.CustomHeaderFilter;
 import org.dynmap.web.FilterHandler;
 import org.dynmap.web.HandlerRouter;
-import org.dynmap.web.LoginFilter;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -101,7 +101,6 @@ public class DynmapCore {
     private File dataDirectory;
     private File tilesDirectory;
     private String plugin_ver;
-    private String mc_ver;
 
     /* Constructor for core */
     public DynmapCore() {
@@ -127,7 +126,6 @@ public class DynmapCore {
         return tilesDirectory;
     }
     public void setMinecraftVersion(String mcver) {
-        mc_ver = mcver;
     }
     public void setServer(DynmapServerInterface srv) {
         server = srv;
@@ -243,8 +241,6 @@ public class DynmapCore {
 
         /* Load plugin version info */
         loadVersion();
-        /* Initialize authorization manager */
-        authmgr = new WebAuthManager(this);
         
         /* Initialize confguration.txt if needed */
         File f = new File(dataDirectory, "configuration.txt");
@@ -255,6 +251,10 @@ public class DynmapCore {
         /* Load configuration.txt */
         configuration = new ConfigurationNode(f);
         configuration.load();
+
+        /* Initialize authorization manager */
+        if(configuration.getBoolean("login-enabled", false))
+            authmgr = new WebAuthManager(this);
 
         /* Add options to avoid 0.29 re-render (fixes very inconsistent with previous maps) */
         HDMapManager.usegeneratedtextures = configuration.getBoolean("use-generated-textures", false);
@@ -482,7 +482,7 @@ public class DynmapCore {
         if (checkbannedips) {
             filters.add(new BanIPFilter(this));
         }
-        filters.add(new LoginFilter(this));
+//        filters.add(new LoginFilter(this));
         
         /* Load customized response headers, if any */
         filters.add(new CustomHeaderFilter(configuration.getNode("http-response-headers")));
@@ -493,7 +493,15 @@ public class DynmapCore {
         webServer.setHandler(hlist);
         
         addServlet("/up/configuration", new org.dynmap.servlet.ClientConfigurationServlet(this));
-
+        if(authmgr != null) {
+            LoginServlet login = new LoginServlet(this);
+            addServlet("/up/login", login);
+            addServlet("/up/register", login);
+        }
+    }
+    
+    public boolean isLoginSupportEnabled() {
+        return (authmgr != null);
     }
     
     public Set<String> getIPBans() {
@@ -926,6 +934,8 @@ public class DynmapCore {
             } else if(c.equals("webregister") && checkPlayerPermission(sender, "webregister")) {
                 if(authmgr != null)
                     return authmgr.processWebRegisterCommand(this, sender, player, args);
+                else
+                    sender.sendMessage("Login support is not enabled");
             }
             return true;
         }
@@ -1439,14 +1449,7 @@ public class DynmapCore {
             @Override
             public void run() {
                 mapManager.pushUpdate(new Client.ChatMessage("web", null, name, message, null));
-                String msgfmt = configuration.getString("webmsgformat", null);
-                if(msgfmt != null) {
-                    msgfmt = ClientComponent.unescapeString(msgfmt);
-                    Log.info(msgfmt.replace("%playername%", name).replace("%message%", message));
-                }
-                else {
-                    Log.info(ClientComponent.unescapeString(configuration.getString("webprefix", "\u00A72[WEB] ")) + name + ": " + ClientComponent.unescapeString(configuration.getString("websuffix", "\u00A7f")) + message);
-                }
+
                 ChatEvent event = new ChatEvent("web", name, message);
                 events.trigger("webchat", event);
             }
@@ -1472,6 +1475,7 @@ public class DynmapCore {
             return authmgr.registerLogin(uid, pwd, passcode);
         return false;
     }
+    
     public boolean checkLogin(String uid, String pwd) {
         if(authmgr != null)
             return authmgr.checkLogin(uid, pwd);

@@ -1,10 +1,3 @@
-var ip;
-$.ajax({
-	type: "GET",
-	url: "//jsonip.appspot.com/?callback=?",
-	dataType: "jsonp",
-	success: function(getip) { ip = getip.ip; }
-	});
 
 componentconstructors['chat'] = function(dynmap, configuration) {
 	var me = this;
@@ -30,7 +23,7 @@ componentconstructors['chat'] = function(dynmap, configuration) {
 	if (dynmap.options.allowwebchat) {
 		// Accepts 'sendchat'-events to send chat messages to the server.
 		$(dynmap).bind('sendchat', function(event, message) {
-			var data = '{"name":'+JSON.stringify(pname?pname:(ip?ip:""))+',"message":'+JSON.stringify(message)+'}';
+			var data = '{"name":'+JSON.stringify(pname?pname:"")+',"message":'+JSON.stringify(message)+'}';
 			$.ajax({
 				type: 'POST',
 		        contentType: "application/json; charset=utf-8",
@@ -38,10 +31,6 @@ componentconstructors['chat'] = function(dynmap, configuration) {
 				data: data,
 				dataType: 'json',
 				success: function(response) {
-					//handle response
-					if(response) {
-						$(dynmap).trigger('chat', [{source: 'me', name: ip, text: message}]);
-					}
 				},
 				error: function(xhr) {
 					if (xhr.status === 403) {

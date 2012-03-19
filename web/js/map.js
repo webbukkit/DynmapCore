@@ -24,8 +24,16 @@ function DynMap(options) {
 	var me = this;
 	me.options = options;
 	$.getJSON(me.options.url.configuration, function(configuration) {
-		me.configure(configuration);
-		me.initialize();
+		if(configuration.error == 'login-required') {
+			window.location = 'login/login.html';
+		}
+		else if(configuration.error) {	
+			alert(configuration.error);
+		}
+		else {
+			me.configure(configuration);
+			me.initialize();
+		}
 	}, function(status, statusMessage) {
 		alert('Could not retrieve configuration: ' + statusMessage);
 	});
@@ -337,14 +345,7 @@ DynMap.prototype = {
 		if(L.Browser.mobile)
 			compass.addClass('mobilecompass');
 		compass.appendTo(container);
-		// TODO: Enable hash-links.
-		/*
-		var link;
-		var linkbox = me.linkbox = $('<div/>')
-			.addClass('linkbox')
-			.append(link=$('<input type="text" />'))
-			.data('link', link)
-			.appendTo(container);*/
+		
 		if(me.options.sidebaropened != 'true') {
 			var hitbar = $('<div/>')
 			.addClass('hitbar')
@@ -365,6 +366,8 @@ DynMap.prototype = {
 				.show();
 			return;
 		}
+		
+		me.initLogin();
 		
 		me.selectMap(me.defaultworld.defaultmap);
 		
@@ -556,6 +559,16 @@ DynMap.prototype = {
 					return;
 				}
 				me.alertbox.hide();
+
+				if(update.error) {
+					if(update.error == 'login-required') {
+						window.location = 'login/login.html';
+					}
+					else {
+						alert(update.error);
+					}
+					return;						
+				}
 				
 				if (!me.options.jsonfile) {
 					me.lasttimestamp = update.timestamp;
@@ -857,16 +870,40 @@ DynMap.prototype = {
 		url = url + "?worldname=" + me.world.name + "&mapname=" + me.maptype.options.name + "&zoom=" + me.map.getZoom() + "&x=" + center.x + "&y=" +
 			center.y + "&z=" + center.z;
 		return url;
-	}
-	// TODO: Enable hash-links.
-/*	updateLink: function() {
+	},
+	initLogin: function() {
 		var me = this;
-		var url = location.href.match(/^[^#]+/);
-		
-		var a=url
-			+ "#lat=" + me.map.getCenter().lat().toFixed(6)
-			+ "&lng=" + me.map.getCenter().lng().toFixed(6)
-			+ "&zoom=" + me.map.getZoom();
-			me.linkbox.data('link').val(a);
-	}*/
+		if(!me.options['login-enabled'])
+			return;
+			
+		var login = L.Class.extend({
+			onAdd: function(map) {
+				this._container = L.DomUtil.create('div', 'leaflet-control-attribution');
+				this._map = map;
+				this._update();
+			},
+			getPosition: function() {
+				return L.Control.Position.BOTTOM_RIGHT;
+			},
+			getContainer: function() {
+				return this._container;
+			},
+			_update: function() {
+				if (!this._map) return;
+				var c = this._container;
+				if (me.options.loggedin) {
+					c = $('<button/>').addClass('loginbutton').click(function(event) {
+						window.location = "up/login";
+					}).text('Logout').appendTo(c)[0];
+				}
+				else {
+					c = $('<button/>').addClass('loginbutton').click(function(event) {
+						window.location = "login.html";
+					}).text('Login').appendTo(c)[0];
+				}				
+			}
+		});
+		var l = new login();
+		me.map.addControl(l);
+	}		
 };

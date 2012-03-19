@@ -13,6 +13,7 @@ import java.util.Random;
 
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.common.DynmapPlayer;
+import org.dynmap.servlet.LoginServlet;
 
 public class WebAuthManager {
     private HashMap<String, String> pwdhash_by_userid = new HashMap<String, String>();
@@ -23,8 +24,10 @@ public class WebAuthManager {
     private static final String HASHSALT = "$HASH_SALT$";
     private static final String PWDHASH_PREFIX = "hash.";
     private Random rnd = new Random();
-
+    private DynmapCore core;
+    
     public WebAuthManager(DynmapCore core) {
+        this.core = core;
         pfile = new File(core.getDataFolder(), WEBAUTHFILE);
         if(pfile.canRead()) {
             FileReader rf = null;
@@ -88,8 +91,14 @@ public class WebAuthManager {
     }
     public boolean checkLogin(String uid, String pwd) {
         uid = uid.toLowerCase();
+        if(uid.equals(LoginServlet.USERID_GUEST)) {
+            return true;
+        }
         String hash = pwdhash_by_userid.get(uid);
         if(hash == null) {
+            return false;
+        }
+        if(core.getServer().isPlayerBanned(uid)) {
             return false;
         }
         String checkhash = makeHash(pwd);
@@ -97,6 +106,12 @@ public class WebAuthManager {
     }
     public boolean registerLogin(String uid, String pwd, String passcode) {
         uid = uid.toLowerCase();
+        if(uid.equals(LoginServlet.USERID_GUEST)) {
+            return false;
+        }
+        if(core.getServer().isPlayerBanned(uid)) {
+            return false;
+        }
         passcode = passcode.toLowerCase();
         String kcode = pending_registrations.remove(uid);
         if(kcode == null) {
@@ -110,11 +125,17 @@ public class WebAuthManager {
         return save();
     }
     public boolean unregisterLogin(String uid) {
+        if(uid.equals(LoginServlet.USERID_GUEST)) {
+            return true;
+        }
         uid = uid.toLowerCase();
         pwdhash_by_userid.remove(uid);
         return save();
     }
     public boolean isRegistered(String uid) {
+        if(uid.equals(LoginServlet.USERID_GUEST)) {
+            return false;
+        }
         uid = uid.toLowerCase();
         return pwdhash_by_userid.containsKey(uid);
     }
@@ -133,11 +154,11 @@ public class WebAuthManager {
         else {
             uid = player.getName();
         }
-        String regkey = String.format("%08X", rnd.nextInt());
+        String regkey = String.format("%04d-%04d", rnd.nextInt(10000), rnd.nextInt(10000));
         pending_registrations.put(uid.toLowerCase(), regkey.toLowerCase());
         sender.sendMessage("Registration pending for user ID: " + uid);
         sender.sendMessage("Registration code: " + regkey);
-        sender.sendMessage("Enter ID and code on registration web page (/login/register.html) to complete registration");
+        sender.sendMessage("Enter ID and code on registration web page (login.html) to complete registration");
         return true;
     }
 }

@@ -774,6 +774,10 @@
     background-color: #bbb;
 }
 
+.loginbutton {
+    background-color: #bbb;
+}
+
 .messagelist {
 	color: white;
 	overflow: hidden;
@@ -941,3 +945,37 @@
 	background-image: url(images/link.png);
 	}
 
+# Login/register panel
+table.loginregister {
+	color: #ffffff;
+    border: 1px solid rgba(64,64,64,0.6);
+	background: #bbb;
+    font-weight: bold;
+}
+
+td.login {
+    vertical-align: top;
+	color: #000000;
+	background-color: #bbb;
+    border: 1px solid rgba(64,64,64,0.6);
+    font-weight: bold;
+    margin: 2em;
+    width: 40em;
+}
+
+td.register {
+    vertical-align: top;
+	color: #000000;
+	background-color: #bbb;
+    border: 1px solid rgba(64,64,64,0.6);
+    font-weight: bold;
+    margin: 2em;
+    width: 40em;
+}
+
+div.statusmessage {
+	color: #FF0000;
+    font-weight: bold;
+    font-size: 24px;
+	
+}

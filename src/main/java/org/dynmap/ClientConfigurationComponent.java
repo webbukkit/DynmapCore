@@ -26,12 +26,14 @@ public class ClientConfigurationComponent extends Component {
                 s(t, "cyrillic", c.getBoolean("cyrillic-support", false));
                 s(t, "showlayercontrol", c.getString("showlayercontrol", "true"));
                 s(t, "grayplayerswhenhidden", c.getBoolean("grayplayerswhenhidden", true));
+                s(t, "login-enabled", core.isLoginSupportEnabled());
                 String sn = core.getServer().getServerName();
                 if(sn.equals("Unknown Server"))
                     sn = "Minecraft Dynamic Map";
                 s(t, "title", c.getString("webpage-title", sn));
                 s(t, "msg-maptypes", c.getString("msg/maptypes", "Map Types"));
                 s(t, "msg-players", c.getString("msg/players", "Players"));
+                s(t, "msg-chatrequireslogin", c.getString("msg/chatrequireslogin", "Chat Requires Login"));
                 
                 DynmapWorld defaultWorld = null;
                 String defmap = null;
