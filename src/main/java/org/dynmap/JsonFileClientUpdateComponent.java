@@ -1,5 +1,7 @@
 package org.dynmap;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
@@ -51,9 +53,14 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
         trust_client_name = configuration.getBoolean("trustclientname", false);
         checkuserban = configuration.getBoolean("block-banned-player-chat", true);
         req_login = configuration.getBoolean("webchat-requires-login", false);
-        outputFile = getStandaloneFile("dynmap_config.json");
-        outputTempFile = getStandaloneFile("dynmap_config.json.new");
-
+        if(core.isLoginSupportEnabled()) {
+            outputFile = getStandaloneFile("dynmap_config.php");
+            outputTempFile = getStandaloneFile("dynmap_config.new.php");
+        }
+        else {
+            outputFile = getStandaloneFile("dynmap_config.json");
+            outputTempFile = getStandaloneFile("dynmap_config.json.new");
+        }
         core.getServer().scheduleServerTask(new Runnable() {
             @Override
             public void run() {
@@ -65,6 +72,8 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                 if (allowwebchat) {
                     handleWebChat();
                 }
+                if(core.isLoginSupportEnabled())
+                    handleRegister();
                 lastTimestamp = currentTimestamp;
                 core.getServer().scheduleServerTask(this, jsonInterval/50);
             }}, jsonInterval/50);
@@ -75,6 +84,7 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                 s(t, "jsonfile", true);
                 s(t, "allowwebchat", allowwebchat);
                 s(t, "webchat-requires-login", req_login);
+                s(t, "loginrequired", core.isLoginRequired());
                 // For 'sendmessage.php'
                 s(t, "webchat-interval", configuration.getFloat("webchat-interval", 5.0f));
             }
@@ -126,7 +136,13 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                     FileOutputStream fos = null;
                     try {
                         fos = new FileOutputStream(outputTempFile);
+                        if(core.isLoginSupportEnabled()) {
+                            fos.write("<?php /*\n".getBytes(cs_utf8));
+                        }
                         fos.write(content);
+                        if(core.isLoginSupportEnabled()) {
+                            fos.write("\n*/ ?>\n".getBytes(cs_utf8));
+                        }
                         fos.close();
                         fos = null;
                         outputFile.delete();
@@ -316,6 +332,43 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                         String message = String.valueOf(o.get("message"));
                         core.webChat(name, message);
                     }
+                }
+            }
+        }
+    }
+    protected void handleRegister() {
+        if(core.pendingRegisters() == false)
+            return;
+        File regFile = getStandaloneFile("dynmap_reg.php");
+        if (regFile.exists()) {
+            FileInputStream fstream = null;
+            ArrayList<String> lines = new ArrayList<String>();
+            try {
+                fstream = new FileInputStream(regFile);
+                BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+                String line;
+                while ((line = br.readLine()) != null)   {
+                    if(line.startsWith("<?") || line.startsWith("*/")) {
+                        continue;
+                    }
+                    lines.add(line);
+                }
+            } catch (IOException iox) {
+                Log.severe("Exception while reading " + regFile.getPath(), iox);
+            } finally {
+                if(fstream != null) {
+                    try {
+                        fstream.close();
+                    } catch (IOException iox) {
+                        
+                    }
+                    fstream = null;
+                }
+            }
+            for(int i = 0; i < lines.size(); i++) {
+                String[] vals = lines.get(i).split("=");
+                if(vals.length == 3) {
+                    core.processCompletedRegister(vals[0].trim(), vals[1].trim(), vals[2].trim());
                 }
             }
         }

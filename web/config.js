@@ -37,7 +37,7 @@ var config = {
 
 	// // For standalone (jsonfile) webserver (login security)
 	// url: {
-	// configuration: 'standalone/dynmap_config.json?_={timestamp}',
+	// configuration: 'standalone/configuration.php',
 	// update: 'standalone/dynmap_{world}.json?_={timestamp}',
 	// sendmessage: 'standalone/sendmessage.php',
 	// login: 'standalone/login.php',

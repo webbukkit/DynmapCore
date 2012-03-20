@@ -141,6 +141,25 @@ public class WebAuthManager {
         uid = uid.toLowerCase();
         return pwdhash_by_userid.containsKey(uid);
     }
+    boolean processCompletedRegister(String uid, String pc, String hash) {
+        uid = uid.toLowerCase();
+        if(uid.equals(LoginServlet.USERID_GUEST)) {
+            return false;
+        }
+        if(core.getServer().isPlayerBanned(uid)) {
+            return false;
+        }
+        String kcode = pending_registrations.remove(uid);
+        if(kcode == null) {
+            return false;
+        }
+        pc = pc.toLowerCase();
+        if(!kcode.equals(pc)) {
+            return false;
+        }
+        pwdhash_by_userid.put(uid, hash);
+        return save();
+    }
     public boolean processWebRegisterCommand(DynmapCore core, DynmapCommandSender sender, DynmapPlayer player, String[] args) {
         String uid = null;
         if(args.length > 1) {
@@ -184,5 +203,8 @@ public class WebAuthManager {
         sb.append("?>\n");
         
         return sb.toString();
+    }
+    boolean pendingRegisters() {
+        return (pending_registrations.size() > 0);
     }
 }

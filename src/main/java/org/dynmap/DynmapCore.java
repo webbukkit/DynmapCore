@@ -503,7 +503,11 @@ public class DynmapCore {
     public boolean isLoginSupportEnabled() {
         return (authmgr != null);
     }
-    
+
+    public boolean isLoginRequired() {
+        return loginRequired;
+    }
+
     public Set<String> getIPBans() {
         return getServer().getIPBans();
     }
@@ -1487,5 +1491,16 @@ public class DynmapCore {
             return authmgr.getLoginPHP();
         else
             return null;
+    }
+    
+    boolean pendingRegisters() {
+        if(authmgr != null)
+            return authmgr.pendingRegisters();
+        return false;
+    }
+    boolean processCompletedRegister(String uid, String pc, String hash) {
+        if(authmgr != null)
+            return authmgr.processCompletedRegister(uid, pc, hash);
+        return false;
     }
 }

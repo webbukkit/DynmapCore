@@ -1,5 +1,5 @@
 <?php
-include 'dynmap_login.php';
+require('dynmap_login.php');
 
 session_start();
 
@@ -49,6 +49,22 @@ if(strcmp($userid, '-guest-')) {
         $hash = hash_final($ctx);
         $_SESSION['userid'] = $userid;
         $good = true;
+
+		$newlines[] = '<?php /*';
+		$lines = file('dynmap_reg.php');
+		if(!empty($lines)) {
+			$cnt = count($lines) - 1;
+			for($i=1; $i < $cnt; $i++) {
+				list($uid, $pc, $hsh) = split('=', rtrim($lines[$i]));
+				if($uid == $userid) continue;
+				if(array_key_exists($uid, $pendingreg)) {
+					$newlines[] = $uid . '=' . $hsh;
+				}
+			}
+		}
+		$newlines[] = $userid . '=' . $pc . '=' . $hash;
+		$newlines[] = '*/ ?>';
+		file_put_contents('dynmap_reg.php', implode("\n", $newlines));
      }
   }
 }
@@ -60,4 +76,3 @@ else {
 }
    
 ?>
-
