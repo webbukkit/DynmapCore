@@ -55,7 +55,7 @@ block:id=ic2-blockWall,data=14,allfaces=110,txtid=blk0
 #  data=15
 block:id=ic2-blockWall,data=15,allfaces=111,txtid=blk0
 # blockFoam=222
-block:id=ic2-blockFoam,data=*,allfaces=37
+block:id=ic2-blockFoam,data=*,allfaces=37,txtid=blk0
 # blockMachine2=223
 #  data=0
 block:id=ic2-blockMachine2,data=0,top=0,bottom=16,north=32,south=48,east=64,west=80,txtid=mach2
