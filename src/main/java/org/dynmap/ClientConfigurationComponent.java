@@ -38,6 +38,7 @@ public class ClientConfigurationComponent extends Component {
                 DynmapWorld defaultWorld = null;
                 String defmap = null;
                 for(DynmapWorld world : core.mapManager.getWorlds()) {
+                    if (world.maps.size() == 0) continue;
                     if (defaultWorld == null) defaultWorld = world;
                     JSONObject wo = new JSONObject();
                     s(wo, "name", world.getName());
