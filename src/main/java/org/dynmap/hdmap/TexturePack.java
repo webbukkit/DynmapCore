@@ -170,17 +170,17 @@ public class TexturePack {
             /* Copy texture maps */
             HDTextureMap[] newtexmaps = new HDTextureMap[cnt*16];
             System.arraycopy(texmaps, 0, newtexmaps, 0, texmaps.length);
-            Arrays.fill(newtexmaps, texmaps.length, newtexmaps.length-1, blank);
+            Arrays.fill(newtexmaps, texmaps.length, newtexmaps.length, blank);
             texmaps = newtexmaps;
             /* Copy transparency */
             BlockTransparency[] newtrans = new BlockTransparency[cnt];
             System.arraycopy(transp, 0, newtrans, 0, transp.length);
-            Arrays.fill(newtrans, transp.length, cnt-1, BlockTransparency.OPAQUE);
+            Arrays.fill(newtrans, transp.length, cnt, BlockTransparency.OPAQUE);
             transp = newtrans;
             /* Copy use-render-data */
             boolean[] newurd = new boolean[cnt];
             System.arraycopy(userenderdata, 0, newurd, 0, userenderdata.length);
-            Arrays.fill(newurd, userenderdata.length, cnt-1, false);
+            Arrays.fill(newurd, userenderdata.length, cnt, false);
             userenderdata = newurd;
         }
         
@@ -231,7 +231,7 @@ public class TexturePack {
                     return texmaps[(blkid<<4) + blkrenderdata];
                 else
                     return texmaps[(blkid<<4) + blkdata];
-            } catch (ArrayIndexOutOfBoundsException aioobx) {
+            } catch (Exception x) {
                 resizeTable(blkid);
                 return blank;
             }
@@ -240,7 +240,7 @@ public class TexturePack {
         public static BlockTransparency getTransparency(int blkid) {
             try {
                 return transp[blkid];
-            } catch (ArrayIndexOutOfBoundsException aioobx) {
+            } catch (Exception x) {
                 resizeTable(blkid);
                 return BlockTransparency.OPAQUE;
             }
