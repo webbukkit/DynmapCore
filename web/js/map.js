@@ -878,7 +878,7 @@ DynMap.prototype = {
 			
 		var login = L.Class.extend({
 			onAdd: function(map) {
-				this._container = L.DomUtil.create('div', 'leaflet-control-attribution');
+				this._container = L.DomUtil.create('div', 'logincontainer');
 				this._map = map;
 				this._update();
 			},
