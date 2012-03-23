@@ -23,6 +23,31 @@
 			$('form')[0].setAttribute('action', config.url.login);
 			$('form')[1].setAttribute('action', config.url.register);
 		});
+		
+		$(function(){
+            $('form[name=register]').submit(function(){
+                $.post($(this).attr('action'), $(this).serialize(), function(json) {
+                    if(json.result == 'success')
+                    	window.location = 'index.html';
+                    else
+                    	window.location = 'login.html?error=' + json.result;
+                }, 'json');
+                return false;
+            });
+        });
+
+		$(function(){
+            $('form[name=login]').submit(function(){
+                $.post($(this).attr('action'), $(this).serialize(), function(json) {
+                    if(json.result == 'success')
+                    	window.location = 'index.html';
+                    else
+                    	window.location = 'login.html?error=' + json.result;
+                }, 'json');
+                return false;
+            });
+        });
+		
 	</script>
 	
 </head>
@@ -33,7 +58,7 @@
 <table class='loginregister'>
 <tr><th>Existing User:</th></tr>
 <tr><td class='login'>
-<FORM METHOD=POST id=login ACTION="up/login">
+<FORM METHOD=POST name=login ACTION="up/login">
 <p>
 Enter user ID and password:
 <BR>
@@ -51,7 +76,7 @@ Enter user ID and password:
 <tr><th>Register New User:</th></tr>
 <tr>
 <td class='register'>
-<FORM METHOD=POST id=register ACTION="up/register">
+<FORM METHOD=POST name=register ACTION="up/register">
 <p>
 Run '/dynmap webregister' and enter returned registration code, along with userid and password:
 <BR>

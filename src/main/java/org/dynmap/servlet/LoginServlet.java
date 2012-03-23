@@ -1,7 +1,10 @@
 package org.dynmap.servlet;
 
+import static org.dynmap.JSONUtils.s;
+
 import org.dynmap.DynmapCore;
 import org.dynmap.Log;
+import org.json.simple.JSONObject;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
@@ -10,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Date;
 
 public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -18,6 +23,7 @@ public class LoginServlet extends HttpServlet {
     public static final String USERID_ATTRIB = "userid";
     public static final String LOGIN_PAGE = "../login.html";
     public static final String LOGIN_POST = "/up/login";
+    private Charset cs_utf8 = Charset.forName("UTF-8");
     
     public LoginServlet(DynmapCore core) {
         this.core = core;
@@ -26,6 +32,19 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         doPost(req, resp);
+    }
+    
+    private void sendResponse(HttpServletResponse resp, String rslt) throws ServletException, IOException {
+        JSONObject json = new JSONObject();
+        s(json, "result", rslt);
+        byte[] b = json.toJSONString().getBytes(cs_utf8);
+        String dateStr = new Date().toString();
+        resp.addHeader("Date", dateStr);
+        resp.setContentType("text/plain; charset=utf-8");
+        resp.addHeader("Expires", "Thu, 01 Dec 1994 16:00:00 GMT");
+        resp.addHeader("Last-modified", dateStr);
+        resp.setContentLength(b.length);
+        resp.getOutputStream().write(b);
     }
     
     @Override
@@ -49,10 +68,10 @@ public class LoginServlet extends HttpServlet {
                 uid = USERID_GUEST;
             if(core.checkLogin(uid, pwd)) {
                 sess.setAttribute(USERID_ATTRIB, uid);
-                resp.sendRedirect("../index.html");
+                sendResponse(resp, "success");
             }
             else {
-                resp.sendRedirect(LOGIN_PAGE + "?error=loginfailed");
+                sendResponse(resp, "loginfailed");
             }
         }
         else if(uri.equals("/up/register")) {  /* Process register form */
@@ -62,14 +81,18 @@ public class LoginServlet extends HttpServlet {
             String passcode = req.getParameter("j_passcode");
             if((pwd == null) || (vpwd == null) || (pwd.equals(vpwd) == false)) {
                 resp.sendRedirect(LOGIN_PAGE + "?error=verifyfailed");
+                sendResponse(resp, "verifyfailed");
             }
             else if(core.registerLogin(uid, pwd, passcode)) {    /* Good registration? */
                 sess.setAttribute(USERID_ATTRIB, uid);
-                resp.sendRedirect("../index.html");
+                sendResponse(resp, "success");
             }
             else {
-                resp.sendRedirect(LOGIN_PAGE + "?error=registerfailed");
+                sendResponse(resp, "registerfailed");
             }
+        }
+        else {
+            sendResponse(resp, "loginfailed");
         }
     }
 

@@ -893,7 +893,14 @@ DynMap.prototype = {
 				var c = this._container;
 				if (me.options.loggedin) {
 					c = $('<button/>').addClass('loginbutton').click(function(event) {
-						window.location = config.url.login;
+						$.ajax({
+							type: 'POST',
+		        				contentType: "application/json; charset=utf-8",
+								url: config.url.login,
+								success: function(response) {
+									window.location = "index.html";
+								},
+						});
 					}).text('Logout').appendTo(c)[0];
 				}
 				else {
