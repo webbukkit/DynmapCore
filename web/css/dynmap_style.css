@@ -945,12 +945,21 @@
 	background-image: url(images/link.png);
 	}
 
-# Login/register panel
-table.loginregister {
-	color: #ffffff;
-    border: 1px solid rgba(64,64,64,0.6);
-	background: #bbb;
+/* Login/register panel */
+.dynmaplogin {
+    text-align: center;
+    width: 100%;
     font-weight: bold;
+    color: #FFFFFF;
+    background: #000000;
+}
+
+table.loginregister {
+    color: #ffffff;
+    border: 1px solid rgba(64,64,64,0.6);
+    background: #bbb;
+    font-weight: bold;
+    margin: auto;
 }
 
 td.login {
