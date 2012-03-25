@@ -66,6 +66,7 @@ public class SendMessageServlet extends HttpServlet {
             JSONObject json = new JSONObject();
             s(json, "error", "not-allowed");
             bytes = json.toJSONString().getBytes(cs_utf8);
+            Log.info("Rejected web chat from " + userID + ": not permitted");
         }
         else {
             InputStreamReader reader = new InputStreamReader(request.getInputStream(), cs_utf8);
