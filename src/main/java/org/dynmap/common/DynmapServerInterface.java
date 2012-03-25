@@ -95,4 +95,8 @@ public interface DynmapServerInterface {
      * Get world by name
      */
     public DynmapWorld getWorldByName(String wname);
+    /**
+     * Test which of given set of permisssions a possibly offline user has
+     */
+    public Set<String> checkPlayerPermissions(String player, Set<String> perms);
 }
