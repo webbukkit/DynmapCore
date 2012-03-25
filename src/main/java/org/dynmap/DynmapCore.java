@@ -12,6 +12,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -954,6 +955,10 @@ public class DynmapCore {
             return false;
         }
         return true;
+    }
+    
+    public boolean checkPermission(String player, String permission) {
+        return getServer().checkPlayerPermission(player, permission);
     }
 
     public ConfigurationNode getWorldConfiguration(DynmapWorld world) {

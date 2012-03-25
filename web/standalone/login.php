@@ -36,10 +36,10 @@ else {
   $good = true;
 }
 if($good) {
-  header('Location: ../index.html');
+   echo "{ \"result\": \"success\" }"; 
 }
 else {
-  header('Location: ../login.html?error=loginfailed');
+   echo "{ \"result\": \"loginfailed\" }"; 
 }
  
 ?>

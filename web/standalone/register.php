@@ -69,10 +69,10 @@ if(strcmp($userid, '-guest-')) {
   }
 }
 if($good) {
-  header('Location: ../index.html');
+   echo "{ \"result\": \"success\" }"; 
 }
 else {
-  header('Location: ../login.html?error=registerfailed');
+   echo "{ \"result\": \"registerfailed\" }"; 
 }
    
 ?>

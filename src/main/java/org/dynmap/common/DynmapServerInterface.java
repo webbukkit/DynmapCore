@@ -99,4 +99,8 @@ public interface DynmapServerInterface {
      * Test which of given set of permisssions a possibly offline user has
      */
     public Set<String> checkPlayerPermissions(String player, Set<String> perms);
+    /**
+     * Test single permission attribute
+     */
+    public boolean checkPlayerPermission(String player, String perm);
 }

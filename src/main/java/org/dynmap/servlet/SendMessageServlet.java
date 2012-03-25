@@ -55,9 +55,16 @@ public class SendMessageServlet extends HttpServlet {
         HttpSession sess = request.getSession(true);
         String userID = (String) sess.getAttribute(LoginServlet.USERID_ATTRIB);
         if(userID == null) userID = LoginServlet.USERID_GUEST;
-        if((core.getLoginRequired() || require_login) && userID.equals(LoginServlet.USERID_GUEST)) {
+        boolean chat_requires_login = core.getLoginRequired() || require_login;
+        if(chat_requires_login && userID.equals(LoginServlet.USERID_GUEST)) {
             JSONObject json = new JSONObject();
             s(json, "error", "login-required");
+            bytes = json.toJSONString().getBytes(cs_utf8);
+        }
+        else if(chat_requires_login && (!userID.equals(LoginServlet.USERID_GUEST)) &&
+                (!core.checkPermission(userID, "webchat"))) {
+            JSONObject json = new JSONObject();
+            s(json, "error", "not-allowed");
             bytes = json.toJSONString().getBytes(cs_utf8);
         }
         else {
