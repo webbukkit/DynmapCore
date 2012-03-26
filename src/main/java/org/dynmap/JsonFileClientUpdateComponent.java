@@ -302,6 +302,7 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                 Iterator<?> iter = jsonMsgs.iterator();
                 boolean init_skip = (lastChatTimestamp == 0);
                 while (iter.hasNext()) {
+                    boolean ok = true;
                     JSONObject o = (JSONObject) iter.next();
                     String ts = String.valueOf(o.get("timestamp"));
                     if(ts.equals("null")) ts = "0";
@@ -331,13 +332,17 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                                     if(checkuserban) {
                                         if(core.getServer().isPlayerBanned(name)) {
                                             Log.info("Ignore message from '" + ip + "' - banned player (" + name + ")");
-                                            return;
+                                            ok = false;
                                         }
+                                    }
+                                    if(!core.getServer().checkPlayerPermission(name, "webchat")) {
+                                        Log.info("Rejected web chat from " + ip + ": not permitted (" + name + ")");
+                                        ok = false;
                                     }
                                 }
                                 else if(requireplayerloginip) {
                                     Log.info("Ignore message from '" + name + "' - no matching player login recorded");
-                                    return;
+                                    ok = false;
                                 }
                             }
                             if(hidewebchatip && isip) {
@@ -351,14 +356,20 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                             }
                         }
                         else {
-                            name = uid;
                             if(core.getServer().isPlayerBanned(uid)) {
-                                Log.info("Ignore message from '" + name + "' - banned user");
-                                return;
+                                Log.info("Ignore message from '" + uid + "' - banned user");
+                                ok = false;
                             }
+                            if(!core.getServer().checkPlayerPermission(uid, "webchat")) {
+                                Log.info("Rejected web chat from " + uid + ": not permitted");
+                                ok = false;
+                            }
+                            name = uid;
                         }
-                        String message = String.valueOf(o.get("message"));
-                        core.webChat(name, message);
+                        if(ok) {
+                            String message = String.valueOf(o.get("message"));
+                            core.webChat(name, message);
+                        }
                     }
                 }
             }

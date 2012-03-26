@@ -31,6 +31,10 @@ componentconstructors['chat'] = function(dynmap, configuration) {
 				data: data,
 				dataType: 'json',
 				success: function(response) {
+					if(response.error != "none") {
+						var msg = dynmap.options['msg-chatnotallowed'];
+						$(dynmap).trigger('chat', [{source: 'me', name: 'Error', text: msg }]);
+					}					
 				},
 				error: function(xhr) {
 					if (xhr.status === 403) {

@@ -52,31 +52,30 @@ public class SendMessageServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         byte[] bytes;
+        String error = "none";
         HttpSession sess = request.getSession(true);
         String userID = (String) sess.getAttribute(LoginServlet.USERID_ATTRIB);
         if(userID == null) userID = LoginServlet.USERID_GUEST;
         boolean chat_requires_login = core.getLoginRequired() || require_login;
         if(chat_requires_login && userID.equals(LoginServlet.USERID_GUEST)) {
-            JSONObject json = new JSONObject();
-            s(json, "error", "login-required");
-            bytes = json.toJSONString().getBytes(cs_utf8);
+            error = "login-required";
         }
         else if(chat_requires_login && (!userID.equals(LoginServlet.USERID_GUEST)) &&
                 (!core.checkPermission(userID, "webchat"))) {
-            JSONObject json = new JSONObject();
-            s(json, "error", "not-allowed");
-            bytes = json.toJSONString().getBytes(cs_utf8);
-            Log.info("Rejected web chat from " + userID + ": not permitted");
+            Log.info("Rejected web chat by " + userID + ": not permitted");
+            error = "not-permitted";
         }
         else {
+            boolean ok = true;
+            
             InputStreamReader reader = new InputStreamReader(request.getInputStream(), cs_utf8);
 
             JSONObject o = null;
             try {
                 o = (JSONObject)parser.parse(reader);
             } catch (ParseException e) {
-                response.sendError(HttpStatus.BadRequest.getCode());
-                return;
+                error = "bad-format";
+                ok = false;
             }
 
             final Message message = new Message();
@@ -104,16 +103,21 @@ public class SendMessageServlet extends HttpServlet {
                         if (check_user_ban) {
                             if (core.getServer().isPlayerBanned(id)) {
                                 Log.info("Ignore message from '" + message.name + "' - banned player (" + id + ")");
-                                response.sendError(HttpStatus.Forbidden.getCode());
-                                return;
+                                error = "not-allowed";
+                                ok = false;
                             }
                         }
-                        message.name = ids.get(0);
+                        if (!core.getServer().checkPlayerPermission(id, "webchat")) {
+                            Log.info("Rejected web chat from '" + message.name + "': not permitted (" + id + ")");
+                            error = "not-allowed";
+                            ok = false;
+                        }
+                        message.name = id;
                         isip = false;
                     } else if (require_player_login_ip) {
                         Log.info("Ignore message from '" + message.name + "' - no matching player login recorded");
-                        response.sendError(HttpStatus.Forbidden.getCode());
-                        return;
+                        error = "not-allowed";
+                        ok = false;
                     }
                 }
                 if (hideip && isip) { /* If hiding IP, find or assign alias */
@@ -158,23 +162,23 @@ public class SendMessageServlet extends HttpServlet {
                     disallowedUsers.put(user.name, user);
                     disallowedUserQueue.add(user);
                 } else {
-                    response.sendError(HttpStatus.Forbidden.getCode());
-                    return;
+                    error = "not-allowed";
+                    ok = false;
                 }
             }
-            onMessageReceived.trigger(message);
-            
-            JSONObject json = new JSONObject();
-            s(json, "error", "none");
-            bytes = json.toJSONString().getBytes(cs_utf8);
+            if(ok)
+                onMessageReceived.trigger(message);
         }
+        JSONObject json = new JSONObject();
+        s(json, "error", error);
+        bytes = json.toJSONString().getBytes(cs_utf8);
+        
         String dateStr = new Date().toString();
         response.addHeader(HttpField.Date, dateStr);
         response.addHeader(HttpField.ContentType, "text/plain; charset=utf-8");
         response.addHeader(HttpField.Expires, "Thu, 01 Dec 1994 16:00:00 GMT");
         response.addHeader(HttpField.LastModified, dateStr);
         response.addHeader(HttpField.ContentLength, Integer.toString(bytes.length));
-
         response.getOutputStream().write(bytes);
     }
 
