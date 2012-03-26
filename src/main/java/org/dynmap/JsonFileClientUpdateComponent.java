@@ -8,7 +8,10 @@ import java.io.InputStreamReader;
 import java.io.FileInputStream;
 import java.io.Reader;
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -41,6 +44,9 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
     private long last_confighash;
     private File outputFile;
     private File outputTempFile;
+    private MessageDigest md;
+    private File loginFile;
+    private File loginTempFile;
     	
     private Charset cs_utf8 = Charset.forName("UTF-8");
     public JsonFileClientUpdateComponent(final DynmapCore core, final ConfigurationNode configuration) {
@@ -61,6 +67,14 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
             outputFile = getStandaloneFile("dynmap_config.json");
             outputTempFile = getStandaloneFile("dynmap_config.json.new");
         }
+        loginFile = getStandaloneFile("dynmap_login.php");
+        loginTempFile = getStandaloneFile("dynmap_login.new.php");
+        try {
+            md = MessageDigest.getInstance("SHA-1");
+        } catch (NoSuchAlgorithmException nsax) {
+            Log.severe("Unable to get message digest SHA-1");
+        }
+        
         core.getServer().scheduleServerTask(new Runnable() {
             @Override
             public void run() {
@@ -225,20 +239,34 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
         }
     }
     
+    private byte[] loginhash = new byte[16];
+    
     protected void writeLogins() {
-        File loginFile = getStandaloneFile("dynmap_login.php");
         if(core.isLoginSupportEnabled()) {
             String s = core.getLoginPHP();
             if(s != null) {
                 byte[] bytes = s.getBytes(cs_utf8);
+                md.reset();
+                byte[] hash = md.digest(bytes);
+                if(Arrays.equals(hash, loginhash)) {
+                    return;
+                }
                 FileOutputStream fos = null;
+                boolean good = false;
                 try {
-                    fos = new FileOutputStream(loginFile);
+                    fos = new FileOutputStream(loginTempFile);
                     fos.write(bytes);
+                    good = true;
                 } catch (IOException iox) {
                     Log.severe("Error writing " + loginFile.getPath() + ": " + iox.getMessage());
                 } finally {
-                    if(fos != null) { try { fos.close(); } catch (IOException ix) {} }
+                    if(fos != null) {
+                        try { fos.close(); } catch (IOException ix) {}
+                    }
+                    if(good) {
+                        loginFile.delete();
+                        loginTempFile.renameTo(loginFile);
+                    }
                 }
             }
         }

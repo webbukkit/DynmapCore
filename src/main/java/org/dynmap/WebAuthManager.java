@@ -8,8 +8,10 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Properties;
 import java.util.Random;
+import java.util.Set;
 
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.common.DynmapPlayer;
@@ -23,6 +25,7 @@ public class WebAuthManager {
     public static final String WEBAUTHFILE = "webauth.txt";
     private static final String HASHSALT = "$HASH_SALT$";
     private static final String PWDHASH_PREFIX = "hash.";
+    private static final String PERM_PREFIX = "perm.";
     private Random rnd = new Random();
     private DynmapCore core;
     
@@ -44,6 +47,7 @@ public class WebAuthManager {
                         pwdhash_by_userid.put(k.substring(PWDHASH_PREFIX.length()).toLowerCase(), p.getProperty(k));
                     }
                 }
+                
             } catch (IOException iox) {
                 Log.severe("Cannot read " + WEBAUTHFILE);
             } finally {
@@ -162,15 +166,18 @@ public class WebAuthManager {
     }
     public boolean processWebRegisterCommand(DynmapCore core, DynmapCommandSender sender, DynmapPlayer player, String[] args) {
         String uid = null;
+        boolean other = false;
         if(args.length > 1) {
             if(!core.checkPlayerPermission(sender, "webregister.other")) {
                 sender.sendMessage("Not authorized to set web login information for other players");
                 return true;
             }
             uid = args[1];
+            other = true;
         }
-        else if(player == null) {   /* Console? */
+        else if (player == null) {   /* Console? */
             sender.sendMessage("Must provide user ID to register web login");
+            return true;
         }
         else {
             uid = player.getName();
@@ -180,6 +187,15 @@ public class WebAuthManager {
         sender.sendMessage("Registration pending for user ID: " + uid);
         sender.sendMessage("Registration code: " + regkey);
         sender.sendMessage("Enter ID and code on registration web page (login.html) to complete registration");
+        if(other) {
+            DynmapPlayer p = core.getServer().getPlayer(uid);
+            if(p != null) {
+                p.sendMessage("The registration of your account for web access has been started.");
+                p.sendMessage("To complete the process, access the Login page on the Dynmap map");
+                p.sendMessage("Registration code: " + regkey);
+                p.sendMessage("The user ID must match your account ID, but the password should NOT be the same.");
+            }
+        }
         core.events.trigger("loginupdated", null);
         
         return true;
@@ -206,5 +222,11 @@ public class WebAuthManager {
     }
     boolean pendingRegisters() {
         return (pending_registrations.size() > 0);
+    }
+    Set<String> getUserIDs() {
+        HashSet<String> lst = new HashSet<String>();
+        lst.addAll(pwdhash_by_userid.keySet());
+        lst.addAll(pending_registrations.keySet());
+        return lst;
     }
 }
