@@ -16,7 +16,7 @@ else {
   $verify = '';
 }
 if(strcmp($password, $verify)) {
-  headeer('Location: ../login.html?error=verifyfailed');
+  echo "{ \"result\": \"verifyfailed\" }"; 
   return;
 }
 

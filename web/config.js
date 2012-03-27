@@ -45,6 +45,9 @@ var config = {
 	// },
 
 	tileUrl : 'tiles/',
+	// Alternative to tiles/ - prevents 404 errors on undefined tiles
+	//tileUrl : 'gettiles.php/',
+	
 	tileWidth : 128,
 	tileHeight : 128
 };
