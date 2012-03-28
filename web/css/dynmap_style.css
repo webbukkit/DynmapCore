@@ -993,3 +993,6 @@ div.statusmessage {
     background-color: rgba(0,0,0,0.0);
 }
 
+.pinnedloginbutton {
+	margin-right: 200px;
+}

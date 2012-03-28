@@ -238,7 +238,7 @@ DynMap.prototype = {
 			.appendTo(panel);
 
         var maplists = {};
-
+		var worldsadded = {};
 		$.each(me.worlds, function(index, world) {
 			var maplist; 
 			world.element = $('<li/>')
@@ -247,8 +247,7 @@ DynMap.prototype = {
 				.append(maplist = $('<ul/>')
 						.addClass('maplist')
 						)
-				.data('world', world)
-				.appendTo(worldlist);
+				.data('world', world);
 			maplists[world.name] = maplist;
 		});
 		        		
@@ -257,13 +256,19 @@ DynMap.prototype = {
 			
 			$.each(world.maps, function(mapindex, map) {
 				//me.map.mapTypes.set(map.world.name + '.' + map.name, map);
-				var mlist = null;
+				var wname = world.name;
 				if(map.options.append_to_world) {
-					mlist = maplists[map.options.append_to_world];
+					wname = map.options.append_to_world;
 				}
-				if(!mlist)
+				var mlist = maplists[wname];
+				if(!mlist) {
 					mlist = maplist;
-					
+					wname = world.name;
+				}
+				if(!worldsadded[wname]) {
+					worldsadded[wname] = true;
+				}
+				
 				map.element = $('<li/>')
 					.addClass('map')
 					.append($('<a/>')
@@ -278,6 +283,11 @@ DynMap.prototype = {
 					.data('map', map)
 					.appendTo(mlist);
 			});
+		});
+		$.each(me.worlds, function(index, world) {
+			if(worldsadded[world.name]) {
+				world.element.appendTo(worldlist);
+			}
 		});
 		
 		// The scrollbuttons
@@ -891,8 +901,12 @@ DynMap.prototype = {
 			_update: function() {
 				if (!this._map) return;
 				var c = this._container;
+				var cls = 'loginbutton';
+				if(me.options.sidebaropened == 'pinned') {
+					cls = 'loginbutton pinnedloginbutton';
+				}				
 				if (me.options.loggedin) {
-					c = $('<button/>').addClass('loginbutton').click(function(event) {
+					c = $('<button/>').addClass(cls).click(function(event) {
 						$.ajax({
 							type: 'POST',
 		        				contentType: "application/json; charset=utf-8",
@@ -904,7 +918,7 @@ DynMap.prototype = {
 					}).text('Logout').appendTo(c)[0];
 				}
 				else {
-					c = $('<button/>').addClass('loginbutton').click(function(event) {
+					c = $('<button/>').addClass(cls).click(function(event) {
 						window.location = "login.html";
 					}).text('Login').appendTo(c)[0];
 				}				
