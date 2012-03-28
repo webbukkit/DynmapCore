@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.FileInputStream;
+import java.io.RandomAccessFile;
 import java.io.Reader;
 import java.io.IOException;
 import java.security.MessageDigest;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -42,12 +44,87 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
     private HashMap<String,String> useralias = new HashMap<String,String>();
     private int aliasindex = 1;
     private long last_confighash;
-    private File outputFile;
-    private File outputTempFile;
     private MessageDigest md;
-    private File loginFile;
-    private File loginTempFile;
-    	
+
+    private Object filelock = new Object();
+    private static class FileToWrite {
+        File file;
+        File newfile;
+        File oldfile;
+        byte[] content;
+        boolean phpwrapper;
+    }
+    private class FileProcessor implements Runnable {
+        LinkedList<FileToWrite> files = new LinkedList<FileToWrite>();
+        public void run() {
+            synchronized(filelock) {
+                pending = null; /* We're working - use new job for additional updates */
+            }
+            for(FileToWrite f : files) {
+                int retrycnt = 0;
+                boolean done = false;
+                while(!done) {
+                    RandomAccessFile fos = null;
+                    boolean good = false;
+                    try {
+                        fos = new RandomAccessFile(f.newfile, "rw");
+                        if(f.phpwrapper) {
+                            fos.write("<?php /*\n".getBytes(cs_utf8));
+                        }
+                        fos.write(f.content);
+                        if(f.phpwrapper) {
+                            fos.write("\n*/ ?>\n".getBytes(cs_utf8));
+                        }
+                        good = true;
+                        done = true;
+                    } catch (IOException ioe) {
+                        if(retrycnt < RETRY_LIMIT) {
+                            try { Thread.sleep(20 * (1 << retrycnt)); } catch (InterruptedException ix) {}
+                            retrycnt++;
+                        }
+                        else {
+                            Log.severe("Exception while writing JSON-file - " + f.oldfile.getPath(), ioe);
+                            done = true;
+                        }
+                    } finally {
+                        if(fos != null) {
+                            try {
+                                fos.close();
+                            } catch (IOException iox) {
+                            }
+                            fos = null;
+                        }
+                        if(good) {
+                            f.file.renameTo(f.oldfile);
+                            f.newfile.renameTo(f.file);
+                            f.oldfile.delete();
+                        }
+                    }
+                }
+            }
+        }
+    }
+    private FileProcessor pending = null;
+    
+    private void enqueueFileWrite(File file, File newfile, File oldfile, byte[] content, boolean phpwrap) {
+        FileToWrite ftw = new FileToWrite();
+        ftw.file = file;
+        ftw.newfile = newfile;
+        ftw.oldfile = oldfile;
+        ftw.content = content;
+        ftw.phpwrapper = phpwrap;
+        synchronized(filelock) {
+            boolean added = false;
+            if (pending == null) {
+                added = true;
+                pending = new FileProcessor();
+            }
+            pending.files.addLast(ftw);
+            if(added)
+                MapManager.scheduleDelayedJob(pending, 0);
+       }
+    }
+    
     private Charset cs_utf8 = Charset.forName("UTF-8");
     public JsonFileClientUpdateComponent(final DynmapCore core, final ConfigurationNode configuration) {
         super(core, configuration);
@@ -59,16 +136,6 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
         trust_client_name = configuration.getBoolean("trustclientname", false);
         checkuserban = configuration.getBoolean("block-banned-player-chat", true);
         req_login = configuration.getBoolean("webchat-requires-login", false);
-        if(core.isLoginSupportEnabled()) {
-            outputFile = getStandaloneFile("dynmap_config.php");
-            outputTempFile = getStandaloneFile("dynmap_config.new.php");
-        }
-        else {
-            outputFile = getStandaloneFile("dynmap_config.json");
-            outputTempFile = getStandaloneFile("dynmap_config.json.new");
-        }
-        loginFile = getStandaloneFile("dynmap_login.php");
-        loginTempFile = getStandaloneFile("dynmap_login.new.php");
         try {
             md = MessageDigest.getInstance("SHA-1");
         } catch (NoSuchAlgorithmException nsax) {
@@ -140,49 +207,21 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
         core.events.trigger("buildclientconfiguration", clientConfiguration);
         last_confighash = core.getConfigHashcode();
         
-        final byte[] content = clientConfiguration.toJSONString().getBytes(cs_utf8);
+        byte[] content = clientConfiguration.toJSONString().getBytes(cs_utf8);
+
+        File outputFile, outputNewFile, outputOldFile;
+        if(core.isLoginSupportEnabled()) {
+            outputFile = getStandaloneFile("dynmap_config.php");
+            outputNewFile = getStandaloneFile("dynmap_config.new.php");
+            outputOldFile = getStandaloneFile("dynmap_config.old.php");
+        }
+        else {
+            outputFile = getStandaloneFile("dynmap_config.json");
+            outputNewFile = getStandaloneFile("dynmap_config.json.new");
+            outputOldFile = getStandaloneFile("dynmap_config.json.old");
+        }
         
-        MapManager.scheduleDelayedJob(new Runnable() {
-            public void run() {
-                int retrycnt = 0;
-                boolean done = false;
-                while(!done) {
-                    FileOutputStream fos = null;
-                    try {
-                        fos = new FileOutputStream(outputTempFile);
-                        if(core.isLoginSupportEnabled()) {
-                            fos.write("<?php /*\n".getBytes(cs_utf8));
-                        }
-                        fos.write(content);
-                        if(core.isLoginSupportEnabled()) {
-                            fos.write("\n*/ ?>\n".getBytes(cs_utf8));
-                        }
-                        fos.close();
-                        fos = null;
-                        outputFile.delete();
-                        outputTempFile.renameTo(outputFile);
-                        done = true;
-                    } catch (IOException ioe) {
-                        if(retrycnt < RETRY_LIMIT) {
-                            try { Thread.sleep(20 * (1 << retrycnt)); } catch (InterruptedException ix) {}
-                            retrycnt++;
-                        }
-                        else {
-                            Log.severe("Exception while writing JSON-configuration-file.", ioe);
-                            done = true;
-                        }
-                    } finally {
-                        if(fos != null) {
-                            try {
-                                fos.close();
-                            } catch (IOException iox) {
-                            }
-                            fos = null;
-                        }
-                    }
-                }
-            }
-        }, 0);
+        enqueueFileWrite(outputFile, outputNewFile, outputOldFile, content, core.isLoginSupportEnabled());
     }
     
     @SuppressWarnings("unchecked")
@@ -197,51 +236,20 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
             ClientUpdateEvent clientUpdate = new ClientUpdateEvent(currentTimestamp - 30000, dynmapWorld, update);
             core.events.trigger("buildclientupdate", clientUpdate);
 
-            final File outputFile = getStandaloneFile("dynmap_" + dynmapWorld.getName() + ".json");
-            final File outputTempFile = getStandaloneFile("dynmap_" + dynmapWorld.getName() + ".json.new");
-            final byte[] content = Json.stringifyJson(update).getBytes(cs_utf8);
-            
-            MapManager.scheduleDelayedJob(new Runnable() {
-                public void run() {
-                    int retrycnt = 0;
-                    boolean done = false;
-                    while(!done) {
-                        FileOutputStream fos = null;
-                        try {
-                            fos = new FileOutputStream(outputTempFile);
-                            fos.write(content);
-                            fos.close();
-                            fos = null;
-                            outputFile.delete();
-                            outputTempFile.renameTo(outputFile);
-                            done = true;
-                        } catch (IOException ioe) {
-                            if(retrycnt < RETRY_LIMIT) {
-                                try { Thread.sleep(20 * (1 << retrycnt)); } catch (InterruptedException ix) {}
-                                retrycnt++;
-                            }
-                            else {
-                                Log.severe("Exception while writing JSON-file.", ioe);
-                                done = true;
-                            }
-                        } finally {
-                            if(fos != null) {
-                                try {
-                                    fos.close();
-                                } catch (IOException iox) {
-                                }
-                                fos = null;
-                            }
-                        }
-                    }
-                }
-            }, 0);
+            File outputFile = getStandaloneFile("dynmap_" + dynmapWorld.getName() + ".json");
+            File outputNewFile = getStandaloneFile("dynmap_" + dynmapWorld.getName() + ".json.new");
+            File outputOldFile = getStandaloneFile("dynmap_" + dynmapWorld.getName() + ".json.old");
+            byte[] content = Json.stringifyJson(update).getBytes(cs_utf8);
+
+            enqueueFileWrite(outputFile, outputNewFile, outputOldFile, content, false);
         }
     }
     
     private byte[] loginhash = new byte[16];
     
     protected void writeLogins() {
+        File loginFile = getStandaloneFile("dynmap_login.php");
+
         if(core.isLoginSupportEnabled()) {
             String s = core.getLoginPHP();
             if(s != null) {
@@ -251,23 +259,10 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                 if(Arrays.equals(hash, loginhash)) {
                     return;
                 }
-                FileOutputStream fos = null;
-                boolean good = false;
-                try {
-                    fos = new FileOutputStream(loginTempFile);
-                    fos.write(bytes);
-                    good = true;
-                } catch (IOException iox) {
-                    Log.severe("Error writing " + loginFile.getPath() + ": " + iox.getMessage());
-                } finally {
-                    if(fos != null) {
-                        try { fos.close(); } catch (IOException ix) {}
-                    }
-                    if(good) {
-                        loginFile.delete();
-                        loginTempFile.renameTo(loginFile);
-                    }
-                }
+                File loginNewFile = getStandaloneFile("dynmap_login.new.php");
+                File loginOldFile = getStandaloneFile("dynmap_login.old.php");
+
+                enqueueFileWrite(loginFile, loginNewFile, loginOldFile, bytes, false);
             }
         }
         else {
