@@ -76,6 +76,8 @@ public class IsoHDPerspective implements HDPerspective {
     private static final int CHEST_BLKTYPEID = 54;
     private static final int REDSTONE_BLKTYPEID = 55;
     private static final int FENCEGATE_BLKTYPEID = 107;
+    private static final int WOODDOOR_BLKTYPEID = 64;
+    private static final int IRONDOOR_BLKTYPEID = 71;
     
     private enum ChestData {
         SINGLE_WEST, SINGLE_SOUTH, SINGLE_EAST, SINGLE_NORTH, LEFT_WEST, LEFT_SOUTH, LEFT_EAST, LEFT_NORTH, RIGHT_WEST, RIGHT_SOUTH, RIGHT_EAST, RIGHT_NORTH
@@ -530,6 +532,49 @@ public class IsoHDPerspective implements HDPerspective {
             }
             return blockdata;
         }
+        /**
+         * Generate render data for doors
+         *  - bit 3 = top half (1) or bottom half (0)
+         *  - bit 2 = right hinge (0), left hinge (1)
+         *  - bit 1,0 = 00=west,01=north,10=east,11=south
+         * @param mapiter - iterator
+         * @param typeid - ID of our material
+         * @return
+         */
+        private int generateDoorBlockData(MapIterator mapiter, int typeid) {
+            int blockdata = 0;
+            int topdata = mapiter.getBlockData();   /* Get block data */
+            int bottomdata = 0;
+            if((topdata & 0x08) != 0) { /* We're door top */
+                blockdata |= 0x08;  /* Set top bit */
+                mapiter.stepPosition(BlockStep.Y_MINUS);
+                bottomdata = mapiter.getBlockData();
+                mapiter.unstepPosition(BlockStep.Y_MINUS);
+            }
+            else {  /* Else, we're bottom */
+                bottomdata = topdata;
+                mapiter.stepPosition(BlockStep.Y_PLUS);
+                topdata = mapiter.getBlockData();
+                mapiter.unstepPosition(BlockStep.Y_PLUS);
+            }
+            boolean onright = false;
+            if((topdata & 0x01) == 1) { /* Right hinge */
+                blockdata |= 0x4; /* Set hinge bit */
+                onright = true;
+            }
+            blockdata |= (bottomdata & 0x3);    /* Set side bits */
+            /* If open, rotate data appropriately */
+            if((bottomdata & 0x4) > 0) {
+                if(onright) {   /* Hinge on right? */
+                    blockdata = (blockdata & 0x8) | 0x0 | ((blockdata-1) & 0x3);
+                }
+                else {
+                    blockdata = (blockdata & 0x8) | 0x4 | ((blockdata+1) & 0x3);
+                }
+            }
+            return blockdata;
+        }
+
         private final boolean containsID(int id, int[] linkids) {
             for(int i = 0; i < linkids.length; i++)
                 if(id == linkids[i])
@@ -585,6 +630,7 @@ public class IsoHDPerspective implements HDPerspective {
         private static final int REDSTONE_ALGORITHM = 3;
         private static final int GLASS_IRONFENCE_ALG = 4;
         private static final int WIRE_ALGORITHM = 5;
+        private static final int DOOR_ALGORITHM = 6;
         /**
          * Process visit of ray to block
          */
@@ -612,6 +658,9 @@ public class IsoHDPerspective implements HDPerspective {
                         break;
                     case WIRE_ALGORITHM:
                         blockrenderdata = generateWireBlockData(mapiter, HDBlockModels.getLinkIDs(blocktypeid));
+                        break;
+                    case DOOR_ALGORITHM:
+                        blockrenderdata = generateDoorBlockData(mapiter, blocktypeid);
                         break;
                     case 0:
                     default:

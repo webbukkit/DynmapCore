@@ -1595,9 +1595,13 @@ rotate:id=26,data=0,rot=180
 # Bed - foot - pointing south
 block:id=26,data=3,scale=16
 rotate:id=26,data=0,rot=270
-# Wooden/Iron Door - bottom - northeast corner hinge, not swung
-# Wooden/Iron Door - bottom - northwest corner hinge, swung
-block:id=64,id=71,data=0,data=7,scale=16
+
+# Wooden Door - set render alg
+linkmap:id=64,linkalg=6
+# Iron Door - set render alg
+linkmap:id=71,linkalg=6
+# Wooden/Iron Door - top/bottom - north side of block
+block:id=64,id=71,data=0,data=4,data=8,data=12,scale=16
 layer:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
 ****************
 ****************
@@ -1615,67 +1619,15 @@ layer:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
 ----------------
 ----------------
 ----------------
-# Wooden/Iron Door - bottom - southeast corner hinge, not swung
-# Wooden/Iron Door - bottom - northeast corner hinge, swung
-block:id=64,id=71,data=1,data=4,scale=16
+# Wooden/Iron Door - top/bottom - east side of block
+block:id=64,id=71,data=1,data=5,data=9,data=13,scale=16
 rotate:id=64,data=0,rot=90
-# Wooden/Iron Door - bottom - southwest corner hinge, not swung
-# Wooden/Iron Door - bottom - southeast corner hinge, swung
-block:id=64,id=71,data=2,data=5,scale=16
+# Wooden/Iron Door - top/bottom - south side of block
+block:id=64,id=71,data=2,data=6,data=10,data=14,scale=16
 rotate:id=64,data=0,rot=180
-# Wooden/Iron Door - bottom - northwest corner hinge, not swung
-# Wooden/Iron Door - bottom - southwest corner hinge, swung
-block:id=64,id=71,data=3,data=6,scale=16
+# Wooden/Iron Door - top/bottom - south side of block
+block:id=64,id=71,data=3,data=7,data=11,data=15,scale=16
 rotate:id=64,data=0,rot=270
-# Wooden/Iron Door - top - northeast corner hinge, not swung
-# Wooden/Iron Door - top - northwest corner hinge, swung
-block:id=64,id=71,data=8,data=15,scale=16
-layer:0,1,2,3,4,8,9,13,14,15
-****************
-****************
-****************
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-layer:5,6,7,10,11,12
-***----**----***
-***----**----***
-***----**----***
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-# Wooden/Iron Door - bottom - southeast corner hinge, not swung
-# Wooden/Iron Door - bottom - northeast corner hinge, swung
-block:id=64,id=71,data=9,data=12,scale=16
-rotate:id=64,data=8,rot=90
-# Wooden/Iron Door - bottom - southwest corner hinge, not swung
-# Wooden/Iron Door - bottom - southeast corner hinge, swung
-block:id=64,id=71,data=10,data=13,scale=16
-rotate:id=64,data=8,rot=180
-# Wooden/Iron Door - bottom - northwest corner hinge, not swung
-# Wooden/Iron Door - bottom - southwest corner hinge, swung
-block:id=64,id=71,data=11,data=14,scale=16
-rotate:id=64,data=8,rot=270
 # Wall lever, facing south
 block:id=69,data=1,data=9,scale=16
 layer:4,5,6,7,8
