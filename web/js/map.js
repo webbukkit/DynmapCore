@@ -902,7 +902,7 @@ DynMap.prototype = {
 				if (!this._map) return;
 				var c = this._container;
 				var cls = 'loginbutton';
-				if(me.options.sidebaropened == 'pinned') {
+				if(me.options.sidebaropened != 'false') {
 					cls = 'loginbutton pinnedloginbutton';
 				}				
 				if (me.options.loggedin) {

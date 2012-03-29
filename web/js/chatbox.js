@@ -49,18 +49,18 @@ componentconstructors['chatbox'] = function(dynmap, configuration) {
 			}).text("+").appendTo(chat);
 		}
 		chatinput.appendTo(chat);
-	  }
-	  else {
-	  	var login = $('<button/>').addClass('loginbutton').click(function(event) {
-	  		window.location = 'login.html';
-	  	}).text(dynmap.options['msg-chatrequireslogin']).appendTo(chat);
-	  }
 		if (configuration.scrollback) {
 			chatinput.click(function(){ 
 				var m = $('.messagelist');
 				m.show().scrollTop(m.scrollHeight());
 			});
 		}
+	  }
+	  else {
+	  	var login = $('<button/>').addClass('loginbutton').click(function(event) {
+	  		window.location = 'login.html';
+	  	}).text(dynmap.options['msg-chatrequireslogin']).appendTo(chat);
+	  }
 	}
 	
 	var addrow = function(row) {
