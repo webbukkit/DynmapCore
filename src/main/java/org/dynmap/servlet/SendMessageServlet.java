@@ -108,7 +108,7 @@ public class SendMessageServlet extends HttpServlet {
                                 ok = false;
                             }
                         }
-                        if (!core.getServer().checkPlayerPermission(id, "webchat")) {
+                        if (chat_perms && !core.getServer().checkPlayerPermission(id, "webchat")) {
                             Log.info("Rejected web chat from '" + message.name + "': not permitted (" + id + ")");
                             error = "not-allowed";
                             ok = false;
