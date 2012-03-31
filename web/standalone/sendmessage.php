@@ -32,10 +32,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['lastchat'] < time())
 	$new_messages[] = $data;
 	file_put_contents('dynmap_webchat.json', json_encode($new_messages));
 	$_SESSION['lastchat'] = time()+$msginterval;
+	echo "{ \"error\" : \"none\" }";
 }
 elseif($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['lastchat'] > time())
 {
 	header('HTTP/1.1 403 Forbidden');
 }
-
+else {
+	echo "{ \"error\" : \"none\" }";
+}
 ?>
