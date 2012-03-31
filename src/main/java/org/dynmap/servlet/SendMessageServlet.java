@@ -47,6 +47,7 @@ public class SendMessageServlet extends HttpServlet {
     public boolean require_player_login_ip = false;
     public boolean check_user_ban = false;
     public boolean require_login = false;
+    public boolean chat_perms = false;
     public DynmapCore core;
 
     @Override
@@ -60,7 +61,7 @@ public class SendMessageServlet extends HttpServlet {
         if(chat_requires_login && userID.equals(LoginServlet.USERID_GUEST)) {
             error = "login-required";
         }
-        else if(chat_requires_login && (!userID.equals(LoginServlet.USERID_GUEST)) &&
+        else if(chat_requires_login && (!userID.equals(LoginServlet.USERID_GUEST)) && chat_perms && 
                 (!core.checkPermission(userID, "webchat"))) {
             Log.info("Rejected web chat by " + userID + ": not permitted");
             error = "not-permitted";

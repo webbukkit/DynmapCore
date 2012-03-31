@@ -41,6 +41,7 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
     private boolean trust_client_name;
     private boolean checkuserban;
     private boolean req_login;
+    private boolean chat_perms;
     private HashMap<String,String> useralias = new HashMap<String,String>();
     private int aliasindex = 1;
     private long last_confighash;
@@ -136,6 +137,7 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
         trust_client_name = configuration.getBoolean("trustclientname", false);
         checkuserban = configuration.getBoolean("block-banned-player-chat", true);
         req_login = configuration.getBoolean("webchat-requires-login", false);
+        chat_perms = configuration.getBoolean("webchat-permissions", false);
         try {
             md = MessageDigest.getInstance("SHA-1");
         } catch (NoSuchAlgorithmException nsax) {
@@ -330,7 +332,7 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                                             ok = false;
                                         }
                                     }
-                                    if(!core.getServer().checkPlayerPermission(name, "webchat")) {
+                                    if(chat_perms && !core.getServer().checkPlayerPermission(name, "webchat")) {
                                         Log.info("Rejected web chat from " + ip + ": not permitted (" + name + ")");
                                         ok = false;
                                     }
@@ -355,7 +357,7 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                                 Log.info("Ignore message from '" + uid + "' - banned user");
                                 ok = false;
                             }
-                            if(!core.getServer().checkPlayerPermission(uid, "webchat")) {
+                            if(chat_perms && !core.getServer().checkPlayerPermission(uid, "webchat")) {
                                 Log.info("Rejected web chat from " + uid + ": not permitted");
                                 ok = false;
                             }
