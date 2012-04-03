@@ -58,11 +58,11 @@ if(strcmp($userid, '-guest-')) {
 				list($uid, $pc, $hsh) = split('=', rtrim($lines[$i]));
 				if($uid == $userid) continue;
 				if(array_key_exists($uid, $pendingreg)) {
-					$newlines[] = $uid . '=' . $hsh;
+					$newlines[] = $uid . '=' . $pc . '=' . $hsh;
 				}
 			}
 		}
-		$newlines[] = $userid . '=' . $pc . '=' . $hash;
+		$newlines[] = $userid . '=' . $passcode . '=' . $hash;
 		$newlines[] = '*/ ?>';
 		file_put_contents('dynmap_reg.php', implode("\n", $newlines));
      }
