@@ -1,9 +1,7 @@
 package org.dynmap;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.FileInputStream;
 import java.io.RandomAccessFile;
@@ -17,8 +15,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
 
 import org.dynmap.web.Json;
 import org.json.simple.JSONArray;
@@ -42,6 +38,7 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
     private boolean checkuserban;
     private boolean req_login;
     private boolean chat_perms;
+    private int lengthlimit;
     private HashMap<String,String> useralias = new HashMap<String,String>();
     private int aliasindex = 1;
     private long last_confighash;
@@ -138,6 +135,7 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
         checkuserban = configuration.getBoolean("block-banned-player-chat", true);
         req_login = configuration.getBoolean("webchat-requires-login", false);
         chat_perms = configuration.getBoolean("webchat-permissions", false);
+        lengthlimit = configuration.getInteger("chatlengthlimit", 256); 
         try {
             md = MessageDigest.getInstance("SHA-1");
         } catch (NoSuchAlgorithmException nsax) {
@@ -170,6 +168,7 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                 s(t, "loginrequired", core.isLoginRequired());
                 // For 'sendmessage.php'
                 s(t, "webchat-interval", configuration.getFloat("webchat-interval", 5.0f));
+                s(t, "chatlengthlimit", lengthlimit);
             }
         });
         core.events.addListener("initialized", new Event.Listener<Object>() {
@@ -365,6 +364,8 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                         }
                         if(ok) {
                             String message = String.valueOf(o.get("message"));
+                            if((lengthlimit > 0) && (message.length() > lengthlimit))
+                                message = message.substring(0, lengthlimit);
                             core.webChat(name, message);
                         }
                     }

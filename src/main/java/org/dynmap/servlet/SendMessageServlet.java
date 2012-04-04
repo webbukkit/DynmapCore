@@ -48,6 +48,7 @@ public class SendMessageServlet extends HttpServlet {
     public boolean check_user_ban = false;
     public boolean require_login = false;
     public boolean chat_perms = false;
+    public int lengthlimit = 256;
     public DynmapCore core;
 
     @Override
@@ -137,6 +138,9 @@ public class SendMessageServlet extends HttpServlet {
                 message.name = userID;
             }
             message.message = String.valueOf(o.get("message"));
+            if((lengthlimit > 0) && (message.message.length() > lengthlimit)) {
+                message.message = message.message.substring(0, lengthlimit);
+            }
 
             final long now = System.currentTimeMillis();
 

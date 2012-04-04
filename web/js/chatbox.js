@@ -29,7 +29,8 @@ componentconstructors['chatbox'] = function(dynmap, configuration) {
 			.attr({
 				id: 'chatinput',
 				type: 'text',
-				value: ''
+				value: '',
+				maxlength: dynmap.options.chatlengthlimit
 			})
 			.keydown(function(event) {
 				if (event.keyCode == '13') {

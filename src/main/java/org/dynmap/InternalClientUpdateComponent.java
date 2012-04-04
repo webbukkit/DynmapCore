@@ -22,7 +22,8 @@ public class InternalClientUpdateComponent extends ClientUpdateComponent {
         final Boolean req_player_ip = configuration.getBoolean("require-player-login-ip", false);
         final Boolean block_banned_player_chat = configuration.getBoolean("block-banned-player-chat", false);
         final Boolean req_login = configuration.getBoolean("webchat-requires-login", false);
-        final Boolean chat_perms = configuration.getBoolean("webchat-permissions", false);
+        final Boolean chat_perm = configuration.getBoolean("webchat-permissions", false);
+        final int length_limit = configuration.getInteger("chatlengthlimit", 256);
 
         dcore.events.addListener("buildclientconfiguration", new Event.Listener<JSONObject>() {
             @Override
@@ -30,6 +31,7 @@ public class InternalClientUpdateComponent extends ClientUpdateComponent {
                 s(t, "allowwebchat", allowwebchat);
                 s(t, "webchat-interval", webchatInterval);
                 s(t, "webchat-requires-login", req_login);
+                s(t, "chatlengthlimit", length_limit);
             }
         });
 
@@ -44,7 +46,8 @@ public class InternalClientUpdateComponent extends ClientUpdateComponent {
                 this.require_player_login_ip = req_player_ip;
                 this.check_user_ban = block_banned_player_chat;
                 this.require_login = req_login;
-                this.chat_perms = chat_perms;
+                this.chat_perms = chat_perm;
+                this.lengthlimit = length_limit;
                 this.core = dcore;
                 
                 onMessageReceived.addListener(new Event.Listener<Message> () {
