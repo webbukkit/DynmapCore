@@ -22,8 +22,8 @@ if(strcmp($userid, '-guest-')) {
   hash_update($ctx, $pwdsalt);
   hash_update($ctx, $password);
   $hash = hash_final($ctx);
-  $userid = strtolower($userid);
-  if (strcasecmp($hash, $pwdhash[$userid]) == 0) {
+  $useridlc = strtolower($userid);
+  if (strcasecmp($hash, $pwdhash[$useridlc]) == 0) {
      $_SESSION['userid'] = $userid;
      $good = true; 
   }
@@ -43,7 +43,7 @@ if(!empty($lines)) {
 	$changed = false;
 	for($i=1; $i < $cnt; $i++) {
 		list($uid, $pc, $hsh) = split('=', rtrim($lines[$i]));
-		if($uid == $userid) continue;
+		if($uid == $useridlc) continue;
 		if(array_key_exists($uid, $pendingreg)) {
 			$newlines[] = $uid . '=' . $pc . '=' . $hsh;
 		}

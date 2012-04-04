@@ -34,15 +34,15 @@ else {
 }
 $good = false;
 
-$userid = strtolower($userid);
+$useridlc = strtolower($userid);
 
 $_SESSION['userid'] = '-guest-';
 
 $good = false;
 
-if(strcmp($userid, '-guest-')) {
-  if(isset($pendingreg[$userid])) {
-     if(!strcmp($passcode, $pendingreg[$userid])) {
+if(strcmp($useridlc, '-guest-')) {
+  if(isset($pendingreg[$useridlc])) {
+     if(!strcmp($passcode, $pendingreg[$useridlc])) {
         $ctx = hash_init('sha256');
         hash_update($ctx, $pwdsalt);
         hash_update($ctx, $password);
@@ -56,13 +56,13 @@ if(strcmp($userid, '-guest-')) {
 			$cnt = count($lines) - 1;
 			for($i=1; $i < $cnt; $i++) {
 				list($uid, $pc, $hsh) = split('=', rtrim($lines[$i]));
-				if($uid == $userid) continue;
+				if($uid == $useridlc) continue;
 				if(array_key_exists($uid, $pendingreg)) {
 					$newlines[] = $uid . '=' . $pc . '=' . $hsh;
 				}
 			}
 		}
-		$newlines[] = $userid . '=' . $passcode . '=' . $hash;
+		$newlines[] = $useridlc . '=' . $passcode . '=' . $hash;
 		$newlines[] = '*/ ?>';
 		file_put_contents('dynmap_reg.php', implode("\n", $newlines));
      }
