@@ -65,6 +65,10 @@ public class PlayerFaces {
             if(img == null) {   /* No image to process?  Quit */
                 return;
             }
+            if((img.getWidth() < 64) || (img.getHeight() < 32)) {
+                img.flush();
+                return;
+            }
             int[] faceaccessory = new int[64];  /* 8x8 of face accessory */
             /* Get buffered image for face at 8x8 */
             DynmapBufferedImage face8x8 = DynmapBufferedImage.allocateBufferedImage(8, 8);
