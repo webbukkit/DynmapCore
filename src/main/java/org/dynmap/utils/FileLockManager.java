@@ -199,10 +199,13 @@ public class FileLockManager {
             rslt = baos.toByteArray();
             baoslist.addFirst(baos);
         }
+        File fcur = new File(fname.getPath());
+        File fnew = new File(fname.getPath() + ".new");
+        File fold = new File(fname.getPath() + ".old");
         while(!done) {
             RandomAccessFile f = null;
             try {
-                f = new RandomAccessFile(fname, "rw");
+                f = new RandomAccessFile(fnew, "rw");
                 f.write(rslt);
                 done = true;
             } catch (IOException fnfx) {
@@ -217,7 +220,12 @@ public class FileLockManager {
                 }
             } finally {
                 if(f != null) {
-                    try { f.close(); } catch (IOException iox) {}
+                    try { f.close(); } catch (IOException iox) { done = false; }
+                }
+                if(done) {
+                    fcur.renameTo(fold);
+                    fnew.renameTo(fname);
+                    fold.delete();
                 }
             }
         }

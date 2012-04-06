@@ -325,7 +325,7 @@ public abstract class DynmapWorld {
     }
     
     private int processZoomDirectory(File dir, PrefixData pd) {
-        Debug.debug("processZoomDirectory(" + dir.getPath() + "," + pd.baseprefix + ")");
+        //Debug.debug("processZoomDirectory(" + dir.getPath() + "," + pd.baseprefix + ")");
         HashMap<String, ProcessTileRec> toprocess = new HashMap<String, ProcessTileRec>();
         String[] files = dir.list(new PNGFileFilter(pd.fnprefix, pd.fmt));
         if(files == null)
@@ -345,7 +345,7 @@ public abstract class DynmapWorld {
             processZoomTile(s.pd, s.zf, s.zfname, s.x, s.y);
             cnt++;
         }
-        Debug.debug("processZoomDirectory(" + dir.getPath() + "," + pd.baseprefix + ") - done (" + cnt + " files)");
+        //Debug.debug("processZoomDirectory(" + dir.getPath() + "," + pd.baseprefix + ") - done (" + cnt + " files)");
         return cnt;
     }
     
@@ -400,12 +400,12 @@ public abstract class DynmapWorld {
         rec.y = y;
         rec.zfname = zfname;
         rec.pd = pd;
-        Debug.debug("Process " + zf.getPath() + " due to " + f.getPath());
+        //Debug.debug("Process " + zf.getPath() + " due to " + f.getPath());
         return rec;
     }
     
     private void processZoomTile(PrefixData pd, File zf, String zfname, int tx, int ty) {
-        Debug.debug("processZoomFile(" + pd.baseprefix + "," + zf.getPath() + "," + tx + "," + ty + ")");
+        //Debug.debug("processZoomFile(" + pd.baseprefix + "," + zf.getPath() + "," + tx + "," + ty + ")");
         int width = 128, height = 128;
         BufferedImage zIm = null;
         DynmapBufferedImage kzIm = null;
@@ -483,6 +483,7 @@ public abstract class DynmapWorld {
                     hashman.updateHashCode(key, null, tilex, tiley, -1);
                     MapManager.mapman.pushUpdate(this, new Client.Tile(zfname));
                     enqueueZoomOutUpdate(zf, pd.zoomlevel+1);
+                    Debug.debug("Blanked zoom-out tile at " + zf.getPath());
                 }
             }
             else if((!zf.exists()) || (crc != mm.hashman.getImageHashCode(key, null, tilex, tiley))) {
