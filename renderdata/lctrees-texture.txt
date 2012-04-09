@@ -1,0 +1,298 @@
+# LC Trees++ Block mapping
+# define lctrees-support: true in configuration.txt to enable
+enabled:lctrees-support
+# variables: set in configuration.txt to override
+var:lctrees-leafID=140,lctrees-leafID2=141,lctrees-leafID3=142,lctrees-leafID4=143,lctrees-leafID5=144,lctrees-leafID6=145
+var:lctrees-logID=146,lctrees-logID2=147,lctrees-logID3=148
+var:lctrees-sapID=149,lctrees-sapID2=150,lctrees-sapID3=151
+var:lctrees-plankID=152,lctrees-fruitID=153,lctrees-crystalStoneID=154,lctrees-blockCrystalID=155,crystalWoodID=156
+var:lctrees-fenceID=158,lctrees-torchID=159,lctrees-groundID=160
+# Files
+texturefile:id=blk0,filename=LCTrees/trees.png,xcount=16,ycount=16
+# Blocks
+# Red Maple Leaves (lctrees-leafID:0,8)
+block:id=lctrees-leafID,data=0,data=8,allfaces=24,txtid=blk0
+# Angel Oak Leaves (lctrees-leafID:1,9)
+block:id=lctrees-leafID,data=1,data=9,allfaces=16,txtid=blk0
+# Yellow Maple Leaves (lctrees-leafID:2,10)
+block:id=lctrees-leafID,data=2,data=10,allfaces=25,txtid=blk0
+# Jacaranda Leaves (lctrees-leafID:3,11)
+block:id=lctrees-leafID,data=3,data=11,allfaces=23,txtid=blk0
+# Fig Leaves (lctrees-leafID:4,12)
+block:id=lctrees-leafID,data=4,data=12,allfaces=22,txtid=blk0
+# Cypress Leaves (lctrees-leafID:5,13)
+block:id=lctrees-leafID,data=5,data=13,allfaces=19,txtid=blk0
+# Desert Ironwood Leaves (lctrees-leafID:6,14)
+block:id=lctrees-leafID,data=6,data=14,allfaces=20,txtid=blk0
+# Eucalyptus Leaves (lctrees-leafID:7,15)
+block:id=lctrees-leafID,data=7,data=15,allfaces=21,txtid=blk0
+# Sequoia Leaves (lctrees-leafID2:0,8)
+block:id=lctrees-leafID2,data=0,data=8,allfaces=26,txtid=blk0
+# Pink Cherry Leaves (lctrees-leafID2:1,9)
+block:id=lctrees-leafID2,data=1,data=9,allfaces=18,txtid=blk0
+# White Cherry Leaves (lctrees-leafID2:2,10)
+block:id=lctrees-leafID2,data=2,data=10,allfaces=50,txtid=blk0
+# Apple Leaves (lctrees-leafID2:3,11)
+block:id=lctrees-leafID2,data=3,data=11,allfaces=17,txtid=blk0
+# Apple Bud Leaves (lctrees-leafID2:4,12)
+block:id=lctrees-leafID2,data=4,data=12,allfaces=33,txtid=blk0
+# Apple Fruit Leaves (lctrees-leafID2:5,13)
+block:id=lctrees-leafID2,data=5,data=13,allfaces=49,txtid=blk0
+# Acacia Leaves (lctrees-leafID2:6,14)
+block:id=lctrees-leafID2,data=6,data=14,allfaces=27,txtid=blk0
+# Joshua Leaves (lctrees-leafID2:7,15)
+block:id=lctrees-leafID2,data=7,data=15,allfaces=28,txtid=blk0
+# Swamp Willow Leaves (lctrees-leafID3:0,8)
+block:id=lctrees-leafID3,data=0,data=8,allfaces=29,txtid=blk0
+# Deciduous Bush Leaves (lctrees-leafID3:1,9)
+block:id=lctrees-leafID3,data=1,data=9,allfaces=31,txtid=blk0
+# Evergreen Bush Leaves (lctrees-leafID3:2,10)
+block:id=lctrees-leafID3,data=2,data=10,allfaces=30,txtid=blk0
+# Palm Leaves (lctrees-leafID3:3,11)
+block:id=lctrees-leafID3,data=3,data=11,allfaces=80,txtid=blk0
+# Desert Willow Leaves (lctrees-leafID3:4,12)
+block:id=lctrees-leafID3,data=4,data=12,allfaces=81,txtid=blk0
+# Cedar Leaves (lctrees-leafID3:5,13)
+block:id=lctrees-leafID3,data=5,data=13,allfaces=82,txtid=blk0
+# Ginkgo Leaves (lctrees-leafID3:6,14)
+block:id=lctrees-leafID3,data=6,data=14,allfaces=83,txtid=blk0
+# Poplar Leaves (lctrees-leafID3:7,15)
+block:id=lctrees-leafID3,data=7,data=15,allfaces=84,txtid=blk0
+# Beech Leaves (lctrees-leafID4:0,8)
+block:id=lctrees-leafID4,data=0,data=8,allfaces=85,txtid=blk0
+# Walnut Leaves (lctrees-leafID4:1,9)
+block:id=lctrees-leafID4,data=1,data=9,allfaces=86,txtid=blk0
+# Cocoa Leaves (lctrees-leafID4:2,10)
+block:id=lctrees-leafID4,data=2,data=10,allfaces=87,txtid=blk0
+# WideTop Eucalyptus Leaves (lctrees-leafID4:3,11)
+block:id=lctrees-leafID4,data=3,data=11,allfaces=88,txtid=blk0
+# Bukkit Leaves (lctrees-leafID4:4,12)
+block:id=lctrees-leafID4,data=4,data=12,allfaces=89,txtid=blk0
+# Banana Leaves (lctrees-leafID4:5,13)
+block:id=lctrees-leafID4,data=5,data=13,allfaces=90,txtid=blk0
+# Orange Leaves (lctrees-leafID4:6,14)
+block:id=lctrees-leafID4,data=6,data=14,allfaces=91,txtid=blk0
+# Peach Leaves (lctrees-leafID4:7,15)
+block:id=lctrees-leafID4,data=7,data=15,allfaces=92,txtid=blk0
+# Lemon Leaves (lctrees-leafID5:0,8)
+block:id=lctrees-leafID5,data=0,data=8,allfaces=93,txtid=blk0
+# Blueberry Leaves (lctrees-leafID5:1,9)
+block:id=lctrees-leafID5,data=1,data=9,allfaces=31,txtid=blk0
+# Blueberry Fruit Leaves (lctrees-leafID5:2,10)
+block:id=lctrees-leafID5,data=2,data=10,allfaces=94,txtid=blk0
+# Raspberry Leaves (lctrees-leafID5:3,11)
+block:id=lctrees-leafID5,data=3,data=11,allfaces=31,txtid=blk0
+# Raspberry Fruit Leaves (lctrees-leafID5:4,12)
+block:id=lctrees-leafID5,data=4,data=12,allfaces=95,txtid=blk0
+# Blockberry Leaves (lctrees-leafID5:5,13)
+block:id=lctrees-leafID5,data=5,data=13,allfaces=31,txtid=blk0
+# Blackberry Fruit Leaves (lctrees-leafID5:6,14)
+block:id=lctrees-leafID5,data=6,data=14,allfaces=62,txtid=blk0
+# Cherry Fruit Leaves (lctrees-leafID5:7,15)
+block:id=lctrees-leafID5,data=7,data=15,allfaces=51,txtid=blk0
+# Huckleberry Leaves (lctrees-leafID6:0,8)
+block:id=lctrees-leafID6,data=0,data=8,allfaces=31,txtid=blk0
+# Huckleberry Fruit Leaves (lctrees-leafID6:1,9)
+block:id=lctrees-leafID6,data=1,data=9,allfaces=63,txtid=blk0
+
+# Log (lctrees-logID:0,1)
+block:id=lctrees-logID,data=0,data=1,topbottom=48,allsides=34,txtid=blk0
+# Log (lctrees-logID:2,3)
+block:id=lctrees-logID,data=2,data=3,topbottom=48,allsides=36,txtid=blk0
+# Log (lctrees-logID:4,5)
+block:id=lctrees-logID,data=4,data=5,topbottom=48,allsides=37,txtid=blk0
+# Log (lctrees-logID:6,7)
+block:id=lctrees-logID,data=6,data=7,topbottom=48,allsides=42,txtid=blk0
+# Log (lctrees-logID:8,9)
+block:id=lctrees-logID,data=8,data=9,topbottom=48,allsides=43,txtid=blk0
+# Log (lctrees-logID:10,11)
+block:id=lctrees-logID,data=10,data=11,topbottom=48,allsides=44,txtid=blk0
+# Log (lctrees-logID:12,13)
+block:id=lctrees-logID,data=12,data=13,topbottom=48,allsides=45,txtid=blk0
+# Log (lctrees-logID:14,15)
+block:id=lctrees-logID,data=14,data=15,topbottom=48,allsides=96,txtid=blk0
+# Log (lctrees-logID2:0,1)
+block:id=lctrees-logID2,data=0,data=1,topbottom=48,allsides=97,txtid=blk0
+# Log (lctrees-logID2:2,3)
+block:id=lctrees-logID2,data=2,data=3,topbottom=48,allsides=98,txtid=blk0
+# Log (lctrees-logID2:4,5)
+block:id=lctrees-logID2,data=4,data=5,topbottom=48,allsides=99,txtid=blk0
+# Log (lctrees-logID2:6,7)
+block:id=lctrees-logID2,data=6,data=7,topbottom=48,allsides=101,txtid=blk0
+# Log (lctrees-logID2:8,9)
+block:id=lctrees-logID2,data=8,data=9,topbottom=48,allsides=102,txtid=blk0
+# Log (lctrees-logID2:10,11)
+block:id=lctrees-logID2,data=10,data=11,topbottom=48,allsides=103,txtid=blk0
+# Log (lctrees-logID2:12,13)
+block:id=lctrees-logID2,data=12,data=13,topbottom=48,allsides=119,txtid=blk0
+# Log (lctrees-logID2:14,15)
+block:id=lctrees-logID2,data=14,data=15,topbottom=48,allsides=104,txtid=blk0
+# Log (lctrees-logID3:0,1)
+block:id=lctrees-logID3,data=0,data=1,topbottom=48,allsides=105,txtid=blk0
+# Log (lctrees-logID3:2,3)
+block:id=lctrees-logID3,data=2,data=3,topbottom=48,allsides=106,txtid=blk0
+# Log (lctrees-logID3:4,5)
+block:id=lctrees-logID3,data=4,data=5,topbottom=48,allsides=107,txtid=blk0
+# Log (lctrees-logID3:6,7)
+block:id=lctrees-logID3,data=6,data=7,topbottom=48,allsides=108,txtid=blk0
+# Log (lctrees-logID3:8,9)
+block:id=lctrees-logID3,data=8,data=9,topbottom=48,allsides=109,txtid=blk0
+
+# Sapling (lctrees-sapID:0)
+block:id=lctrees-sapID,data=0,allsides=4,txtid=blk0
+# Sapling (lctrees-sapID:1)
+block:id=lctrees-sapID,data=1,allsides=2,txtid=blk0
+# Sapling (lctrees-sapID:2)
+block:id=lctrees-sapID,data=2,allsides=8,txtid=blk0
+# Sapling (lctrees-sapID:3)
+block:id=lctrees-sapID,data=3,allsides=0,txtid=blk0
+# Sapling (lctrees-sapID:4)
+block:id=lctrees-sapID,data=4,allsides=9,txtid=blk0
+# Sapling (lctrees-sapID:5)
+block:id=lctrees-sapID,data=5,allsides=7,txtid=blk0
+# Sapling (lctrees-sapID:6)
+block:id=lctrees-sapID,data=6,allsides=1,txtid=blk0
+# Sapling (lctrees-sapID:7)
+block:id=lctrees-sapID,data=7,allsides=5,txtid=blk0
+# Sapling (lctrees-sapID:8)
+block:id=lctrees-sapID,data=8,allsides=10,txtid=blk0
+# Sapling (lctrees-sapID:9)
+block:id=lctrees-sapID,data=9,allsides=6,txtid=blk0
+# Sapling (lctrees-sapID:10)
+block:id=lctrees-sapID,data=10,allsides=3,txtid=blk0
+# Sapling (lctrees-sapID:11)
+block:id=lctrees-sapID,data=11,allsides=11,txtid=blk0
+# Sapling (lctrees-sapID:12)
+block:id=lctrees-sapID,data=12,allsides=12,txtid=blk0
+# Sapling (lctrees-sapID:13)
+block:id=lctrees-sapID,data=13,allsides=13,txtid=blk0
+# Sapling (lctrees-sapID:14)
+block:id=lctrees-sapID,data=14,allsides=15,txtid=blk0
+# Sapling (lctrees-sapID:15)
+block:id=lctrees-sapID,data=15,allsides=14,txtid=blk0
+# Sapling (lctrees-sapID2:0)
+block:id=lctrees-sapID2,data=0,allsides=64,txtid=blk0
+# Sapling (lctrees-sapID2:1)
+block:id=lctrees-sapID2,data=1,allsides=65,txtid=blk0
+# Sapling (lctrees-sapID2:2)
+block:id=lctrees-sapID2,data=2,allsides=66,txtid=blk0
+# Sapling (lctrees-sapID2:3)
+block:id=lctrees-sapID2,data=3,allsides=67,txtid=blk0
+# Sapling (lctrees-sapID2:4)
+block:id=lctrees-sapID2,data=4,allsides=68,txtid=blk0
+# Sapling (lctrees-sapID2:5)
+block:id=lctrees-sapID2,data=5,allsides=69,txtid=blk0
+# Sapling (lctrees-sapID2:6)
+block:id=lctrees-sapID2,data=6,allsides=70,txtid=blk0
+# Sapling (lctrees-sapID2:7)
+block:id=lctrees-sapID2,data=7,allsides=71,txtid=blk0
+# Sapling (lctrees-sapID2:8)
+block:id=lctrees-sapID2,data=8,allsides=72,txtid=blk0
+# Sapling (lctrees-sapID2:9)
+block:id=lctrees-sapID2,data=9,allsides=73,txtid=blk0
+# Sapling (lctrees-sapID2:10)
+block:id=lctrees-sapID2,data=10,allsides=74,txtid=blk0
+# Sapling (lctrees-sapID2:11)
+block:id=lctrees-sapID2,data=11,allsides=75,txtid=blk0
+# Sapling (lctrees-sapID2:12)
+block:id=lctrees-sapID2,data=12,allsides=76,txtid=blk0
+# Sapling (lctrees-sapID2:13)
+block:id=lctrees-sapID2,data=13,allsides=77,txtid=blk0
+# Sapling (lctrees-sapID2:14)
+block:id=lctrees-sapID2,data=14,allsides=78,txtid=blk0
+# Sapling (lctrees-sapID2:15)
+block:id=lctrees-sapID2,data=15,allsides=79,txtid=blk0
+# Sapling (lctrees-sapID3:0)
+block:id=lctrees-sapID3,data=0,allsides=47,txtid=blk0
+# Sapling (lctrees-sapID3:1)
+block:id=lctrees-sapID3,data=1,allsides=46,txtid=blk0
+# Sapling (lctrees-sapID3:2)
+block:id=lctrees-sapID3,data=2,allsides=171,txtid=blk0
+
+# Planks (lctrees-plankID:0)
+block:id=lctrees-plankID,data=0,allfaces=38,txtid=blk0
+# Planks (lctrees-plankID:1)
+block:id=lctrees-plankID,data=1,allfaces=39,txtid=blk0
+# Planks (lctrees-plankID:2)
+block:id=lctrees-plankID,data=2,allfaces=40,txtid=blk0
+# Planks (lctrees-plankID:3)
+block:id=lctrees-plankID,data=3,allfaces=41,txtid=blk0
+# Planks (lctrees-plankID:4)
+block:id=lctrees-plankID,data=4,allfaces=55,txtid=blk0
+# Planks (lctrees-plankID:5)
+block:id=lctrees-plankID,data=5,allfaces=56,txtid=blk0
+# Planks (lctrees-plankID:6)
+block:id=lctrees-plankID,data=6,allfaces=57,txtid=blk0
+# Planks (lctrees-plankID:7)
+block:id=lctrees-plankID,data=7,allfaces=58,txtid=blk0
+# Planks (lctrees-plankID:8)
+block:id=lctrees-plankID,data=8,allfaces=59,txtid=blk0
+# Planks (lctrees-plankID:9)
+block:id=lctrees-plankID,data=9,allfaces=60,txtid=blk0
+# Planks (lctrees-plankID:10)
+block:id=lctrees-plankID,data=10,allfaces=61,txtid=blk0
+
+# Fruit (lctrees-fruitID:0)
+block:id=lctrees-fruitID,data=0,allfaces=32,txtid=blk0
+# Fruit (lctrees-fruitID:1)
+block:id=lctrees-fruitID,data=1,allfaces=35,txtid=blk0
+# Fruit (lctrees-fruitID:2)
+block:id=lctrees-fruitID,data=2,allfaces=52,txtid=blk0
+# Fruit (lctrees-fruitID:3)
+block:id=lctrees-fruitID,data=3,allfaces=53,txtid=blk0
+# Fruit (lctrees-fruitID:4)
+block:id=lctrees-fruitID,data=4,allfaces=54,txtid=blk0
+# Fruit (lctrees-fruitID:5)
+block:id=lctrees-fruitID,data=5,allfaces=100,txtid=blk0
+# Fruit (lctrees-fruitID:6)
+block:id=lctrees-fruitID,data=6,allfaces=110,txtid=blk0
+# Fruit (lctrees-fruitID:7)
+block:id=lctrees-fruitID,data=7,allfaces=111,txtid=blk0
+
+# Crystal stone (lctrees-crystalStoneID:0)
+block:id=lctrees-crystalStoneID,data=0,allfaces=137,txtid=blk0
+# Dark Crystal stone (lctrees-crystalStoneID:1)
+block:id=lctrees-crystalStoneID,data=1,allfaces=138,txtid=blk0
+
+# Crystal Focus (lctrees-blockCrystalID:0)
+block:id=lctrees-blockCrystalID,data=0,allfaces=152,txtid=blk0
+# Dark Crystal Focus (lctrees-blockCrystalID:1)
+block:id=lctrees-blockCrystalID,data=1,allfaces=155,txtid=blk0
+
+# Crystal Log (lctrees-crystalWoodID:0)
+block:id=lctrees-crystalWoodID,data=0,topbottom=156,allsides=157,txtid=blk0
+# Dark Crystal Log (lctrees-crystalWoodID:1)
+block:id=lctrees-crystalWoodID,data=1,topbottom=158,allsides=159,txtid=blk0
+# Crystal Planks (lcrtrees-crystalWoodID:2)
+block:id=lctrees-crystalWoodID,data=2,allfaces=174,txtid=blk0
+# Dark Crystal Planks (lcrtrees-crystalWoodID:3)
+block:id=lctrees-crystalWoodID,data=3,allfaces=175,txtid=blk0
+
+# Brown Fence (lctrees-fenceID:0)
+block:id=lctrees-fenceID,data=0,allfaces=38,txtid=blk0
+# Purple Fence (lctrees-fenceID:1)
+block:id=lctrees-fenceID,data=1,allfaces=39,txtid=blk0
+# Dark Red Fence (lctrees-fenceID:2)
+block:id=lctrees-fenceID,data=2,allfaces=40,txtid=blk0
+# Dark Yellow Fence (lctrees-fenceID:3)
+block:id=lctrees-fenceID,data=3,allfaces=41,txtid=blk0
+# Peach Fence (lctrees-fenceID:4)
+block:id=lctrees-fenceID,data=4,allfaces=55,txtid=blk0
+# Orange Fence (lctrees-fenceID:5)
+block:id=lctrees-fenceID,data=5,allfaces=56,txtid=blk0
+# Brightwood Fence (lctrees-fenceID:6)
+block:id=lctrees-fenceID,data=6,allfaces=57,txtid=blk0
+# Vibrant Redwood Fence (lctrees-fenceID:7)
+block:id=lctrees-fenceID,data=7,allfaces=58,txtid=blk0
+# Vibrant Redwood Fence (lctrees-fenceID:8)
+block:id=lctrees-fenceID,data=8,allfaces=59,txtid=blk0
+# Bright Yellow Fence (lctrees-fenceID:9)
+block:id=lctrees-fenceID,data=9,allfaces=60,txtid=blk0
+# Old Wood Fence (lctrees-fenceID:10)
+block:id=lctrees-fenceID,data=10,allfaces=61,txtid=blk0
+
+# Crystal torch (lctrees-torchID)
+block:id=lctrees-torchID,data=*,allsides=167,txtid=blk0
+
+# Crystal groundcover (lctrees-groundID)
+block:id=lctrees-groundID,data=*,allsides=168,txtid=blk0
