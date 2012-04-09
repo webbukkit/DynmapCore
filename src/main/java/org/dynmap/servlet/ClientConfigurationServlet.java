@@ -57,7 +57,7 @@ public class ClientConfigurationServlet extends HttpServlet {
                 if (cachedConfigurationGuest == null) {
                     JSONObject json = new JSONObject();
                     s(json, "loggedin", !guest);
-                    core.events.<JSONObject>trigger("buildclientconfiguration", json);
+                    core.events.<JSONObject>triggerSync(core, "buildclientconfiguration", json);
                     String s = json.toJSONString();
                     cachedConfigurationGuest = s.getBytes(cs_utf8);
                 }
@@ -66,7 +66,7 @@ public class ClientConfigurationServlet extends HttpServlet {
                 if (cachedConfiguration == null) {
                     JSONObject json = new JSONObject();
                     s(json, "loggedin", !guest);
-                    core.events.<JSONObject>trigger("buildclientconfiguration", json);
+                    core.events.<JSONObject>triggerSync(core, "buildclientconfiguration", json);
                     String s = json.toJSONString();
                     cachedConfiguration = s.getBytes(cs_utf8);
                 }

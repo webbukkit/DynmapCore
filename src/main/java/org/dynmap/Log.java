@@ -14,19 +14,19 @@ public class Log {
         if(verbose)
             log.log(Level.INFO, LOG_PREFIX + msg);
     }
-    public static void severe(Exception e) {
+    public static void severe(Throwable e) {
         log.log(Level.SEVERE, LOG_PREFIX + "Exception occured: ", e);
     }
     public static void severe(String msg) {
         log.log(Level.SEVERE, LOG_PREFIX + msg);
     }
-    public static void severe(String msg, Exception e) {
+    public static void severe(String msg, Throwable e) {
         log.log(Level.SEVERE, LOG_PREFIX + msg, e);
     }
     public static void warning(String msg) {
         log.log(Level.WARNING, LOG_PREFIX + msg);
     }
-    public static void warning(String msg, Exception e) {
+    public static void warning(String msg, Throwable e) {
         log.log(Level.WARNING, LOG_PREFIX + msg, e);
     }
 }

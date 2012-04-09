@@ -34,4 +34,11 @@ public class Events {
             return;
         ((Event<T>)genericEvent).trigger(argument);
     }
+    @SuppressWarnings("unchecked")
+    public <T> void triggerSync(DynmapCore core, String eventName, T argument) {
+        Event<?> genericEvent = events.get(eventName);
+        if (genericEvent == null)
+            return;
+        ((Event<T>)genericEvent).triggerSync(core, argument);
+    }
 }
