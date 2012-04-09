@@ -5,7 +5,7 @@ enabled:lctrees-support
 var:lctrees-leafID=140,lctrees-leafID2=141,lctrees-leafID3=142,lctrees-leafID4=143,lctrees-leafID5=144,lctrees-leafID6=145
 var:lctrees-logID=146,lctrees-logID2=147,lctrees-logID3=148
 var:lctrees-sapID=149,lctrees-sapID2=150,lctrees-sapID3=151
-var:lctrees-plankID=152,lctrees-fruitID=153,lctrees-crystalStoneID=154,lctrees-blockCrystalID=155,crystalWoodID=156
+var:lctrees-plankID=152,lctrees-fruitID=153,lctrees-crystalStoneID=154,lctrees-blockCrystalID=155,lctrees-crystalWoodID=156
 var:lctrees-fenceID=158,lctrees-torchID=159,lctrees-groundID=160
 # Files
 texturefile:id=blk0,filename=LCTrees/trees.png,xcount=16,ycount=16
