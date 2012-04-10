@@ -5,7 +5,7 @@ enabled:lctrees-support
 var:lctrees-leafID=140,lctrees-leafID2=141,lctrees-leafID3=142,lctrees-leafID4=143,lctrees-leafID5=144,lctrees-leafID6=145
 var:lctrees-logID=146,lctrees-logID2=147,lctrees-logID3=148
 var:lctrees-sapID=149,lctrees-sapID2=150,lctrees-sapID3=151
-var:lctrees-plankID=152,lctrees-fruitID=153,lctrees-crystalStoneID=154,lctrees-blockCrystalID=155,lctrees-crystalWoodID=156
+var:lctrees-plankID=152,lctrees-fruitID=153,lctrees-crystalStoneID=154,lctrees-blockCrystalID=155,lctrees-crystalWoodID=156,lctrees-crystalLeavesID=157
 var:lctrees-fenceID=158,lctrees-torchID=159,lctrees-groundID=160
 # Files
 texturefile:id=blk0,filename=LCTrees/trees.png,xcount=16,ycount=16
@@ -250,9 +250,9 @@ block:id=lctrees-fruitID,data=6,allfaces=110,txtid=blk0
 block:id=lctrees-fruitID,data=7,allfaces=111,txtid=blk0
 
 # Crystal stone (lctrees-crystalStoneID:0)
-block:id=lctrees-crystalStoneID,data=0,allfaces=137,txtid=blk0
+block:id=lctrees-crystalStoneID,data=0,allsides=137,txtid=blk0
 # Dark Crystal stone (lctrees-crystalStoneID:1)
-block:id=lctrees-crystalStoneID,data=1,allfaces=138,txtid=blk0
+block:id=lctrees-crystalStoneID,data=1,allsides=138,txtid=blk0
 
 # Crystal Focus (lctrees-blockCrystalID:0)
 block:id=lctrees-blockCrystalID,data=0,allfaces=152,txtid=blk0
@@ -267,6 +267,11 @@ block:id=lctrees-crystalWoodID,data=1,topbottom=158,allsides=159,txtid=blk0
 block:id=lctrees-crystalWoodID,data=2,allfaces=174,txtid=blk0
 # Dark Crystal Planks (lcrtrees-crystalWoodID:3)
 block:id=lctrees-crystalWoodID,data=3,allfaces=175,txtid=blk0
+
+# Dark Crystal leaves (lcrtrees-crystalLeavesID:0)
+block:id=lctrees-crystalLeavesID,data=0,allfaces=142,txtid=blk0
+# Crystal leaves (lcrtrees-crystalLeavesID:1)
+block:id=lctrees-crystalLeavesID,data=1,allfaces=139,txtid=blk0
 
 # Brown Fence (lctrees-fenceID:0)
 block:id=lctrees-fenceID,data=0,allfaces=38,txtid=blk0
