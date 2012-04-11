@@ -220,6 +220,30 @@ public class WebAuthManager {
         
         return sb.toString();
     }
+    String getAccessPHP() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<?php\n");
+        /* Create world access list */
+        sb.append("$worldaccess = array(\n");
+        for(DynmapWorld w : core.getMapManager().getWorlds()) {
+            if(w.isProtected()) {
+                String perm = "world." + w.getName();
+                sb.append("  \"").append(w.getName()).append("\" => \"");
+                for(String uid : pwdhash_by_userid.keySet()) {
+                    if(core.getServer().checkPlayerPermission(uid, perm)) {
+                        sb.append("[").append(uid).append("]");
+                    }
+                }
+                sb.append("\",\n");
+            }
+        }
+        sb.append(");\n");
+        
+        sb.append("?>\n");
+        
+        return sb.toString();
+    }
+
     boolean pendingRegisters() {
         return (pending_registrations.size() > 0);
     }

@@ -177,6 +177,7 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                 writeConfiguration();
                 writeUpdates(); /* Make sure we stay in sync */
                 writeLogins();
+                writeAccess();
             }
         });
         core.events.addListener("worldactivated", new Event.Listener<DynmapWorld>() {
@@ -184,12 +185,14 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
             public void triggered(DynmapWorld t) {
                 writeConfiguration();
                 writeUpdates(); /* Make sure we stay in sync */
+                writeAccess();
             }
         });
         core.events.addListener("loginupdated", new Event.Listener<Object>() {
             @Override
             public void triggered(Object t) {
                 writeLogins();
+                writeAccess();
             }
         });
     }
@@ -264,13 +267,40 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                 File loginOldFile = getStandaloneFile("dynmap_login.old.php");
 
                 enqueueFileWrite(loginFile, loginNewFile, loginOldFile, bytes, false);
+                loginhash = hash;
             }
         }
         else {
             loginFile.delete();
         }
     }
-    
+
+    private byte[] accesshash = new byte[16];
+
+    protected void writeAccess() {
+        File accessFile = getStandaloneFile("dynmap_access.php");
+
+        if(core.isLoginSupportEnabled()) {
+            String s = core.getAccessPHP();
+            if(s != null) {
+                byte[] bytes = s.getBytes(cs_utf8);
+                md.reset();
+                byte[] hash = md.digest(bytes);
+                if(Arrays.equals(hash, accesshash)) {
+                    return;
+                }
+                File accessNewFile = getStandaloneFile("dynmap_access.new.php");
+                File accessOldFile = getStandaloneFile("dynmap_access.old.php");
+
+                enqueueFileWrite(accessFile, accessNewFile, accessOldFile, bytes, false);
+                accesshash = hash;
+            }
+        }
+        else {
+            accessFile.delete();
+        }
+    }
+
     protected void handleWebChat() {
         File webchatFile = getStandaloneFile("dynmap_webchat.json");
         if (webchatFile.exists() && lastTimestamp != 0) {

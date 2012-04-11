@@ -1498,6 +1498,13 @@ public class DynmapCore {
             return null;
     }
     
+    String getAccessPHP() {
+        if(authmgr != null)
+            return authmgr.getAccessPHP();
+        else
+            return null;
+    }
+    
     boolean pendingRegisters() {
         if(authmgr != null)
             return authmgr.pendingRegisters();

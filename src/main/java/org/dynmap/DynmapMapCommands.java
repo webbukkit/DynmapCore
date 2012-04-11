@@ -99,6 +99,7 @@ public class DynmapMapCommands {
             }
             sb.append(", extrazoomout=").append(w.getExtraZoomOutLevels()).append(", sendhealth=").append(w.sendhealth);
             sb.append(", sendposition=").append(w.sendposition);
+            sb.append(", protected=").append(w.is_protected);
             
             sender.sendMessage(sb.toString());
         }
@@ -145,6 +146,7 @@ public class DynmapMapCommands {
                 }
                 w.setTitle(tok[1]);
                 core.updateWorldConfig(w);
+                did_update = true;
             }
             else if(tok[0].equalsIgnoreCase("sendposition")) {
                 if(w == null) {
@@ -153,6 +155,7 @@ public class DynmapMapCommands {
                 }
                 w.sendposition = tok[1].equals("true");
                 core.updateWorldConfig(w);
+                did_update = true;
             }
             else if(tok[0].equalsIgnoreCase("sendhealth")) {
                 if(w == null) {
@@ -161,6 +164,16 @@ public class DynmapMapCommands {
                 }
                 w.sendhealth = tok[1].equals("true");
                 core.updateWorldConfig(w);
+                did_update = true;
+            }
+            else if(tok[0].equalsIgnoreCase("protected")) {
+                if(w == null) {
+                    sender.sendMessage("Cannot set protected on disabled or undefined world");
+                    return true;
+                }
+                w.is_protected = tok[1].equals("true");
+                core.updateWorldConfig(w);
+                did_update = true;
             }
             else if(tok[0].equalsIgnoreCase("extrazoomout")) {  /* Extrazoomout setting */
                 if(w == null) {

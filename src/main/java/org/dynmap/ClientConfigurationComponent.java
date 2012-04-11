@@ -2,8 +2,10 @@ package org.dynmap;
 
 import static org.dynmap.JSONUtils.a;
 import static org.dynmap.JSONUtils.s;
+import static org.dynmap.JSONUtils.g;
 
 import org.dynmap.Event.Listener;
+import org.dynmap.common.DynmapPlayer;
 import org.json.simple.JSONObject;
 
 public class ClientConfigurationComponent extends Component {
@@ -36,14 +38,23 @@ public class ClientConfigurationComponent extends Component {
                 s(t, "msg-chatrequireslogin", c.getString("msg/chatrequireslogin", "Chat Requires Login"));
                 s(t, "msg-chatnotallowed", c.getString("msg/chatnotallowed", "You are not permitted to send chat messages"));
                 
+                String player = null;
+                boolean check_protected = false;
+                if(core.isLoginSupportEnabled() && (g(t, "loggedin") != null)) {
+                    check_protected = true;
+                    player = (String) g(t, "player");
+                }
                 DynmapWorld defaultWorld = null;
                 String defmap = null;
                 for(DynmapWorld world : core.mapManager.getWorlds()) {
+                    if(check_protected && world.isProtected() && ((player == null) || (!core.getServer().checkPlayerPermission(player, "world." + world.getName()))))
+                        continue;
                     if (world.maps.size() == 0) continue;
                     if (defaultWorld == null) defaultWorld = world;
                     JSONObject wo = new JSONObject();
                     s(wo, "name", world.getName());
                     s(wo, "title", world.getTitle());
+                    s(wo, "protected", world.isProtected());
                     DynmapLocation center = world.getCenterLocation();
                     s(wo, "center/x", center.x);
                     s(wo, "center/y", center.y);

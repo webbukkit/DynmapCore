@@ -48,6 +48,19 @@ public class ClientConfigurationServlet extends HttpServlet {
             s(json, "error", "login-required");
             outputBytes = json.toJSONString().getBytes(cs_utf8);
         }
+        else if(core.isLoginSupportEnabled()) { /* If login support enabled, don't cacne */
+            JSONObject json = new JSONObject();
+            if(guest) {
+                s(json, "loggedin", false);
+            }
+            else {
+                s(json, "loggedin", true);
+                s(json, "player", user);
+            }
+            core.events.<JSONObject>triggerSync(core, "buildclientconfiguration", json);
+            String s = json.toJSONString();
+            outputBytes = s.getBytes(cs_utf8);
+        }
         else { 
             if(cached_config_hashcode != core.getConfigHashcode()) {
                 cachedConfiguration = cachedConfigurationGuest = null;

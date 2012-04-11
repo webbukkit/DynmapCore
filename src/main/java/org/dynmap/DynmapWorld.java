@@ -52,6 +52,7 @@ public abstract class DynmapWorld {
     private String raw_wname;
     private String title;
     private boolean is_enabled;
+    boolean is_protected;   /* If true, user needs 'dynmap.world.<worldid>' privilege to see world */
     
     /* World height data */
     public final int worldheight;
@@ -586,6 +587,7 @@ public abstract class DynmapWorld {
         sendposition = worldconfig.getBoolean("sendposition", true);
         sendhealth = worldconfig.getBoolean("sendhealth", true);
         bigworld = worldconfig.getBoolean("bigworld", false);
+        is_protected = worldconfig.getBoolean("protected", false);
         setExtraZoomOutLevels(worldconfig.getInteger("extrazoomout", 0));
         worldtilepath = new File(core.getTilesFolder(), wname);
         if(loclist != null) {
@@ -656,6 +658,7 @@ public abstract class DynmapWorld {
         node.put("name", wname);
         node.put("title", getTitle());
         node.put("enabled", is_enabled);
+        node.put("protected", is_protected);
         /* Add center */
         if(center != null) {
             ConfigurationNode c = new ConfigurationNode();
@@ -753,5 +756,8 @@ public abstract class DynmapWorld {
     }
     public String getRawName() {
         return raw_wname;
+    }
+    public boolean isProtected() {
+        return is_protected;
     }
 }
