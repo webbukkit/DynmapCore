@@ -26,20 +26,39 @@ if($json->loginrequired && !$loggedin) {
     echo "{ \"error\": \"login-required\" }";
 }
 else {
-	$useridlc = strtolower($userid);
+	$uid = '[' . strtolower($userid) . ']';
 	$json->loggedin = $loggedin;
 	$wcnt = count($json->worlds);
 	for($i = 0; $i < $wcnt; $i++) {
 		$w = $json->worlds[$i];
 		if($w->protected) {
-		    $uid = '[' . $useridlc . ']';
 		    $ss = stristr($worldaccess[$w->name], $uid);
 			if($ss !== false) {
 				$newworlds[] = $w;
 			}
+			else {
+				$w = null;
+			}
 		}
 		else {
 			$newworlds[] = $w;
+		}
+		if($w != null) {
+			$mcnt = count($w->maps);
+			$newmaps = array();
+			for($j = 0; $j < $mcnt; $j++) {
+				$m = $w->maps[$j];
+				if($m->protected) {
+				    $ss = stristr($mapaccess[$w->name . '.' . $m->name], $uid);
+					if($ss !== false) {
+						$newmaps[] = $m;
+					}
+				}
+				else {
+					$newmaps[] = $m;
+				}
+			}
+			$w->maps = $newmaps;		
 		}
 	}
 	$json->worlds = $newworlds;

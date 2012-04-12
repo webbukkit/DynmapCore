@@ -424,45 +424,49 @@ public abstract class DynmapWorld {
 
         for(int i = 0; i < 4; i++) {
             File f = new File(worldtilepath, makeFilePath(pd, (tx + step*(1&pd.stepseq[i])), (ty + step*(pd.stepseq[i]>>1)), false));
-            if(f.exists()) {
-                BufferedImage im = null;
-            	FileLockManager.getReadLock(f);
-                popQueuedUpdate(f, pd.zoomlevel);
-                try {
-                    im = FileLockManager.imageIORead(f);
-                } catch (IOException iox) {
-                    Log.warning("Aborted zoom tile update " + zf.getPath());
-                    return;
-                }
-                if(im != null) {
-                    im.getRGB(0, 0, width, height, argb, 0, width);    /* Read data */
-                    im.flush();
-                    blank = false;
-                    /* Do binlinear scale to 64x64 */
-                    int off = 0;
-                    for(int y = 0; y < height; y += 2) {
-                        off = y*width;
-                        for(int x = 0; x < width; x += 2, off += 2) {
-                            int p0 = argb[off];
-                            int p1 = argb[off+1];
-                            int p2 = argb[off+width];
-                            int p3 = argb[off+width+1];
-                            int alpha = ((p0 >> 24) & 0xFF) + ((p1 >> 24) & 0xFF) + ((p2 >> 24) & 0xFF) + ((p3 >> 24) & 0xFF);
-                            int red = ((p0 >> 16) & 0xFF) + ((p1 >> 16) & 0xFF) + ((p2 >> 16) & 0xFF) + ((p3 >> 16) & 0xFF);
-                            int green = ((p0 >> 8) & 0xFF) + ((p1 >> 8) & 0xFF) + ((p2 >> 8) & 0xFF) + ((p3 >> 8) & 0xFF);
-                            int blue = (p0 & 0xFF) + (p1 & 0xFF) + (p2 & 0xFF) + (p3 & 0xFF);
-                            argb[off>>1] = (((alpha>>2)&0xFF)<<24) | (((red>>2)&0xFF)<<16) | (((green>>2)&0xFF)<<8) | ((blue>>2)&0xFF);
-                        }
+            FileLockManager.getReadLock(f);
+            try {
+                if(f.exists()) {
+                    BufferedImage im = null;
+                    popQueuedUpdate(f, pd.zoomlevel);
+                    try {
+                        im = FileLockManager.imageIORead(f);
+                    } catch (IOException iox) {
+                        Log.warning("Aborted zoom tile update " + zf.getPath());
+                        return;
                     }
-                    /* blit scaled rendered tile onto zoom-out tile */
-                    zIm.setRGB(((i>>1) != 0)?0:width/2, (i & 1) * height/2, width/2, height/2, argb, 0, width);
+                    if(im != null) {
+                        im.getRGB(0, 0, width, height, argb, 0, width);    /* Read data */
+                        im.flush();
+                        blank = false;
+                        /* Do binlinear scale to 64x64 */
+                        int off = 0;
+                        for(int y = 0; y < height; y += 2) {
+                            off = y*width;
+                            for(int x = 0; x < width; x += 2, off += 2) {
+                                int p0 = argb[off];
+                                int p1 = argb[off+1];
+                                int p2 = argb[off+width];
+                                int p3 = argb[off+width+1];
+                                int alpha = ((p0 >> 24) & 0xFF) + ((p1 >> 24) & 0xFF) + ((p2 >> 24) & 0xFF) + ((p3 >> 24) & 0xFF);
+                                int red = ((p0 >> 16) & 0xFF) + ((p1 >> 16) & 0xFF) + ((p2 >> 16) & 0xFF) + ((p3 >> 16) & 0xFF);
+                                int green = ((p0 >> 8) & 0xFF) + ((p1 >> 8) & 0xFF) + ((p2 >> 8) & 0xFF) + ((p3 >> 8) & 0xFF);
+                                int blue = (p0 & 0xFF) + (p1 & 0xFF) + (p2 & 0xFF) + (p3 & 0xFF);
+                                argb[off>>1] = (((alpha>>2)&0xFF)<<24) | (((red>>2)&0xFF)<<16) | (((green>>2)&0xFF)<<8) | ((blue>>2)&0xFF);
+                            }
+                        }
+                        /* blit scaled rendered tile onto zoom-out tile */
+                        zIm.setRGB(((i>>1) != 0)?0:width/2, (i & 1) * height/2, width/2, height/2, argb, 0, width);
+                    }
+                    else {
+                        Arrays.fill(argb, pd.background);
+                    }
                 }
                 else {
                     Arrays.fill(argb, pd.background);
                 }
-            }
-            else {
-                Arrays.fill(argb, pd.background);
+            } finally {
+                FileLockManager.releaseReadLock(f);
             }
             /* blit scaled rendered tile onto zoom-out tile */
             zIm.setRGB(((i>>1) != 0)?0:width/2, (i & 1) * height/2, width/2, height/2, argb, 0, width);

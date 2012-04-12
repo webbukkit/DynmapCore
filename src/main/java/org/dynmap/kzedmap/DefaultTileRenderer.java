@@ -51,6 +51,7 @@ public class DefaultTileRenderer implements MapTileRenderer {
     private int mapzoomin;
     private double shadowstrength;
     private int ambientlight;
+    private boolean is_protected;
     
     public enum BiomeColorOption {
         NONE, BIOME, TEMPERATURE, RAINFALL
@@ -117,6 +118,7 @@ public class DefaultTileRenderer implements MapTileRenderer {
         bg_day_cfg = configuration.getString("backgroundday");
         bg_night_cfg = configuration.getString("backgroundnight");
         mapzoomin = configuration.getInteger("mapzoomin", 2);
+        is_protected = configuration.getBoolean("protected", false);
     }
     
     @Override
@@ -135,6 +137,7 @@ public class DefaultTileRenderer implements MapTileRenderer {
             cn.put("colorscheme", colorScheme.name);
         cn.put("night-and-day", night_and_day);
         cn.put("transparency", transparency);
+        cn.put("protected", is_protected);
         String bcolor = "none";
         switch(biomecolored) {
         case BIOME:
@@ -645,6 +648,7 @@ public class DefaultTileRenderer implements MapTileRenderer {
         s(o, "backgroundnight", bg_night_cfg);
         s(o, "bigmap", map.isBigWorldMap(world));
         s(o, "mapzoomin", mapzoomin);
+        s(o, "protected", is_protected);
         s(o, "mapzoomout", world.getExtraZoomOutLevels()+1);
         if(MapManager.mapman.getCompassMode() != CompassMode.PRE19)
             s(o, "compassview", "NE");   /* Always from northeast */
@@ -652,5 +656,9 @@ public class DefaultTileRenderer implements MapTileRenderer {
             s(o, "compassview", "SE");   /* Always from southeast */
         s(o, "image-format", ImageFormat.FORMAT_PNG.getFileExt());
         a(worldObject, "maps", o);
+    }
+    
+    public boolean isProtected() {
+        return is_protected;
     }
 }

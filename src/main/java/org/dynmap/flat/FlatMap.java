@@ -85,6 +85,7 @@ public class FlatMap extends MapType {
         bg_day_cfg = configuration.getString("backgroundday");
         bg_night_cfg = configuration.getString("backgroundnight");
         mapzoomin = configuration.getInteger("mapzoomin", 3);
+        setProtected(configuration.getBoolean("protected", false));
     }
     
     @Override
@@ -102,6 +103,7 @@ public class FlatMap extends MapType {
         cn.put("ambientlgith", ambientlight);
         cn.put("night-and-day", night_and_day);
         cn.put("transparency", transparency);
+        cn.put("protected", isProtected());
         String txt = "none";
         if(textured == Texture.DITHER)
             txt = "dither";
@@ -626,6 +628,7 @@ public class FlatMap extends MapType {
         s(o, "backgroundday", bg_day_cfg);
         s(o, "backgroundnight", bg_night_cfg);
         s(o, "bigmap", this.isBigWorldMap(world));
+        s(o, "protected", isProtected());
         s(o, "mapzoomin", mapzoomin);
         s(o, "mapzoomout", world.getExtraZoomOutLevels());
         if(MapManager.mapman.getCompassMode() != CompassMode.PRE19)

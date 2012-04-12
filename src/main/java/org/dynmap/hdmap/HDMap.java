@@ -137,6 +137,7 @@ public class HDMap extends MapType {
         this.bg_night_cfg = configuration.getString("backgroundnight");
         this.mapzoomin = configuration.getInteger("mapzoomin", 2);
         this.append_to_world = configuration.getString("append_to_world", "");
+        setProtected(configuration.getBoolean("protected", false));
     }
 
     public ConfigurationNode saveConfiguration() {
@@ -160,7 +161,7 @@ public class HDMap extends MapType {
         if(bg_night_cfg != null)
             cn.put("backgroundnight", bg_night_cfg);
         cn.put("append_to_world", append_to_world);
-        
+        cn.put("protected", isProtected());
         return cn;
     }
     
@@ -274,6 +275,7 @@ public class HDMap extends MapType {
         s(o, "bigmap", true);
         s(o, "mapzoomout", (world.getExtraZoomOutLevels()+mapzoomout));
         s(o, "mapzoomin", mapzoomin);
+        s(o, "protected", isProtected());
         s(o, "image-format", imgformat.getFileExt());
         if(append_to_world.length() > 0)
             s(o, "append_to_world", append_to_world);

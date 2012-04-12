@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Properties;
@@ -15,6 +16,8 @@ import java.util.Set;
 
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.common.DynmapPlayer;
+import org.dynmap.kzedmap.KzedMap;
+import org.dynmap.kzedmap.MapTileRenderer;
 import org.dynmap.servlet.LoginServlet;
 
 public class WebAuthManager {
@@ -223,6 +226,8 @@ public class WebAuthManager {
     String getAccessPHP() {
         StringBuilder sb = new StringBuilder();
         sb.append("<?php\n");
+        
+        ArrayList<String> mid = new ArrayList<String>();
         /* Create world access list */
         sb.append("$worldaccess = array(\n");
         for(DynmapWorld w : core.getMapManager().getWorlds()) {
@@ -236,9 +241,36 @@ public class WebAuthManager {
                 }
                 sb.append("\",\n");
             }
+            for(MapType mt : w.maps) {
+                if(mt instanceof KzedMap) {
+                    KzedMap kmt = (KzedMap)mt;
+                    for(MapTileRenderer tr : kmt.renderers) {
+                        if(tr.isProtected()) {
+                            mid.add(w.getName() + "." + tr.getName());
+                        }
+                    }
+                }
+                else if(mt.isProtected()) {
+                    mid.add(w.getName() + "." + mt.getName());
+                }
+            }
         }
         sb.append(");\n");
-        
+
+        /* Create map access list */
+        sb.append("$mapaccess = array(\n");
+        for(String id : mid) {
+            String perm = "map." + id;
+            sb.append("  \"").append(id).append("\" => \"");
+            for(String uid : pwdhash_by_userid.keySet()) {
+                if(core.getServer().checkPlayerPermission(uid, perm)) {
+                    sb.append("[").append(uid).append("]");
+                }
+            }
+            sb.append("\",\n");
+        }
+        sb.append(");\n");
+
         sb.append("?>\n");
         
         return sb.toString();

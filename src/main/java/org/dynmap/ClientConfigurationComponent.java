@@ -4,8 +4,11 @@ import static org.dynmap.JSONUtils.a;
 import static org.dynmap.JSONUtils.s;
 import static org.dynmap.JSONUtils.g;
 
+import java.util.List;
+
 import org.dynmap.Event.Listener;
 import org.dynmap.common.DynmapPlayer;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class ClientConfigurationComponent extends Component {
@@ -68,6 +71,24 @@ public class ClientConfigurationComponent extends Component {
                     for(MapType mt : world.maps) {
                         mt.buildClientConfiguration(wo, world);
                         if(defmap == null) defmap = mt.getName();
+                    }
+                    if(check_protected) {
+                        JSONArray maps = (JSONArray) g(wo, "maps");
+                        if(maps != null) {
+                            int cnt = maps.size();
+                            for(int i = 0; i < cnt; i++) {
+                                JSONObject obj = (JSONObject)maps.get(i);
+                                Boolean prot = (Boolean) g(obj, "protected");
+                                if((prot == null) || (prot.booleanValue() == false))
+                                    continue;
+                                String mname = (String) g(obj, "name");
+                                if ((player == null) || (!core.getServer().checkPlayerPermission(player, "map." + world.getName() + "." + mname))) {
+                                    maps.remove(i); /* Remove it */
+                                    i--;
+                                    cnt--;
+                                }
+                            }
+                        }
                     }
                 }
                 s(t, "defaultworld", c.getString("defaultworld", defaultWorld == null ? "world" : defaultWorld.getName()));

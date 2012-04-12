@@ -8,6 +8,8 @@ import org.dynmap.utils.TileFlags;
 import org.json.simple.JSONObject;
 
 public abstract class MapType {
+    private boolean is_protected;
+    
     public enum ImageFormat {
         FORMAT_PNG("png", "png", 0.0f),
         FORMAT_JPG75("jpg-q75", "jpg", 0.75f),
@@ -124,5 +126,15 @@ public abstract class MapType {
         cn.put("class", this.getClass().getName()); /* Add class */
         cn.put("name", getName());  /* Get map name */
         return cn;
+    }
+    public boolean isProtected() {
+        return is_protected;
+    }
+    public boolean setProtected(boolean p) {
+        if(is_protected != p) {
+            is_protected = p;
+            return true;
+        }
+        return false;
     }
 }
