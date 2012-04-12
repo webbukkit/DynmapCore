@@ -151,6 +151,7 @@ public abstract class DynmapWorld {
     }
 
     public void freshenZoomOutFiles() {
+        //Log.info(getName() + ".freshenZoomOutFiles() - start");
         boolean done = false;
         int last_done = 0;
         for(int i = 0; (!cancelled) && (!done); i++) {
@@ -162,6 +163,7 @@ public abstract class DynmapWorld {
             zoomoutupdates[i].clear();
         }
         checkts = false;	/* Just handle queued updates after first scan */
+        //Log.info(getName() + ".freshenZoomOutFiles() - done");
     }
     
     public void cancelZoomOutFreshen() {
@@ -406,7 +408,7 @@ public abstract class DynmapWorld {
     }
     
     private void processZoomTile(PrefixData pd, File zf, String zfname, int tx, int ty) {
-        //Debug.debug("processZoomFile(" + pd.baseprefix + "," + zf.getPath() + "," + tx + "," + ty + ")");
+        //Log.info("processZoomFile(" + pd.baseprefix + "," + zf.getPath() + "," + tx + "," + ty + ")");
         int width = 128, height = 128;
         BufferedImage zIm = null;
         DynmapBufferedImage kzIm = null;
@@ -487,7 +489,7 @@ public abstract class DynmapWorld {
                     hashman.updateHashCode(key, null, tilex, tiley, -1);
                     MapManager.mapman.pushUpdate(this, new Client.Tile(zfname));
                     enqueueZoomOutUpdate(zf, pd.zoomlevel+1);
-                    Debug.debug("Blanked zoom-out tile at " + zf.getPath());
+                    //Log.info("Blanked zoom-out tile at " + zf.getPath());
                 }
             }
             else if((!zf.exists()) || (crc != mm.hashman.getImageHashCode(key, null, tilex, tiley))) {
@@ -495,7 +497,7 @@ public abstract class DynmapWorld {
                     if(!zf.getParentFile().exists())
                         zf.getParentFile().mkdirs();
                     FileLockManager.imageIOWrite(zIm, pd.fmt, zf);
-                    Debug.debug("Saved zoom-out tile at " + zf.getPath());
+                    //Log.info("Saved zoom-out tile at " + zf.getPath());
                 } catch (IOException e) {
                     Debug.error("Failed to save zoom-out tile: " + zf.getName(), e);
                 } catch (java.lang.NullPointerException e) {
