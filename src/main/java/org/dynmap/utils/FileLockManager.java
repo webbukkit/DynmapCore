@@ -230,4 +230,36 @@ public class FileLockManager {
             }
         }
     }
+    /**
+     * Wrapper for IOImage.read - implements retries for busy files
+     */
+    public static BufferedImage imageIORead(File fname) throws IOException {
+        int retrycnt = 0;
+        boolean done = false;
+        BufferedImage img = null;
+        
+        synchronized(baos_lock) {
+            while(!done) {
+                try {
+                    ImageIO.setUseCache(false); /* Don't use file cache - too small to be worth it */
+                    img = ImageIO.read(fname);
+                    if(img != null)
+                        done = true;
+                } catch (IOException iox) {
+                }
+                if(!done) {
+                    if(retrycnt < MAX_WRITE_RETRIES) {
+                        Debug.debug("Image file " + fname.getPath() + " - unable to write - retry #" + retrycnt);
+                        try { Thread.sleep(50 << retrycnt); } catch (InterruptedException ix) { }
+                        retrycnt++;
+                    }
+                    else {
+                        Log.info("Image file " + fname.getPath() + " - unable to read - failed");
+                        throw new IOException("Error reading image file " + fname.getPath());
+                    }
+                }
+            }
+        }
+        return img;
+    }
 }

@@ -429,11 +429,10 @@ public abstract class DynmapWorld {
             	FileLockManager.getReadLock(f);
                 popQueuedUpdate(f, pd.zoomlevel);
                 try {
-                    im = ImageIO.read(f);
-                } catch (IOException e) {
-                } catch (IndexOutOfBoundsException e) {
-                } finally {
-                    FileLockManager.releaseReadLock(f);
+                    im = FileLockManager.imageIORead(f);
+                } catch (IOException iox) {
+                    Log.warning("Aborted zoom tile update " + zf.getPath());
+                    return;
                 }
                 if(im != null) {
                     im.getRGB(0, 0, width, height, argb, 0, width);    /* Read data */
