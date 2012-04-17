@@ -238,14 +238,26 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
             JSONObject update = new JSONObject();
             update.put("timestamp", currentTimestamp);
             ClientUpdateEvent clientUpdate = new ClientUpdateEvent(currentTimestamp - 30000, dynmapWorld, update);
+            clientUpdate.include_all_users = true;
             core.events.trigger("buildclientupdate", clientUpdate);
 
-            File outputFile = getStandaloneFile("dynmap_" + dynmapWorld.getName() + ".json");
-            File outputNewFile = getStandaloneFile("dynmap_" + dynmapWorld.getName() + ".json.new");
-            File outputOldFile = getStandaloneFile("dynmap_" + dynmapWorld.getName() + ".json.old");
+            File outputFile;
+            File outputNewFile;
+            File outputOldFile;
+
+            if(core.isLoginSupportEnabled()) {
+                outputFile = getStandaloneFile("updates_" + dynmapWorld.getName() + ".php");
+                outputNewFile = getStandaloneFile("updates_" + dynmapWorld.getName() + ".new.php");
+                outputOldFile = getStandaloneFile("updates_" + dynmapWorld.getName() + ".old.php");
+            }
+            else {
+                outputFile = getStandaloneFile("dynmap_" + dynmapWorld.getName() + ".json");
+                outputNewFile = getStandaloneFile("dynmap_" + dynmapWorld.getName() + ".json.new");
+                outputOldFile = getStandaloneFile("dynmap_" + dynmapWorld.getName() + ".json.old");
+            }
             byte[] content = Json.stringifyJson(update).getBytes(cs_utf8);
 
-            enqueueFileWrite(outputFile, outputNewFile, outputOldFile, content, false);
+            enqueueFileWrite(outputFile, outputNewFile, outputOldFile, content, core.isLoginSupportEnabled());
         }
     }
     

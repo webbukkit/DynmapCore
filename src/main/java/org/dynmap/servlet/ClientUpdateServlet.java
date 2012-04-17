@@ -71,7 +71,11 @@ public class ClientUpdateServlet extends HttpServlet {
 
             JSONObject u = new JSONObject();
             s(u, "timestamp", current);
-            core.events.trigger("buildclientupdate", new ClientUpdateEvent(since, dynmapWorld, u));
+            ClientUpdateEvent evt = new ClientUpdateEvent(since, dynmapWorld, u);
+            if(!user.equals(LoginServlet.USERID_GUEST)) {
+                evt.user = user;
+            }
+            core.events.triggerSync(core, "buildclientupdate", evt);
 
             bytes = u.toJSONString().getBytes(cs_utf8);
         }

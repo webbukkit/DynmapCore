@@ -271,6 +271,15 @@ public class WebAuthManager {
         }
         sb.append(");\n");
 
+        String perm = "playermarkers.seeall";
+        sb.append("$seeallmarkers = \"");
+        for(String uid : pwdhash_by_userid.keySet()) {
+            if(core.getServer().checkPlayerPermission(uid, perm)) {
+                sb.append("[").append(uid).append("]");
+            }
+        }
+        sb.append("\";\n");
+
         sb.append("?>\n");
         
         return sb.toString();

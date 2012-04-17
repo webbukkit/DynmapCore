@@ -9,9 +9,19 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class ClientUpdateComponent extends Component {
+    private int hideifshadow;
+    private int hideifunder;
+    private boolean hideifsneaking;
+    private boolean is_protected;
     
     public ClientUpdateComponent(final DynmapCore plugin, ConfigurationNode configuration) {
         super(plugin, configuration);
+        
+        hideifshadow = configuration.getInteger("hideifshadow", 15);
+        hideifunder = configuration.getInteger("hideifundercover", 15);
+        hideifsneaking = configuration.getBoolean("hideifsneaking", false);
+        is_protected = configuration.getBoolean("protected-player-info", false);
+        
         plugin.events.addListener("buildclientupdate", new Event.Listener<ClientUpdateEvent>() {
             @Override
             public void triggered(ClientUpdateEvent e) {
@@ -25,10 +35,18 @@ public class ClientUpdateComponent extends Component {
         JSONObject u = e.update;
         long since = e.timestamp;
         String worldName = world.getName();
-        int hideifshadow = configuration.getInteger("hideifshadow", 15);
-        int hideifunder = configuration.getInteger("hideifundercover", 15);
-        boolean hideifsneaking = configuration.getBoolean("hideifsneaking", false);
-
+        boolean see_all = true;
+        
+        if(is_protected && (!e.include_all_users)) {
+            if(e.user != null)
+                see_all = core.getServer().checkPlayerPermission(e.user, "playermarkers.seeall");
+            else
+                see_all = false;
+        }
+        if((e.include_all_users) && is_protected) { /* If JSON request AND protected, leave mark for script */
+            s(u, "protected", true);
+        }
+        
         s(u, "confighash", core.getConfigHashcode());
 
         s(u, "servertime", world.getTime() % 24000);
@@ -64,7 +82,13 @@ public class ClientUpdateComponent extends Component {
             }
             if((!hide) && hideifsneaking && p.isSneaking())
                 hide = true;
-            
+            if((!hide) && is_protected && (!see_all)) {
+                if(e.user != null) 
+                    hide = !p.getName().equalsIgnoreCase(e.user);
+                else
+                    hide = true;
+            }
+                
             /* Don't leak player location for world not visible on maps, or if sendposition disbaled */
             DynmapWorld pworld = MapManager.mapman.worldsLookup.get(pl.world);
             /* Fix typo on 'sendpositon' to 'sendposition', keep bad one in case someone used it */
