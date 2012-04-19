@@ -5,7 +5,8 @@ var config = {
 		update: 'up/world/{world}/{timestamp}',
 		sendmessage: 'up/sendmessage',
 		login: 'up/login',
-		register: 'up/register'
+		register: 'up/register',
+		tiles : 'tiles/'
 	},
 
 	// // For proxying webserver through php.
@@ -14,7 +15,8 @@ var config = {
 	// update: 'up.php?path=world/{world}/{timestamp}',
 	// sendmessage: 'up.php?path=sendmessage',
 	// login: 'up.php?path=login',
-	// register: 'up.php?path=register'
+	// register: 'up.php?path=register',
+	// tiles : 'tiles/'
 	// },
 
 	// // For proxying webserver through aspx.
@@ -23,7 +25,8 @@ var config = {
 	// update: 'up.aspx?path=world/{world}/{timestamp}',
 	// sendmessage: 'up.aspx?path=sendmessage',
 	// login: 'up.aspx?path=login',
-	// register: 'up.aspx?path=register'
+	// register: 'up.aspx?path=register',
+	// tiles : 'tiles/'
 	// },
 
 	// // For standalone (jsonfile) webserver (no login security)
@@ -32,7 +35,8 @@ var config = {
 	// update: 'standalone/dynmap_{world}.json?_={timestamp}',
 	// sendmessage: 'standalone/sendmessage.php',
 	// login: 'standalone/login.php',
-	// register: 'standalone/register.php'
+	// register: 'standalone/register.php',
+	// tiles : 'tiles/'
 	// },
 
 	// // For standalone (jsonfile) webserver (login security)
@@ -41,13 +45,7 @@ var config = {
 	// update: 'standalone/update.php?world={world}&ts={timestamp}',
 	// sendmessage: 'standalone/sendmessage.php',
 	// login: 'standalone/login.php',
-	// register: 'standalone/register.php'
+	// register: 'standalone/register.php',
+	// tiles : 'standalone/tiles.php/'
 	// },
-
-	tileUrl : 'tiles/',
-	// Alternative to tiles/ - prevents 404 errors on undefined tiles
-	//tileUrl : 'gettiles.php/',
-	
-	tileWidth : 128,
-	tileHeight : 128
 };

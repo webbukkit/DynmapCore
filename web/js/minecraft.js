@@ -7,9 +7,9 @@ function createMinecraftHead(player,size,completed,failed) {
 		failed();
 	};
 	if(size == 'body')
-		faceImage.src = dynmap.options.tileUrl + 'faces/body/' + player + '.png';
+		faceImage.src = dynmap.options.url.tiles + 'faces/body/' + player + '.png';
 	else
-		faceImage.src = dynmap.options.tileUrl + 'faces/' + size + 'x' + size + '/' + player + '.png';
+		faceImage.src = dynmap.options.url.tiles + 'faces/' + size + 'x' + size + '/' + player + '.png';
 }
 
 function getMinecraftHead(player,size,completed) {

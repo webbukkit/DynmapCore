@@ -27,7 +27,7 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 			
 	function loadmarkers(world) {
 		removeAllMarkers();
-		$.getJSON(dynmap.options.tileUrl+'_markers_/marker_'+world+'.json', function(data) {
+		$.getJSON(dynmap.options.url.tiles+'_markers_/marker_'+world+'.json', function(data) {
 			var ts = data.timestamp;
 			$.each(data.sets, function(name, markerset) {
 				if(markerset.showlabels == undefined) markerset.showlabels = configuration.showlabel;
@@ -92,7 +92,7 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 			$(div)
 				.addClass('Marker')
 				.addClass('mapMarker')
-				.append($('<img/>').addClass('markerIcon'+marker.dim).attr({ src: dynmap.options.tileUrl+'_markers_/'+marker.icon+'.png' }));
+				.append($('<img/>').addClass('markerIcon'+marker.dim).attr({ src: dynmap.options.url.tiles+'_markers_/'+marker.icon+'.png' }));
 			if(marker.markup) {
 				$(div).append($('<span/>')
 					.addClass(set.showlabels?'markerName-show':'markerName')

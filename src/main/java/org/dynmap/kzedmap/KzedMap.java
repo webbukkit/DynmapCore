@@ -2,6 +2,7 @@ package org.dynmap.kzedmap;
 
 import org.dynmap.DynmapWorld;
 import java.io.File;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -342,5 +343,10 @@ public class KzedMap extends MapType {
         for(MapTileRenderer renderer : renderers) {
             renderer.buildClientConfiguration(worldObject, world, this);
         }
+    }
+    
+    @Override
+    public String getPrefix() {
+        throw new InvalidParameterException("getPrefix not valid on KzedMap");
     }
 }

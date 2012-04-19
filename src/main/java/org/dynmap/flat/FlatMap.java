@@ -469,6 +469,7 @@ public class FlatMap extends MapType {
         return name;
     }
     
+    @Override
     public String getPrefix() {
         return prefix;
     }

@@ -672,14 +672,14 @@ DynMap.prototype = {
 		var tile = me.registeredTiles[tileName];
 		
 		if(tile == null) {
-			tile = this.registeredTiles[tileName] = me.options.tileUrl + me.world.name + '/' + tileName + '?' + me.inittime;
+			tile = this.registeredTiles[tileName] = me.options.url.tiles + me.world.name + '/' + tileName + '?' + me.inittime;
 		}
 		return tile;
 	},
 	onTileUpdated: function(tileName,timestamp) {
 		var me = this;
 
-		this.registeredTiles[tileName] = me.options.tileUrl + me.world.name + '/' + tileName + '?' + timestamp;
+		this.registeredTiles[tileName] = me.options.url.tiles + me.world.name + '/' + tileName + '?' + timestamp;
 		
 		me.maptype.updateNamedTile(tileName);
 	},

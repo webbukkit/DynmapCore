@@ -246,12 +246,12 @@ public class WebAuthManager {
                     KzedMap kmt = (KzedMap)mt;
                     for(MapTileRenderer tr : kmt.renderers) {
                         if(tr.isProtected()) {
-                            mid.add(w.getName() + "." + tr.getName());
+                            mid.add(w.getName() + "." + tr.getPrefix());
                         }
                     }
                 }
                 else if(mt.isProtected()) {
-                    mid.add(w.getName() + "." + mt.getName());
+                    mid.add(w.getName() + "." + mt.getPrefix());
                 }
             }
         }
@@ -280,6 +280,10 @@ public class WebAuthManager {
         }
         sb.append("\";\n");
 
+        sb.append("$tilespath = \"");
+        sb.append(core.getTilesFolder().getAbsolutePath());
+        sb.append("\";\n");
+        
         sb.append("?>\n");
         
         return sb.toString();

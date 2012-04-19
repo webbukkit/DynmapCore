@@ -137,4 +137,5 @@ public abstract class MapType {
         }
         return false;
     }
+    public abstract String getPrefix();
 }
