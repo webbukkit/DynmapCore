@@ -1,10 +1,27 @@
 <?php
 session_start();
 
-$config =  json_decode(file_get_contents('dynmap_config.json'), true);
-$msginterval = $config['webchat-interval'];
+if(file_exists('dynmap_config.json')) {
+   $config =  json_decode(file_get_contents('dynmap_config.json'), true);
+   $msginterval = $config['webchat-interval'];
+}
+else if(file_exists('dynmap_config.php')) {
+   $lines = file('dynmap_config.php');
+   array_shift($lines);
+   array_pop($lines);
+   $config = json_decode(implode(' ',$lines), true);
+   $msginterval = $config['webchat-interval'];
+}
+else {
+   $msginterval = 2000;
+}
 
-if($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['lastchat'] < time())
+if(isset($_SESSION['lastchat']))
+    $lastchat = $_SESSION['lastchat'];
+else
+    $lastchat = 0;
+
+if($_SERVER['REQUEST_METHOD'] == 'POST' && $lastchat < time())
 {
 	$micro = explode(' ', microtime());
 	$timestamp = $micro[1].round($micro[0]*1000);
@@ -20,7 +37,9 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['lastchat'] < time())
 	}
 	if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
 		$data->ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-	$old_messages = json_decode(file_get_contents('dynmap_webchat.json'), true);
+	if(file_exists('dynmap_webchat.json')) {
+		$old_messages = json_decode(file_get_contents('dynmap_webchat.json'), true);
+	}
 	if(!empty($old_messages))
 	{
 		foreach($old_messages as $message)
@@ -34,7 +53,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['lastchat'] < time())
 	$_SESSION['lastchat'] = time()+$msginterval;
 	echo "{ \"error\" : \"none\" }";
 }
-elseif($_SERVER['REQUEST_METHOD'] == 'POST' && $_SESSION['lastchat'] > time())
+elseif($_SERVER['REQUEST_METHOD'] == 'POST' && $lastchat > time())
 {
 	header('HTTP/1.1 403 Forbidden');
 }

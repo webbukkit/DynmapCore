@@ -46,7 +46,7 @@ array_pop($lines);
 $json = json_decode(implode(' ',$lines));
 
 
-if($json->loginrequired && !$loggedin) {
+if(isset($json->loginrequired) && $json->loginrequired && !$loggedin) {
     echo "{ \"error\": \"login-required\" }";
 }
 else {
