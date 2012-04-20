@@ -107,6 +107,7 @@ public abstract class MapType {
         while(dirs.isEmpty() == false) {
             File dir = dirs.pop();
             String[] lst = dir.list();
+            if(lst == null) continue;
             for(String fn : lst) {
                 if(fn.equals(".") || fn.equals(".."))
                     continue;
