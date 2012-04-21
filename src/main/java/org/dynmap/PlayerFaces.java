@@ -76,10 +76,16 @@ public class PlayerFaces {
             img.getRGB(40, 8, 8, 8, faceaccessory, 0, 8); /* Read face accessory from image */
             /* Apply accessory to face: see if anything is transparent (if so, apply accessory */
             boolean transp = false;
+            int v = faceaccessory[0];
             for(int i = 0; i < 64; i++) {
             	if((faceaccessory[i] & 0xFF000000) == 0) {
             		transp = true;
             		break;
+            	}
+            	/* If any different values, render face too */
+            	else if(faceaccessory[i] != v) {
+            	    transp = true;
+            	    break;
             	}
             }
             if(transp) {
