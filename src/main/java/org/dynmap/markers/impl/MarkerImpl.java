@@ -78,6 +78,8 @@ class MarkerImpl implements Marker {
         normalized_world = DynmapWorld.normalizeWorldName(world);
         desc = node.getString("desc", null);
         icon = MarkerAPIImpl.getMarkerIconImpl(node.getString("icon", MarkerIcon.DEFAULT)); 
+        if(icon == null)
+            icon = MarkerAPIImpl.getMarkerIconImpl(MarkerIcon.DEFAULT);
         ispersistent = true;    /* Loaded from config, so must be */
         
         return true;

@@ -2182,6 +2182,8 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 mdata.put("y", m.getY());
                 mdata.put("z", m.getZ());
                 MarkerIcon mi = m.getMarkerIcon();
+                if(mi == null)
+                    mi = MarkerAPIImpl.getMarkerIconImpl(MarkerIcon.DEFAULT);
                 mdata.put("icon", mi.getMarkerIconID());
                 mdata.put("dim", mi.getMarkerIconSize().getSize());
                 mdata.put("label", m.getLabel());
