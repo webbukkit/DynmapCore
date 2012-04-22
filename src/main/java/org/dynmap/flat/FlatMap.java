@@ -173,7 +173,7 @@ public class FlatMap extends MapType {
         int worldheight = tile.getDynmapWorld().worldheight - 1;
         int hshift = tile.getDynmapWorld().heightshift - 7;
         
-        if(maxheight < 0)
+        if((maxheight < 0) || (maxheight == 127))
             maxheight = worldheight;
         boolean isnether = t.getDynmapWorld().isNether() && (maxheight == worldheight);
 
@@ -278,14 +278,14 @@ public class FlatMap extends MapType {
                     pixel[3] = 255;
                 }
                 else {  /* Only do height keying if we're not messing with ambient light */
-                    int ys = mapiter.getY() >> hshift;  /* Normalize to 0-127 */
+                    int ys = mapiter.getY();
                     boolean below = ys < 64;
 
                     // Make height range from 0 - 1 (1 - 0 for below and 0 - 1 above)
-                    float height = (below ? 64 - ys : ys - 64) / 64.0f;
+                    float height = (below ? (64 - ys)/64.0f : (ys - 64)/(float)worldheight);
 
                     // Defines the 'step' in coloring.
-                    float step = 10 / 128.0f;
+                    float step = 10 / (float)(worldheight + 1);
 
                     // The step applied to height.
                     float scale = ((int)(height/step))*step;

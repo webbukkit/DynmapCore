@@ -180,9 +180,13 @@ public class DefaultTileRenderer implements MapTileRenderer {
             zim_day = DynmapBufferedImage.allocateBufferedImage(KzedMap.tileWidth/2, KzedMap.tileHeight/2);
         }
 
-        int ix = KzedMap.anchorx + tile.px / 2 + tile.py / 2 - ((127-maximumHeight)/2);
+        if(cache.getWorld().worldheight > 128) {
+            if(maximumHeight == 127)
+                maximumHeight = cache.getWorld().worldheight - 1;
+        }
+        int ix = tile.px / 2 + tile.py / 2 - ((127-maximumHeight)/2);
         int iy = maximumHeight;
-        int iz = KzedMap.anchorz + tile.px / 2 - tile.py / 2 + ((127-maximumHeight)/2);
+        int iz = tile.px / 2 - tile.py / 2 + ((127-maximumHeight)/2);
 
         /* Don't mess with existing height-clipped renders */
         if(maximumHeight < 127)

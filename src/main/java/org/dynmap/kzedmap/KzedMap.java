@@ -28,11 +28,6 @@ public class KzedMap extends MapType {
      */
     public static final int zTileWidth = 256;
     public static final int zTileHeight = 256;
-
-    /* map x, y, z for projection origin */
-    public static final int anchorx = 0;
-    public static final int anchory = 127;
-    public static final int anchorz = 0;
     
     public MapTileRenderer[] renderers;
     private boolean isbigmap;
@@ -61,9 +56,11 @@ public class KzedMap extends MapType {
     }
     @Override
     public MapTile[] getTiles(DynmapWorld world, int x, int y, int z) {
-        int dx = x - anchorx;
-        int dy = y - anchory;
-        int dz = z - anchorz;
+        int vscale = world.worldheight / 128;
+
+        int dx = x;
+        int dy = y - 127;
+        int dz = z;
         int px = dx + dz;
         int py = dx - dz - dy;
 
@@ -105,15 +102,17 @@ public class KzedMap extends MapType {
     @Override
     public MapTile[] getTiles(DynmapWorld world, int minx, int miny, int minz, int maxx, int maxy, int maxz) {
         ArrayList<MapTile> tiles = new ArrayList<MapTile>();
+        
+        int vscale = world.worldheight / 128;
         /* Transform both to tile coordinates */
-        int dx = minx - anchorx;
-        int dy = miny - anchory;
-        int dz = minz - anchorz;
+        int dx = minx;
+        int dy = miny - 127;
+        int dz = minz;
         int px0 = dx + dz;
         int py0 = dx - dz - dy;
-        dx = maxx - anchorx;
-        dy = maxy - anchory;
-        dz = maxz - anchorz;
+        dx = maxx;
+        dy = maxy - 127;
+        dz = maxz;
         int px1 = dx + dz;
         int py1 = dx - dz - dy;
         /* Compute ranges */
@@ -181,14 +180,15 @@ public class KzedMap extends MapType {
         if (tile instanceof KzedMapTile) {
             KzedMapTile t = (KzedMapTile) tile;
 
-            int ix = KzedMap.anchorx + t.px / 2 + t.py / 2;
-            //int iy = 127;
-            int iz = KzedMap.anchorz + t.px / 2 - t.py / 2;
+            int vscale = tile.getDynmapWorld().worldheight / 128;
+            
+            int ix = t.px / 2 + t.py / 2;
+            int iz = t.px / 2 - t.py / 2;
 
-            int x1 = ix - KzedMap.tileHeight / 2;
-            int x2 = ix + KzedMap.tileWidth / 2 + KzedMap.tileHeight / 2;
+            int x1 = ix - (KzedMap.tileHeight / 2);
+            int x2 = ix + (KzedMap.tileWidth / 2 + KzedMap.tileHeight / 2) * vscale;
 
-            int z1 = iz - KzedMap.tileHeight / 2;
+            int z1 = iz - (KzedMap.tileHeight / 2) * vscale;
             int z2 = iz + KzedMap.tileWidth / 2 + KzedMap.tileHeight / 2;
 
             int x, z;
@@ -209,21 +209,23 @@ public class KzedMap extends MapType {
              */
             ArrayList<DynmapChunk> chunks = new ArrayList<DynmapChunk>();
 
+            int prismx = KzedMap.tileWidth*(vscale+1)/2;
+            int prismz = -(KzedMap.tileHeight+(vscale+1)/2);
             for (x = x1; x < x2; x += 16) {
                 for (z = z1; z < z2; z += 16) {
                     /* If any of the chunk corners are inside the rectangle, we need it */
                     if((!testPointInRectangle(x, z, x1, iz + KzedMap.tileWidth/2,
                             KzedMap.tileWidth/2, KzedMap.tileHeight/2,
-                            KzedMap.tileWidth, -KzedMap.tileHeight)) &&
+                            prismx, prismz)) &&
                         (!testPointInRectangle(x+15, z, x1, iz + KzedMap.tileWidth/2,
                             KzedMap.tileWidth/2, KzedMap.tileHeight/2,
-                            KzedMap.tileWidth, -KzedMap.tileHeight)) &&
+                            prismx, prismz)) &&
                         (!testPointInRectangle(x+15, z+15, x1, iz + KzedMap.tileWidth/2,
                             KzedMap.tileWidth/2, KzedMap.tileHeight/2,
-                            KzedMap.tileWidth, -KzedMap.tileHeight)) &&
+                            prismx, prismz)) &&
                         (!testPointInRectangle(x, z+15, x1, iz + KzedMap.tileWidth/2,
                             KzedMap.tileWidth/2, KzedMap.tileHeight/2,
-                            KzedMap.tileWidth, -KzedMap.tileHeight)))
+                            prismx, prismz)))
                         continue;
                     DynmapChunk chunk = new DynmapChunk(x / 16, z / 16);
                     chunks.add(chunk);
@@ -270,7 +272,6 @@ public class KzedMap extends MapType {
     static int ztiley(int y) {
         if (y < 0)
             return y + y % zTileHeight;
-        // return y - (zTileHeight + (y % zTileHeight));
         else
             return y - (y % zTileHeight);
     }
