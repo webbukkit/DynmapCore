@@ -22,9 +22,11 @@ componentconstructors['testcomponent'] = function(dynmap, configuration) {
 
 function DynMap(options) {
 	var me = this;
+	me.checkForSavedURL();
 	me.options = options;
 	$.getJSON(me.options.url.configuration, function(configuration) {
 		if(configuration.error == 'login-required') {
+			me.saveURL();
 			window.location = 'login.html';
 		}
 		else if(configuration.error) {	
@@ -572,6 +574,7 @@ DynMap.prototype = {
 
 				if(update.error) {
 					if(update.error == 'login-required') {
+						me.saveURL();
 						window.location = 'login.html';
 					}
 					else {
@@ -919,6 +922,7 @@ DynMap.prototype = {
 				}
 				else {
 					c = $('<button/>').addClass(cls).click(function(event) {
+						me.saveURL();
 						window.location = "login.html";
 					}).text('Login').appendTo(c)[0];
 				}				
@@ -926,5 +930,24 @@ DynMap.prototype = {
 		});
 		var l = new login();
 		me.map.addControl(l);
-	}		
+	},
+	saveURL : function() {
+		if(window.location.href.indexOf('?') > 0)
+			document.cookie="dynmapurl=" + escape(window.location);
+	},
+	checkForSavedURL : function() {
+		var i,x,y,ourcookies=document.cookie.split(";");
+		for (i=0;i<ourcookies.length;i++) {
+  			x=ourcookies[i].substr(0,ourcookies[i].indexOf("="));
+  			y=ourcookies[i].substr(ourcookies[i].indexOf("=")+1);
+			x=x.replace(/^\s+|\s+$/g,"");
+  			if (x == "dynmapurl") {
+  				var v = unescape(y);
+  				document.cookie='dynmapurl=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
+  				if(v.indexOf('index.html') >= 0) {
+					window.location = v;
+				}
+			}
+		}		  				
+    }
 };
