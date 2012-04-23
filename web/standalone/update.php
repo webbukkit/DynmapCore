@@ -24,7 +24,11 @@ if(strpos($world, '/') || strpos($world, '\\')) {
     return;
 }
 
-$fname = 'updates_' . $world . '.php';
+if(isset($webpath))
+	$fname = $webpath . '/standalone/updates_' . $world . '.php';
+else
+	$fname = 'updates_' . $world . '.php';
+
 if(!file_exists($fname)) {
     echo "{ \"error\": \"bad-world\" }";
 	return;
@@ -35,7 +39,7 @@ $uid = '[' . strtolower($userid) . ']';
 if(isset($worldaccess[$world])) {
     $ss = stristr($worldaccess[$world], $uid);
 	if($ss === false) {
-	    echo "{ \"error\": \"bad-world\" }";
+	    echo "{ \"error\": \"access-denied\" }";
 		return;
 	}
 }
