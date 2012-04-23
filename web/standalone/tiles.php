@@ -45,7 +45,7 @@ if(isset($mapaccess[$mapid])) {
 	}
 }
 
-if (!file_exists($fname)) {
+if (!is_readable($fname)) {
   if(strstr($path, ".jpg") || strstr($path, ".png")) {
 	  $fname = "../images/blank.png";
   }

@@ -32,7 +32,7 @@ if(isset($webpath))
 else
 	$fname = 'updates_' . $world . '.php';
 
-if(!file_exists($fname)) {
+if(!is_readable($fname)) {
     echo "{ \"error\": \"bad-world\" }";
 	return;
 }

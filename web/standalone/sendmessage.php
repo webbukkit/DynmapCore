@@ -1,11 +1,11 @@
 <?php
 session_start();
 
-if(file_exists('dynmap_config.json')) {
+if(is_readable('dynmap_config.json')) {
    $config =  json_decode(file_get_contents('dynmap_config.json'), true);
    $msginterval = $config['webchat-interval'];
 }
-else if(file_exists('dynmap_config.php')) {
+else if(is_readable('dynmap_config.php')) {
    $lines = file('dynmap_config.php');
    array_shift($lines);
    array_pop($lines);
@@ -37,7 +37,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && $lastchat < time())
 	}
 	if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
 		$data->ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-	if(file_exists('dynmap_webchat.json')) {
+	if(is_readable('dynmap_webchat.json')) {
 		$old_messages = json_decode(file_get_contents('dynmap_webchat.json'), true);
 	}
 	if(!empty($old_messages))
