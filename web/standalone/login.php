@@ -1,5 +1,7 @@
 <?php
-include 'dynmap_login.php';
+ob_start();
+include('dynmap_login.php');
+ob_end_clean();
 
 session_start();
 

@@ -1,5 +1,8 @@
 <?php
-include 'dynmap_access.php';
+
+ob_start();
+include('dynmap_access.php');
+ob_end_clean();
 
 $world = $_REQUEST['world'];
 
