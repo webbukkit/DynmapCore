@@ -44,13 +44,19 @@ if(isset($mapaccess[$mapid])) {
 }
 
 if (!file_exists($fname)) {
-  $fname = "../images/blank.png";
+  if(strstr($path, ".jpg") || strstr($path, ".png")) {
+	  $fname = "../images/blank.png";
+  }
 }
 $fp = fopen($fname, 'rb');
 if (strstr($path, ".png"))
   header("Content-Type: image/png");
-else
+else if (strstr($path, ".jpg"))
   header("Content-Type: image/jpeg");
+else if (strstr($path, ".json"))
+  header("Content-Type: application/json");
+else
+  header("Content-Type: application/text");
 
 header("Content-Length: " . filesize($fname));
 
