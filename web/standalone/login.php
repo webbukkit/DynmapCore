@@ -39,7 +39,10 @@ else {
 }
 /* Prune pending registrations, if needed */
 $newlines[] = '<?php /*';
-$lines = file('dynmap_reg.php');
+if(is_readable('dynmap_reg.php'))
+	$lines = file('dynmap_reg.php');
+else
+	$lines = array();
 if(!empty($lines)) {
 	$cnt = count($lines) - 1;
 	$changed = false;

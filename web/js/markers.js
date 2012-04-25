@@ -27,7 +27,12 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 			
 	function loadmarkers(world) {
 		removeAllMarkers();
-		$.getJSON(dynmap.options.url.tiles+'_markers_/marker_'+world+'.json', function(data) {
+		var url = dynmap.options.url.markers;
+		if(url.indexOf('?') >= 0)
+			url += escape('_markers_/marker_'+world+'.json');
+		else
+			url += '_markers_/marker_'+world+'.json';
+		$.getJSON(url, function(data) {
 			var ts = data.timestamp;
 			$.each(data.sets, function(name, markerset) {
 				if(markerset.showlabels == undefined) markerset.showlabels = configuration.showlabel;
@@ -88,11 +93,15 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 
 			var markerPosition = getPosition(marker);
 			marker.our_marker.setLatLng(markerPosition);
-						
+			var url = dynmap.options.url.markers;
+			if(url.indexOf('?') >= 0)
+				url += escape('_markers_/'+marker.icon+'.png');
+			else
+				url += '_markers_/'+marker.icon+'.png';
 			$(div)
 				.addClass('Marker')
 				.addClass('mapMarker')
-				.append($('<img/>').addClass('markerIcon'+marker.dim).attr({ src: dynmap.options.url.tiles+'_markers_/'+marker.icon+'.png' }));
+				.append($('<img/>').addClass('markerIcon'+marker.dim).attr({ src: url }));
 			if(marker.markup) {
 				$(div).append($('<span/>')
 					.addClass(set.showlabels?'markerName-show':'markerName')

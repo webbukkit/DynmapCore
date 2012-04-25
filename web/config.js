@@ -6,7 +6,8 @@ var config = {
 		sendmessage: 'up/sendmessage',
 		login: 'up/login',
 		register: 'up/register',
-		tiles : 'tiles/'
+		tiles : 'tiles/',
+		markers : 'tiles/'
 	},
 
 	// // For proxying webserver through php.
@@ -16,7 +17,8 @@ var config = {
 	// sendmessage: 'up.php?path=sendmessage',
 	// login: 'up.php?path=login',
 	// register: 'up.php?path=register',
-	// tiles : 'tiles/'
+	// tiles : 'tiles/',
+	// markers : 'tiles/'
 	// },
 
 	// // For proxying webserver through aspx.
@@ -26,7 +28,8 @@ var config = {
 	// sendmessage: 'up.aspx?path=sendmessage',
 	// login: 'up.aspx?path=login',
 	// register: 'up.aspx?path=register',
-	// tiles : 'tiles/'
+	// tiles : 'tiles/',
+	// markers : 'tiles/'
 	// },
 
 	// // For standalone (jsonfile) webserver (no login security)
@@ -36,7 +39,8 @@ var config = {
 	// sendmessage: 'standalone/sendmessage.php',
 	// login: 'standalone/login.php',
 	// register: 'standalone/register.php',
-	// tiles : 'tiles/'
+	// tiles : 'tiles/',
+	// markers : 'tiles/'
 	// },
 
 	// // For standalone (jsonfile) webserver (login security)
@@ -46,6 +50,7 @@ var config = {
 	// sendmessage: 'standalone/sendmessage.php',
 	// login: 'standalone/login.php',
 	// register: 'standalone/register.php',
-	// tiles : 'standalone/tiles.php/'
+	// tiles : 'standalone/tiles.php?tile=',
+	// markers : 'standalone/tiles.php?tile='
 	// },
 };

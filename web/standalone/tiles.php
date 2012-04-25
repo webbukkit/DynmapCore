@@ -24,12 +24,19 @@ if(strcmp($userid, '-guest-')) {
   $loggedin = true;
 }
 
-$path = $_SERVER['PATH_INFO'];
+$path = $_REQUEST['tile'];
+if ((!isset($path)) || strstr($path, "..")) {
+   echo "{ \"result\": \"bad-tile\" }"; 
+   exit;
+}
+
 $fname = $tilespath . $path;
 
-list($space, $world, $prefix, $tilename) = explode("/", $path);
+$parts = explode("/", $path);
 
 $uid = '[' . strtolower($userid) . ']';
+
+$world = $parts[0];
 
 if(isset($worldaccess[$world])) {
     $ss = stristr($worldaccess[$world], $uid);
@@ -37,18 +44,25 @@ if(isset($worldaccess[$world])) {
 		$fname = "../images/blank.png";
 	}
 }
-$mapid = $world . "." . $prefix;
-if(isset($mapaccess[$mapid])) {
+if(count($parts) > 2) {
+  $prefix = $parts[1];
+  $mapid = $world . "." . $prefix;
+  if(isset($mapaccess[$mapid])) {
     $ss = stristr($mapaccess[$mapid], $uid);
 	if($ss === false) {
 		$fname = "../images/blank.png";
 	}
+  }
 }
 
 if (!is_readable($fname)) {
   if(strstr($path, ".jpg") || strstr($path, ".png")) {
 	  $fname = "../images/blank.png";
   }
+  else {
+      echo "{ \"result\": \"bad-tile\" }";
+      exit; 
+  }  
 }
 $fp = fopen($fname, 'rb');
 if (strstr($path, ".png"))

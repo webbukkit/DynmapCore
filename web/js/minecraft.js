@@ -6,10 +6,17 @@ function createMinecraftHead(player,size,completed,failed) {
 	faceImage.onerror = function() {
 		failed();
 	};
+	var faceimg;
 	if(size == 'body')
-		faceImage.src = dynmap.options.url.tiles + 'faces/body/' + player + '.png';
+		faceimg = 'faces/body/' + player + '.png';
 	else
-		faceImage.src = dynmap.options.url.tiles + 'faces/' + size + 'x' + size + '/' + player + '.png';
+		faceimg = 'faces/' + size + 'x' + size + '/' + player + '.png';
+	var url = dynmap.options.url.markers;
+	if(url.indexOf('?') >= 0)
+		faceImage.src = url + escape(faceimg);
+	else
+		faceImage.src = url + faceimg;
+		
 }
 
 function getMinecraftHead(player,size,completed) {

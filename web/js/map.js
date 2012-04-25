@@ -675,15 +675,21 @@ DynMap.prototype = {
 		var tile = me.registeredTiles[tileName];
 		
 		if(tile == null) {
-			tile = this.registeredTiles[tileName] = me.options.url.tiles + me.world.name + '/' + tileName + '?' + me.inittime;
+			var url = me.options.url.tiles;
+			if(url.indexOf('?') > 0)
+				tile = this.registeredTiles[tileName] = url + escape(me.world.name + '/' + tileName) + '&ts=' + me.inittime;
+			else
+				tile = this.registeredTiles[tileName] = url + me.world.name + '/' + tileName + '?' + me.inittime;
 		}
 		return tile;
 	},
 	onTileUpdated: function(tileName,timestamp) {
 		var me = this;
-
-		this.registeredTiles[tileName] = me.options.url.tiles + me.world.name + '/' + tileName + '?' + timestamp;
-		
+		var url = me.options.url.tiles;
+		if(url.indexOf('?') > 0)
+			this.registeredTiles[tileName] = url + escape(me.world.name + '/' + tileName) + '&ts=' + timestamp;
+		else
+			this.registeredTiles[tileName] = url + me.world.name + '/' + tileName + '?' + timestamp;
 		me.maptype.updateNamedTile(tileName);
 	},
 	addPlayer: function(update) {

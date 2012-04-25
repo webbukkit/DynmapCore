@@ -280,13 +280,19 @@ public class WebAuthManager {
         }
         sb.append("\";\n");
 
+        String p = core.getTilesFolder().getAbsolutePath();
+        if(!p.endsWith("/"))
+            p += "/";
         sb.append("$tilespath = \"");
-        sb.append(core.getTilesFolder().getAbsolutePath());
+        sb.append(p);
         sb.append("\";\n");
 
         File wpath = new File(core.getWebPath());
+        p = wpath.getAbsolutePath();
+        if(!p.endsWith("/"))
+            p += "/";
         sb.append("$webpath = \"");
-        sb.append(wpath.getAbsolutePath());
+        sb.append(p);
         sb.append("\";\n");
 
         sb.append("?>\n");
