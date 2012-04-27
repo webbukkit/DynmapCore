@@ -4,7 +4,7 @@ include('dynmap_access.php');
 ob_end_clean();
 
 if(!isset($tilespath)) {
-  $tilespath = "../tiles";
+  $tilespath = "../tiles/";
 }
 
 //Use this to force specific tiles path, versus using passed value
