@@ -58,7 +58,7 @@ if(isset($json->loginrequired) && $json->loginrequired && !$loggedin) {
 }
 else {
 	$json->loggedin = $loggedin;
-	if ($json->protected) {
+	if (isset($json->protected) && $json->protected) {
 	    $ss = stristr($seeallmarkers, $uid);
 		if($ss === false) {
 			$pcnt = count($json->players);
