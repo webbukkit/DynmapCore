@@ -2,6 +2,8 @@
 
 define ('HOSTNAME', 'http://localhost:8123/up/');
 
+session_start();
+
 // Change these configuration options if needed, see above descriptions for info.
 $enable_jsonp    = false;
 $enable_native   = false;
