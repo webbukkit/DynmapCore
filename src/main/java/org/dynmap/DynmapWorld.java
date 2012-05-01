@@ -597,7 +597,7 @@ public abstract class DynmapWorld {
         worldtilepath = new File(core.getTilesFolder(), wname);
         if(loclist != null) {
             for(ConfigurationNode loc : loclist) {
-                DynmapLocation lx = new DynmapLocation(wname, loc.getInteger("x", 0), loc.getInteger("y", mid_y), loc.getInteger("z", 0));
+                DynmapLocation lx = new DynmapLocation(wname, loc.getDouble("x", 0), loc.getDouble("y", mid_y), loc.getDouble("z", 0));
                 seedloc.add(lx); /* Add to both combined and configured seed list */
                 seedloccfg.add(lx);
             }
