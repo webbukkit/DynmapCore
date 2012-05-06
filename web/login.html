@@ -22,6 +22,7 @@
 				$('<div/>').text('Registration failed (bad passcode?) ').appendTo(status);
 			$('form')[0].setAttribute('action', config.url.login);
 			$('form')[1].setAttribute('action', config.url.register);
+			document.forms['login'].elements['j_username'].focus();
 		});
 		
 		$(function(){
@@ -47,7 +48,6 @@
                 return false;
             });
         });
-		
 	</script>
 	
 </head>
