@@ -79,6 +79,16 @@ block:id=railcraft-utilityBlock,data=6,top=106,bottom=106,north=107,south=108,ea
 block:id=railcraft-utilityBlock,data=7,allfaces=170,txtid=blk0
 # (railcraft-utilityBlock:8) Rolling machnie
 block:id=railcraft-utilityBlock,data=8,top=188,bottom=186,allsides=187,txtid=blk0
+# (railcraft-utilityBlock:9) Energy loader
+block:id=railcraft-utilityBlock,data=9,top=202,bottom=202,north=203,south=204,east=203,west=203,txtid=blk0
+# (railcraft-utilityBlock:10) Energy unloader
+block:id=railcraft-utilityBlock,data=10,top=218,bottom=218,north=219,south=220,east=219,west=219,txtid=blk0
+# (railcraft-utilityBlock:11) Feed Station
+block:id=railcraft-utilityBlock,data=11,top=236,bottom=234,allsides=235,txtid=blk0
+# (railcraft-utilityBlock:12) Blast Furnace Brick
+block:id=railcraft-utilityBlock,data=12,top=215,bottom=215,north=215,south=216,east=215,west=215,txtid=blk0
+# (railcraft-utilityBlock:13) Train Dispenserr
+block:id=railcraft-utilityBlock,data=13,top=231,bottom=231,north=232,south=233,east=232,west=232,txtid=blk0
 # (railcraft-structureBlock:0) iron post
 block:id=railcraft-structureBlock,data=0,allfaces=169,txtid=blk0,transparency=TRANSPARENT
 # (railcraft-structureBlock:1) dual head signal block
