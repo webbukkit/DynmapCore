@@ -510,7 +510,7 @@ public class DefaultTileRenderer implements MapTileRenderer {
                         temp = mapiter.getRawBiomeTemperature();
                         break;
                 }
-                if((shadowscale != null) && (mapiter.getY() < 127)) {
+                if((shadowscale != null) && (mapiter.getY() < (mapiter.getWorldHeight()-1))) {
                     /* Find light level of previous chunk */
                     BlockStep last = mapiter.unstepPosition();
                     lightlevel = lightlevel_day = mapiter.getBlockSkyLight();
