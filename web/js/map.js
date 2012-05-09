@@ -22,7 +22,8 @@ componentconstructors['testcomponent'] = function(dynmap, configuration) {
 
 function DynMap(options) {
 	var me = this;
-	me.checkForSavedURL();
+	if(me.checkForSavedURL())
+		return;
 	me.options = options;
 	$.getJSON(me.options.url.configuration, function(configuration) {
 		if(configuration.error == 'login-required') {
@@ -938,8 +939,9 @@ DynMap.prototype = {
 		me.map.addControl(l);
 	},
 	saveURL : function() {
-		if(window.location.href.indexOf('?') > 0)
+		if(window.location.href.indexOf('?') > 0) {
 			document.cookie="dynmapurl=" + escape(window.location);
+		}
 	},
 	checkForSavedURL : function() {
 		var i,x,y,ourcookies=document.cookie.split(";");
@@ -950,10 +952,12 @@ DynMap.prototype = {
   			if (x == "dynmapurl") {
   				var v = unescape(y);
   				document.cookie='dynmapurl=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-  				if(v.indexOf('?') >= 0) {
+  				if((v.indexOf('?') >= 0) && (v != window.location)) {
 					window.location = v;
+					return true;
 				}
 			}
 		}		  				
+		return false;
     }
 };
