@@ -208,8 +208,8 @@ DynMap.prototype = {
 		// World scrollbuttons
 		var upbtn_world = $('<div/>')
 		.addClass('scrollup')
-		.bind('mousedown mouseup', function(event){ 
-		    if(event.type == 'mousedown'){
+		.bind('mousedown mouseup touchstart touchend', function(event){ 
+		    if(event.type == 'mousedown' || event.type == 'touchstart'){
 				worldlist.animate({"scrollTop": "-=300px"}, 3000, 'linear');
 		    }else{
 		        worldlist.stop(); 
@@ -217,8 +217,8 @@ DynMap.prototype = {
 		});
 		var downbtn_world = $('<div/>')
 		.addClass('scrolldown')
-		.bind('mousedown mouseup', function(event){ 
-		    if(event.type == 'mousedown'){ 
+		.bind('mousedown mouseup touchstart touchend', function(event){ 
+		    if(event.type == 'mousedown' || event.type == 'touchstart'){ 
 				worldlist.animate({"scrollTop": "+=300px"}, 3000, 'linear');
 		    }else{ 
 		        worldlist.stop(); 
@@ -296,8 +296,8 @@ DynMap.prototype = {
 		// we need to show/hide them depending: if (me.playerlist.scrollHeight() > me.playerlist.innerHeight()) or something.
 		var upbtn = $('<div/>')
 		.addClass('scrollup')
-		.bind('mousedown mouseup', function(event){ 
-		    if(event.type == 'mousedown'){
+		.bind('mousedown mouseup touchstart touchend', function(event){ 
+		    if(event.type == 'mousedown' || event.type == 'touchstart'){
 				playerlist.animate({"scrollTop": "-=300px"}, 3000, 'linear');
 		    }else{
 		        playerlist.stop(); 
@@ -305,8 +305,8 @@ DynMap.prototype = {
 		});
 		var downbtn = $('<div/>')
 		.addClass('scrolldown')
-		.bind('mousedown mouseup', function(event){ 
-		    if(event.type == 'mousedown'){ 
+		.bind('mousedown mouseup touchstart touchend', function(event){ 
+		    if(event.type == 'mousedown' || event.type == 'touchstart'){ 
 				playerlist.animate({"scrollTop": "+=300px"}, 3000, 'linear');
 		    }else{ 
 		        playerlist.stop(); 
