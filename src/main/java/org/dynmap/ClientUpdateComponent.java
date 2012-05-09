@@ -59,34 +59,41 @@ public class ClientUpdateComponent extends Component {
             boolean hide = false;
             DynmapLocation pl = p.getLocation();
             DynmapWorld pw = core.getWorld(pl.world);
-            if(pw == null)
+            if(pw == null) {
                 hide = true;
+            }
             JSONObject jp = new JSONObject();
             
             s(jp, "type", "player");
             s(jp, "name", Client.stripColor(p.getDisplayName()));
             s(jp, "account", p.getName());
             if((!hide) && (hideifshadow < 15)) {
-                if(pw.getLightLevel((int)pl.x, (int)pl.y, (int)pl.z) <= hideifshadow)
+                if(pw.getLightLevel((int)pl.x, (int)pl.y, (int)pl.z) <= hideifshadow) {
                     hide = true;
+                }
             }
             if((!hide) && (hideifunder < 15)) {
                 if(pw.canGetSkyLightLevel()) { /* If we can get real sky level */
-                    if(pw.getSkyLightLevel((int)pl.x, (int)pl.y, (int)pl.z) <= hideifunder)
+                    if(pw.getSkyLightLevel((int)pl.x, (int)pl.y, (int)pl.z) <= hideifunder) {
                         hide = true;
+                    }
                 }
-                else {
-                    if(pw.getHighestBlockYAt((int)pl.x, (int)pl.z) > pl.y)
+                else if(pw.isNether() == false) {   /* Not nether */
+                    if(pw.getHighestBlockYAt((int)pl.x, (int)pl.z) > pl.y) {
                         hide = true;
+                    }
                 }
             }
-            if((!hide) && hideifsneaking && p.isSneaking())
+            if((!hide) && hideifsneaking && p.isSneaking()) {
                 hide = true;
+            }
             if((!hide) && is_protected && (!see_all)) {
-                if(e.user != null) 
+                if(e.user != null) {
                     hide = !p.getName().equalsIgnoreCase(e.user);
-                else
+                }
+                else {
                     hide = true;
+                }
             }
                 
             /* Don't leak player location for world not visible on maps, or if sendposition disbaled */
