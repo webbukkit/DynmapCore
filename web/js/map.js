@@ -950,7 +950,7 @@ DynMap.prototype = {
   			if (x == "dynmapurl") {
   				var v = unescape(y);
   				document.cookie='dynmapurl=; expires=Thu, 01-Jan-70 00:00:01 GMT;';
-  				if(v.indexOf('index.html') >= 0) {
+  				if(v.indexOf('?') >= 0) {
 					window.location = v;
 				}
 			}
