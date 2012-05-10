@@ -210,19 +210,34 @@ public class WebAuthManager {
         /* Create password hash */
         sb.append("$pwdhash = array(\n");
         for(String uid : pwdhash_by_userid.keySet()) {
-            sb.append("  \"").append(uid).append("\" => \"").append(pwdhash_by_userid.get(uid)).append("\",\n");
+            sb.append("  \'").append(esc(uid)).append("\' => \'").append(esc(pwdhash_by_userid.get(uid))).append("\',\n");
         }
         sb.append(");\n");
         /* Create registration table */
         sb.append("$pendingreg = array(\n");
         for(String uid : pending_registrations.keySet()) {
-            sb.append("  \"").append(uid).append("\" => \"").append(pending_registrations.get(uid)).append("\",\n");
+            sb.append("  \'").append(esc(uid)).append("\' => \'").append(esc(pending_registrations.get(uid))).append("\',\n");
         }
         sb.append(");\n");
         sb.append("?>\n");
         
         return sb.toString();
     }
+    
+    private static String esc(String s) {
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if(c == '\\')
+                sb.append("\\\\");
+            else if(c == '\'')
+                sb.append("\\\'");
+            else
+                sb.append(c);
+        }
+        return sb.toString();
+    }
+    
     String getAccessPHP() {
         StringBuilder sb = new StringBuilder();
         sb.append("<?php\n");
@@ -233,13 +248,13 @@ public class WebAuthManager {
         for(DynmapWorld w : core.getMapManager().getWorlds()) {
             if(w.isProtected()) {
                 String perm = "world." + w.getName();
-                sb.append("  \"").append(w.getName()).append("\" => \"");
+                sb.append("  \'").append(esc(w.getName())).append("\' => \'");
                 for(String uid : pwdhash_by_userid.keySet()) {
                     if(core.getServer().checkPlayerPermission(uid, perm)) {
-                        sb.append("[").append(uid).append("]");
+                        sb.append("[").append(esc(uid)).append("]");
                     }
                 }
-                sb.append("\",\n");
+                sb.append("\',\n");
             }
             for(MapType mt : w.maps) {
                 if(mt instanceof KzedMap) {
@@ -261,39 +276,39 @@ public class WebAuthManager {
         sb.append("$mapaccess = array(\n");
         for(String id : mid) {
             String perm = "map." + id;
-            sb.append("  \"").append(id).append("\" => \"");
+            sb.append("  \'").append(esc(id)).append("\' => \'");
             for(String uid : pwdhash_by_userid.keySet()) {
                 if(core.getServer().checkPlayerPermission(uid, perm)) {
-                    sb.append("[").append(uid).append("]");
+                    sb.append("[").append(esc(uid)).append("]");
                 }
             }
-            sb.append("\",\n");
+            sb.append("\',\n");
         }
         sb.append(");\n");
 
         String perm = "playermarkers.seeall";
-        sb.append("$seeallmarkers = \"");
+        sb.append("$seeallmarkers = \'");
         for(String uid : pwdhash_by_userid.keySet()) {
             if(core.getServer().checkPlayerPermission(uid, perm)) {
-                sb.append("[").append(uid).append("]");
+                sb.append("[").append(esc(uid)).append("]");
             }
         }
-        sb.append("\";\n");
+        sb.append("\';\n");
 
         String p = core.getTilesFolder().getAbsolutePath();
         if(!p.endsWith("/"))
             p += "/";
-        sb.append("$tilespath = \"");
-        sb.append(p);
-        sb.append("\";\n");
+        sb.append("$tilespath = \'");
+        sb.append(esc(p));
+        sb.append("\';\n");
 
         File wpath = new File(core.getWebPath());
         p = wpath.getAbsolutePath();
         if(!p.endsWith("/"))
             p += "/";
-        sb.append("$webpath = \"");
-        sb.append(p);
-        sb.append("\";\n");
+        sb.append("$webpath = \'");
+        sb.append(esc(p));
+        sb.append("\';\n");
 
         sb.append("?>\n");
         
