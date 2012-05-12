@@ -1,0 +1,14 @@
+# Industrial Craft 2 Compact Solars Block mapping
+# define ic2-compactsolars-support: true in configuration.txt to enable
+enabled:ic2-compactsolars-support
+# variables: set in configuration.txt to override
+var:ic2-compactSolars=183
+# Files
+texturefile:id=blk0,filename=compactsolars/block_textures.png,xcount=16,ycount=16
+# Blocks
+# Low Power Solar Array
+block:id=ic2-compactSolars,data=0,top=1,bottom=2,allsides=0,txtid=blk0
+# Mid Power Solar Array
+block:id=ic2-compactSolars,data=1,top=17,bottom=18,allsides=16,txtid=blk0
+# High Power Solar Array
+block:id=ic2-compactSolars,data=2,top=33,bottom=34,allsides=32,txtid=blk0
