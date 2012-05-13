@@ -775,7 +775,16 @@
 }
 
 .loginbutton {
-    background-color: #bbb;
+	color: #000;
+	font-family: sans-serif;
+	font-size: 11px;
+	border: 1px solid rgba(128,128,128,0.6);
+	background-color: #bbb;
+	border-style: solid;
+	padding: 2px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	cursor: pointer;
 }
 
 .messagelist {
