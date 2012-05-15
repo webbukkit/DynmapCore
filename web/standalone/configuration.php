@@ -51,7 +51,7 @@ else {
 			for($j = 0; $j < $mcnt; $j++) {
 				$m = $w->maps[$j];
 				if($m->protected) {
-				    $ss = stristr($mapaccess[$w->name . '.' . $m->name], $uid);
+				    $ss = stristr($mapaccess[$w->name . '.' . $m->prefix], $uid);
 					if($ss !== false) {
 						$newmaps[] = $m;
 					}
