@@ -51,6 +51,6 @@ var config = {
 	// login: 'standalone/login.php',
 	// register: 'standalone/register.php',
 	// tiles : 'standalone/tiles.php?tile=',
-	// markers : 'standalone/tiles.php?tile='
+	// markers : 'standalone/markers.php?marker='
 	// },
 };

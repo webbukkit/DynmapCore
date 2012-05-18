@@ -3,12 +3,12 @@ ob_start();
 include('dynmap_access.php');
 ob_end_clean();
 
-if(!isset($tilespath)) {
-  $tilespath = "../tiles/";
+if(!isset($markerspath)) {
+  $markerspath = "../tiles/";
 }
 
 //Use this to force specific tiles path, versus using passed value
-//$tilespath = 'my-tiles-path';
+//$markerspath = 'my-tiles-path';
 
 session_start();
 
@@ -24,11 +24,11 @@ if(strcmp($userid, '-guest-')) {
   $loggedin = true;
 }
 
-$path = $_REQUEST['tile'];
+$path = $_REQUEST['marker'];
 if ((!isset($path)) || strstr($path, "..")) {
     header('HTTP/1.0 500 Error');
     echo "<h1>500 Error</h1>";
-    echo "Bad marker: " . $path;
+    echo "Bad tile: " . $path;
     exit();
 }
 
@@ -38,36 +38,15 @@ $parts = explode("/", $path);
 
 $uid = '[' . strtolower($userid) . ']';
 
-$world = $parts[0];
-
-if(isset($worldaccess[$world])) {
-    $ss = stristr($worldaccess[$world], $uid);
-	if($ss === false) {
-		$fname = "../images/blank.png";
-	}
-}
-if(count($parts) > 2) {
-  $prefix = $parts[1];
-  $plen = strlen($prefix);
-  if(($plen > 4) && (substr($prefix, $plen - 4) === "_day")) {
-	$prefix = substr($prefx, 0, $plen - 4);
-  }
-  $mapid = $world . "." . $prefix;
-  if(isset($mapaccess[$mapid])) {
-    $ss = stristr($mapaccess[$mapid], $uid);
-	if($ss === false) {
-		$fname = "../images/blank.png";
-	}
-  }
-}
-
 if (!is_readable($fname)) {
   if(strstr($path, ".jpg") || strstr($path, ".png")) {
 	  $fname = "../images/blank.png";
   }
   else {
-      echo "{ \"result\": \"bad-tile\" }";
-      exit; 
+    header('HTTP/1.0 404 Not Found');
+    echo "<h1>404 Not Found</h1>";
+    echo "Not found: " . $path;
+    exit();
   }  
 }
 $fp = fopen($fname, 'rb');
