@@ -57,10 +57,6 @@ public class MapManager {
     /* Which fullrenders are active */
     private HashMap<String, FullWorldRenderState> active_renders = new HashMap<String, FullWorldRenderState>();
 
-    /* Chunk load handling */
-    private Object loadlock = new Object();
-    private int chunks_in_cur_tick = 0;
-    private long cur_tick;
 
     /* Chunk load performance numbers */
     AtomicInteger chunk_caches_created = new AtomicInteger(0);
@@ -605,7 +601,7 @@ public class MapManager {
             }
             /* Fetch chunk cache from server thread */
             long clt0 = System.nanoTime();
-            MapChunkCache cache = createMapChunkCache(world, requiredChunks, tile.isBlockTypeDataNeeded(), 
+            MapChunkCache cache = core.getServer().createMapChunkCache(world, requiredChunks, tile.isBlockTypeDataNeeded(), 
                                                       tile.isHightestBlockYDataNeeded(), tile.isBiomeDataNeeded(), 
                                                       tile.isRawBiomeDataNeeded());
             total_chunk_cache_loadtime_ns.addAndGet(System.nanoTime() - clt0);
@@ -1096,68 +1092,6 @@ public class MapManager {
     }
 
     /**
-     * Render processor helper - used by code running on render threads to request chunk snapshot cache from server/sync thread
-     */
-    public MapChunkCache createMapChunkCache(DynmapWorld w, List<DynmapChunk> chunks, 
-            boolean blockdata, boolean highesty, boolean biome, boolean rawbiome) {
-        MapChunkCache c = w.getChunkCache(chunks);
-        if(w.visibility_limits != null) {
-            for(MapChunkCache.VisibilityLimit limit: w.visibility_limits) {
-                c.setVisibleRange(limit);
-            }
-            c.setHiddenFillStyle(w.hiddenchunkstyle);
-            c.setAutoGenerateVisbileRanges(w.do_autogenerate);
-        }
-        if(w.hidden_limits != null) {
-            for(MapChunkCache.VisibilityLimit limit: w.hidden_limits) {
-                c.setHiddenRange(limit);
-            }
-            c.setHiddenFillStyle(w.hiddenchunkstyle);
-        }
-        if(c.setChunkDataTypes(blockdata, biome, highesty, rawbiome) == false) {
-            Log.severe("CraftBukkit build does not support biome APIs");
-        }
-        if(chunks.size() == 0) {    /* No chunks to get? */
-            c.loadChunks(0);
-            return c;
-        }
-
-        final MapChunkCache cc = c;
-
-        while(!cc.isDoneLoading()) {
-            synchronized(loadlock) {
-                long now = System.currentTimeMillis();
-                
-                if(cur_tick != (now/50)) {  /* New tick? */
-                    chunks_in_cur_tick = max_chunk_loads_per_tick;
-                    cur_tick = now/50;
-                }
-            }
-        	Future<Boolean> f = core.getServer().callSyncMethod(new Callable<Boolean>() {
-        		public Boolean call() throws Exception {
-        		    boolean exhausted;
-        		    synchronized(loadlock) {
-        		        if(chunks_in_cur_tick > 0)
-        		            chunks_in_cur_tick -= cc.loadChunks(chunks_in_cur_tick);
-        		        exhausted = (chunks_in_cur_tick == 0);
-        		    }
-        		    return exhausted;
-        		}
-        	});
-        	Boolean delay;
-        	try {
-    	        delay = f.get();
-        	} catch (Exception ix) {
-        		Log.severe(ix);
-        		return null;
-        	}
-            if((delay != null) && delay.booleanValue()) {
-                try { Thread.sleep(25); } catch (InterruptedException ix) {}
-            }
-    	}
-        return c;
-    }
-    /**
      *  Update map tile statistics
      */
     public void updateStatistics(MapTile tile, String prefix, boolean rendered, boolean updated, boolean transparent) {
@@ -1434,5 +1368,9 @@ public class MapManager {
             /* Clean up */
             tve.clear();
         }
+    }
+    
+    public int getMaxChunkLoadsPerTick() {
+        return max_chunk_loads_per_tick;
     }
 }

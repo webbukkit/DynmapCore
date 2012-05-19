@@ -1,11 +1,14 @@
 package org.dynmap.common;
 
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
+import org.dynmap.DynmapChunk;
 import org.dynmap.DynmapWorld;
 import org.dynmap.common.DynmapListenerManager.EventType;
+import org.dynmap.utils.MapChunkCache;
 
 /**
  * This interface defines a server-neutral interface for the DynmapCore and other neutral components to use to access server provided
@@ -103,4 +106,9 @@ public interface DynmapServerInterface {
      * Test single permission attribute
      */
     public boolean checkPlayerPermission(String player, String perm);
+    /**
+     * Render processor helper - used by code running on render threads to request chunk snapshot cache
+     */
+    public MapChunkCache createMapChunkCache(DynmapWorld w, List<DynmapChunk> chunks, 
+        boolean blockdata, boolean highesty, boolean biome, boolean rawbiome);
 }
