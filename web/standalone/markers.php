@@ -28,13 +28,20 @@ $path = $_REQUEST['marker'];
 if ((!isset($path)) || strstr($path, "..")) {
     header('HTTP/1.0 500 Error');
     echo "<h1>500 Error</h1>";
-    echo "Bad tile: " . $path;
+    echo "Bad marker: " . $path;
     exit();
 }
 
 $fname = $tilespath . $path;
 
 $parts = explode("/", $path);
+
+if(($parts[0] != "faces") && ($parts[0] != "_markers_")) {
+    header('HTTP/1.0 500 Error');
+    echo "<h1>500 Error</h1>";
+    echo "Bad marker: " . $path;
+    exit();
+}
 
 $uid = '[' . strtolower($userid) . ']';
 
