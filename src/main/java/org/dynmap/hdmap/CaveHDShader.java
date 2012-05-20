@@ -1,6 +1,9 @@
 package org.dynmap.hdmap;
 
 import static org.dynmap.JSONUtils.s;
+
+import java.util.List;
+
 import org.dynmap.Color;
 import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapCore;
@@ -11,11 +14,40 @@ import org.json.simple.JSONObject;
 public class CaveHDShader implements HDShader {
     private String name;
     private boolean iflit;
+    private int[] hiddenids;
 
-    
+    private void setHidden(int id) {
+        if((id >= 0) && (id < 65535)) {
+            hiddenids[id >> 5] |= (1 << (id & 0x1F));
+        }
+    }
+    private boolean isHidden(int id) {
+        return (hiddenids[id >> 5] & (1 << (id & 0x1F))) != 0;
+    }
     public CaveHDShader(DynmapCore core, ConfigurationNode configuration) {
         name = (String) configuration.get("name");
         iflit = configuration.getBoolean("onlyiflit", false);
+        
+        hiddenids = new int[2048];
+        setHidden(0); /* Air is hidden always */
+        List<Object> hidden = configuration.getList("hiddenids");
+        if(hidden != null) {
+            for(Object o : hidden) {
+                if(o instanceof Integer) {
+                    int v = ((Integer)o);
+                    setHidden(v);
+                }
+            }
+        }
+        else {
+            setHidden(17);
+            setHidden(18);
+            setHidden(20);
+            setHidden(64);
+            setHidden(71);
+            setHidden(78);
+            setHidden(79);
+        }
     }
     
     @Override
@@ -106,20 +138,12 @@ public class CaveHDShader implements HDShader {
          */
         public boolean processBlock(HDPerspectiveState ps) {
             int blocktype = ps.getBlockTypeID();
-            switch (blocktype) {
-                case 0:
-                case 17:
-                case 18:
-                case 20:
-                case 64:
-                case 71:
-                case 78:
-                case 79:
-                    blocktype = 0;
-                    break;
-                default:
-                    air = false;
-                    return false;
+            if (isHidden(blocktype)) {
+                blocktype = 0;
+            }
+            else {
+                air = false;
+                return false;
             }
             if ((blocktype == 0) && !air) {
             	if(iflit && (ps.getMapIterator().getBlockEmittedLight() == 0)) {
