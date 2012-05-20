@@ -8,7 +8,14 @@ componentconstructors['logo'] = function(dynmap, configuration) {
 		},
 	
 		getPosition: function() {
-			return L.Control.Position.BOTTOM_RIGHT;
+			if(configuration.position == 'top-left')
+				return L.Control.Position.TOP_LEFT;
+			else if(configuration.position == 'top-right')
+				return L.Control.Position.TOP_RIGHT;
+			else if(configuration.position == 'bottom-left')
+				return L.Control.Position.BOTTOM_LEFT;
+			else
+				return L.Control.Position.BOTTOM_RIGHT;
 		},
 	
 		getContainer: function() {
