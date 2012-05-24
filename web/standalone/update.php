@@ -33,7 +33,7 @@ else
 	$fname = 'updates_' . $world . '.php';
 
 if(!is_readable($fname)) {
-    echo "{ \"error\": \"bad-world\" }";
+    header('HTTP/1.0 404 Not Found');
 	return;
 }
 
@@ -48,6 +48,10 @@ if(isset($worldaccess[$world])) {
 }
 
 $lines = file($fname);
+if(!$lines) {
+    header('HTTP/1.0 404 Not Found');
+	return;
+}
 array_shift($lines);
 array_pop($lines);
 $json = json_decode(implode(' ',$lines));
