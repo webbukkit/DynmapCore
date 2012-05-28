@@ -568,6 +568,7 @@ DynMap.prototype = {
 		$(me).trigger('worldupdating');
 		$.getJSON(me.formatUrl('update', { world: me.world.name, timestamp: me.lasttimestamp }), function(update) {
 				if (!update) {
+					me.lasttimestamp--;	// Avoid same TS URL				
 					setTimeout(function() { me.update(); }, me.options.updaterate);
 					return;
 				}
@@ -660,6 +661,7 @@ DynMap.prototype = {
 				me.missedupdates = 0;
 				setTimeout(function() { me.update(); }, me.options.updaterate);
 			}, function(status, statusText, request) {
+				me.lasttimestamp--;	// Avoid same TS URL				
 				me.missedupdates++;
 				if(me.missedupdates > 2) {
 					me.alertbox
