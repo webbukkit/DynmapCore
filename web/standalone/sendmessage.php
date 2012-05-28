@@ -23,8 +23,8 @@ else
 
 if($_SERVER['REQUEST_METHOD'] == 'POST' && $lastchat < time())
 {
-	$micro = explode(' ', microtime());
-	$timestamp = $micro[1].round($micro[0]*1000);
+	$micro = microtime(true);
+	$timestamp = round($micro*1000.0);
 	
 	$data = json_decode(trim(file_get_contents('php://input')));
 	$data->timestamp = $timestamp;
