@@ -465,8 +465,14 @@ public class HDBlockModels {
                         for(int i = 0; i < mapids.length; i++)
                             mapids[i] = map.get(i);
                         for(Integer bid : blkids) {
-                            linkalg[bid] = linktype;
-                            linkmap[bid] = mapids;
+                            try {
+                                linkalg[bid] = linktype;
+                                linkmap[bid] = mapids;
+                            } catch (ArrayIndexOutOfBoundsException aioobx) {
+                                resizeTable(bid);
+                                linkalg[bid] = linktype;
+                                linkmap[bid] = mapids;
+                            }
                         }
                     }
                 }
