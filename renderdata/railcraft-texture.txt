@@ -3,7 +3,7 @@
 enabled:railcraft-support
 # variables: set in configuration.txt to override
 var:railcraft-detectorBlock=202,railcraft-utilityBlock=204,railcraft-railAdvBlock=205,
-var:railcraft-elevatorBlock=207,railcraft-structureBlock=208
+var:railcraft-elevatorBlock=207,railcraft-structureBlock=208,railcraft-cubeBlock=209
 # Files
 texturefile:id=blk0,filename=railcraft/railcraft.png,xcount=16,ycount=16
 # Blocks
@@ -111,3 +111,12 @@ block:id=railcraft-structureBlock,data=8,topbottom=120,allsides=88,txtid=blk0,tr
 block:id=railcraft-structureBlock,data=9,topbottom=119,allsides=88,txtid=blk0,transparency=TRANSPARENT
 # (railcraft-structureBlock:10) distant signal light
 block:id=railcraft-structureBlock,data=10,allfaces=55,txtid=blk0,transparency=TRANSPARENT
+# Cube blocks
+# (railcraft-cubeBlock:0) World Anchor
+block:id=railcraft-cubeBlock,data=0,topbottom=185,allsides=201,txtid=blk0
+# (railcraft-cubeBlock:1) Block of concrete
+block:id=railcraft-cubeBlock,data=1,allfaces=103,txtid=blk0
+# (railcraft-cubeBlock:2) Block of steel
+block:id=railcraft-cubeBlock,data=2,allfaces=180,txtid=blk0
+# (railcraft-cubeBlock:3) Infernal Brick
+block:id=railcraft-cubeBlock,data=3,allfaces=215,txtid=blk0

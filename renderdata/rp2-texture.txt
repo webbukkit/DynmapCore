@@ -9,6 +9,7 @@ var:rp2-lighting-lampOn=146,rp2-lighting-lampOff=147
 var:rp2-sensor-sensor=148
 var:rp2-array-array=149
 var:rp2-machine-machine=150,rp2-machine-machinePanel=151,rp2-machine-frame=152
+#TODO: rp2-control-backplane, rp2-control.peripheral, rp2-control-peripheralFlat
 # Files
 texturefile:id=base,filename=redpower2/base1.png,xcount=16,ycount=16
 texturefile:id=world,filename=redpower2/world1.png,xcount=16,ycount=16
