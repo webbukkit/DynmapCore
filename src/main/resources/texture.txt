@@ -621,4 +621,45 @@ block:id=122,data=*,allfaces=167
 block:id=123,data=*,allfaces=211
 # Redstone lamp (on)
 block:id=124,data=*,allfaces=212
-
+# Wooden Double Slab (Oak)
+block:id=125,data=0,data=8,allsides=4,topbottom=4004
+# Wooden Double Slab (Spruce)
+block:id=125,data=1,data=9,allsides=198,topbottom=4198
+# Wooden Double Slab (Birch)
+block:id=125,data=2,data=10,allsides=214,topbottom=4214
+# Wooden Double Slab (Jungle)
+block:id=125,data=3,data=11,allsides=199,topbottom=4199
+# Wooden Slab (Oak)
+block:id=126,data=0,data=8,allsides=4,topbottom=4004
+# Wooden Slab (Spruce)
+block:id=126,data=1,data=9,allsides=198,topbottom=4198
+# Wooden Slab (Birch)
+block:id=126,data=2,data=10,allsides=214,topbottom=4214
+# Wooden Slab (Jungle)
+block:id=126,data=3,data=11,allsides=199,topbottom=4199
+# Cocoa Plant
+block:id=127,data=*,allsized=168
+# Sandstone stairs
+block:id=128,data=*,bottom=176,top=208,allsides=192,transparency=SEMITRANSPARENT
+# Emerald Ore
+block:id=129,data=*,allfaces=171
+# Ender Chest (facing east)
+block:id=130,data=2,top=22,east=23,south=24,north=24,west=24,bottom=24
+# Ender Chest (facing west)
+block:id=130,data=3,top=23,west=23,south=24,north=24,east=24,bottom=24
+# Ender Chest (facing north)
+block:id=130,data=4,top=24,north=23,south=24,east=24,west=24,bottom=24
+# Ender Chest (facing south)
+block:id=130,data=5,top=25,south=23,north=24,east=24,west=24,bottom=24
+# Tripwire Hook
+block:id=131,data=*,allsides=4,topbottom=172
+# Tripwire
+block:id=132,data=*
+# Block of Emerald
+block:id=133,data=*,allfaces=25
+# Spruce Wooden stairs
+block:id=134,data=*,allsides=198,topbottom=4198,transparency=SEMITRANSPARENT
+# Birch Wooden stairs
+block:id=135,data=*,allsides=214,topbottom=4214,transparency=SEMITRANSPARENT
+# Jungle Wooden stairs
+block:id=136,data=*,allsides=199,topbottom=4199,transparency=SEMITRANSPARENT

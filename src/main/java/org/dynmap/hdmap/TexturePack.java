@@ -104,7 +104,23 @@ public class TexturePack {
     private static final int TILEINDEX_PANETOP_X = 263;
     private static final int TILEINDEX_AIRFRAME_EYE = 264;
     private static final int TILEINDEX_FIRE = 265;
-    private static final int MAX_TILEINDEX = 265;  /* Index of last static tile definition */
+    private static final int TILEINDEX_CHEST_TOP = 266;
+    private static final int TILEINDEX_CHEST_SIDE = 267;
+    private static final int TILEINDEX_CHEST_FRONT = 268;
+    private static final int TILEINDEX_CHEST_BACK = 269;
+    private static final int TILEINDEX_BIGCHEST_TOPLEFT = 270;
+    private static final int TILEINDEX_BIGCHEST_TOPRIGHT = 271;
+    private static final int TILEINDEX_BIGCHEST_FRONTLEFT = 272;
+    private static final int TILEINDEX_BIGCHEST_FRONTRIGHT = 273;
+    private static final int TILEINDEX_BIGCHEST_SIDE = 274;
+    private static final int TILEINDEX_BIGCHEST_BACKLEFT = 275;
+    private static final int TILEINDEX_BIGCHEST_BACKRIGHT = 276;
+    private static final int TILEINDEX_ENDERCHEST_TOP = 277;
+    private static final int TILEINDEX_ENDERCHEST_SIDE = 278;
+    private static final int TILEINDEX_ENDERCHEST_FRONT = 279;
+    private static final int TILEINDEX_ENDERCHEST_BACK = 280;
+    
+    private static final int MAX_TILEINDEX = 280;  /* Index of last static tile definition */
     private static final int TILETABLE_LEN = 1000;  /* Leave room for dynmaic tiles */
 
     private static final int BLOCKTABLELEN = 256;  /* Enough for normal block IDs */
