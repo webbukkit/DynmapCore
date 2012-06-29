@@ -60,6 +60,9 @@ public class TexturePack {
     private static final String CUSTOMWATERFLOWING_PNG = "custom_water_flowing.png";
     private static final String SWAMPGRASSCOLOR_PNG = "misc/swampgrasscolor.png";
     private static final String SWAMPFOLIAGECOLOR_PNG = "misc/swampfoliagecolor.png";
+    private static final String CHEST_PNG = "item/chest.png";
+    private static final String ENDERCHEST_PNG = "item/enderchest.png";
+    private static final String BIGCHEST_PNG = "item/largechest.png";
 
 	private static final String STANDARDTP = "standard";
     /* Color modifier codes (x1000 for value in mapping code) */
@@ -105,22 +108,29 @@ public class TexturePack {
     private static final int TILEINDEX_AIRFRAME_EYE = 264;
     private static final int TILEINDEX_FIRE = 265;
     private static final int TILEINDEX_CHEST_TOP = 266;
-    private static final int TILEINDEX_CHEST_SIDE = 267;
-    private static final int TILEINDEX_CHEST_FRONT = 268;
-    private static final int TILEINDEX_CHEST_BACK = 269;
-    private static final int TILEINDEX_BIGCHEST_TOPLEFT = 270;
-    private static final int TILEINDEX_BIGCHEST_TOPRIGHT = 271;
-    private static final int TILEINDEX_BIGCHEST_FRONTLEFT = 272;
-    private static final int TILEINDEX_BIGCHEST_FRONTRIGHT = 273;
-    private static final int TILEINDEX_BIGCHEST_SIDE = 274;
-    private static final int TILEINDEX_BIGCHEST_BACKLEFT = 275;
-    private static final int TILEINDEX_BIGCHEST_BACKRIGHT = 276;
-    private static final int TILEINDEX_ENDERCHEST_TOP = 277;
-    private static final int TILEINDEX_ENDERCHEST_SIDE = 278;
-    private static final int TILEINDEX_ENDERCHEST_FRONT = 279;
-    private static final int TILEINDEX_ENDERCHEST_BACK = 280;
+    private static final int TILEINDEX_CHEST_LEFT = 267;
+    private static final int TILEINDEX_CHEST_RIGHT = 268;
+    private static final int TILEINDEX_CHEST_FRONT = 269;
+    private static final int TILEINDEX_CHEST_BACK = 270;
+    private static final int TILEINDEX_CHEST_BOTTOM = 271;
+    private static final int TILEINDEX_ENDERCHEST_TOP = 272;
+    private static final int TILEINDEX_ENDERCHEST_LEFT = 273;
+    private static final int TILEINDEX_ENDERCHEST_RIGHT = 274;
+    private static final int TILEINDEX_ENDERCHEST_FRONT = 275;
+    private static final int TILEINDEX_ENDERCHEST_BACK = 276;
+    private static final int TILEINDEX_ENDERCHEST_BOTTOM = 277;
+    private static final int TILEINDEX_BIGCHEST_TOPLEFT = 278;
+    private static final int TILEINDEX_BIGCHEST_TOPRIGHT = 279;
+    private static final int TILEINDEX_BIGCHEST_FRONTLEFT = 280;
+    private static final int TILEINDEX_BIGCHEST_FRONTRIGHT = 281;
+    private static final int TILEINDEX_BIGCHEST_LEFT = 282;
+    private static final int TILEINDEX_BIGCHEST_RIGHT = 283;
+    private static final int TILEINDEX_BIGCHEST_BACKLEFT = 284;
+    private static final int TILEINDEX_BIGCHEST_BACKRIGHT = 285;
+    private static final int TILEINDEX_BIGCHEST_BOTTOMLEFT = 286;
+    private static final int TILEINDEX_BIGCHEST_BOTTOMRIGHT = 287;
     
-    private static final int MAX_TILEINDEX = 280;  /* Index of last static tile definition */
+    private static final int MAX_TILEINDEX = 287;  /* Index of last static tile definition */
     private static final int TILETABLE_LEN = 1000;  /* Leave room for dynmaic tiles */
 
     private static final int BLOCKTABLELEN = 256;  /* Enough for normal block IDs */
@@ -159,7 +169,10 @@ public class TexturePack {
     private static final int IMG_FIRE = 11;
     private static final int IMG_SWAMPGRASSCOLOR = 12;
     private static final int IMG_SWAMPFOLIAGECOLOR = 13;
-    private static final int IMG_CNT = 14;
+    private static final int IMG_CHEST = 14;
+    private static final int IMG_ENDERCHEST = 15;
+    private static final int IMG_LARGECHEST = 16;
+    private static final int IMG_CNT = 17;
     /* 0-(IMG_CNT-1) are fixed, IMG_CNT+x is dynamic file x */
     private LoadedImage[] imgs;
 
@@ -389,6 +402,44 @@ public class TexturePack {
                 loadBiomeShadingImage(is, IMG_WATERCOLORX);
                 is.close();
             }
+            /* Try to find and load item/chest.png */
+            ze = zf.getEntry(CHEST_PNG);
+            if(ze != null) {    /* Fall back to standard file */
+                is = zf.getInputStream(ze);
+            } else {
+                /* Get standard one */
+                File ff = new File(texturedir, STANDARDTP + "/" + CHEST_PNG);
+                is = new FileInputStream(ff);
+            }
+            loadImage(is, IMG_CHEST);
+            is.close();
+            patchChestImages(IMG_CHEST, TILEINDEX_CHEST_TOP, TILEINDEX_CHEST_BOTTOM, TILEINDEX_CHEST_FRONT, TILEINDEX_CHEST_BACK, TILEINDEX_CHEST_LEFT, TILEINDEX_CHEST_RIGHT);
+            
+            /* Try to find and load item/largechest.png */
+            ze = zf.getEntry(BIGCHEST_PNG);
+            if(ze != null) {    /* Fall back to standard file */
+                is = zf.getInputStream(ze);
+            } else {
+                /* Get standard one */
+                File ff = new File(texturedir, STANDARDTP + "/" + BIGCHEST_PNG);
+                is = new FileInputStream(ff);
+            }
+            loadImage(is, IMG_LARGECHEST);
+            is.close();
+            patchLargeChestImages(IMG_LARGECHEST, TILEINDEX_BIGCHEST_TOPRIGHT, TILEINDEX_BIGCHEST_TOPLEFT, TILEINDEX_BIGCHEST_BOTTOMRIGHT, TILEINDEX_BIGCHEST_BOTTOMLEFT, TILEINDEX_BIGCHEST_RIGHT, TILEINDEX_BIGCHEST_LEFT, TILEINDEX_BIGCHEST_FRONTRIGHT, TILEINDEX_BIGCHEST_FRONTLEFT, TILEINDEX_BIGCHEST_BACKRIGHT, TILEINDEX_BIGCHEST_BACKLEFT);
+
+            /* Try to find and load item/enderchest.png */
+            ze = zf.getEntry(ENDERCHEST_PNG);
+            if(ze != null) {    /* Fall back to standard file */
+                is = zf.getInputStream(ze);
+            } else {
+                /* Get standard one */
+                File ff = new File(texturedir, STANDARDTP + "/" + ENDERCHEST_PNG);
+                is = new FileInputStream(ff);
+            }
+            loadImage(is, IMG_ENDERCHEST);
+            is.close();
+            patchChestImages(IMG_ENDERCHEST, TILEINDEX_ENDERCHEST_TOP, TILEINDEX_ENDERCHEST_BOTTOM, TILEINDEX_ENDERCHEST_FRONT, TILEINDEX_ENDERCHEST_BACK, TILEINDEX_ENDERCHEST_LEFT, TILEINDEX_ENDERCHEST_RIGHT);
 
             /* Optional files - process if they exist */
             ze = zf.getEntry(CUSTOMLAVASTILL_PNG);
@@ -518,6 +569,34 @@ public class TexturePack {
                 loadBiomeShadingImage(fis, IMG_WATERCOLORX);
                 fis.close();
             }
+            /* Check for item/chest.png */
+            f = new File(texturedir, tpname + "/" + CHEST_PNG);
+            if(!f.canRead()) {
+                f = new File(texturedir, STANDARDTP + "/" + CHEST_PNG);
+            }
+            fis = new FileInputStream(f);
+            loadImage(fis, IMG_CHEST);
+            fis.close();
+            patchChestImages(IMG_CHEST, TILEINDEX_CHEST_TOP, TILEINDEX_CHEST_BOTTOM, TILEINDEX_CHEST_FRONT, TILEINDEX_CHEST_BACK, TILEINDEX_CHEST_LEFT, TILEINDEX_CHEST_RIGHT);
+
+            /* Check for item/enderchest.png */
+            f = new File(texturedir, tpname + "/" + ENDERCHEST_PNG);
+            if(!f.canRead()) {
+                f = new File(texturedir, STANDARDTP + "/" + ENDERCHEST_PNG);
+            }
+            fis = new FileInputStream(f);
+            loadImage(fis, IMG_ENDERCHEST);
+            fis.close();
+            patchChestImages(IMG_ENDERCHEST, TILEINDEX_ENDERCHEST_TOP, TILEINDEX_ENDERCHEST_BOTTOM, TILEINDEX_ENDERCHEST_FRONT, TILEINDEX_ENDERCHEST_BACK, TILEINDEX_ENDERCHEST_LEFT, TILEINDEX_ENDERCHEST_RIGHT);
+            /* Check for item/largechest.png */
+            f = new File(texturedir, tpname + "/" + BIGCHEST_PNG);
+            if(!f.canRead()) {
+                f = new File(texturedir, STANDARDTP + "/" + BIGCHEST_PNG);
+            }
+            fis = new FileInputStream(f);
+            loadImage(fis, IMG_LARGECHEST);
+            fis.close();
+            patchLargeChestImages(IMG_LARGECHEST, TILEINDEX_BIGCHEST_TOPRIGHT, TILEINDEX_BIGCHEST_TOPLEFT, TILEINDEX_BIGCHEST_BOTTOMRIGHT, TILEINDEX_BIGCHEST_BOTTOMLEFT, TILEINDEX_BIGCHEST_RIGHT, TILEINDEX_BIGCHEST_LEFT, TILEINDEX_BIGCHEST_FRONTRIGHT, TILEINDEX_BIGCHEST_FRONTLEFT, TILEINDEX_BIGCHEST_BACKRIGHT, TILEINDEX_BIGCHEST_BACKLEFT);
             
             /* Optional files - process if they exist */
             f = new File(texturedir, tpname + "/" + CUSTOMLAVASTILL_PNG);
@@ -578,6 +657,88 @@ public class TexturePack {
             throw new FileNotFoundException();
         }
     }
+    /**
+     * Copy subimage from portions of given image
+     * @param img_id - image ID of raw image
+     * @param from_x - top-left X
+     * @param from_y - top-left Y
+     * @param to_x - dest topleft
+     * @param to_y - dest topleft
+     * @param width - width to copy
+     * @param height - height to copy
+     * @param dest_argb - destination tile buffer
+     * @param dest_width - width of destination tile buffer
+     */
+    private void copySubimageFromImage(int img_id, int from_x, int from_y, int to_x, int to_y, int width, int height, int[] dest_argb, int dest_width) {
+        for(int h = 0; h < height; h++) {
+            System.arraycopy(imgs[img_id].argb, (h+from_y)*imgs[img_id].width + from_x, dest_argb, dest_width*(h+to_y) + to_x, width);
+        }
+    }
+    /**
+     * Make chest side image (based on chest and largechest layouts)
+     * @param img_id - source image ID
+     * @param dest_idx - destination tile index
+     * @param src_x - starting X of source (scaled based on 64 high)
+     * @param width - width to copy (scaled based on 64 high)
+     * @param dest_x - destination X (scaled based on 64 high)
+     */
+    private void makeChestSideImage(int img_id, int dest_idx, int src_x, int width, int dest_x) {
+        int mult = imgs[img_id].height / 64; /* Nominal height for chest images is 64 */
+        int[] tile = new int[16 * 16 * mult * mult];    /* Make image */
+        /* Copy top part */
+        copySubimageFromImage(img_id, src_x * mult, 14 * mult, dest_x * mult, 2 * mult, width * mult, 5 * mult, tile, 16 * mult);
+        /* Copy bottom part */
+        copySubimageFromImage(img_id, src_x * mult, 34 * mult, dest_x * mult, 7 * mult, width * mult, 9 * mult, tile, 16 * mult);
+        /* Put scaled result into tile buffer */
+        int new_argb[] = new int[native_scale*native_scale];
+        scaleTerrainPNGSubImage(16*mult, native_scale, tile, new_argb);
+        terrain_argb[dest_idx] = new_argb;
+    }
+    /**
+     * Make chest top/bottom image (based on chest and largechest layouts)
+     * @param img_id - source image ID
+     * @param dest_idx - destination tile index
+     * @param src_x - starting X of source (scaled based on 64 high)
+     * @param src_y - starting Y of source (scaled based on 64 high)
+     * @param width - width to copy (scaled based on 64 high)
+     * @param dest_x - destination X (scaled based on 64 high)
+     */
+    private void makeChestTopBottomImage(int img_id, int dest_idx, int src_x, int src_y, int width, int dest_x) {
+        int mult = imgs[img_id].height / 64; /* Nominal height for chest images is 64 */
+        int[] tile = new int[16 * 16 * mult * mult];    /* Make image */
+        copySubimageFromImage(img_id, src_x * mult, src_y * mult, dest_x * mult, 1 * mult, width * mult, 14 * mult, tile, 16 * mult);
+        /* Put scaled result into tile buffer */
+        int new_argb[] = new int[native_scale*native_scale];
+        scaleTerrainPNGSubImage(16*mult, native_scale, tile, new_argb);
+        terrain_argb[dest_idx] = new_argb;
+    }
+    /**
+     * Patch tiles based on image with chest-style layout
+     */
+    private void patchChestImages(int img_id, int tile_top, int tile_bottom, int tile_front, int tile_back, int tile_left, int tile_right) {
+        makeChestSideImage(img_id, tile_front, 14, 14, 1);
+        makeChestSideImage(img_id, tile_back, 42, 14, 1);
+        makeChestSideImage(img_id, tile_left, 0, 14, 1);
+        makeChestSideImage(img_id, tile_right, 28, 14, 1);
+        makeChestTopBottomImage(img_id, tile_top, 14, 0, 14, 1);
+        makeChestTopBottomImage(img_id, tile_bottom, 28, 19, 14, 1);
+    }
+    /**
+     * Patch tiles based on image with large-chest-style layout
+     */
+    private void patchLargeChestImages(int img_id, int tile_topright, int tile_topleft, int tile_bottomright, int tile_bottomleft, int tile_right, int tile_left, int tile_frontright, int tile_frontleft, int tile_backright, int tile_backleft) {
+        makeChestSideImage(img_id, tile_frontleft, 14, 15, 1);
+        makeChestSideImage(img_id, tile_frontright, 29, 15, 0);
+        makeChestSideImage(img_id, tile_left, 0, 14, 1);
+        makeChestSideImage(img_id, tile_right, 44, 14, 1);
+        makeChestSideImage(img_id, tile_backright, 58, 15, 1);
+        makeChestSideImage(img_id, tile_backleft, 73, 15, 0);
+        makeChestTopBottomImage(img_id, tile_topleft, 14, 0, 15, 1);
+        makeChestTopBottomImage(img_id, tile_topright, 29, 0, 15, 0);
+        makeChestTopBottomImage(img_id, tile_bottomleft, 34, 19, 15, 1);
+        makeChestTopBottomImage(img_id, tile_bottomright, 49, 19, 15, 0);
+    }
+
     /* Copy texture pack */
     private TexturePack(TexturePack tp) {
         this.terrain_argb = new int[tp.terrain_argb.length][];

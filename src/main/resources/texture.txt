@@ -316,29 +316,29 @@ block:id=52,allfaces=65,transparency=TRANSPARENT
 # Wooden stairs
 block:id=53,data=0,data=1,data=2,data=3,data=4,data=5,data=6,data=7,allsides=4,topbottom=4004,transparency=SEMITRANSPARENT
 # Chest - single, facing west
-block:id=54,data=0,topbottom=25,south=26,north=26,east=26,west=27,userenderdata=true
+block:id=54,data=0,top=6266,bottom=6271,south=268,north=267,east=270,west=269,userenderdata=true
 # Chest - single, facing south
-block:id=54,data=1,topbottom=25,south=27,north=26,east=26,west=26,userenderdata=true
+block:id=54,data=1,top=266,bottom=271,south=269,north=270,east=268,west=267,userenderdata=true
 # Chest - single, facing east
-block:id=54,data=2,topbottom=25,south=26,north=26,east=27,west=26,userenderdata=true
+block:id=54,data=2,top=4266,bottom=4271,south=267,north=268,east=269,west=270,userenderdata=true
 # Chest - single, facing north
-block:id=54,data=3,topbottom=25,south=26,north=27,east=26,west=26,userenderdata=true
+block:id=54,data=3,top=5266,bottom=5271,south=270,north=269,east=267,west=268,userenderdata=true
 # Chest - left side of double, facing west
-block:id=54,data=4,topbottom=25,south=26,north=26,east=58,west=41,userenderdata=true
+block:id=54,data=4,top=6278,bottom=6286,south=283,north=282,east=284,west=280,userenderdata=true
 # Chest - left side of double, facing south
-block:id=54,data=5,topbottom=25,south=41,north=58,east=26,west=26,userenderdata=true
+block:id=54,data=5,top=278,bottom=286,south=280,north=284,east=283,west=282,userenderdata=true
 # Chest - left side of double, facing east
-block:id=54,data=6,topbottom=25,south=26,north=26,east=41,west=58,userenderdata=true
+block:id=54,data=6,top=4278,bottom=4286,south=282,north=283,east=280,west=284,userenderdata=true
 # Chest - left side of double, facing north
-block:id=54,data=7,topbottom=25,south=58,north=41,east=26,west=26,userenderdata=true
+block:id=54,data=7,top=5278,bottom=5286,south=284,north=280,east=282,west=283,userenderdata=true
 # Chest - right side of double, facing west
-block:id=54,data=8,topbottom=25,south=26,north=26,east=57,west=42,userenderdata=true
+block:id=54,data=8,top=6279,bottom=6287,south=283,north=282,east=285,west=281,userenderdata=true
 # Chest - right side of double, facing south
-block:id=54,data=9,topbottom=25,south=42,north=57,east=26,west=26,userenderdata=true
+block:id=54,data=9,top=279,bottom=287,south=281,north=285,east=283,west=282,userenderdata=true
 # Chest - right side of double, facing east
-block:id=54,data=10,topbottom=25,south=26,north=26,east=42,west=57,userenderdata=true
+block:id=54,data=10,top=4279,bottom=4287,south=282,north=283,east=281,west=285,userenderdata=true
 # Chest - right side of double, facing north
-block:id=54,data=11,topbottom=25,south=57,north=42,east=26,west=26,userenderdata=true
+block:id=54,data=11,top=5279,bottom=5287,south=287,north=281,east=282,west=283,userenderdata=true
 # Redstone wire (all but NS and EW)
 block:id=55,data=0,data=3,data=4,data=5,data=6,data=7,data=8,data=9,data=10,allfaces=180,transparency=TRANSPARENT,userenderdata=true
 # Redstone wire (EW)
@@ -644,13 +644,13 @@ block:id=128,data=*,bottom=176,top=208,allsides=192,transparency=SEMITRANSPARENT
 # Emerald Ore
 block:id=129,data=*,allfaces=171
 # Ender Chest (facing east)
-block:id=130,data=2,top=22,east=23,south=24,north=24,west=24,bottom=24
+block:id=130,data=2,top=6272,east=275,south=273,north=274,west=276,bottom=6277
 # Ender Chest (facing west)
-block:id=130,data=3,top=23,west=23,south=24,north=24,east=24,bottom=24
+block:id=130,data=3,top=4272,west=275,south=274,north=273,east=276,bottom=4277
 # Ender Chest (facing north)
-block:id=130,data=4,top=24,north=23,south=24,east=24,west=24,bottom=24
+block:id=130,data=4,top=5272,north=275,south=276,east=273,west=274,bottom=5277
 # Ender Chest (facing south)
-block:id=130,data=5,top=25,south=23,north=24,east=24,west=24,bottom=24
+block:id=130,data=5,top=272,south=275,north=276,east=274,west=273,bottom=277
 # Tripwire Hook
 block:id=131,data=*,allsides=4,topbottom=172
 # Tripwire
