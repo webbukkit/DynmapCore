@@ -264,6 +264,11 @@ public class HDBlockModels {
             model = new HDScaledBlockModels();
             short[][][] blockmodels = new short[256][][];
             for(HDBlockModels m : models_by_id_data.values()) {
+                if(m.blockid >= blockmodels.length){
+                    short[][][] newmodels = new short[m.blockid+1][][];
+                    System.arraycopy(blockmodels,  0, newmodels, 0, blockmodels.length);
+                    blockmodels = newmodels;
+                }
                 short[][] row = blockmodels[m.blockid];
                 if(row == null) {
                     row = new short[16][];
