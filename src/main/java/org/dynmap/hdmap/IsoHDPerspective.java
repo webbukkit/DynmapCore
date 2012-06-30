@@ -408,35 +408,55 @@ public class IsoHDPerspective implements HDPerspective {
          * @return
          */
         private int generateChestBlockData(MapIterator mapiter) {
+            int blkdata = mapiter.getBlockData();   /* Get block data */
             ChestData cd = ChestData.SINGLE_WEST;   /* Default to single facing west */
-            /* Check adjacent block IDs */
-            int ids[] = { mapiter.getBlockTypeIDAt(BlockStep.Z_PLUS),  /* To west */
-                mapiter.getBlockTypeIDAt(BlockStep.X_PLUS),            /* To south */
-                mapiter.getBlockTypeIDAt(BlockStep.Z_MINUS),           /* To east */
-                mapiter.getBlockTypeIDAt(BlockStep.X_MINUS) };         /* To north */
-            /* First, check if we're a double - see if any adjacent chests */
-            if(ids[0] == CHEST_BLKTYPEID) { /* Another to west - assume we face south */
-                cd = ChestData.RIGHT_SOUTH; /* We're right side */
-            }
-            else if(ids[1] == CHEST_BLKTYPEID) {    /* Another to south - assume west facing */
-                cd = ChestData.LEFT_WEST;   /* We're left side */
-            }
-            else if(ids[2] == CHEST_BLKTYPEID) {    /* Another to east - assume south facing */
-                cd = ChestData.LEFT_SOUTH;  /* We're left side */
-            }
-            else if(ids[3] == CHEST_BLKTYPEID) {    /* Another to north - assume west facing */
-                cd = ChestData.RIGHT_WEST;  /* We're right side */
-            }
-            else {  /* Else, single - build index into lookup table */
-                int idx = 0;
-                for(int i = 0; i < ids.length; i++) {
-                    if((ids[i] != 0) && (HDTextureMap.getTransparency(ids[i]) != BlockTransparency.TRANSPARENT)) {
-                        idx |= (1<<i);
+            switch(blkdata) {   /* First, use orientation data */
+                case 2: /* East (now north) */
+                    if(mapiter.getBlockTypeIDAt(BlockStep.X_MINUS) == CHEST_BLKTYPEID) { /* Check north */
+                        cd = ChestData.LEFT_EAST;
                     }
-                }
-                cd = SINGLE_LOOKUP[idx];
+                    else if(mapiter.getBlockTypeIDAt(BlockStep.X_PLUS) == CHEST_BLKTYPEID) {    /* Check south */
+                        cd = ChestData.RIGHT_EAST;
+                    }
+                    else {
+                        cd = ChestData.SINGLE_EAST;
+                    }
+                    break;
+                case 4: /* North */
+                    if(mapiter.getBlockTypeIDAt(BlockStep.Z_MINUS) == CHEST_BLKTYPEID) { /* Check east */
+                        cd = ChestData.RIGHT_NORTH;
+                    }
+                    else if(mapiter.getBlockTypeIDAt(BlockStep.Z_PLUS) == CHEST_BLKTYPEID) {    /* Check west */
+                        cd = ChestData.LEFT_NORTH;
+                    }
+                    else {
+                        cd = ChestData.SINGLE_NORTH;
+                    }
+                    break;
+                case 5: /* South */
+                    if(mapiter.getBlockTypeIDAt(BlockStep.Z_MINUS) == CHEST_BLKTYPEID) { /* Check east */
+                        cd = ChestData.LEFT_SOUTH;
+                    }
+                    else if(mapiter.getBlockTypeIDAt(BlockStep.Z_PLUS) == CHEST_BLKTYPEID) {    /* Check west */
+                        cd = ChestData.RIGHT_SOUTH;
+                    }
+                    else {
+                        cd = ChestData.SINGLE_SOUTH;
+                    }
+                    break;
+                case 3: /* West */
+                default:
+                    if(mapiter.getBlockTypeIDAt(BlockStep.X_MINUS) == CHEST_BLKTYPEID) { /* Check north */
+                        cd = ChestData.RIGHT_WEST;
+                    }
+                    else if(mapiter.getBlockTypeIDAt(BlockStep.X_PLUS) == CHEST_BLKTYPEID) {    /* Check south */
+                        cd = ChestData.LEFT_WEST;
+                    }
+                    else {
+                        cd = ChestData.SINGLE_WEST;
+                    }
+                    break;
             }
-            
             return cd.ordinal();
         }
         /**

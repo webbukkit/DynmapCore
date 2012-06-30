@@ -674,6 +674,7 @@ public class TexturePack {
             System.arraycopy(imgs[img_id].argb, (h+from_y)*imgs[img_id].width + from_x, dest_argb, dest_width*(h+to_y) + to_x, width);
         }
     }
+    private enum HandlePos { CENTER, LEFT, RIGHT, NONE, LEFTFRONT, RIGHTFRONT };
     /**
      * Make chest side image (based on chest and largechest layouts)
      * @param img_id - source image ID
@@ -681,14 +682,31 @@ public class TexturePack {
      * @param src_x - starting X of source (scaled based on 64 high)
      * @param width - width to copy (scaled based on 64 high)
      * @param dest_x - destination X (scaled based on 64 high)
+     * @param handlepos - 0=middle,1=leftedge,2=rightedge
      */
-    private void makeChestSideImage(int img_id, int dest_idx, int src_x, int width, int dest_x) {
+    private void makeChestSideImage(int img_id, int dest_idx, int src_x, int width, int dest_x, HandlePos handlepos) {
         int mult = imgs[img_id].height / 64; /* Nominal height for chest images is 64 */
         int[] tile = new int[16 * 16 * mult * mult];    /* Make image */
         /* Copy top part */
         copySubimageFromImage(img_id, src_x * mult, 14 * mult, dest_x * mult, 2 * mult, width * mult, 5 * mult, tile, 16 * mult);
         /* Copy bottom part */
         copySubimageFromImage(img_id, src_x * mult, 34 * mult, dest_x * mult, 7 * mult, width * mult, 9 * mult, tile, 16 * mult);
+        /* Handle the handle image */
+        if(handlepos == HandlePos.CENTER) {    /* Middle */
+            copySubimageFromImage(img_id, 1 * mult, 1 * mult, 7 * mult, 4 * mult, 2 * mult, 4 * mult, tile, 16 * mult);
+        }
+        else if(handlepos == HandlePos.LEFT) {   /* left edge */
+            copySubimageFromImage(img_id, 3 * mult, 1 * mult, 0 * mult, 4 * mult, 1 * mult, 4 * mult, tile, 16 * mult);
+        }
+        else if(handlepos == HandlePos.LEFTFRONT) {   /* left edge - front of handle */
+            copySubimageFromImage(img_id, 2 * mult, 1 * mult, 0 * mult, 4 * mult, 1 * mult, 4 * mult, tile, 16 * mult);
+        }
+        else if(handlepos == HandlePos.RIGHT) {  /* Right */
+            copySubimageFromImage(img_id, 0 * mult, 1 * mult, 15 * mult, 4 * mult, 1 * mult, 4 * mult, tile, 16 * mult);
+        }
+        else if(handlepos == HandlePos.RIGHTFRONT) {  /* Right - front of handle */
+            copySubimageFromImage(img_id, 1 * mult, 1 * mult, 15 * mult, 4 * mult, 1 * mult, 4 * mult, tile, 16 * mult);
+        }
         /* Put scaled result into tile buffer */
         int new_argb[] = new int[native_scale*native_scale];
         scaleTerrainPNGSubImage(16*mult, native_scale, tile, new_argb);
@@ -702,11 +720,22 @@ public class TexturePack {
      * @param src_y - starting Y of source (scaled based on 64 high)
      * @param width - width to copy (scaled based on 64 high)
      * @param dest_x - destination X (scaled based on 64 high)
+     * @param handlepos - 0=middle,1=left-edge (righttop),2=right-edge (lefttop)
      */
-    private void makeChestTopBottomImage(int img_id, int dest_idx, int src_x, int src_y, int width, int dest_x) {
+    private void makeChestTopBottomImage(int img_id, int dest_idx, int src_x, int src_y, int width, int dest_x, HandlePos handlepos) {
         int mult = imgs[img_id].height / 64; /* Nominal height for chest images is 64 */
         int[] tile = new int[16 * 16 * mult * mult];    /* Make image */
         copySubimageFromImage(img_id, src_x * mult, src_y * mult, dest_x * mult, 1 * mult, width * mult, 14 * mult, tile, 16 * mult);
+        /* Handle the handle image */
+        if(handlepos == HandlePos.CENTER) {    /* Middle */
+            copySubimageFromImage(img_id, 1 * mult, 0, 7 * mult, 15 * mult, 2 * mult, 1 * mult, tile, 16 * mult);
+        }
+        else if(handlepos == HandlePos.LEFT) {   /* left edge */
+            copySubimageFromImage(img_id, 2 * mult, 0, 0 * mult, 15 * mult, 1 * mult, 1 * mult, tile, 16 * mult);
+        }
+        else if(handlepos == HandlePos.RIGHT) {  /* Right */
+            copySubimageFromImage(img_id, 1 * mult, 0, 15 * mult, 15 * mult, 1 * mult, 1 * mult, tile, 16 * mult);
+        }
         /* Put scaled result into tile buffer */
         int new_argb[] = new int[native_scale*native_scale];
         scaleTerrainPNGSubImage(16*mult, native_scale, tile, new_argb);
@@ -716,27 +745,27 @@ public class TexturePack {
      * Patch tiles based on image with chest-style layout
      */
     private void patchChestImages(int img_id, int tile_top, int tile_bottom, int tile_front, int tile_back, int tile_left, int tile_right) {
-        makeChestSideImage(img_id, tile_front, 14, 14, 1);
-        makeChestSideImage(img_id, tile_back, 42, 14, 1);
-        makeChestSideImage(img_id, tile_left, 0, 14, 1);
-        makeChestSideImage(img_id, tile_right, 28, 14, 1);
-        makeChestTopBottomImage(img_id, tile_top, 14, 0, 14, 1);
-        makeChestTopBottomImage(img_id, tile_bottom, 28, 19, 14, 1);
+        makeChestSideImage(img_id, tile_front, 14, 14, 1, HandlePos.CENTER);
+        makeChestSideImage(img_id, tile_back, 42, 14, 1, HandlePos.NONE);
+        makeChestSideImage(img_id, tile_left, 0, 14, 1, HandlePos.RIGHT);
+        makeChestSideImage(img_id, tile_right, 28, 14, 1, HandlePos.LEFT);
+        makeChestTopBottomImage(img_id, tile_top, 14, 0, 14, 1, HandlePos.CENTER);
+        makeChestTopBottomImage(img_id, tile_bottom, 28, 19, 14, 1, HandlePos.CENTER);
     }
     /**
      * Patch tiles based on image with large-chest-style layout
      */
     private void patchLargeChestImages(int img_id, int tile_topright, int tile_topleft, int tile_bottomright, int tile_bottomleft, int tile_right, int tile_left, int tile_frontright, int tile_frontleft, int tile_backright, int tile_backleft) {
-        makeChestSideImage(img_id, tile_frontleft, 14, 15, 1);
-        makeChestSideImage(img_id, tile_frontright, 29, 15, 0);
-        makeChestSideImage(img_id, tile_left, 0, 14, 1);
-        makeChestSideImage(img_id, tile_right, 44, 14, 1);
-        makeChestSideImage(img_id, tile_backright, 58, 15, 1);
-        makeChestSideImage(img_id, tile_backleft, 73, 15, 0);
-        makeChestTopBottomImage(img_id, tile_topleft, 14, 0, 15, 1);
-        makeChestTopBottomImage(img_id, tile_topright, 29, 0, 15, 0);
-        makeChestTopBottomImage(img_id, tile_bottomleft, 34, 19, 15, 1);
-        makeChestTopBottomImage(img_id, tile_bottomright, 49, 19, 15, 0);
+        makeChestSideImage(img_id, tile_frontleft, 14, 15, 1, HandlePos.RIGHTFRONT);
+        makeChestSideImage(img_id, tile_frontright, 29, 15, 0, HandlePos.LEFTFRONT);
+        makeChestSideImage(img_id, tile_left, 0, 14, 1, HandlePos.RIGHT);
+        makeChestSideImage(img_id, tile_right, 44, 14, 1, HandlePos.LEFT);
+        makeChestSideImage(img_id, tile_backright, 58, 15, 1, HandlePos.NONE);
+        makeChestSideImage(img_id, tile_backleft, 73, 15, 0, HandlePos.NONE);
+        makeChestTopBottomImage(img_id, tile_topleft, 14, 0, 15, 1, HandlePos.RIGHT);
+        makeChestTopBottomImage(img_id, tile_topright, 29, 0, 15, 0, HandlePos.LEFT);
+        makeChestTopBottomImage(img_id, tile_bottomleft, 34, 19, 15, 1, HandlePos.RIGHT);
+        makeChestTopBottomImage(img_id, tile_bottomright, 49, 19, 15, 0, HandlePos.LEFT);
     }
 
     /* Copy texture pack */

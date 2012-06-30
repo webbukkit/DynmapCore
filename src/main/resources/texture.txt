@@ -338,7 +338,7 @@ block:id=54,data=9,top=279,bottom=287,south=281,north=285,east=283,west=282,user
 # Chest - right side of double, facing east
 block:id=54,data=10,top=4279,bottom=4287,south=282,north=283,east=281,west=285,userenderdata=true
 # Chest - right side of double, facing north
-block:id=54,data=11,top=5279,bottom=5287,south=287,north=281,east=282,west=283,userenderdata=true
+block:id=54,data=11,top=5279,bottom=5287,south=285,north=281,east=282,west=283,userenderdata=true
 # Redstone wire (all but NS and EW)
 block:id=55,data=0,data=3,data=4,data=5,data=6,data=7,data=8,data=9,data=10,allfaces=180,transparency=TRANSPARENT,userenderdata=true
 # Redstone wire (EW)
