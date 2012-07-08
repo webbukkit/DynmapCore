@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -25,6 +24,7 @@ import org.dynmap.MapType.ImageFormat;
 import org.dynmap.TileHashManager;
 import org.dynmap.debug.Debug;
 import org.dynmap.utils.MapIterator.BlockStep;
+import org.dynmap.hdmap.HDBlockModels.HDPatchDefinition;
 import org.dynmap.hdmap.TexturePack.BlockTransparency;
 import org.dynmap.hdmap.TexturePack.HDTextureMap;
 import org.dynmap.utils.DynmapBufferedImage;
@@ -76,27 +76,17 @@ public class IsoHDPerspective implements HDPerspective {
     private static final int CHEST_BLKTYPEID = 54;
     private static final int REDSTONE_BLKTYPEID = 55;
     private static final int FENCEGATE_BLKTYPEID = 107;
-    private static final int WOODDOOR_BLKTYPEID = 64;
-    private static final int IRONDOOR_BLKTYPEID = 71;
     
     private enum ChestData {
         SINGLE_WEST, SINGLE_SOUTH, SINGLE_EAST, SINGLE_NORTH, LEFT_WEST, LEFT_SOUTH, LEFT_EAST, LEFT_NORTH, RIGHT_WEST, RIGHT_SOUTH, RIGHT_EAST, RIGHT_NORTH
     };
     
-    /* Orientation lookup for single chest - index bits: occupied blocks NESW */
-    private static final ChestData[] SINGLE_LOOKUP = { 
-        ChestData.SINGLE_WEST, ChestData.SINGLE_EAST, ChestData.SINGLE_NORTH, ChestData.SINGLE_NORTH, 
-        ChestData.SINGLE_WEST, ChestData.SINGLE_WEST, ChestData.SINGLE_NORTH, ChestData.SINGLE_NORTH,
-        ChestData.SINGLE_SOUTH, ChestData.SINGLE_SOUTH, ChestData.SINGLE_WEST, ChestData.SINGLE_EAST,
-        ChestData.SINGLE_SOUTH, ChestData.SINGLE_SOUTH, ChestData.SINGLE_WEST, ChestData.SINGLE_EAST
-    };
-
     private class OurPerspectiveState implements HDPerspectiveState {
         int blocktypeid = 0;
         int blockdata = 0;
         int blockrenderdata = -1;
         int lastblocktypeid = 0;
-        Vector3D top, bottom;
+        Vector3D top, bottom, direction;
         int px, py;
         BlockStep laststep = BlockStep.Y_MINUS;
         
@@ -104,7 +94,7 @@ public class IsoHDPerspective implements HDPerspective {
 
         /* Section-level raytrace variables */
         int sx, sy, sz;
-        double sdt_dx, sdt_dy, sdt_dz, st;
+        double sdt_dx, sdt_dy, sdt_dz;
         double st_next_x, st_next_y, st_next_z;
         /* Raytrace state variables */
         double dx, dy, dz;
@@ -126,6 +116,14 @@ public class IsoHDPerspective implements HDPerspective {
         double mt;
         double mtend;
         int mxout, myout, mzout;
+        /* Patch state and work variables */
+        Vector3D v0 = new Vector3D();
+        Vector3D vS = new Vector3D();
+        Vector3D d_cross_uv = new Vector3D();
+        double patch_t[] = new double[HDPatchDefinition.MAX_PATCHES];
+        double patch_u[] = new double[HDPatchDefinition.MAX_PATCHES];
+        double patch_v[] = new double[HDPatchDefinition.MAX_PATCHES];
+        int cur_patch = -1;
         
         int[] subblock_xyz = new int[3];
         MapIterator mapiter;
@@ -266,9 +264,9 @@ public class IsoHDPerspective implements HDPerspective {
          */
         private void raytrace_init() {
             /* Compute total delta on each axis */
-            dx = Math.abs(bottom.x - top.x);
-            dy = Math.abs(bottom.y - top.y);
-            dz = Math.abs(bottom.z - top.z);
+            dx = Math.abs(direction.x);
+            dy = Math.abs(direction.y);
+            dz = Math.abs(direction.z);
             /* Compute parametric step (dt) per step on each axis */
             dt_dx = 1.0 / dx;
             dt_dy = 1.0 / dy;
@@ -645,6 +643,90 @@ public class IsoHDPerspective implements HDPerspective {
             }
             return false;
         }
+        
+        private final boolean handlePatches(HDPatchDefinition[] patches, HDShaderState[] shaderstate, boolean[] shaderdone) {
+            int hitcnt = 0;
+            /* Loop through patches : compute intercept values for each */
+            for(int i = 0; i < patches.length; i++) {
+                HDPatchDefinition pd = patches[i];
+                /* Compute origin of patch */
+                v0.x = (double)x + pd.x0;
+                v0.y = (double)y + pd.y0;
+                v0.z = (double)z + pd.z0;
+                /* Compute cross product of direction and V vector */
+                d_cross_uv.set(direction);
+                d_cross_uv.crossProduct(pd.v);
+                /* Compute determinant - inner product of this with U */
+                double det = pd.u.innerProduct(d_cross_uv);
+                /* If parallel to surface, no intercept */
+                if((det > -0.000001) && (det < 0.000001)) {
+                    continue;
+                }
+                double inv_det = 1.0 / det; /* Calculate inverse determinant */
+                /* Compute distance from patch to ray origin */
+                vS.set(top);
+                vS.subtract(v0);
+                /* Compute u - slope times inner product of offset and cross product */
+                double u = inv_det * vS.innerProduct(d_cross_uv);
+                if((u < pd.umin) || (u >= pd.umax)) {
+                    continue;
+                }
+                /* Compute cross product of offset and U */
+                vS.crossProduct(pd.u);
+                /* Compute V using slope times inner product of direction and cross product */
+                double v = inv_det * direction.innerProduct(vS);
+                if((v < pd.vmin) || (v >= pd.vmax)) {
+                    continue;
+                }
+                /* Compute parametric value of intercept */
+                double t = inv_det * pd.v.innerProduct(vS);
+                if (t > 0.000001) { /* We've got a hit */
+                    patch_t[hitcnt] = t;
+                    patch_u[hitcnt] = u;
+                    patch_v[hitcnt] = v;
+                    hitcnt++;
+                }
+            }
+            /* If no hits, we're done */
+            if(hitcnt == 0) {
+                return false;
+            }
+            BlockStep old_laststep = laststep;  /* Save last step */
+            
+            for(int i = 0; i < hitcnt; i++) {
+                /* Find closest hit (lowest parametric value) */
+                double best_t = Double.MAX_VALUE;
+                int best_patch = 0;
+                for(int j = 0; j < hitcnt; j++) {
+                    if(patch_t[j] < best_t) {
+                        best_patch = j;
+                        best_t = patch_t[j];
+                    }
+                }
+                cur_patch = best_patch; /* Mark this as current patch */
+                laststep = patches[cur_patch].step;
+                /* Process the shaders */
+                boolean done = true;
+                for(int j = 0; j < shaderstate.length; j++) {
+                    if(!shaderdone[j])
+                        shaderdone[j] = shaderstate[j].processBlock(this);
+                    done = done && shaderdone[j];
+                }
+                cur_patch = -1;
+                /* If all are done, we're out */
+                if(done) {
+                    laststep = old_laststep;
+                    return true;
+                }
+                nonairhit = true;
+                /* Now remove patch and repeat */
+                patch_t[best_patch] = Double.MAX_VALUE;
+            }
+            laststep = old_laststep;
+            
+            return false;
+        }
+        
         private static final int FENCE_ALGORITHM = 1;
         private static final int CHEST_ALGORITHM = 2;
         private static final int REDSTONE_ALGORITHM = 3;
@@ -687,7 +769,11 @@ public class IsoHDPerspective implements HDPerspective {
                     	blockrenderdata = -1;
                     	break;
                 }
+                HDPatchDefinition[] patches = scalemodels.getPatchModel(blocktypeid,  blockdata,  blockrenderdata);
                 /* Look up to see if block is modelled */
+                if(patches != null) {
+                    return handlePatches(patches, shaderstate, shaderdone);
+                }
                 short[] model = scalemodels.getScaledModel(blocktypeid, blockdata, blockrenderdata);
                 if(model != null) {
                     return handleSubModel(model, shaderstate, shaderdone);
@@ -785,9 +871,9 @@ public class IsoHDPerspective implements HDPerspective {
 
         private void raytrace_section_init() {
             t = t - 0.000001;
-            double xx = top.x + t *(bottom.x - top.x);
-            double yy = top.y + t *(bottom.y - top.y);
-            double zz = top.z + t *(bottom.z - top.z);
+            double xx = top.x + t * direction.x;
+            double yy = top.y + t * direction.y;
+            double zz = top.z + t * direction.z;
             x = fastFloor(xx);  
             y = fastFloor(yy);  
             z = fastFloor(zz);
@@ -830,9 +916,9 @@ public class IsoHDPerspective implements HDPerspective {
         private boolean raytraceSubblock(short[] model, boolean firsttime) {
             if(firsttime) {
             	mt = t + 0.00000001;
-            	xx = top.x + mt *(bottom.x - top.x);  
-            	yy = top.y + mt *(bottom.y - top.y);  
-            	zz = top.z + mt *(bottom.z - top.z);
+            	xx = top.x + mt * direction.x;  
+            	yy = top.y + mt * direction.y;  
+            	zz = top.z + mt * direction.z;
             	mx = (int)((xx - fastFloor(xx)) * modscale);
             	my = (int)((yy - fastFloor(yy)) * modscale);
             	mz = (int)((zz - fastFloor(zz)) * modscale);
@@ -908,11 +994,20 @@ public class IsoHDPerspective implements HDPerspective {
             return true;
         }
         public final int[] getSubblockCoord() {
-            if(subalpha < 0) {
+            if(cur_patch >= 0) {    /* If patch hit */
+                double tt = patch_t[cur_patch];
+                double xx = top.x + tt * direction.x;  
+                double yy = top.y + tt * direction.y;  
+                double zz = top.z + tt * direction.z;
+                subblock_xyz[0] = (int)((xx - fastFloor(xx)) * modscale);
+                subblock_xyz[1] = (int)((yy - fastFloor(yy)) * modscale);
+                subblock_xyz[2] = (int)((zz - fastFloor(zz)) * modscale);
+            }
+            else if(subalpha < 0) {
                 double tt = t + 0.0000001;
-                double xx = top.x + tt * (bottom.x - top.x);  
-                double yy = top.y + tt * (bottom.y - top.y);  
-                double zz = top.z + tt * (bottom.z - top.z);
+                double xx = top.x + tt * direction.x;  
+                double yy = top.y + tt * direction.y;  
+                double zz = top.z + tt * direction.z;
                 subblock_xyz[0] = (int)((xx - fastFloor(xx)) * modscale);
                 subblock_xyz[1] = (int)((yy - fastFloor(yy)) * modscale);
                 subblock_xyz[2] = (int)((zz - fastFloor(zz)) * modscale);
@@ -923,6 +1018,24 @@ public class IsoHDPerspective implements HDPerspective {
                 subblock_xyz[2] = mz;
             }
             return subblock_xyz;
+        }
+        /**
+         * Get current patch index
+         */
+        public int getPatchIndex() {
+            return cur_patch;
+        }
+        /**
+         * Get current U of patch intercept
+         */
+        public double getPatchU() {
+            return patch_u[cur_patch];
+        }
+        /**
+         * Get current V of patch intercept
+         */
+        public double getPatchV() {
+            return patch_v[cur_patch];
         }
     }
     
@@ -1187,7 +1300,6 @@ public class IsoHDPerspective implements HDPerspective {
         /* Now, need to walk through the min/max range to see which chunks are actually needed */
         ArrayList<DynmapChunk> chunks = new ArrayList<DynmapChunk>();
         Rectangle chunkrect = new Rectangle();
-        int misscnt = 0;
         for(int x = min_chunk_x; x <= max_chunk_x; x++) {
             for(int z = min_chunk_z; z <= max_chunk_z; z++) {
                 chunkrect.setSquare(x*16, z*16, 16);
@@ -1201,9 +1313,6 @@ public class IsoHDPerspective implements HDPerspective {
                 if(hit) {
                     DynmapChunk chunk = new DynmapChunk(x, z);
                     chunks.add(chunk);
-                }
-                else {
-                    misscnt++;
                 }
             }
         }
@@ -1248,6 +1357,7 @@ public class IsoHDPerspective implements HDPerspective {
         
         ps.top = new Vector3D();
         ps.bottom = new Vector3D();
+        ps.direction = new Vector3D();
         double xbase = tile.tx * tileWidth;
         double ybase = tile.ty * tileHeight;
         boolean shaderdone[] = new boolean[numshaders];
@@ -1268,6 +1378,8 @@ public class IsoHDPerspective implements HDPerspective {
                 ps.top.z = height + 0.5; ps.bottom.z = minheight - 0.5;
                 map_to_world.transform(ps.top);            /* Transform to world coordinates */
                 map_to_world.transform(ps.bottom);
+                ps.direction.set(ps.bottom);
+                ps.direction.subtract(ps.top);
                 ps.py = y;
                 for(int i = 0; i < numshaders; i++) {
                     shaderstate[i].reset(ps);

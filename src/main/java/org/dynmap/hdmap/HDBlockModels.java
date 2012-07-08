@@ -10,24 +10,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Vector;
 
 import org.dynmap.ConfigurationNode;
 import org.dynmap.Log;
+import org.dynmap.utils.MapIterator.BlockStep;
+import org.dynmap.utils.Vector3D;
 
 /**
  * Custom block models - used for non-cube blocks to represent the physical volume associated with the block
  * Used by perspectives to determine if rays have intersected a block that doesn't occupy its whole block
  */
 public class HDBlockModels {
-    private int blockid;
-    private int databits;
-    private long blockflags[];
-    private int nativeres;
-    private HashMap<Integer, short[]> scaledblocks;
     private static int linkalg[] = new int[256];
     private static int linkmap[][] = new int[256][];
     
-    private static HashMap<Integer, HDBlockModels> models_by_id_data = new HashMap<Integer, HDBlockModels>();
+    private static HashMap<Integer, HDBlockModel> models_by_id_data = new HashMap<Integer, HDBlockModel>();
     
     
     private static void resizeTable(int idx) {
@@ -42,7 +40,8 @@ public class HDBlockModels {
     
     public static class HDScaledBlockModels {
         private short[][][] modelvectors;
-        
+        private HDPatchDefinition[][][] patches;
+
         public final short[] getScaledModel(int blocktype, int blockdata, int blockrenderdata) {
             try {
                 if(modelvectors[blocktype] == null) {
@@ -56,45 +55,299 @@ public class HDBlockModels {
                 return null;
             }
         }
+        public HDPatchDefinition[] getPatchModel(int blocktype, int blockdata, int blockrenderdata) {
+            try {
+                if(patches[blocktype] == null) {
+                    return null;
+                }
+                return patches[blocktype][(blockrenderdata>=0)?blockrenderdata:blockdata];
+            } catch (ArrayIndexOutOfBoundsException aioobx) {
+                HDPatchDefinition[][][] newpatches = new HDPatchDefinition[blocktype+1][][];
+                System.arraycopy(patches, 0, newpatches, 0, patches.length);
+                patches = newpatches;
+                return null;
+            }
+        }
+    }
+    
+    /* Define patch in surface-based models - origin (xyz), u-vector (xyz) v-vector (xyz), u limits and v limits */
+    public static class HDPatchDefinition {
+        public double x0, y0, z0;   /* Origin of patch (lower left corner of texture) */
+        public double xu, yu, zu;   /* Coordinates of end of U vector (relative to origin) - corresponds to u=1.0 (lower right corner) */
+        public double xv, yv, zv;   /* Coordinates of end of V vector (relative to origin) - corresponds to v=1.0 (upper left corner) */
+        public double umin, umax;   /* Limits of patch - minimum and maximum u value */
+        public double vmin, vmax;   /* Limits of patch - minimum and maximum v value */
+        public Vector3D u, v;       /* U and V vector, relative to origin */
+        public static final int MAX_PATCHES = 32;   /* Max patches per model */
+        public BlockStep step;      /* Best approximation of orientation of surface */
+        
+        public HDPatchDefinition() {
+            x0 = y0 = z0 = 0.0;
+            xu = zu = 0.0; yu = 1.0;
+            yv = zv = 0.0; xv = 1.0;
+            umin = vmin = 0.0;
+            umax = vmax = 1.0;
+            u = new Vector3D();
+            v = new Vector3D();
+        }
+        public void update() {
+            u.x = xu - x0; u.y = yu - y0; u.z = zu - z0;
+            v.x = xv - x0; v.y = yv - y0; v.z = zv - z0;
+            /* Now compute normal of surface - U cross V */
+            Vector3D d = new Vector3D(u);
+            d.crossProduct(v);
+            /* Now, find the largest component of the normal (dominant direction) */
+            if(Math.abs(d.x) > Math.abs(d.y)) { /* If X > Y */
+                if(Math.abs(d.x) > Math.abs(d.z)) { /* If X > Z */
+                    if(d.x > 0) {
+                        step = BlockStep.X_PLUS;
+                    }
+                    else {
+                        step = BlockStep.X_MINUS;
+                    }
+                }
+                else {  /* Else Z >= X */
+                    if(d.z > 0) {
+                        step = BlockStep.Z_PLUS;
+                    }
+                    else {
+                        step = BlockStep.Z_MINUS;
+                    }
+                }
+            }
+            else {  /* Else Y >= X */
+                if(Math.abs(d.y) > Math.abs(d.z)) { /* If Y > Z */
+                    if(d.y > 0) {
+                        step = BlockStep.Y_PLUS;
+                    }
+                    else {
+                        step = BlockStep.Y_MINUS;
+                    }
+                }
+                else {  /* Else Z >= Y */
+                    if(d.z > 0) {
+                        step = BlockStep.Z_PLUS;
+                    }
+                    else {
+                        step = BlockStep.Z_MINUS;
+                    }
+                }
+            }
+        }
     }
     
     private static HashMap<Integer, HDScaledBlockModels> scaled_models_by_scale = new HashMap<Integer, HDScaledBlockModels>();
     
-    /**
-     * Block definition - positions correspond to Bukkit coordinates (+X is south, +Y is up, +Z is west)
-     * @param blockid - block ID
-     * @param databits - bitmap of block data bits matching this model (bit N is set if data=N would match)
-     * @param nativeres - native subblocks per edge of cube (up to 64)
-     * @param blockflags - array of native^2 long integers representing volume of block (bit X of element (nativeres*Y+Z) is set if that subblock is filled)
-     *    if array is short, other elements area are assumed to be zero (fills from bottom of block up)
-     */
-    public HDBlockModels(int blockid, int databits, int nativeres, long[] blockflags) {
-        this.blockid = blockid;
-        this.databits = databits;
-        this.nativeres = nativeres;
-        this.blockflags = new long[nativeres * nativeres];
-        System.arraycopy(blockflags, 0, this.blockflags, 0, blockflags.length);
-        for(int i = 0; i < 16; i++) {
-            if((databits & (1<<i)) != 0) {
-                models_by_id_data.put((blockid<<4)+i, this);
+    public static abstract class HDBlockModel {
+        private int blockid;
+        private int databits;
+        /**
+         * Block definition - positions correspond to Bukkit coordinates (+X is south, +Y is up, +Z is west)
+         * @param blockid - block ID
+         * @param databits - bitmap of block data bits matching this model (bit N is set if data=N would match)
+         */
+        protected HDBlockModel(int blockid, int databits) {
+            this.blockid = blockid;
+            this.databits = databits;
+            for(int i = 0; i < 16; i++) {
+                if((databits & (1<<i)) != 0) {
+                    models_by_id_data.put((blockid<<4)+i, this);
+                }
             }
         }
     }
-    /**
-     * Test if given native block is filled
-     */
-    public final boolean isSubblockSet(int x, int y, int z) {
-        return ((blockflags[nativeres*y+z] & (1 << x)) != 0);
+    
+    public static class HDBlockVolumetricModel extends HDBlockModel {
+        /* Volumetric model specific attributes */
+        private long blockflags[];
+        private int nativeres;
+        private HashMap<Integer, short[]> scaledblocks;
+        /**
+         * Block definition - positions correspond to Bukkit coordinates (+X is south, +Y is up, +Z is west)
+         * (for volumetric models)
+         * @param blockid - block ID
+         * @param databits - bitmap of block data bits matching this model (bit N is set if data=N would match)
+         * @param nativeres - native subblocks per edge of cube (up to 64)
+         * @param blockflags - array of native^2 long integers representing volume of block (bit X of element (nativeres*Y+Z) is set if that subblock is filled)
+         *    if array is short, other elements area are assumed to be zero (fills from bottom of block up)
+         */
+        public HDBlockVolumetricModel(int blockid, int databits, int nativeres, long[] blockflags) {
+            super(blockid, databits);
+            
+            this.nativeres = nativeres;
+            this.blockflags = new long[nativeres * nativeres];
+            System.arraycopy(blockflags, 0, this.blockflags, 0, blockflags.length);
+        }
+        /**
+         * Test if given native block is filled (for volumetric model)
+         */
+        public final boolean isSubblockSet(int x, int y, int z) {
+            return ((blockflags[nativeres*y+z] & (1 << x)) != 0);
+        }
+        /**
+         * Set subblock value (for volumetric model)
+         */
+        public final void setSubblock(int x, int y, int z, boolean isset) {
+            if(isset)
+                blockflags[nativeres*y+z] |= (1 << x);
+            else
+                blockflags[nativeres*y+z] &= ~(1 << x);            
+        }
+        /**
+         * Get scaled map of block: will return array of alpha levels, corresponding to how much of the
+         * scaled subblocks are occupied by the original blocks (indexed by Y*res*res + Z*res + X)
+         * @param res - requested scale (res subblocks per edge of block)
+         * @return array of alpha values (0-255), corresponding to resXresXres subcubes of block
+         */
+        public short[] getScaledMap(int res) {
+            if(scaledblocks == null) { scaledblocks = new HashMap<Integer, short[]>(); }
+            short[] map = scaledblocks.get(Integer.valueOf(res));
+            if(map == null) {
+                map = new short[res*res*res];
+                if(res == nativeres) {
+                    for(int i = 0; i < blockflags.length; i++) {
+                        for(int j = 0; j < nativeres; j++) {
+                            if((blockflags[i] & (1 << j)) != 0)
+                                map[res*i+j] = 255;
+                        }
+                    }
+                }
+                /* If scaling from smaller sub-blocks to larger, each subblock contributes to 1-2 blocks
+                 * on each axis:  need to calculate crossovers for each, and iterate through smaller
+                 * blocks to accumulate contributions
+                 */
+                else if(res > nativeres) {
+                    int weights[] = new int[res];
+                    int offsets[] = new int[res];
+                    /* LCM of resolutions is used as length of line (res * nativeres)
+                     * Each native block is (res) long, each scaled block is (nativeres) long
+                     * Each scaled block overlaps 1 or 2 native blocks: starting with native block 'offsets[]' with
+                     * 'weights[]' of its (res) width in the first, and the rest in the second
+                     */
+                    for(int v = 0, idx = 0; v < res*nativeres; v += nativeres, idx++) {
+                        offsets[idx] = (v/res); /* Get index of the first native block we draw from */
+                        if((v+nativeres-1)/res == offsets[idx]) {   /* If scaled block ends in same native block */
+                            weights[idx] = nativeres;
+                        }
+                        else {  /* Else, see how much is in first one */
+                            weights[idx] = (offsets[idx] + res) - v;
+                            weights[idx] = (offsets[idx]*res + res) - v;
+                        }
+                    }
+                    /* Now, use weights and indices to fill in scaled map */
+                    for(int y = 0, off = 0; y < res; y++) {
+                        int ind_y = offsets[y];
+                        int wgt_y = weights[y];
+                        for(int z = 0; z < res; z++) {
+                            int ind_z = offsets[z];
+                            int wgt_z = weights[z];
+                            for(int x = 0; x < res; x++, off++) {
+                                int ind_x = offsets[x];
+                                int wgt_x = weights[x];
+                                int raw_w = 0;
+                                for(int xx = 0; xx < 2; xx++) {
+                                    int wx = (xx==0)?wgt_x:(nativeres-wgt_x);
+                                    if(wx == 0) continue;
+                                    for(int yy = 0; yy < 2; yy++) {
+                                        int wy = (yy==0)?wgt_y:(nativeres-wgt_y);
+                                        if(wy == 0) continue;
+                                        for(int zz = 0; zz < 2; zz++) {
+                                            int wz = (zz==0)?wgt_z:(nativeres-wgt_z);
+                                            if(wz == 0) continue;
+                                            if(isSubblockSet(ind_x+xx, ind_y+yy, ind_z+zz)) {
+                                                raw_w += wx*wy*wz;
+                                            }
+                                        }
+                                    }
+                                }
+                                map[off] = (short)((255*raw_w) / (nativeres*nativeres*nativeres));
+                                if(map[off] > 255) map[off] = 255;
+                                if(map[off] < 0) map[off] = 0;
+                            }
+                        }
+                    }
+                }
+                else {  /* nativeres > res */
+                    int weights[] = new int[nativeres];
+                    int offsets[] = new int[nativeres];
+                    /* LCM of resolutions is used as length of line (res * nativeres)
+                     * Each native block is (res) long, each scaled block is (nativeres) long
+                     * Each native block overlaps 1 or 2 scaled blocks: starting with scaled block 'offsets[]' with
+                     * 'weights[]' of its (res) width in the first, and the rest in the second
+                     */
+                    for(int v = 0, idx = 0; v < res*nativeres; v += res, idx++) {
+                        offsets[idx] = (v/nativeres); /* Get index of the first scaled block we draw to */
+                        if((v+res-1)/nativeres == offsets[idx]) {   /* If native block ends in same scaled block */
+                            weights[idx] = res;
+                        }
+                        else {  /* Else, see how much is in first one */
+                            weights[idx] = (offsets[idx]*nativeres + nativeres) - v;
+                        }
+                    }
+                    /* Now, use weights and indices to fill in scaled map */
+                    long accum[] = new long[map.length];
+                    for(int y = 0; y < nativeres; y++) {
+                        int ind_y = offsets[y];
+                        int wgt_y = weights[y];
+                        for(int z = 0; z < nativeres; z++) {
+                            int ind_z = offsets[z];
+                            int wgt_z = weights[z];
+                            for(int x = 0; x < nativeres; x++) {
+                                if(isSubblockSet(x, y, z)) {
+                                    int ind_x = offsets[x];
+                                    int wgt_x = weights[x];
+                                    for(int xx = 0; xx < 2; xx++) {
+                                        int wx = (xx==0)?wgt_x:(res-wgt_x);
+                                        if(wx == 0) continue;
+                                        for(int yy = 0; yy < 2; yy++) {
+                                            int wy = (yy==0)?wgt_y:(res-wgt_y);
+                                            if(wy == 0) continue;
+                                            for(int zz = 0; zz < 2; zz++) {
+                                                int wz = (zz==0)?wgt_z:(res-wgt_z);
+                                                if(wz == 0) continue;
+                                                accum[(ind_y+yy)*res*res + (ind_z+zz)*res + (ind_x+xx)] +=
+                                                    wx*wy*wz;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    for(int i = 0; i < map.length; i++) {
+                        map[i] = (short)(accum[i]*255/nativeres/nativeres/nativeres);
+                        if(map[i] > 255) map[i] = 255;                            
+                        if(map[i] < 0) map[i] = 0;
+                    }
+                }
+                scaledblocks.put(Integer.valueOf(res), map);
+            }
+            return map;
+        }
     }
-    /**
-     * Set subblock value
-     */
-    public final void setSubblock(int x, int y, int z, boolean isset) {
-        if(isset)
-            blockflags[nativeres*y+z] |= (1 << x);
-        else
-            blockflags[nativeres*y+z] &= ~(1 << x);            
+
+    public static class HDBlockPatchModel extends HDBlockModel {
+        /* Patch model specific attributes */
+        private HDPatchDefinition[] patches;
+        /**
+         * Block definition - positions correspond to Bukkit coordinates (+X is south, +Y is up, +Z is west)
+         * (for patch models)
+         * @param blockid - block ID
+         * @param databits - bitmap of block data bits matching this model (bit N is set if data=N would match)
+         * @param patches - list of patches (surfaces composing model)
+         */
+        public HDBlockPatchModel(int blockid, int databits, HDPatchDefinition[] patches) {
+            super(blockid, databits);
+            this.patches = patches;
+        }
+        /**
+         * Get patches for block model (if patch model)
+         */
+        public final HDPatchDefinition[] getPatches() {
+            return patches;
+        }
     }
+    
     /**
      * Get link algorithm
      * @param blkid - block ID
@@ -121,137 +374,6 @@ public class HDBlockModels {
             return null;
         }
     }
-    /**
-     * Get scaled map of block: will return array of alpha levels, corresponding to how much of the
-     * scaled subblocks are occupied by the original blocks (indexed by Y*res*res + Z*res + X)
-     * @param res - requested scale (res subblocks per edge of block)
-     * @return array of alpha values (0-255), corresponding to resXresXres subcubes of block
-     */
-    public short[] getScaledMap(int res) {
-        if(scaledblocks == null) { scaledblocks = new HashMap<Integer, short[]>(); }
-        short[] map = scaledblocks.get(Integer.valueOf(res));
-        if(map == null) {
-            map = new short[res*res*res];
-            if(res == nativeres) {
-                for(int i = 0; i < blockflags.length; i++) {
-                    for(int j = 0; j < nativeres; j++) {
-                        if((blockflags[i] & (1 << j)) != 0)
-                            map[res*i+j] = 255;
-                    }
-                }
-            }
-            /* If scaling from smaller sub-blocks to larger, each subblock contributes to 1-2 blocks
-             * on each axis:  need to calculate crossovers for each, and iterate through smaller
-             * blocks to accumulate contributions
-             */
-            else if(res > nativeres) {
-                int weights[] = new int[res];
-                int offsets[] = new int[res];
-                /* LCM of resolutions is used as length of line (res * nativeres)
-                 * Each native block is (res) long, each scaled block is (nativeres) long
-                 * Each scaled block overlaps 1 or 2 native blocks: starting with native block 'offsets[]' with
-                 * 'weights[]' of its (res) width in the first, and the rest in the second
-                 */
-                for(int v = 0, idx = 0; v < res*nativeres; v += nativeres, idx++) {
-                    offsets[idx] = (v/res); /* Get index of the first native block we draw from */
-                    if((v+nativeres-1)/res == offsets[idx]) {   /* If scaled block ends in same native block */
-                        weights[idx] = nativeres;
-                    }
-                    else {  /* Else, see how much is in first one */
-                        weights[idx] = (offsets[idx] + res) - v;
-                        weights[idx] = (offsets[idx]*res + res) - v;
-                    }
-                }
-                /* Now, use weights and indices to fill in scaled map */
-                for(int y = 0, off = 0; y < res; y++) {
-                    int ind_y = offsets[y];
-                    int wgt_y = weights[y];
-                    for(int z = 0; z < res; z++) {
-                        int ind_z = offsets[z];
-                        int wgt_z = weights[z];
-                        for(int x = 0; x < res; x++, off++) {
-                            int ind_x = offsets[x];
-                            int wgt_x = weights[x];
-                            int raw_w = 0;
-                            for(int xx = 0; xx < 2; xx++) {
-                                int wx = (xx==0)?wgt_x:(nativeres-wgt_x);
-                                if(wx == 0) continue;
-                                for(int yy = 0; yy < 2; yy++) {
-                                    int wy = (yy==0)?wgt_y:(nativeres-wgt_y);
-                                    if(wy == 0) continue;
-                                    for(int zz = 0; zz < 2; zz++) {
-                                        int wz = (zz==0)?wgt_z:(nativeres-wgt_z);
-                                        if(wz == 0) continue;
-                                        if(isSubblockSet(ind_x+xx, ind_y+yy, ind_z+zz)) {
-                                            raw_w += wx*wy*wz;
-                                        }
-                                    }
-                                }
-                            }
-                            map[off] = (short)((255*raw_w) / (nativeres*nativeres*nativeres));
-                            if(map[off] > 255) map[off] = 255;
-                            if(map[off] < 0) map[off] = 0;
-                        }
-                    }
-                }
-            }
-            else {  /* nativeres > res */
-                int weights[] = new int[nativeres];
-                int offsets[] = new int[nativeres];
-                /* LCM of resolutions is used as length of line (res * nativeres)
-                 * Each native block is (res) long, each scaled block is (nativeres) long
-                 * Each native block overlaps 1 or 2 scaled blocks: starting with scaled block 'offsets[]' with
-                 * 'weights[]' of its (res) width in the first, and the rest in the second
-                 */
-                for(int v = 0, idx = 0; v < res*nativeres; v += res, idx++) {
-                    offsets[idx] = (v/nativeres); /* Get index of the first scaled block we draw to */
-                    if((v+res-1)/nativeres == offsets[idx]) {   /* If native block ends in same scaled block */
-                        weights[idx] = res;
-                    }
-                    else {  /* Else, see how much is in first one */
-                        weights[idx] = (offsets[idx]*nativeres + nativeres) - v;
-                    }
-                }
-                /* Now, use weights and indices to fill in scaled map */
-                long accum[] = new long[map.length];
-                for(int y = 0; y < nativeres; y++) {
-                    int ind_y = offsets[y];
-                    int wgt_y = weights[y];
-                    for(int z = 0; z < nativeres; z++) {
-                        int ind_z = offsets[z];
-                        int wgt_z = weights[z];
-                        for(int x = 0; x < nativeres; x++) {
-                            if(isSubblockSet(x, y, z)) {
-                                int ind_x = offsets[x];
-                                int wgt_x = weights[x];
-                                for(int xx = 0; xx < 2; xx++) {
-                                    int wx = (xx==0)?wgt_x:(res-wgt_x);
-                                    if(wx == 0) continue;
-                                    for(int yy = 0; yy < 2; yy++) {
-                                        int wy = (yy==0)?wgt_y:(res-wgt_y);
-                                        if(wy == 0) continue;
-                                        for(int zz = 0; zz < 2; zz++) {
-                                            int wz = (zz==0)?wgt_z:(res-wgt_z);
-                                            if(wz == 0) continue;
-                                            accum[(ind_y+yy)*res*res + (ind_z+zz)*res + (ind_x+xx)] +=
-                                                wx*wy*wz;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                for(int i = 0; i < map.length; i++) {
-                    map[i] = (short)(accum[i]*255/nativeres/nativeres/nativeres);
-                    if(map[i] > 255) map[i] = 255;                            
-                    if(map[i] < 0) map[i] = 0;
-                }
-            }
-            scaledblocks.put(Integer.valueOf(res), map);
-        }
-        return map;
-    }
     
     /**
      * Get scaled set of models for all modelled blocks 
@@ -263,34 +385,59 @@ public class HDBlockModels {
         if(model == null) {
             model = new HDScaledBlockModels();
             short[][][] blockmodels = new short[256][][];
-            for(HDBlockModels m : models_by_id_data.values()) {
+            HDPatchDefinition[][][] patches = new HDPatchDefinition[256][][];
+            
+            for(HDBlockModel m : models_by_id_data.values()) {
                 if(m.blockid >= blockmodels.length){
                     short[][][] newmodels = new short[m.blockid+1][][];
                     System.arraycopy(blockmodels,  0, newmodels, 0, blockmodels.length);
                     blockmodels = newmodels;
+                    HDPatchDefinition[][][] newpatches = new HDPatchDefinition[m.blockid+1][][];
+                    System.arraycopy(patches,  0, newpatches, 0, patches.length);
+                    patches = newpatches;
                 }
-                short[][] row = blockmodels[m.blockid];
-                if(row == null) {
-                    row = new short[16][];
-                    blockmodels[m.blockid] = row; 
-                }
-                short[] smod = m.getScaledMap(scale);
-                /* See if scaled model is full block : much faster to not use it if it is */
-                if(smod != null) {
-                    boolean keep = false;
-                    for(int i = 0; (!keep) && (i < smod.length); i++) {
-                        if(smod[i] == 0) keep = true;
+                if(m instanceof HDBlockVolumetricModel) {
+                    short[][] row = blockmodels[m.blockid];
+                    if(row == null) {
+                        row = new short[16][];
+                        blockmodels[m.blockid] = row; 
                     }
-                    if(keep) {
+                    HDBlockVolumetricModel vm = (HDBlockVolumetricModel)m;
+                    short[] smod = vm.getScaledMap(scale);
+                    /* See if scaled model is full block : much faster to not use it if it is */
+                    if(smod != null) {
+                        boolean keep = false;
+                        for(int i = 0; (!keep) && (i < smod.length); i++) {
+                            if(smod[i] == 0) keep = true;
+                        }
+                        if(keep) {
+                            for(int i = 0; i < 16; i++) {
+                                if((m.databits & (1 << i)) != 0) {
+                                    row[i] = smod;
+                                }
+                            }
+                        }
+                    }
+                }
+                else if(m instanceof HDBlockPatchModel) {
+                    HDBlockPatchModel pm = (HDBlockPatchModel)m;
+                    HDPatchDefinition[] patch = pm.getPatches();
+                    HDPatchDefinition[][] row = patches[m.blockid];
+                    if(row == null) {
+                        row = new HDPatchDefinition[16][];
+                        patches[m.blockid] = row; 
+                    }
+                    if(patch != null) {
                         for(int i = 0; i < 16; i++) {
                             if((m.databits & (1 << i)) != 0) {
-                                row[i] = smod;
+                                row[i] = patch;
                             }
                         }
                     }
                 }
             }
             model.modelvectors = blockmodels;
+            model.patches = patches;
             scaled_models_by_scale.put(scale, model);
         }
         return model;
@@ -352,8 +499,9 @@ public class HDBlockModels {
         int cnt = 0;
         try {
             String line;
-            ArrayList<HDBlockModels> modlist = new ArrayList<HDBlockModels>();
+            ArrayList<HDBlockVolumetricModel> modlist = new ArrayList<HDBlockVolumetricModel>();
             HashMap<String,Integer> varvals = new HashMap<String,Integer>();
+            HashMap<String, HDPatchDefinition> patchdefs = new HashMap<String, HDPatchDefinition>();
             int layerbits = 0;
             int rownum = 0;
             int scale = 0;
@@ -385,8 +533,10 @@ public class HDBlockModels {
                     if((blkids.size() > 0) && (databits != 0) && (scale > 0)) {
                         modlist.clear();
                         for(Integer id : blkids) {
-                            modlist.add(new HDBlockModels(id.intValue(), databits, scale, new long[0]));
-                            cnt++;
+                            if(id > 0) {
+                                modlist.add(new HDBlockVolumetricModel(id.intValue(), databits, scale, new long[0]));
+                                cnt++;
+                            }
                         }
                     }
                     else {
@@ -417,28 +567,33 @@ public class HDBlockModels {
                         if(av[0].equals("rot")) { rot = Integer.parseInt(av[1]); }
                     }
                     /* get old model to be rotated */
-                    HDBlockModels mod = models_by_id_data.get((id<<4)+data);
-                    if((mod != null) && ((rot%90) == 0)) {
+                    HDBlockModel mod = models_by_id_data.get((id<<4)+data);
+                    if((mod != null) && ((rot%90) == 0) && (mod instanceof HDBlockVolumetricModel)) {
+                        HDBlockVolumetricModel vmod = (HDBlockVolumetricModel)mod;
                         for(int x = 0; x < scale; x++) {
                             for(int y = 0; y < scale; y++) {
                                 for(int z = 0; z < scale; z++) {
-                                    if(mod.isSubblockSet(x, y, z) == false) continue;
+                                    if(vmod.isSubblockSet(x, y, z) == false) continue;
                                     switch(rot) {
                                         case 0:
-                                            for(HDBlockModels bm : modlist)
+                                            for(HDBlockVolumetricModel bm : modlist) {
                                                 bm.setSubblock(x, y, z, true);
+                                            }
                                             break;
                                         case 90:
-                                            for(HDBlockModels bm : modlist)
+                                            for(HDBlockVolumetricModel bm : modlist) {
                                                 bm.setSubblock(scale-z-1, y, x, true);
+                                            }
                                             break;
                                         case 180:
-                                            for(HDBlockModels bm : modlist)
+                                            for(HDBlockVolumetricModel bm : modlist) {
                                                 bm.setSubblock(scale-x-1, y, scale-z-1, true);
+                                            }
                                             break;
                                         case 270:
-                                            for(HDBlockModels bm : modlist)
+                                            for(HDBlockVolumetricModel bm : modlist) {
                                                 bm.setSubblock(z, y, scale-x-1, true);
+                                            }
                                             break;
                                     }
                                 }
@@ -518,13 +673,118 @@ public class HDBlockModels {
                         }
                     }
                 }
+                else if(line.startsWith("patch:")) {
+                    String patchid = null;
+                    line = line.substring(6);
+                    HDPatchDefinition pd = new HDPatchDefinition();
+                    String[] args = line.split(",");
+                    for(String a : args) {
+                        String[] av = a.split("=");
+                        if(av.length < 2) continue;
+                        if(av[0].equals("id")) {
+                            patchid = av[1];
+                        }
+                        else if(av[0].equals("Ox")) {
+                            pd.x0 = Double.parseDouble(av[1]);
+                        }
+                        else if(av[0].equals("Oy")) {
+                            pd.y0 = Double.parseDouble(av[1]);
+                        }
+                        else if(av[0].equals("Oz")) {
+                            pd.z0 = Double.parseDouble(av[1]);
+                        }
+                        else if(av[0].equals("Ux")) {
+                            pd.xu = Double.parseDouble(av[1]);
+                        }
+                        else if(av[0].equals("Uy")) {
+                            pd.yu = Double.parseDouble(av[1]);
+                        }
+                        else if(av[0].equals("Uz")) {
+                            pd.zu = Double.parseDouble(av[1]);
+                        }
+                        else if(av[0].equals("Vx")) {
+                            pd.xv = Double.parseDouble(av[1]);
+                        }
+                        else if(av[0].equals("Vy")) {
+                            pd.yv = Double.parseDouble(av[1]);
+                        }
+                        else if(av[0].equals("Vz")) {
+                            pd.zv = Double.parseDouble(av[1]);
+                        }
+                        else if(av[0].equals("Umin")) {
+                            pd.umin = Double.parseDouble(av[1]);
+                        }
+                        else if(av[0].equals("Umax")) {
+                            pd.umax = Double.parseDouble(av[1]);
+                        }
+                        else if(av[0].equals("Vmin")) {
+                            pd.vmin = Double.parseDouble(av[1]);
+                        }
+                        else if(av[0].equals("Vmax")) {
+                            pd.vmax = Double.parseDouble(av[1]);
+                        }
+                    }
+                    /* If completed, add to map */
+                    if(patchid != null) {
+                        pd.update();    /* Finish cooking it */
+                        Log.info("patch " + patchid + ": " + pd.step);
+                        patchdefs.put(patchid,  pd);
+                    }
+                }
+                else if(line.startsWith("patchblock:")) {
+                    ArrayList<Integer> blkids = new ArrayList<Integer>();
+                    int databits = 0;
+                    line = line.substring(11);
+                    String[] args = line.split(",");
+                    ArrayList<HDPatchDefinition> patches = new ArrayList<HDPatchDefinition>();
+                    for(String a : args) {
+                        String[] av = a.split("=");
+                        if(av.length < 2) continue;
+                        if(av[0].equals("id")) {
+                            blkids.add(getIntValue(varvals,av[1]));
+                        }
+                        else if(av[0].equals("data")) {
+                            if(av[1].equals("*"))
+                                databits = 0xFFFF;
+                            else
+                                databits |= (1 << getIntValue(varvals,av[1]));
+                        }
+                        else if(av[0].startsWith("patch")) {
+                            int patchnum = Integer.parseInt(av[0].substring(5));    /* Get index */
+                            if((patchnum < 0) || (patchnum >= HDPatchDefinition.MAX_PATCHES)) {
+                                Log.severe("Invalid patch index " + patchnum + " - line " + rdr.getLineNumber() + " of " + fname);
+                                return;
+                            }
+                            HDPatchDefinition pd = patchdefs.get(av[1]);
+                            if(pd == null) {
+                                Log.severe("Invalid patch ID " + av[1] + " - line " + rdr.getLineNumber() + " of " + fname);
+                            }
+                            else {
+                                patches.add(patchnum,  pd);
+                            }
+                        }
+                    }
+                    /* If we have everything, build block */
+                    if((blkids.size() > 0) && (databits != 0) && (patches.size() > 0)) {
+                        HDPatchDefinition[] patcharray = patches.toArray(new HDPatchDefinition[patches.size()]);
+                        for(Integer id : blkids) {
+                            if(id > 0) {
+                                new HDBlockPatchModel(id.intValue(), databits, patcharray);
+                                cnt++;
+                            }
+                        }
+                    }
+                    else {
+                        Log.severe("Patch block model missing required parameters = line " + rdr.getLineNumber() + " of " + fname);
+                    }
+                }
                 else if(layerbits != 0) {   /* If we're working pattern lines */
                     /* Layerbits determine Y, rows count from North to South (X=0 to X=N-1), columns Z are West to East (N-1 to 0) */
                     for(int i = 0; (i < scale) && (i < line.length()); i++) {
                         if(line.charAt(i) == '*') { /* If an asterix, set flag */
                             for(int y = 0; y < scale; y++) {
                                 if((layerbits & (1<<y)) != 0) {
-                                    for(HDBlockModels mod : modlist) {
+                                    for(HDBlockVolumetricModel mod : modlist) {
                                         mod.setSubblock(rownum, y, scale-i-1, true);
                                     }
                                 }

@@ -69,4 +69,16 @@ public interface HDPerspectiveState {
      * Get map iterator
      */
     MapIterator getMapIterator();
+    /**
+     * Get current patch index
+     */
+    int getPatchIndex();
+    /**
+     * Get current U of patch intercept
+     */
+    double getPatchU();
+    /**
+     * Get current V of patch intercept
+     */
+    double getPatchV();
 }

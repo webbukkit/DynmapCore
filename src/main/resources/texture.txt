@@ -23,13 +23,13 @@ block:id=5,data=2,allsides=214,topbottom=4214
 # Wooden Plank
 block:id=5,data=3,allsides=199,topbottom=4199
 # Sapling
-block:id=6,data=0,data=4,data=8,data=12,allsides=15,transparency=TRANSPARENT
+block:id=6,data=0,data=4,data=8,data=12,patch0=15,patch1=15,transparency=TRANSPARENT
 # Sapling (Spruce)
-block:id=6,data=1,data=5,data=9,data=13,allsides=63,transparency=TRANSPARENT
+block:id=6,data=1,data=5,data=9,data=13,patch0=63,patch1=63,transparency=TRANSPARENT
 # Sapling (Birch)
-block:id=6,data=2,data=6,data=10,data=14,allsides=79,transparency=TRANSPARENT
+block:id=6,data=2,data=6,data=10,data=14,patch0=79,patch1=79,transparency=TRANSPARENT
 # Sapling (Jungle)
-block:id=6,data=3,data=7,data=11,data=15,allsides=30,transparency=TRANSPARENT
+block:id=6,data=3,data=7,data=11,data=15,patch0=30,patch1=30,transparency=TRANSPARENT
 # Bedrock
 block:id=7,allfaces=17
 # Water
@@ -164,15 +164,15 @@ block:id=29,data=12,north=110,south=109,top=262,bottom=5262,east=6262,west=4262
 # Sticky piston - extended facing south
 block:id=29,data=13,north=109,south=110,top=5262,bottom=262,east=4262,west=6262
 # Web
-block:id=30,allsides=11
+block:id=30,patch0=11,patch1=11,transparency=TRANSPARENT
 # Dead shrub
-block:id=31,data=0,allsides=55,transparency=TRANSPARENT
+block:id=31,data=0,patch0=55,patch1=55,transparency=TRANSPARENT
 # Tall Grass
-block:id=31,data=1,allfaces=1039,transparency=TRANSPARENT
+block:id=31,data=1,patch0=1039,patch1=1039,transparency=TRANSPARENT
 # Fern
-block:id=31,data=2,allsides=1056,transparency=TRANSPARENT
+block:id=31,data=2,patch0=1056,patch1=1056,transparency=TRANSPARENT
 # Dead shrub
-block:id=32,allsides=55,transparency=TRANSPARENT
+block:id=32,patch0=55,patch1=55,transparency=TRANSPARENT
 # Piston - facing down
 block:id=33,data=0,top=109,bottom=107,allsides=5108
 # Piston - facing up
@@ -256,13 +256,13 @@ block:id=35,data=15,allfaces=113
 # Block move by piston - don't render
 block:id=36
 # Dandelion
-block:id=37,allsides=13,transparency=TRANSPARENT
+block:id=37,patch0=13,patch1=13,transparency=TRANSPARENT
 # Rose
-block:id=38,allsides=12,transparency=TRANSPARENT
+block:id=38,patch0=12,patch1=12,transparency=TRANSPARENT
 # Brown mushroom
-block:id=39,allsides=29,transparency=TRANSPARENT
+block:id=39,patch0=29,patch1=29,transparency=TRANSPARENT
 # Red mushroom
-block:id=40,allsides=28,transparency=TRANSPARENT
+block:id=40,patch0=28,patch1=28,transparency=TRANSPARENT
 # Gold block
 block:id=41,allfaces=23
 # Iron block
@@ -308,7 +308,7 @@ block:id=49,allfaces=37
 # Torch - inclined
 block:id=50,data=1,data=2,data=3,data=4,allsides=10080,top=162,bottom=4,transparency=TRANSPARENT
 # Torch - up
-block:id=50,data=5,allsides=80,top=162,bottom=4,transparency=TRANSPARENT
+block:id=50,data=5,patch0=80,patch1=80,patch2=80,patch3=80,transparency=TRANSPARENT
 # Fire
 block:id=51,allsides=265,transparency=TRANSPARENT
 # Monster spawner
@@ -352,21 +352,21 @@ block:id=57,allfaces=24
 # Crafting table
 block:id=58,topbottom=43,east=59,west=59,north=60,south=60
 # Crops (size 1)
-block:id=59,data=0,allsides=88,transparency=TRANSPARENT
+block:id=59,data=0,patch0=88,patch1=88,patch2=88,patch3=88,transparency=TRANSPARENT
 # Crops (size 2)
-block:id=59,data=1,allsides=89,transparency=TRANSPARENT
+block:id=59,data=1,patch0=89,patch1=89,patch2=89,patch3=89,transparency=TRANSPARENT
 # Crops (size 3)
-block:id=59,data=2,allsides=90,transparency=TRANSPARENT
+block:id=59,data=2,patch0=90,patch1=90,patch2=90,patch3=90,transparency=TRANSPARENT
 # Crops (size 4)
-block:id=59,data=3,allsides=91,transparency=TRANSPARENT
+block:id=59,data=3,patch0=91,patch1=91,patch2=91,patch3=91,transparency=TRANSPARENT
 # Crops (size 5)
-block:id=59,data=4,allsides=92,transparency=TRANSPARENT
+block:id=59,data=4,patch0=92,patch1=92,patch2=92,patch3=92,transparency=TRANSPARENT
 # Crops (size 6)
-block:id=59,data=5,allsides=93,transparency=TRANSPARENT
+block:id=59,data=5,patch0=93,patch1=93,patch2=93,patch3=93,transparency=TRANSPARENT
 # Crops (size 7)
-block:id=59,data=6,allsides=94,transparency=TRANSPARENT
+block:id=59,data=6,patch0=94,patch1=94,patch2=94,patch3=94,transparency=TRANSPARENT
 # Crops (size 8)
-block:id=59,data=7,allsides=95,transparency=TRANSPARENT
+block:id=59,data=7,patch0=95,patch1=95,patch2=95,patch3=95,transparency=TRANSPARENT
 # Farmland (dry)
 block:id=60,data=0,top=87,allsides=2,bottom=2
 # Farmland (wet)
@@ -448,11 +448,11 @@ block:id=73,id=74,allfaces=51
 # Redstone Torch - unlit - inclined
 block:id=75,data=1,data=2,data=3,data=4,allsides=10115,top=113,bottom=4,transparency=TRANSPARENT
 # Redstone Torch - unlit - up
-block:id=75,data=5,allsides=115,top=113,bottom=4,transparency=TRANSPARENT
+block:id=75,data=5,patch0=115,patch1=115,patch2=115,patch3=115,transparency=TRANSPARENT
 # Redstone Torch - lit - inclined
 block:id=76,data=1,data=2,data=3,data=4,allsides=10099,top=129,bottom=4,transparency=TRANSPARENT
 # Redstone Torch - lit - up
-block:id=76,data=5,allsides=99,top=129,bottom=4,transparency=TRANSPARENT
+block:id=76,data=5,patch0=99,patch1=99,patch2=99,patch3=99,transparency=TRANSPARENT
 # Stone button
 block:id=77,allfaces=1,transparency=TRANSPARENT
 # Snow
@@ -466,7 +466,7 @@ block:id=81,top=69,allsides=70,bottom=71,transparency=SEMITRANSPARENT
 # Clay block
 block:id=82,allfaces=72
 # Sugar Cane
-block:id=83,allsides=73,topbottom=21,transparency=TRANSPARENT
+block:id=83,patch0=73,patch1=73,transparency=TRANSPARENT
 # Jukebox
 block:id=84,allsides=74,topbottom=75
 # Fence
@@ -596,11 +596,11 @@ block:id=113,allfaces=224,transparency=TRANSPARENT
 # Nether brick stairs
 block:id=114,allfaces=224,transparency=SEMITRANSPARENT
 # Nether Wart (small)
-block:id=115,data=0,allsides=226,transparency=TRANSPARENT
+block:id=115,data=0,patch0=226,patch1=226,transparency=TRANSPARENT
 # Nether Wart (medium)
-block:id=115,data=1,data=2,allsides=227,transparency=TRANSPARENT
+block:id=115,data=1,data=2,patch0=227,patch1=227,transparency=TRANSPARENT
 # Nether Wart (large)
-block:id=115,data=3,data=4,data=5,data=6,data=7,allsides=228,transparency=TRANSPARENT
+block:id=115,data=3,data=4,data=5,data=6,data=7,patch0=228,patch1=228,transparency=TRANSPARENT
 # Enchantment table
 block:id=116,data=*,top=166,allsides=182,bottom=183,transparency=TRANSPARENT
 # Brewing stand

@@ -184,7 +184,7 @@ public class TexturePack {
         SEMITRANSPARENT /* Opaque block that doesn't block all rays (steps, slabs) - use light above for face lighting on opaque blocks */
     }
     public static class HDTextureMap {
-        private int faces[];  /* index in terrain.png of image for each face (indexed by BlockStep.ordinal()) */
+        private int faces[];  /* index in terrain.png of image for each face (indexed by BlockStep.ordinal() OR patch index) */
         private List<Integer> blockids;
         private int databits;
         private BlockTransparency bt;
@@ -1180,7 +1180,7 @@ public class TexturePack {
                     ArrayList<Integer> blkids = new ArrayList<Integer>();
                     int databits = -1;
                     int srctxtid = -1;
-                    int faces[] = new int[] { -1, -1, -1, -1, -1, -1 };
+                    int faces[] = new int[] { TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK };
                     line = line.substring(6);
                     BlockTransparency trans = BlockTransparency.OPAQUE;
                     String[] args = line.split(",");
@@ -1232,6 +1232,20 @@ public class TexturePack {
                         else if(av[0].equals("topbottom")) {
                             faces[BlockStep.Y_MINUS.ordinal()] = 
                                 faces[BlockStep.Y_PLUS.ordinal()] = Integer.parseInt(av[1]);
+                        }
+                        else if(av[0].startsWith("patch")) {
+                            int patchid = Integer.parseInt(av[0].substring(5));
+                            if(patchid < 0) {
+                                Log.severe("Texture mapping has invalid patch index - " + av[1] + " - line " + rdr.getLineNumber() + " of " + txtname);
+                                return;
+                            }
+                            if(faces.length <= patchid) {
+                                int[] newfaces = new int[patchid+1];
+                                Arrays.fill(newfaces, TILEINDEX_BLANK);
+                                System.arraycopy(faces, 0, newfaces, 0, faces.length);
+                                faces = newfaces;
+                            }
+                            faces[patchid] = Integer.parseInt(av[1]);
                         }
                         else if(av[0].equals("transparency")) {
                             trans = BlockTransparency.valueOf(av[1]);
@@ -1385,34 +1399,48 @@ public class TexturePack {
         int blkdata = ps.getBlockData();
         HDTextureMap map = HDTextureMap.getMap(blkid, blkdata, ps.getBlockRenderData());
         BlockStep laststep = ps.getLastBlockStep();
-        int textid = map.faces[laststep.ordinal()]; /* Get index of texture source */
+        int patchid = ps.getPatchIndex();   /* See if patch index */
+        int textid;
+        if(patchid >= 0) {
+            textid = map.faces[patchid];    /* Get index of patch */
+        }
+        else {
+            textid = map.faces[laststep.ordinal()]; /* Get index of texture source */
+        }
         if(textid < 0) {
             rslt.setTransparent();
             return;
         }
         else if(textid < 1000) {    /* If simple mapping */
             int[] texture = terrain_argb[textid];
-            int[] xyz = ps.getSubblockCoord();
             /* Get texture coordinates (U=horizontal(left=0),V=vertical(top=0)) */
             int u = 0, v = 0;
+            /* If not patch, compute U and V */
+            if(patchid < 0) {
+                int[] xyz = ps.getSubblockCoord();
 
-            switch(laststep) {
-                case X_MINUS: /* South face: U = East (Z-), V = Down (Y-) */
-                    u = native_scale-xyz[2]-1; v = native_scale-xyz[1]-1; 
-                    break;
-                case X_PLUS:    /* North face: U = West (Z+), V = Down (Y-) */
-                    u = xyz[2]; v = native_scale-xyz[1]-1; 
-                    break;
-                case Z_MINUS:   /* West face: U = South (X+), V = Down (Y-) */
-                    u = xyz[0]; v = native_scale-xyz[1]-1;
-                    break;
-                case Z_PLUS:    /* East face: U = North (X-), V = Down (Y-) */
-                    u = native_scale-xyz[0]-1; v = native_scale-xyz[1]-1;
-                    break;
-                case Y_MINUS:   /* U = East(Z-), V = South(X+) */
-                case Y_PLUS:
-                    u = native_scale-xyz[2]-1; v = xyz[0];
-                    break;
+                switch(laststep) {
+                    case X_MINUS: /* South face: U = East (Z-), V = Down (Y-) */
+                        u = native_scale-xyz[2]-1; v = native_scale-xyz[1]-1; 
+                        break;
+                    case X_PLUS:    /* North face: U = West (Z+), V = Down (Y-) */
+                        u = xyz[2]; v = native_scale-xyz[1]-1; 
+                        break;
+                    case Z_MINUS:   /* West face: U = South (X+), V = Down (Y-) */
+                        u = xyz[0]; v = native_scale-xyz[1]-1;
+                        break;
+                    case Z_PLUS:    /* East face: U = North (X-), V = Down (Y-) */
+                        u = native_scale-xyz[0]-1; v = native_scale-xyz[1]-1;
+                        break;
+                    case Y_MINUS:   /* U = East(Z-), V = South(X+) */
+                    case Y_PLUS:
+                        u = native_scale-xyz[2]-1; v = xyz[0];
+                        break;
+                }
+            }
+            else {
+                u = fastFloor(ps.getPatchU() * native_scale);
+                v = native_scale - fastFloor(ps.getPatchV() * native_scale) - 1;
             }
             /* Read color from texture */
             rslt.setARGB(texture[v*native_scale + u]);
@@ -1437,27 +1465,34 @@ public class TexturePack {
         }
 
         int[] texture = terrain_argb[textid];
-        int[] xyz = ps.getSubblockCoord();
         /* Get texture coordinates (U=horizontal(left=0),V=vertical(top=0)) */
         int u = 0, v = 0, tmp;
+        
+        if(patchid < 0) {
+            int[] xyz = ps.getSubblockCoord();
 
-        switch(laststep) {
-            case X_MINUS: /* South face: U = East (Z-), V = Down (Y-) */
-                u = native_scale-xyz[2]-1; v = native_scale-xyz[1]-1; 
-                break;
-            case X_PLUS:    /* North face: U = West (Z+), V = Down (Y-) */
-                u = xyz[2]; v = native_scale-xyz[1]-1; 
-                break;
-            case Z_MINUS:   /* West face: U = South (X+), V = Down (Y-) */
-                u = xyz[0]; v = native_scale-xyz[1]-1;
-                break;
-            case Z_PLUS:    /* East face: U = North (X-), V = Down (Y-) */
-                u = native_scale-xyz[0]-1; v = native_scale-xyz[1]-1;
-                break;
-            case Y_MINUS:   /* U = East(Z-), V = South(X+) */
-            case Y_PLUS:
-                u = native_scale-xyz[2]-1; v = xyz[0];
-                break;
+            switch(laststep) {
+                case X_MINUS: /* South face: U = East (Z-), V = Down (Y-) */
+                    u = native_scale-xyz[2]-1; v = native_scale-xyz[1]-1; 
+                    break;
+                case X_PLUS:    /* North face: U = West (Z+), V = Down (Y-) */
+                    u = xyz[2]; v = native_scale-xyz[1]-1; 
+                    break;
+                case Z_MINUS:   /* West face: U = South (X+), V = Down (Y-) */
+                    u = xyz[0]; v = native_scale-xyz[1]-1;
+                    break;
+                case Z_PLUS:    /* East face: U = North (X-), V = Down (Y-) */
+                    u = native_scale-xyz[0]-1; v = native_scale-xyz[1]-1;
+                    break;
+                case Y_MINUS:   /* U = East(Z-), V = South(X+) */
+                case Y_PLUS:
+                    u = native_scale-xyz[2]-1; v = xyz[0];
+                    break;
+            }
+        }
+        else {
+            u = fastFloor(ps.getPatchU() * native_scale);
+            v = native_scale - fastFloor(ps.getPatchV() * native_scale) - 1;
         }
         /* Handle U-V transorms before fetching color */
         switch(textop) {
@@ -1629,6 +1664,10 @@ public class TexturePack {
             if((argb[i] & 0xFF000000) != 0)
                 argb[i] |= 0xFF000000;
         }
+    }
+
+    private static final int fastFloor(double f) {
+        return ((int)(f + 1000000000.0)) - 1000000000;
     }
 
     /**

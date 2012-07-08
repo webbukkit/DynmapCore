@@ -158,6 +158,8 @@ public class TexturePackHDShader implements HDShader {
                         else
                             c.blendColor(0xFFE6E6E6);
                         break;
+                    default:
+                        break;
                 }
                 /* Handle light level, if needed */
                 lighting.applyLighting(ps, this, c, tmpcolor);
