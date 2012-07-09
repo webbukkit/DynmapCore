@@ -1443,7 +1443,13 @@ public class TexturePack {
                 v = native_scale - fastFloor(ps.getPatchV() * native_scale) - 1;
             }
             /* Read color from texture */
-            rslt.setARGB(texture[v*native_scale + u]);
+            try {
+                rslt.setARGB(texture[v*native_scale + u]);
+            } catch(ArrayIndexOutOfBoundsException aoobx) {
+                Log.info("U=" + u + ",V=" + v + ",textid=" + textid + ",patchid=" + patchid + ".native_scale="+native_scale+",txtlen=" + texture.length);
+                Log.info("patchU=" + ps.getPatchU() + ",patchV=" + ps.getPatchV());
+            }
+            
             return;            
         }
         

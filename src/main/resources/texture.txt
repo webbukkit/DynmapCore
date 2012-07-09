@@ -564,10 +564,10 @@ block:id=100,data=9,top=125,west=125,south=125,north=142,east=142,bottom=142
 # Brown Mushroom Block - stem
 # Red Mushroom Block - stem
 block:id=99,id=100,data=10,topbottom=142,allsides=141
-# Iron bars
-block:id=101,allsides=85,transparency=TRANSPARENT
+# Iron fence
+block:id=101,patch0=85,patch1=85,patch2=85,patch3=85,transparency=TRANSPARENT
 # Glass pane
-block:id=102,allsides=12049,topbottom=12263,transparency=TRANSPARENT
+block:id=102,patch0=12049,patch1=12049,patch2=12049,patch3=12049,transparency=TRANSPARENT
 # Watermellon
 block:id=103,allsides=136,topbottom=137
 # Pumpkin stem 

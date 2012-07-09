@@ -121,13 +121,11 @@ public class HDBlockModels {
         }
         
         private void rotate(Vector3D vec, int cnt) {
-            Log.info("vect in = " + vec + ", cnt=" + cnt);
             vec.subtract(offsetCenter); /* Shoft to center of block */
             for(int i = 0; i < cnt; i++) {
                 rotate90.transform(vec);
             }
             vec.add(offsetCenter); /* Shoft back to corner */
-            Log.info("vect out = "+ vec);
         }
         
         public void update() {
@@ -173,6 +171,63 @@ public class HDBlockModels {
                     }
                 }
             }
+        }
+        public boolean validate() {
+            boolean good = true;
+            if((x0 < 0.0) || (x0 > 1.0)) {
+                Log.severe("Invalid x0=" + x0);
+                good = false;
+            }
+            if((y0 < 0.0) || (y0 > 1.0)) {
+                Log.severe("Invalid y0=" + y0);
+                good = false;
+            }
+            if((z0 < 0.0) || (z0 > 1.0)) {
+                Log.severe("Invalid z0=" + z0);
+                good = false;
+            }
+            if((xu < 0.0) || (xu > 1.0)) {
+                Log.severe("Invalid xu=" + xu);
+                good = false;
+            }
+            if((yu < 0.0) || (yu > 1.0)) {
+                Log.severe("Invalid yu=" + yu);
+                good = false;
+            }
+            if((zu < 0.0) || (zu > 1.0)) {
+                Log.severe("Invalid zu=" + zu);
+                good = false;
+            }
+            if((xv < 0.0) || (xv > 1.0)) {
+                Log.severe("Invalid xv=" + xv);
+                good = false;
+            }
+            if((yv < 0.0) || (yv > 1.0)) {
+                Log.severe("Invalid yv=" + yv);
+                good = false;
+            }
+            if((zv < 0.0) || (zv > 1.0)) {
+                Log.severe("Invalid zv=" + zv);
+                good = false;
+            }
+            if((umin < 0.0) || (umin >= umax)) {
+                Log.severe("Invalid umin=" + umin);
+                good = false;
+            }
+            if((vmin < 0.0) || (vmin >= vmax)) {
+                Log.severe("Invalid vmin=" + vmin);
+                good = false;
+            }
+            if(umax > 1.0) {
+                Log.severe("Invalid umax=" + umax);
+                good = false;
+            }
+            if(vmax > 1.0) {
+                Log.severe("Invalid vmax=" + vmax);
+                good = false;
+            }
+            
+            return good;
         }
     }
     
@@ -767,8 +822,9 @@ public class HDBlockModels {
                     /* If completed, add to map */
                     if(patchid != null) {
                         pd.update();    /* Finish cooking it */
-                        Log.info("patch " + patchid + ": " + pd.step);
-                        patchdefs.put(patchid,  pd);
+                        if(pd.validate()) {
+                            patchdefs.put(patchid,  pd);
+                        }
                     }
                 }
                 else if(line.startsWith("patchblock:")) {
