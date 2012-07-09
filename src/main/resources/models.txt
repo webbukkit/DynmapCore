@@ -2,27 +2,18 @@
 # Patches - define surfaces to be used in patch models
 #
 # Vertical patch, 45 degrees from xz=1.0/0.0 to xz=0.0/1.0
-patch:id=v_x1z0_x0z1,Ox=1.0,Oy=0.0,Oz=0.0,Ux=0.0,Uy=0.0,Uz=1.0,Vx=1.0,Vy=1.0,Vz=0.0
-# Vertical patch, 45 degrees from xz=0.0/0.0 to xz=1.0/1.0
-patch:id=v_x0z0_x1z1,Ox=0.0,Oy=0.0,Oz=0.0,Ux=1.0,Uy=0.0,Uz=1.0,Vx=0.0,Vy=1.0,Vz=0.0
-# Vertical patch, X+ facing side from xz=0.5825/1.0 to 0.5825/0.0
-patch:id=v_x05825,Ox=0.5825,Oy=0.0,Oz=1.0,Ux=0.5825,Uy=0.0,Uz=0.0,Vx=0.5825,Vy=1.0,Vz=1.0
+patch:id=VertX1Z0ToX0Z1,Ox=1.0,Oy=0.0,Oz=0.0,Ux=0.0,Uy=0.0,Uz=1.0,Vx=1.0,Vy=1.0,Vz=0.0
 # Vertical patch, X- facing side from xz=0.4175/0.0 to 0.4175/1.0
-patch:id=v_x04175,Ox=0.4175,Oy=0.0,Oz=0.0,Ux=0.4175,Uy=0.0,Uz=1.0,Vx=0.4175,Vy=1.0,Vz=0.0
-# Vertical patch, Z+ facing side from xz=0.0/0.5825 to 1.0/0.5825
-patch:id=v_z05825,Ox=0.0,Oy=0.0,Oz=0.5825,Ux=1.0,Uy=0.0,Uz=0.5825,Vx=0.0,Vy=1.0,Vz=0.5825
-# Vertical patch, Z- facing side from xz=1.0/0.4175 to 0.0/0.4175
-patch:id=v_z04175,Ox=1.0,Oy=0.0,Oz=0.4175,Ux=0.0,Uy=0.0,Uz=0.4175,Vx=1.0,Vy=1.0,Vz=0.4175
+patch:id=VertX04175,Ox=0.4175,Oy=0.0,Oz=0.0,Ux=0.4175,Uy=0.0,Uz=1.0,Vx=0.4175,Vy=1.0,Vz=0.0
+# Vertical patch, X+ facing side from xz=0.25,1.0 to 0.25/0.0
+patch:id=VertX025,Ox=0.25,Oy=0.0,Oz=1.0,Ux=0.25,Uy=0.0,Uz=0.0,Vx=0.25,Vy=1.0,Vz=1.0
 # Vertical patch, X+ facing side from xz=0.75,1.0 to 0.75/0.0
-patch:id=v_x075,Ox=0.75,Oy=0.0,Oz=1.0,Ux=0.75,Uy=0.0,Uz=0.0,Vx=0.75,Vy=1.0,Vz=1.0
-# Vertical patch, X- facing side from xz=0.25/0.0 to 0.25/1.0
-patch:id=v_x025,Ox=0.25,Oy=0.0,Oz=0.0,Ux=0.25,Uy=0.0,Uz=1.0,Vx=0.25,Vy=1.0,Vz=0.0
-# Vertical patch, Z+ facing side from xz=0.0/0.75 to 1.0/0.75
-patch:id=v_z075,Ox=0.0,Oy=0.0,Oz=0.75,Ux=1.0,Uy=0.0,Uz=0.75,Vx=0.0,Vy=1.0,Vz=0.75
-# Vertical patch, Z- facing side from xz=1.0/0.25 to 0.0/0.25
-patch:id=v_z025,Ox=1.0,Oy=0.0,Oz=0.25,Ux=0.0,Uy=0.0,Uz=0.25,Vx=1.0,Vy=1.0,Vz=0.25
-# Horizontal patch - Y+ facing at Y=0.01
-patch:id=h_y001,Ox=0.0,Oy=0.01,Oz=0.0,Ux=1.0,Uy=0.01,Uz=0.0,Vx=0.0,Vy=0.01,Vz=1.0
+patch:id=VertX075,Ox=0.75,Oy=0.0,Oz=1.0,Ux=0.75,Uy=0.0,Uz=0.0,Vx=0.75,Vy=1.0,Vz=1.0
+# Horizontal patch - Y+ facing at Y=0.01, top of texture at +Z
+patch:id=HorizY001ZTop,Ox=0.0,Oy=0.01,Oz=0.0,Ux=1.0,Uy=0.01,Uz=0.0,Vx=0.0,Vy=0.01,Vz=1.0
+# Sloped patch - up to X+, top of texture at Z+
+patch:id=SlopeXUpZTop,Ox=0.0,Oy=0.0,Oz=0.0,Ux=0.0,Uy=0.0,Uz=1.0,Vx=1.0,Vy=1.0,Vz=0.0
+
 #
 # Wood Stair - up south
 # Cobblestone Stair - up south
@@ -230,7 +221,7 @@ layer:0,1,2,3,4,5,6
 # Torch - up
 # Redstone torch on - up
 # Redstone torch off - up
-patchblock:id=50,id=75,id=76,data=5,data=0,patch0=v_x04175,patch1=v_x05825,patch2=v_z04175,patch3=v_z05825
+patchblock:id=50,id=75,id=76,data=5,data=0,patch0=VertX04175,patch1=VertX04175@90,patch2=VertX04175@180,patch3=VertX04175@270
 # Torch - pointing south
 # Redstone torch on - pointing south
 # Redstone torch off - pointing south
@@ -652,7 +643,7 @@ rotate:id=96,data=4,rot=270
 block:id=96,data=7,scale=16
 rotate:id=96,data=4,rot=90
 # Crops
-patchblock:id=59,data=*,patch0=v_x025,patch1=v_x075,patch2=v_z025,patch3=v_z075
+patchblock:id=59,data=*,patch0=VertX075,patch1=VertX075@90,patch2=VertX025,patch3=VertX025@90
 # Stone Button - facing south
 block:id=77,data=1,data=9,scale=8
 layer:3,4
@@ -674,362 +665,41 @@ rotate:id=77,data=1,rot=90
 block:id=77,data=4,data=12,scale=8
 rotate:id=77,data=1,rot=270
 # Rails - flat - east/west
-block:id=66,data=0,scale=16
-layer:0
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-# Rails - flat - north/south
-block:id=66,data=1,scale=16
-rotate:id=66,data=0,rot=90
-# Rails - ascending to south 
-block:id=66,data=2,scale=16
-layer:0
-****************
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-layer:1
-----------------
-****************
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-layer:2
-----------------
-----------------
-****************
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-layer:3
-----------------
-----------------
-----------------
-****************
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-layer:4
-----------------
-----------------
-----------------
-----------------
-****************
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-layer:5
-----------------
-----------------
-----------------
-----------------
-----------------
-****************
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-layer:6
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-****************
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-layer:7
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-****************
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-layer:8
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-****************
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-layer:9
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-****************
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-layer:10
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-****************
-----------------
-----------------
-----------------
-----------------
-----------------
-layer:11
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-****************
-----------------
-----------------
-----------------
-----------------
-layer:12
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-****************
-----------------
-----------------
-----------------
-layer:13
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-****************
-----------------
-----------------
-layer:14
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-****************
-----------------
-layer:15
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-****************
-# Rails - ascending to north
-block:id=66,data=3,scale=16
-rotate:id=66,data=2,rot=180
-# Rails - ascending to east
-block:id=66,data=4,scale=16
-rotate:id=66,data=2,rot=270
-# Rails - ascending to west
-block:id=66,data=5,scale=16
-rotate:id=66,data=2,rot=90
-# Rails - northeast corner
-block:id=66,data=6,scale=16
-layer:0
-************----
-*************---
-**************--
-***************-
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-# Rails - southeast corner
-block:id=66,data=7,scale=16
-rotate:id=66,data=6,rot=90
-# Rails - southwest corner
-block:id=66,data=8,scale=16
-rotate:id=66,data=6,rot=180
-# Rails - northwest corner
-block:id=66,data=9,scale=16
-rotate:id=66,data=6,rot=270
 # Powered rails - flat - east/west
 # Detector rails - flat - east/west
-block:id=27,id=28,data=0,data=8,scale=16
-rotate:id=66,data=0,rot=0
+patchblock:id=66,id=27,id=28,data=0,patch0=HorizY001ZTop
+# Powered rails - flat - east/west (powered)
+patchblock:id=27,data=8,patch0=HorizY001ZTop
+# Rails - flat - north/south
 # Powered rails - flat - north/south
 # Detector rails - flat - north/south
-block:id=27,id=28,data=1,data=9,scale=16
-rotate:id=66,data=1,rot=0
-# Powered rails - ascending to south
+patchblock:id=66,id=27,id=28,data=1,patch0=HorizY001ZTop@90
+# Powered rails - flat - north/south (powred)
+patchblock:id=27,data=9,patch0=HorizY001ZTop@90
+# Rails - ascending to south 
+# Powered rails - ascending to south (powered or unpowered)
 # Detector rails - ascending to south
-block:id=27,id=28,data=2,data=10,scale=16
-rotate:id=66,data=2,rot=0
+patchblock:id=66,id=27,id=28,data=2,data=10,patch0=SlopeXUpZTop
+# Rails - ascending to north
 # Powered rails - ascending to north
 # Detector rails - ascending to north
-block:id=27,id=28,data=3,data=11,scale=16
-rotate:id=66,data=3,rot=0
+patchblock:id=66,id=27,id=28,data=3,data=11,patch0=SlopeXUpZTop@180
+# Rails - ascending to east
 # Powered rails - ascending to east
 # Detector rails - ascending to east
-block:id=27,id=28,data=4,data=12,scale=16
-rotate:id=66,data=4,rot=0
+patchblock:id=66,id=27,id=28,data=4,data=12,patch0=SlopeXUpZTop@270
+# Rails - ascending to west
 # Powered rails - ascending to west
 # Detector rails - ascending to west
-block:id=27,id=28,data=5,data=13,scale=16
-rotate:id=66,data=5,rot=0
+patchblock:id=66,id=27,id=28,data=5,data=13,patch0=SlopeXUpZTop@90
+# Rails - northeast corner
+patchblock:id=66,data=6,patch0=HorizY001ZTop@90
+# Rails - southeast corner
+patchblock:id=66,data=7,patch0=HorizY001ZTop@180
+# Rails - southwest corner
+patchblock:id=66,data=8,patch0=HorizY001ZTop@270
+# Rails - northwest corner
+patchblock:id=66,data=9,patch0=HorizY001ZTop
 # Ladder - attached to east side of block
 block:id=65,data=2,scale=16
 layer:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
@@ -2174,7 +1844,7 @@ rotate:id=102,data=6,rot=270
 # Dead schrub (tall grass)
 # Sapling
 # Sugar Cane
-patchblock:id=6,id=30,id=31,id=32,id=37,id=38,id=39,id=40,id=83,id=115,data=*,patch0=v_x1z0_x0z1,patch1=v_x0z0_x1z1
+patchblock:id=6,id=30,id=31,id=32,id=37,id=38,id=39,id=40,id=83,id=115,data=*,patch0=VertX1Z0ToX0Z1,patch1=VertX1Z0ToX0Z1@90
 
 # Vines - N side of block
 block:id=106,data=2,scale=8

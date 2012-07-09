@@ -15,6 +15,7 @@ import java.util.Vector;
 import org.dynmap.ConfigurationNode;
 import org.dynmap.Log;
 import org.dynmap.utils.MapIterator.BlockStep;
+import org.dynmap.utils.Matrix3D;
 import org.dynmap.utils.Vector3D;
 
 /**
@@ -80,6 +81,10 @@ public class HDBlockModels {
         public Vector3D u, v;       /* U and V vector, relative to origin */
         public static final int MAX_PATCHES = 32;   /* Max patches per model */
         public BlockStep step;      /* Best approximation of orientation of surface */
+        /* Matrix for rotating vector around Y axis */
+        private static final Matrix3D rotate90 = new Matrix3D(0, 0, -1, 0, 1, 0, 1, 0, 0);
+        /* Offset vector of middle of block */
+        private static final Vector3D offsetCenter = new Vector3D(0.5,0.5,0.5);
         
         public HDPatchDefinition() {
             x0 = y0 = z0 = 0.0;
@@ -90,6 +95,41 @@ public class HDBlockModels {
             u = new Vector3D();
             v = new Vector3D();
         }
+        /**
+         * Construct patch, based on rotation of existing patch clockwise by N
+         * 90 degree steps
+         * @param orig
+         * @param rotate_cnt
+         */
+        public HDPatchDefinition(HDPatchDefinition orig, int rotate_cnt) {
+            Vector3D vec = new Vector3D(orig.x0, orig.y0, orig.z0);
+            rotate(vec, rotate_cnt); /* Rotate origin */
+            x0 = vec.x; y0 = vec.y; z0 = vec.z;
+            /* Rotate U */
+            vec.x = orig.xu; vec.y = orig.yu; vec.z = orig.zu;
+            rotate(vec, rotate_cnt); /* Rotate origin */
+            xu = vec.x; yu = vec.y; zu = vec.z;
+            /* Rotate V */
+            vec.x = orig.xv; vec.y = orig.yv; vec.z = orig.zv;
+            rotate(vec, rotate_cnt); /* Rotate origin */
+            xv = vec.x; yv = vec.y; zv = vec.z;
+            umin = orig.umin; vmin = orig.vmin;
+            umax = orig.umax; vmax = orig.vmax;
+            u = new Vector3D();
+            v = new Vector3D();
+            update();
+        }
+        
+        private void rotate(Vector3D vec, int cnt) {
+            Log.info("vect in = " + vec + ", cnt=" + cnt);
+            vec.subtract(offsetCenter); /* Shoft to center of block */
+            for(int i = 0; i < cnt; i++) {
+                rotate90.transform(vec);
+            }
+            vec.add(offsetCenter); /* Shoft back to corner */
+            Log.info("vect out = "+ vec);
+        }
+        
         public void update() {
             u.x = xu - x0; u.y = yu - y0; u.z = zu - z0;
             v.x = xv - x0; v.y = yv - y0; v.z = zv - z0;
@@ -756,6 +796,18 @@ public class HDBlockModels {
                                 return;
                             }
                             HDPatchDefinition pd = patchdefs.get(av[1]);
+                            if(pd == null) {
+                                /* See if ID@rotation */
+                                int atidx = av[1].indexOf('@');
+                                if(atidx > 0) {
+                                    HDPatchDefinition pdorig = patchdefs.get(av[1].substring(0, atidx));
+                                    int rot = Integer.parseInt(av[1].substring(atidx+1));
+                                    if((pdorig != null) && ((rot % 90) == 0)) {
+                                        pd = new HDPatchDefinition(pdorig, rot/90);
+                                        patchdefs.put(av[1],  pd);  /* Add to map so we reuse it */
+                                    }
+                                }
+                            }
                             if(pd == null) {
                                 Log.severe("Invalid patch ID " + av[1] + " - line " + rdr.getLineNumber() + " of " + fname);
                             }

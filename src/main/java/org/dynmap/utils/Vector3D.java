@@ -24,7 +24,11 @@ public class Vector3D {
     public final void subtract(Vector3D v) {
         x = x - v.x; y = y - v.y; z = z - v.z;
     }
-    
+
+    public final void add(Vector3D v) {
+        x = x + v.x; y = y + v.y; z = z + v.z;
+    }
+
     public final double innerProduct(Vector3D v) {
         return (v.x * x) + (v.y * y) + (v.z * z);
     }
