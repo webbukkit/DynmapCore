@@ -310,7 +310,7 @@ block:id=50,data=1,data=2,data=3,data=4,patch0=80,patch1=80,patch2=80,patch3=80,
 # Torch - up
 block:id=50,data=5,patch0=80,patch1=80,patch2=80,patch3=80,patch4=80,transparency=TRANSPARENT
 # Fire
-block:id=51,allsides=265,transparency=TRANSPARENT
+block:id=51,patch0=265,patch1=265,patch2=265,patch3=265,patch4=265,patch5=265,patch6=265,patch7=265,transparency=TRANSPARENT
 # Monster spawner
 block:id=52,allfaces=65,transparency=TRANSPARENT
 # Wooden stairs
