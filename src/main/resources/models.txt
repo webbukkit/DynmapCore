@@ -3,8 +3,8 @@
 #
 # Vertical patch, 45 degrees from xz=1.0/0.0 to xz=0.0/1.0
 patch:id=VertX1Z0ToX0Z1,Ox=1.0,Oy=0.0,Oz=0.0,Ux=0.0,Uy=0.0,Uz=1.0,Vx=1.0,Vy=1.0,Vz=0.0
-# Vertical patch, X- facing side from xz=0.4175/0.0 to 0.4175/1.0
-patch:id=VertX04175,Ox=0.4175,Oy=0.0,Oz=0.0,Ux=0.4175,Uy=0.0,Uz=1.0,Vx=0.4175,Vy=1.0,Vz=0.0
+# Vertical patch, X- facing side from xz=0.4375/0.0 to 0.4375/1.0
+patch:id=VertX04375,Ox=0.4375,Oy=0.0,Oz=0.0,Ux=0.4375,Uy=0.0,Uz=1.0,Vx=0.4375,Vy=1.0,Vz=0.0,visibility=top
 # Vertical patch, X+ facing side from xz=0.25,1.0 to 0.25/0.0
 patch:id=VertX025,Ox=0.25,Oy=0.0,Oz=1.0,Ux=0.25,Uy=0.0,Uz=0.0,Vx=0.25,Vy=1.0,Vz=1.0
 # Vertical patch, X+ facing side from xz=0.75,1.0 to 0.75/0.0
@@ -20,14 +20,22 @@ patch:id=VertX05,Ox=0.5,Oy=0.0,Oz=1.0,Ux=0.5,Uy=0.0,Uz=0.0,Vx=0.5,Vy=1.0,Vz=1.0
 patch:id=VertX05Left,Ox=0.5,Oy=0.0,Oz=1.0,Ux=0.5,Uy=0.0,Uz=0.0,Vx=0.5,Vy=1.0,Vz=1.0,Umax=0.5
 # Vertical patch, X+ facing side from xz=0.5,1.0 to 0.5/0.0 (right half)
 patch:id=VertX05Right,Ox=0.5,Oy=0.0,Oz=1.0,Ux=0.5,Uy=0.0,Uz=0.0,Vx=0.5,Vy=1.0,Vz=1.0,Umin=0.5
-# Vertical patch, X+ facing side from xz=0.5,1.0 to 0.5/0.0 (strip - 0.4175 to 0.5825)
-patch:id=VertX05Strip,Ox=0.5,Oy=0.0,Oz=1.0,Ux=0.5,Uy=0.0,Uz=0.0,Vx=0.5,Vy=1.0,Vz=1.0,Umin=0.4175,Umax=0.5825
-# Horizontal patch - Y+ facing at Y=1.0, top of texture at +Z, vertical strip (0.4175 to 0.5825)
-patch:id=HorizY100ZTopStrip,Ox=0.0,Oy=1.0,Oz=0.0,Ux=1.0,Uy=1.0,Uz=0.0,Vx=0.0,Vy=1.0,Vz=1.0,Umin=0.4175,Umax=0.5825
-# Horizontal patch - Y+ facing at Y=1.0, top of texture at +Z, vertical strip (0.4175 to 0.5825), Top half (V>= 0.5)
-patch:id=HorizY100ZTopStripTop,Ox=0.0,Oy=1.0,Oz=0.0,Ux=1.0,Uy=1.0,Uz=0.0,Vx=0.0,Vy=1.0,Vz=1.0,Umin=0.4175,Umax=0.5825,Vmin=0.5
-# Horizontal patch - Y+ facing at Y=1.0, top of texture at +Z, vertical strip (0.4175 to 0.5825), Bottom half (V < 0.5)
-patch:id=HorizY100ZTopStripBottom,Ox=0.0,Oy=1.0,Oz=0.0,Ux=1.0,Uy=1.0,Uz=0.0,Vx=0.0,Vy=1,0,Vz=1.0,Umin=0.4175,Umax=0.5825,Vmax=0.5
+# Vertical patch, X+ facing side from xz=0.5,1.0 to 0.5/0.0 (strip - 0.4375 to 0.5625)
+patch:id=VertX05Strip,Ox=0.5,Oy=0.0,Oz=1.0,Ux=0.5,Uy=0.0,Uz=0.0,Vx=0.5,Vy=1.0,Vz=1.0,Umin=0.4375,Umax=0.5625
+# Horizontal patch - Y+ facing at Y=1.0, top of texture at +Z, vertical strip (0.4375 to 0.5625)
+patch:id=HorizY100ZTopStrip,Ox=0.0,Oy=1.0,Oz=0.0,Ux=1.0,Uy=1.0,Uz=0.0,Vx=0.0,Vy=1.0,Vz=1.0,Umin=0.4375,Umax=0.5625
+# Horizontal patch - Y+ facing at Y=1.0, top of texture at +Z, vertical strip (0.4375 to 0.5625), Top half (V>= 0.5)
+patch:id=HorizY100ZTopStripTop,Ox=0.0,Oy=1.0,Oz=0.0,Ux=1.0,Uy=1.0,Uz=0.0,Vx=0.0,Vy=1.0,Vz=1.0,Umin=0.4375,Umax=0.5625,Vmin=0.5
+# Horizontal patch - Y+ facing at Y=1.0, top of texture at +Z, vertical strip (0.4375 to 0.5625), Bottom half (V < 0.5)
+patch:id=HorizY100ZTopStripBottom,Ox=0.0,Oy=1.0,Oz=0.0,Ux=1.0,Uy=1.0,Uz=0.0,Vx=0.0,Vy=1,0,Vz=1.0,Umin=0.4375,Umax=0.5625,Vmax=0.5
+
+# Torch slanted side - vertical, shifted to side and up (x=-0.5,y=0.2) and slanted out (Y offset by 0.4)
+patch:id=TorchSide1,Ox=-0.5,Oy=0.2,Oz=0.4375,Ux=0.5,Uy=0.2,Uz=0.4375,Vx=-0.1,Vy=1.2,Vz=0.4375,Vmax=0.8,visibility=bottom
+patch:id=TorchSide2,Ox=-0.5,Oy=0.2,Oz=0.5625,Ux=0.5,Uy=0.2,Uz=0.5625,Vx=-0.1,Vy=1.2,Vz=0.5625,Vmax=0.8,visibility=top
+patch:id=TorchSide3,Ox=0.0625,Oy=0.2,Oz=0.0,Ux=0.0625,Uy=0.2,Uz=1.0,Vx=0.4625,Vy=1.2,Vz=0.0,Vmax=0.8,visibility=bottom
+patch:id=TorchSide4,Ox=-0.0625,Oy=0.2,Oz=0.0,Ux=-0.0625,Uy=0.2,Uz=1.0,Vx=0.3375,Vy=1.2,Vz=0.0,Vmax=0.8,visibility=top
+patch:id=TorchTop,Ox=0.0,Oy=0.625,Oz=-0.0625,Ux=1.0,Uy=0.625,Uz=-0.0625,Vx=0.0,Vy=0.625,Vz=0.9375,Umin=0.4375,Umax=0.5625,Vmin=0.5,Vmax=0.625
+patch:id=TorchTopSlope,Ox=0.0,Oy=0.825,Oz=-0.3625,Ux=1.0,Uy=0.825,Uz=-0.3625,Vx=0.0,Vy=0.825,Vz=0.6375,Umin=0.4375,Umax=0.5625,Vmin=0.5,Vmax=0.625
 
 #
 # Wood Stair - up south
@@ -236,111 +244,23 @@ layer:0,1,2,3,4,5,6
 # Torch - up
 # Redstone torch on - up
 # Redstone torch off - up
-patchblock:id=50,id=75,id=76,data=5,data=0,patch0=VertX04175,patch1=VertX04175@90,patch2=VertX04175@180,patch3=VertX04175@270
+patchblock:id=50,id=75,id=76,data=5,data=0,patch0=VertX04375,patch1=VertX04375@90,patch2=VertX04375@180,patch3=VertX04375@270,patch4=TorchTop
 # Torch - pointing south
 # Redstone torch on - pointing south
 # Redstone torch off - pointing south
-block:id=50,id=75,id=76,data=1,scale=16
-layer:3,4
--------**-------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-layer:5,6
--------**-------
--------**-------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-layer:7,8
-----------------
--------**-------
--------**-------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-layer:9,10
-----------------
-----------------
--------**-------
--------**-------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-layer:11,12
-----------------
-----------------
-----------------
--------**-------
--------**-------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
+patchblock:id=50,id=75,id=76,data=1,patch0=TorchSide1,patch1=TorchSide2,patch2=TorchSide3,patch3=TorchSide4,patch4=TorchTopSlope@270
 # Torch - pointing north
 # Redstone torch on - pointing north
 # Redstone torch off - pointing north
-block:id=50,id=75,id=76,data=2,scale=16
-rotate:id=50,data=1,rot=180
+patchblock:id=50,id=75,id=76,data=2,patch0=TorchSide1@180,patch1=TorchSide2@180,patch2=TorchSide3@180,patch3=TorchSide4@180,patch4=TorchTopSlope@90
 # Torch - pointing west
 # Redstone torch on - pointing west
 # Redstone torch off - pointing west
-block:id=50,id=75,id=76,data=3,scale=16
-rotate:id=50,data=1,rot=90
+patchblock:id=50,id=75,id=76,data=3,patch0=TorchSide1@90,patch1=TorchSide2@90,patch2=TorchSide3@90,patch3=TorchSide4@90,patch4=TorchTopSlope
 # Torch - pointing east
 # Redstone torch on - pointing east
 # Redstone torch off - pointing east
-block:id=50,id=75,id=76,data=4,scale=16
-rotate:id=50,data=1,rot=270
+patchblock:id=50,id=75,id=76,data=4,patch0=TorchSide1@270,patch1=TorchSide2@270,patch2=TorchSide3@270,patch3=TorchSide4@270,patch4=TorchTopSlope@180
 # Fence - set render algorithm
 # Nether brick fence - set render alg
 linkmap:id=85,id=113,linkalg=1

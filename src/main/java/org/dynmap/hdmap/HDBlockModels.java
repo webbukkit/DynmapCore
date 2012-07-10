@@ -71,6 +71,8 @@ public class HDBlockModels {
         }
     }
     
+    public enum SideVisibility { TOP, BOTTOM, BOTH };
+    
     /* Define patch in surface-based models - origin (xyz), u-vector (xyz) v-vector (xyz), u limits and v limits */
     public static class HDPatchDefinition {
         public double x0, y0, z0;   /* Origin of patch (lower left corner of texture) */
@@ -81,6 +83,7 @@ public class HDBlockModels {
         public Vector3D u, v;       /* U and V vector, relative to origin */
         public static final int MAX_PATCHES = 32;   /* Max patches per model */
         public BlockStep step;      /* Best approximation of orientation of surface */
+        public SideVisibility sidevis;  /* Which side is visible */
         /* Matrix for rotating vector around Y axis */
         private static final Matrix3D rotate90 = new Matrix3D(0, 0, -1, 0, 1, 0, 1, 0, 0);
         /* Offset vector of middle of block */
@@ -94,6 +97,7 @@ public class HDBlockModels {
             umax = vmax = 1.0;
             u = new Vector3D();
             v = new Vector3D();
+            sidevis = SideVisibility.BOTH;
         }
         /**
          * Construct patch, based on rotation of existing patch clockwise by N
@@ -115,6 +119,7 @@ public class HDBlockModels {
             xv = vec.x; yv = vec.y; zv = vec.z;
             umin = orig.umin; vmin = orig.vmin;
             umax = orig.umax; vmax = orig.vmax;
+            sidevis = orig.sidevis;
             u = new Vector3D();
             v = new Vector3D();
             update();
@@ -174,39 +179,39 @@ public class HDBlockModels {
         }
         public boolean validate() {
             boolean good = true;
-            if((x0 < 0.0) || (x0 > 1.0)) {
+            if((x0 < -1.0) || (x0 > 2.0)) {
                 Log.severe("Invalid x0=" + x0);
                 good = false;
             }
-            if((y0 < 0.0) || (y0 > 1.0)) {
+            if((y0 < -1.0) || (y0 > 2.0)) {
                 Log.severe("Invalid y0=" + y0);
                 good = false;
             }
-            if((z0 < 0.0) || (z0 > 1.0)) {
+            if((z0 < -1.0) || (z0 > 2.0)) {
                 Log.severe("Invalid z0=" + z0);
                 good = false;
             }
-            if((xu < 0.0) || (xu > 1.0)) {
+            if((xu < -1.0) || (xu > 2.0)) {
                 Log.severe("Invalid xu=" + xu);
                 good = false;
             }
-            if((yu < 0.0) || (yu > 1.0)) {
+            if((yu < -1.0) || (yu > 2.0)) {
                 Log.severe("Invalid yu=" + yu);
                 good = false;
             }
-            if((zu < 0.0) || (zu > 1.0)) {
+            if((zu < -1.0) || (zu > 2.0)) {
                 Log.severe("Invalid zu=" + zu);
                 good = false;
             }
-            if((xv < 0.0) || (xv > 1.0)) {
+            if((xv < -1.0) || (xv > 2.0)) {
                 Log.severe("Invalid xv=" + xv);
                 good = false;
             }
-            if((yv < 0.0) || (yv > 1.0)) {
+            if((yv < -1.0) || (yv > 2.0)) {
                 Log.severe("Invalid yv=" + yv);
                 good = false;
             }
-            if((zv < 0.0) || (zv > 1.0)) {
+            if((zv < -1.0) || (zv > 2.0)) {
                 Log.severe("Invalid zv=" + zv);
                 good = false;
             }
@@ -817,6 +822,14 @@ public class HDBlockModels {
                         }
                         else if(av[0].equals("Vmax")) {
                             pd.vmax = Double.parseDouble(av[1]);
+                        }
+                        else if(av[0].equals("visibility")) {
+                            if(av[1].equals("top"))
+                                pd.sidevis = SideVisibility.TOP;
+                            else if(av[1].equals("bottom"))
+                                pd.sidevis = SideVisibility.BOTTOM;
+                            else
+                                pd.sidevis = SideVisibility.BOTH;
                         }
                     }
                     /* If completed, add to map */

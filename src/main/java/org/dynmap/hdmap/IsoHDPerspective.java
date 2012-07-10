@@ -659,8 +659,22 @@ public class IsoHDPerspective implements HDPerspective {
                 /* Compute determinant - inner product of this with U */
                 double det = pd.u.innerProduct(d_cross_uv);
                 /* If parallel to surface, no intercept */
-                if((det > -0.000001) && (det < 0.000001)) {
-                    continue;
+                switch(pd.sidevis) {
+                    case TOP:
+                        if (det < 0.000001) {
+                            continue;
+                        }
+                        break;
+                    case BOTTOM:
+                        if (det > -0.000001) {
+                            continue;
+                        }
+                        break;
+                    case BOTH:
+                        if((det > -0.000001) && (det < 0.000001)) {
+                            continue;
+                        }
+                        break;
                 }
                 double inv_det = 1.0 / det; /* Calculate inverse determinant */
                 /* Compute distance from patch to ray origin */
