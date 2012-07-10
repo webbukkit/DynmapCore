@@ -700,6 +700,10 @@ public class HDBlockModels {
                             }
                         }
                     }
+                    else {
+                        Log.severe("Invalid rotate error - line " + rdr.getLineNumber() + " of " + fname);
+                        return;
+                    }
                 }
                 else if(line.startsWith("linkmap:")) {
                     ArrayList<Integer> blkids = new ArrayList<Integer>();

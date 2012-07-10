@@ -29,21 +29,21 @@ block:id=rp2-base-microblock,data=0,allfaces=16
 # Blocks from RedPowerWorld-2
 ############
 # Flower (world.plants.id, 0), (world.plants.id,3+)
-block:id=rp2-world-plants,data=0,data=3,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,allsides=1,txtid=worlditem,transparency=TRANSPARENT
+block:id=rp2-world-plants,data=0,data=3,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,patch0=1,patch1=1,txtid=worlditem,transparency=TRANSPARENT
 # Flower (world.plants.id, 1), (world.plants.id, 2)
-block:id=rp2-world-plants,data=1,data=2,allsides=2,txtid=worlditem,transparency=TRANSPARENT
+block:id=rp2-world-plants,data=1,data=2,patch0=2,patch1=2,txtid=worlditem,transparency=TRANSPARENT
 # Flax (world.crops.id,0)
-block:id=rp2-world-crops,data=0,allsides=64,txtid=world,transparency=TRANSPARENT
+block:id=rp2-world-crops,data=0,patch0=64,patch1=64,patch2=64,patch3=64,txtid=world,transparency=TRANSPARENT
 # Flax (world.crops.id,1)
-block:id=rp2-world-crops,data=1,allsides=65,txtid=world,transparency=TRANSPARENT
+block:id=rp2-world-crops,data=1,patch0=65,patch1=65,patch2=65,patch3=65,txtid=world,transparency=TRANSPARENT
 # Flax (world.crops.id,2)
-block:id=rp2-world-crops,data=2,allsides=66,txtid=world,transparency=TRANSPARENT
+block:id=rp2-world-crops,data=2,patch0=66,patch1=66,patch2=66,patch3=66,txtid=world,transparency=TRANSPARENT
 # Flax (world.crops.id,3)
-block:id=rp2-world-crops,data=3,allsides=67,txtid=world,transparency=TRANSPARENT
+block:id=rp2-world-crops,data=3,patch0=67,patch1=67,patch2=67,patch3=67,txtid=world,transparency=TRANSPARENT
 # Flax (world.crops.id,4)
-block:id=rp2-world-crops,data=4,allsides=68,txtid=world,transparency=TRANSPARENT
+block:id=rp2-world-crops,data=4,patch0=68,patch1=68,patch2=68,patch3=68,txtid=world,transparency=TRANSPARENT
 # Flax (world.crops.id,5+)
-block:id=rp2-world-crops,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data13,data=14,data=15,allsides=69,txtid=world,transparency=TRANSPARENT
+block:id=rp2-world-crops,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data13,data=14,data=15,patch0=69,patch1=69,patch2=69,patch3=69,txtid=world,transparency=TRANSPARENT
 # Marble (world.stone.id,0)
 block:id=rp2-world-stone,data=0,allfaces=16,txtid=world
 # Basalt (world.stone.id,1)

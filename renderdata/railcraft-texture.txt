@@ -44,23 +44,23 @@ block:id=railcraft-elevatorBlock,data=12,north=84,transparency=TRANSPARENT,txtid
 # (railcraft-elevatorBlock:13) Elevator - Facing South - powered
 block:id=railcraft-elevatorBlock,data=13,south=84,transparency=TRANSPARENT,txtid=blk0
 # Adv Rail - heading east-west
-block:id=railcraft-railAdvBlock,data=0,top=4009,bottom=4009,transparency=TRANSPARENT,txtid=blk0
+block:id=railcraft-railAdvBlock,data=0,patch0=9,transparency=TRANSPARENT,txtid=blk0
 # Adv Rail - incline to east
 # Adv Rail - incline to west
-block:id=railcraft-railAdvBlock,data=4,data=5,top=4009,bottom=4009,east=9,west=9,transparency=TRANSPARENT,txtid=blk0
+block:id=railcraft-railAdvBlock,data=4,data=5,patch0=9,transparency=TRANSPARENT,txtid=blk0
 # Adv Rail - heading north-south
-block:id=railcraft-railAdvBlock,data=1,top=9,bottom=9,transparency=TRANSPARENT,txtid=blk0
+block:id=railcraft-railAdvBlock,data=1,patch0=9,transparency=TRANSPARENT,txtid=blk0
 # Adv Rail - incline to north
 # Adv Rail - incline to south
-block:id=railcraft-railAdvBlock,data=2,data=3,top=9,bottom=9,north=9,south=9,transparency=TRANSPARENT,txtid=blk0
+block:id=railcraft-railAdvBlock,data=2,data=3,patch0=9,transparency=TRANSPARENT,txtid=blk0
 # Adv Rails - northeast corner
-block:id=railcraft-railAdvBlock,data=6,topbottom=6023,transparency=TRANSPARENT,txtid=blk0
+block:id=railcraft-railAdvBlock,data=6,patch0=23,transparency=TRANSPARENT,txtid=blk0
 # Adv Rails - southeast corner
-block:id=railcraft-railAdvBlock,data=7,topbottom=5023,transparency=TRANSPARENT,txtid=blk0
+block:id=railcraft-railAdvBlock,data=7,patch0=23,transparency=TRANSPARENT,txtid=blk0
 # Adv Rails - southwest corner
-block:id=railcraft-railAdvBlock,data=8,topbottom=4023,transparency=TRANSPARENT,txtid=blk0
+block:id=railcraft-railAdvBlock,data=8,patch0=23,transparency=TRANSPARENT,txtid=blk0
 # Adv Rails - northwest corner
-block:id=railcraft-railAdvBlock,data=9,topbottom=23,transparency=TRANSPARENT,txtid=blk0
+block:id=railcraft-railAdvBlock,data=9,patch0=23,transparency=TRANSPARENT,txtid=blk0
 # (railcraft-utilityBlock) Item loader (need entity data for others)
 block:id=railcraft-utilityBlock,data=0,top=10,bottom=12,allsides=11,txtid=blk0
 # (railcraft-utilityBlock:1) Item unloader

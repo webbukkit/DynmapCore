@@ -139,75 +139,75 @@ block:id=lctrees-logID3,data=6,data=7,topbottom=48,allsides=108,txtid=blk0
 block:id=lctrees-logID3,data=8,data=9,topbottom=48,allsides=109,txtid=blk0
 
 # Sapling (lctrees-sapID:0)
-block:id=lctrees-sapID,data=0,allsides=4,txtid=blk0
+block:id=lctrees-sapID,data=0,patch0=4,patch1=4,txtid=blk0
 # Sapling (lctrees-sapID:1)
-block:id=lctrees-sapID,data=1,allsides=2,txtid=blk0
+block:id=lctrees-sapID,data=1,patch0=2,patch1=2,txtid=blk0
 # Sapling (lctrees-sapID:2)
-block:id=lctrees-sapID,data=2,allsides=8,txtid=blk0
+block:id=lctrees-sapID,data=2,patch0=8,patch1=8,txtid=blk0
 # Sapling (lctrees-sapID:3)
-block:id=lctrees-sapID,data=3,allsides=0,txtid=blk0
+block:id=lctrees-sapID,data=3,patch0=0,patch1=0,txtid=blk0
 # Sapling (lctrees-sapID:4)
-block:id=lctrees-sapID,data=4,allsides=9,txtid=blk0
+block:id=lctrees-sapID,data=4,patch0=9,patch1=9,txtid=blk0
 # Sapling (lctrees-sapID:5)
-block:id=lctrees-sapID,data=5,allsides=7,txtid=blk0
+block:id=lctrees-sapID,data=5,patch0=7,patch1=7,txtid=blk0
 # Sapling (lctrees-sapID:6)
-block:id=lctrees-sapID,data=6,allsides=1,txtid=blk0
+block:id=lctrees-sapID,data=6,patch0=1,patch1=1,txtid=blk0
 # Sapling (lctrees-sapID:7)
-block:id=lctrees-sapID,data=7,allsides=5,txtid=blk0
+block:id=lctrees-sapID,data=7,patch0=5,patch1=5,txtid=blk0
 # Sapling (lctrees-sapID:8)
-block:id=lctrees-sapID,data=8,allsides=10,txtid=blk0
+block:id=lctrees-sapID,data=8,patch0=10,patch1=10,txtid=blk0
 # Sapling (lctrees-sapID:9)
-block:id=lctrees-sapID,data=9,allsides=6,txtid=blk0
+block:id=lctrees-sapID,data=9,patch0=6,patch1=6,txtid=blk0
 # Sapling (lctrees-sapID:10)
-block:id=lctrees-sapID,data=10,allsides=3,txtid=blk0
+block:id=lctrees-sapID,data=10,patch0=3,patch1=3,txtid=blk0
 # Sapling (lctrees-sapID:11)
-block:id=lctrees-sapID,data=11,allsides=11,txtid=blk0
+block:id=lctrees-sapID,data=11,patch0=11,patch1=11,txtid=blk0
 # Sapling (lctrees-sapID:12)
-block:id=lctrees-sapID,data=12,allsides=12,txtid=blk0
+block:id=lctrees-sapID,data=12,patch0=12,patch1=12,txtid=blk0
 # Sapling (lctrees-sapID:13)
-block:id=lctrees-sapID,data=13,allsides=13,txtid=blk0
+block:id=lctrees-sapID,data=13,patch0=13,patch1=13,txtid=blk0
 # Sapling (lctrees-sapID:14)
-block:id=lctrees-sapID,data=14,allsides=15,txtid=blk0
+block:id=lctrees-sapID,data=14,patch0=15,patch1=15,txtid=blk0
 # Sapling (lctrees-sapID:15)
-block:id=lctrees-sapID,data=15,allsides=14,txtid=blk0
+block:id=lctrees-sapID,data=15,patch0=14,patch1=14,txtid=blk0
 # Sapling (lctrees-sapID2:0)
-block:id=lctrees-sapID2,data=0,allsides=64,txtid=blk0
+block:id=lctrees-sapID2,data=0,patch0=64,patch1=64,txtid=blk0
 # Sapling (lctrees-sapID2:1)
-block:id=lctrees-sapID2,data=1,allsides=65,txtid=blk0
+block:id=lctrees-sapID2,data=1,patch0=65,patch1=65,txtid=blk0
 # Sapling (lctrees-sapID2:2)
-block:id=lctrees-sapID2,data=2,allsides=66,txtid=blk0
+block:id=lctrees-sapID2,data=2,patch0=66,patch1=66,txtid=blk0
 # Sapling (lctrees-sapID2:3)
-block:id=lctrees-sapID2,data=3,allsides=67,txtid=blk0
+block:id=lctrees-sapID2,data=3,patch0=67,patch1=67,txtid=blk0
 # Sapling (lctrees-sapID2:4)
-block:id=lctrees-sapID2,data=4,allsides=68,txtid=blk0
+block:id=lctrees-sapID2,data=4,patch0=68,patch1=68,txtid=blk0
 # Sapling (lctrees-sapID2:5)
-block:id=lctrees-sapID2,data=5,allsides=69,txtid=blk0
+block:id=lctrees-sapID2,data=5,patch0=69,patch1=69,txtid=blk0
 # Sapling (lctrees-sapID2:6)
-block:id=lctrees-sapID2,data=6,allsides=70,txtid=blk0
+block:id=lctrees-sapID2,data=6,patch0=70,patch1=70,txtid=blk0
 # Sapling (lctrees-sapID2:7)
-block:id=lctrees-sapID2,data=7,allsides=71,txtid=blk0
+block:id=lctrees-sapID2,data=7,patch0=71,patch1=71,txtid=blk0
 # Sapling (lctrees-sapID2:8)
-block:id=lctrees-sapID2,data=8,allsides=72,txtid=blk0
+block:id=lctrees-sapID2,data=8,patch0=72,patch1=72,txtid=blk0
 # Sapling (lctrees-sapID2:9)
-block:id=lctrees-sapID2,data=9,allsides=73,txtid=blk0
+block:id=lctrees-sapID2,data=9,patch0=73,patch1=73,txtid=blk0
 # Sapling (lctrees-sapID2:10)
-block:id=lctrees-sapID2,data=10,allsides=74,txtid=blk0
+block:id=lctrees-sapID2,data=10,patch0=74,patch1=74,txtid=blk0
 # Sapling (lctrees-sapID2:11)
-block:id=lctrees-sapID2,data=11,allsides=75,txtid=blk0
+block:id=lctrees-sapID2,data=11,patch0=75,patch1=75,txtid=blk0
 # Sapling (lctrees-sapID2:12)
-block:id=lctrees-sapID2,data=12,allsides=76,txtid=blk0
+block:id=lctrees-sapID2,data=12,patch0=76,patch1=76,txtid=blk0
 # Sapling (lctrees-sapID2:13)
-block:id=lctrees-sapID2,data=13,allsides=77,txtid=blk0
+block:id=lctrees-sapID2,data=13,patch0=77,patch1=77,txtid=blk0
 # Sapling (lctrees-sapID2:14)
-block:id=lctrees-sapID2,data=14,allsides=78,txtid=blk0
+block:id=lctrees-sapID2,data=14,patch0=78,patch1=78,txtid=blk0
 # Sapling (lctrees-sapID2:15)
-block:id=lctrees-sapID2,data=15,allsides=79,txtid=blk0
+block:id=lctrees-sapID2,data=15,patch0=79,patch1=79,txtid=blk0
 # Sapling (lctrees-sapID3:0)
-block:id=lctrees-sapID3,data=0,allsides=47,txtid=blk0
+block:id=lctrees-sapID3,data=0,patch0=47,patch1=47,txtid=blk0
 # Sapling (lctrees-sapID3:1)
-block:id=lctrees-sapID3,data=1,allsides=46,txtid=blk0
+block:id=lctrees-sapID3,data=1,patch0=46,patch1=46,txtid=blk0
 # Sapling (lctrees-sapID3:2)
-block:id=lctrees-sapID3,data=2,allsides=171,txtid=blk0
+block:id=lctrees-sapID3,data=2,patch0=171,patch1=171,txtid=blk0
 
 # Planks (lctrees-plankID:0)
 block:id=lctrees-plankID,data=0,allfaces=38,txtid=blk0
@@ -233,26 +233,26 @@ block:id=lctrees-plankID,data=9,allfaces=60,txtid=blk0
 block:id=lctrees-plankID,data=10,allfaces=61,txtid=blk0
 
 # Fruit (lctrees-fruitID:0)
-block:id=lctrees-fruitID,data=0,allfaces=32,txtid=blk0
+block:id=lctrees-fruitID,data=0,patch0=32,patch1=32,txtid=blk0
 # Fruit (lctrees-fruitID:1)
-block:id=lctrees-fruitID,data=1,allfaces=35,txtid=blk0
+block:id=lctrees-fruitID,data=1,patch0=35,patch1=35,txtid=blk0
 # Fruit (lctrees-fruitID:2)
-block:id=lctrees-fruitID,data=2,allfaces=52,txtid=blk0
+block:id=lctrees-fruitID,data=2,patch0=52,patch1=52,txtid=blk0
 # Fruit (lctrees-fruitID:3)
-block:id=lctrees-fruitID,data=3,allfaces=53,txtid=blk0
+block:id=lctrees-fruitID,data=3,patch0=53,patch1=53,txtid=blk0
 # Fruit (lctrees-fruitID:4)
-block:id=lctrees-fruitID,data=4,allfaces=54,txtid=blk0
+block:id=lctrees-fruitID,data=4,patch0=54,patch1=54,txtid=blk0
 # Fruit (lctrees-fruitID:5)
-block:id=lctrees-fruitID,data=5,allfaces=100,txtid=blk0
+block:id=lctrees-fruitID,data=5,patch0=100,patch1=100,txtid=blk0
 # Fruit (lctrees-fruitID:6)
-block:id=lctrees-fruitID,data=6,allfaces=110,txtid=blk0
+block:id=lctrees-fruitID,data=6,patch0=110,patch1=110,txtid=blk0
 # Fruit (lctrees-fruitID:7)
-block:id=lctrees-fruitID,data=7,allfaces=111,txtid=blk0
+block:id=lctrees-fruitID,data=7,patch0=111,patch1=111,txtid=blk0
 
 # Crystal stone (lctrees-crystalStoneID:0)
-block:id=lctrees-crystalStoneID,data=0,allsides=137,txtid=blk0
+block:id=lctrees-crystalStoneID,data=0,patch0=137,patch1=137,txtid=blk0
 # Dark Crystal stone (lctrees-crystalStoneID:1)
-block:id=lctrees-crystalStoneID,data=1,allsides=138,txtid=blk0
+block:id=lctrees-crystalStoneID,data=1,patch0=138,patch1=138,txtid=blk0
 
 # Crystal Focus (lctrees-blockCrystalID:0)
 block:id=lctrees-blockCrystalID,data=0,allfaces=152,txtid=blk0
