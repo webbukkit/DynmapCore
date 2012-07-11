@@ -123,7 +123,10 @@ public class IsoHDPerspective implements HDPerspective {
         double patch_t[] = new double[HDPatchDefinition.MAX_PATCHES];
         double patch_u[] = new double[HDPatchDefinition.MAX_PATCHES];
         double patch_v[] = new double[HDPatchDefinition.MAX_PATCHES];
+        int patch_id[] = new int[HDPatchDefinition.MAX_PATCHES];
         int cur_patch = -1;
+        double cur_patch_u;
+        double cur_patch_v;
         
         int[] subblock_xyz = new int[3];
         MapIterator mapiter;
@@ -698,6 +701,7 @@ public class IsoHDPerspective implements HDPerspective {
                     patch_t[hitcnt] = t;
                     patch_u[hitcnt] = u;
                     patch_v[hitcnt] = v;
+                    patch_id[hitcnt] = i;
                     hitcnt++;
                 }
             }
@@ -717,7 +721,9 @@ public class IsoHDPerspective implements HDPerspective {
                         best_t = patch_t[j];
                     }
                 }
-                cur_patch = best_patch; /* Mark this as current patch */
+                cur_patch = patch_id[best_patch]; /* Mark this as current patch */
+                cur_patch_u = patch_u[best_patch];
+                cur_patch_v = patch_v[best_patch];
                 laststep = patches[cur_patch].step;
                 /* Process the shaders */
                 boolean done = true;
@@ -1043,13 +1049,13 @@ public class IsoHDPerspective implements HDPerspective {
          * Get current U of patch intercept
          */
         public double getPatchU() {
-            return patch_u[cur_patch];
+            return cur_patch_u;
         }
         /**
          * Get current V of patch intercept
          */
         public double getPatchV() {
-            return patch_v[cur_patch];
+            return cur_patch_v;
         }
     }
     

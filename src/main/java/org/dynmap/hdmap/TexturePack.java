@@ -1156,14 +1156,6 @@ public class TexturePack {
     }
 
     /**
-     * Translate face ID - in case we've got options to fix it
-     */
-    private static int translateFaceID(int id) {
-        /* Retired old shading fix=false option */
-        
-        return id;
-    }
-    /**
      * Load texture pack mappings from texture.txt file
      */
     private static void loadTextureFile(InputStream txtfile, String txtname, ConfigurationNode config) {
@@ -1282,8 +1274,6 @@ public class TexturePack {
                     if(databits < 0) databits = 0xFFFF;
                     /* If we have everything, build block */
                     if(blkids.size() > 0) {
-                        for(int i = 0; i < faces.length; i++)
-                            faces[i] = translateFaceID(faces[i]);
                         HDTextureMap map = new HDTextureMap(blkids, databits, faces, trans, userenderdata);
                         map.addToTable();
                         cnt++;

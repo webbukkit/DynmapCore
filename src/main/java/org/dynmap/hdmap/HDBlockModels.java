@@ -85,7 +85,11 @@ public class HDBlockModels {
         public BlockStep step;      /* Best approximation of orientation of surface */
         public SideVisibility sidevis;  /* Which side is visible */
         /* Matrix for rotating vector around Y axis */
-        private static final Matrix3D rotate90 = new Matrix3D(0, 0, -1, 0, 1, 0, 1, 0, 0);
+        private static final Matrix3D rotate90Y = new Matrix3D(0, 0, -1, 0, 1, 0, 1, 0, 0);
+        /* Matrix for rotating vector around X axis */
+        private static final Matrix3D rotate90X = new Matrix3D(1, 0, 0, 0, 0, 1, 0, -1, 0);
+        /* Matrix for rotating vector around Z axis */
+        private static final Matrix3D rotate90Z = new Matrix3D(0, 1, 0, -1, 0, 0, 0, 0, 1);
         /* Offset vector of middle of block */
         private static final Vector3D offsetCenter = new Vector3D(0.5,0.5,0.5);
         
@@ -105,17 +109,17 @@ public class HDBlockModels {
          * @param orig
          * @param rotate_cnt
          */
-        public HDPatchDefinition(HDPatchDefinition orig, int rotate_cnt) {
+        public HDPatchDefinition(HDPatchDefinition orig, int rotatex, int rotatey, int rotatez) {
             Vector3D vec = new Vector3D(orig.x0, orig.y0, orig.z0);
-            rotate(vec, rotate_cnt); /* Rotate origin */
+            rotate(vec, rotatex, rotatey, rotatez); /* Rotate origin */
             x0 = vec.x; y0 = vec.y; z0 = vec.z;
             /* Rotate U */
             vec.x = orig.xu; vec.y = orig.yu; vec.z = orig.zu;
-            rotate(vec, rotate_cnt); /* Rotate origin */
+            rotate(vec, rotatex, rotatey, rotatez); /* Rotate origin */
             xu = vec.x; yu = vec.y; zu = vec.z;
             /* Rotate V */
             vec.x = orig.xv; vec.y = orig.yv; vec.z = orig.zv;
-            rotate(vec, rotate_cnt); /* Rotate origin */
+            rotate(vec, rotatex, rotatey, rotatez); /* Rotate origin */
             xv = vec.x; yv = vec.y; zv = vec.z;
             umin = orig.umin; vmin = orig.vmin;
             umax = orig.umax; vmax = orig.vmax;
@@ -125,10 +129,16 @@ public class HDBlockModels {
             update();
         }
         
-        private void rotate(Vector3D vec, int cnt) {
+        private void rotate(Vector3D vec, int xcnt, int ycnt, int zcnt) {
             vec.subtract(offsetCenter); /* Shoft to center of block */
-            for(int i = 0; i < cnt; i++) {
-                rotate90.transform(vec);
+            for(int i = 0; i < xcnt; i++) {
+                rotate90X.transform(vec);
+            }
+            for(int i = 0; i < ycnt; i++) {
+                rotate90Y.transform(vec);
+            }
+            for(int i = 0; i < zcnt; i++) {
+                rotate90Z.transform(vec);
             }
             vec.add(offsetCenter); /* Shoft back to corner */
         }
@@ -874,9 +884,22 @@ public class HDBlockModels {
                                 int atidx = av[1].indexOf('@');
                                 if(atidx > 0) {
                                     HDPatchDefinition pdorig = patchdefs.get(av[1].substring(0, atidx));
-                                    int rot = Integer.parseInt(av[1].substring(atidx+1));
-                                    if((pdorig != null) && ((rot % 90) == 0)) {
-                                        pd = new HDPatchDefinition(pdorig, rot/90);
+                                    int rotx = 0, roty = 0, rotz = 0;
+                                    String[] rv = av[1].substring(atidx+1).split("/");
+                                    if(rv.length == 1) {
+                                        roty = Integer.parseInt(rv[0]);
+                                    }
+                                    else if(rv.length == 2) {
+                                        rotx = Integer.parseInt(rv[0]);
+                                        roty = Integer.parseInt(rv[1]);
+                                    }
+                                    else if(rv.length == 3) {
+                                        rotx = Integer.parseInt(rv[0]);
+                                        roty = Integer.parseInt(rv[1]);
+                                        rotz = Integer.parseInt(rv[2]);
+                                    }
+                                    if((pdorig != null) && ((rotx % 90) == 0) && ((roty % 90) == 0) && ((rotz % 90) == 0)) {
+                                        pd = new HDPatchDefinition(pdorig, rotx/90, roty/90, rotz/90);
                                         patchdefs.put(av[1],  pd);  /* Add to map so we reuse it */
                                     }
                                 }
