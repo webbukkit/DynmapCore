@@ -732,9 +732,17 @@ DynMap.prototype = {
 					me.followPlayer(null);
 				}
 				me.panToLocation(player.location);
-			})
-			.appendTo(me.playerlist);
-		if (me.options.showplayerfacesinmenu) {
+			});
+			// Inject into playerlist alphabetically
+			var firstNodeAfter = me.playerlist.children().filter(function() {
+				return ($('a', this).text().toLowerCase() > $('a', menuitem).text().toLowerCase());
+			}).eq(0);
+			if (firstNodeAfter.length > 0) {
+				firstNodeAfter.before(menuitem);
+			} else {
+				menuitem.appendTo(me.playerlist);
+			}
+			if (me.options.showplayerfacesinmenu) {
 			getMinecraftHead(player.account, 16, function(head) {
 				$('img', playerIconContainer).remove();
 				$(head).appendTo(playerIconContainer);
