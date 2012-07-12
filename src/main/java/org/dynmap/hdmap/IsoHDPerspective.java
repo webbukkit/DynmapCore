@@ -473,6 +473,7 @@ public class IsoHDPerspective implements HDPerspective {
          *   8 = NSW wire
          *   9 = NEW wire
          *   10 = SEW wire
+         *   11 = none
          * @param mapiter
          * @return
          */
@@ -488,6 +489,7 @@ public class IsoHDPerspective implements HDPerspective {
                     flags |= (1<<i);
             switch(flags) {
                 case 0: /* Nothing nearby */
+                    return 11;
                 case 15: /* NSEW */
                     return 0;   /* NSEW graphic */
                 case 2: /* S */

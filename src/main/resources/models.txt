@@ -5,16 +5,22 @@
 patch:id=VertX1Z0ToX0Z1,Ox=1.0,Oy=0.0,Oz=0.0,Ux=0.0,Uy=0.0,Uz=1.0,Vx=1.0,Vy=1.0,Vz=0.0
 # Vertical patch, X- facing side from xz=0.4375/0.0 to 0.4375/1.0
 patch:id=VertX04375,Ox=0.4375,Oy=0.0,Oz=0.0,Ux=0.4375,Uy=0.0,Uz=1.0,Vx=0.4375,Vy=1.0,Vz=0.0,visibility=top
+# Vertical patch, X- facing side from xz=0.0625/0.0 to 0.0625/1.0
+patch:id=VertX00625,Ox=0.0625,Oy=0.0,Oz=0.0,Ux=0.0625,Uy=0.0,Uz=1.0,Vx=0.0625,Vy=1.0,Vz=0.0,visibility=top
 # Vertical patch, X+ facing side from xz=0.25,1.0 to 0.25/0.0
 patch:id=VertX025,Ox=0.25,Oy=0.0,Oz=1.0,Ux=0.25,Uy=0.0,Uz=0.0,Vx=0.25,Vy=1.0,Vz=1.0
 # Vertical patch, X+ facing side from xz=0.75,1.0 to 0.75/0.0
 patch:id=VertX075,Ox=0.75,Oy=0.0,Oz=1.0,Ux=0.75,Uy=0.0,Uz=0.0,Vx=0.75,Vy=1.0,Vz=1.0
+# Horizontal patch - Y+ facing at Y=1.0, top of texture at +Z
+patch:id=HorizY100ZTop,Ox=0.0,Oy=1.0,Oz=0.0,Ux=1.0,Uy=1.0,Uz=0.0,Vx=0.0,Vy=1.0,Vz=1.0,visibility=bottom
 # Horizontal patch - Y+ facing at Y=0.01, top of texture at +Z
 patch:id=HorizY001ZTop,Ox=0.0,Oy=0.01,Oz=0.0,Ux=1.0,Uy=0.01,Uz=0.0,Vx=0.0,Vy=0.01,Vz=1.0
 # Sloped patch - up to X+, top of texture at Z+
 patch:id=SlopeXUpZTop,Ox=0.0,Oy=0.0,Oz=0.0,Ux=0.0,Uy=0.0,Uz=1.0,Vx=1.0,Vy=1.0,Vz=0.0
 # Vertical patch at xz=0.0/0.0 to 1.0/0.0
 patch:id=VertX0,Ox=0.0,Oy=0.0,Oz=1.0,Ux=0.0,Uy=0.0,Uz=0.0,Vx=0.0,Vy=1.0,Vz=1.0,visibility=bottom
+# Vertical patch at xz=0.0/0.0 to 1.0/0.0, facing inward
+patch:id=VertX0In,Ox=0.0,Oy=0.0,Oz=1.0,Ux=0.0,Uy=0.0,Uz=0.0,Vx=0.0,Vy=1.0,Vz=1.0,visibility=top
 # Sloped patch - from edge to middle of top (67.5 degrees): up to X+, top at Z+
 patch:id=SlopeXUpZTop675,Ox=0.375,Oy=0.0,Oz=0.0,Ux=0.375,Uy=0.0,Uz=1.0,Vx=0.5,Vy=1.0,Vz=0.0,visibility=top
 
@@ -75,6 +81,20 @@ patch:id=WLeverSide2,Ox=0.5625,Oy=0.0,Oz=0.5625,Ux=0.5625,Uy=1.0,Uz=-0.4375,Vx=0
 patch:id=WLeverSide3,Ox=0.0,Oy=0.4375,Oz=0.125,Ux=1.0,Uy=0.4375,Uz=0.125,Vx=0.0,Vy=1.4375,Vz=1.125
 # Horizontal slanted patch, facing Y+, 45 degree to Y+ (lever bottom)
 patch:id=WLeverSide4,Ox=0.0,Oy=0.5625,Oz=0.0,Ux=1.0,Uy=0.5625,Uz=0.0,Vx=0.0,Vy=1.5625,Vz=1.0
+
+# Wire patches
+# Wire patch - Y+ facing at Y=0.01, top of texture at +Z (none)
+patch:id=HorizY001ZTopNone,Ox=0.0,Oy=0.01,Oz=0.0,Ux=1.0,Uy=0.01,Uz=0.0,Vx=0.0,Vy=0.01,Vz=1.0,Umin=0.3125,Umax=0.6875,Vmin=0.3125,Vmax=0.6875,visibility=bottom
+# Wire patch - Y+ facing at Y=0.01, top of texture at +Z (N)
+patch:id=HorizY001ZTopN,Ox=0.0,Oy=0.01,Oz=0.0,Ux=1.0,Uy=0.01,Uz=0.0,Vx=0.0,Vy=0.01,Vz=1.0,Umin=0.3125,Umax=0.6875,Vmin=0.3125,visibility=bottom
+# Wire patch - Y+ facing at Y=0.01, top of texture at +Z (NS)
+patch:id=HorizY001ZTopNS,Ox=0.0,Oy=0.01,Oz=0.0,Ux=1.0,Uy=0.01,Uz=0.0,Vx=0.0,Vy=0.01,Vz=1.0,Vmin=0.3125,Vmax=0.6875,visibility=bottom
+# Wire patch - Y+ facing at Y=0.01, top of texture at +Z (NE)
+patch:id=HorizY001ZTopNE,Ox=0.0,Oy=0.01,Oz=0.0,Ux=1.0,Uy=0.01,Uz=0.0,Vx=0.0,Vy=0.01,Vz=1.0,Umin=0.3125,Vmin=0.3125,visibility=bottom
+# Wire patch - Y+ facing at Y=0.01, top of texture at +Z (NEW)
+patch:id=HorizY001ZTopNEW,Ox=0.0,Oy=0.01,Oz=0.0,Ux=1.0,Uy=0.01,Uz=0.0,Vx=0.0,Vy=0.01,Vz=1.0,Vmin=0.3125,visibility=bottom
+# Wire patch - Y+ facing at Y=0.01, top of texture at +Z (NESW)
+patch:id=HorizY001ZTopNESW,Ox=0.0,Oy=0.01,Oz=0.0,Ux=1.0,Uy=0.01,Uz=0.0,Vx=0.0,Vy=0.01,Vz=1.0,visibility=bottom
 
 # Wood Stair - up south
 # Cobblestone Stair - up south
@@ -674,33 +694,13 @@ patchblock:id=66,data=8,patch0=HorizY001ZTop@270
 # Rails - northwest corner
 patchblock:id=66,data=9,patch0=HorizY001ZTop
 # Ladder - attached to east side of block
-block:id=65,data=2,scale=16
-layer:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
-----------------
--*--------------
--*--------------
--*--------------
--*--------------
--*--------------
--*--------------
--*--------------
--*--------------
--*--------------
--*--------------
--*--------------
--*--------------
--*--------------
--*--------------
-----------------
+patchblock:id=65,data=2,patch0=VertX0In@270
 # Ladder - attached to west side of block
-block:id=65,data=3,scale=16
-rotate:id=65,data=2,rot=180
+patchblock:id=65,data=3,patch0=VertX0In@90
 # Ladder - attached to north side of block
-block:id=65,data=4,scale=16
-rotate:id=65,data=2,rot=270
+patchblock:id=65,data=4,patch0=VertX0In@180
 # Ladder - attached to south side of block
-block:id=65,data=5,scale=16
-rotate:id=65,data=2,rot=90
+patchblock:id=65,data=5,patch0=VertX0In
 # Wall sign - facing east
 block:id=68,data=2,scale=8
 layer:2,3,4,5
@@ -723,103 +723,31 @@ block:id=68,data=5,scale=8
 rotate:id=68,data=2,rot=90
 # Redstone - render alg
 linkmap:id=55,linkalg=3
+
 # Redstone wire (NSEW)
-block:id=55,data=0,scale=16
-layer:0,1
-------****------
-------****------
-------****------
-------****------
-------****------
-------****------
-****************
-****************
-****************
-****************
-------****------
-------****------
-------****------
-------****------
-------****------
-------****------
+patchblock:id=55,data=0,patch0=HorizY001ZTopNESW
 # Redstone wire (NS)
-block:id=55,data=1,scale=16
-layer:0,1
-------****------
-------****------
-------****------
-------****------
-------****------
-------****------
-------****------
-------****------
-------****------
-------****------
-------****------
-------****------
-------****------
-------****------
-------****------
-------****------
+patchblock:id=55,data=1,patch0=HorizY001ZTopNS
 # Redstone wire (EW)
-block:id=55,data=2,scale=16
-rotate:id=55,data=1,rot=90
+patchblock:id=55,data=2,patch0=HorizY001ZTopNS@90
 # Redstone wire (NE)
-block:id=55,data=3,scale=16
-layer:0,1
-------****------
-------****------
-------****------
-------****------
-------****------
-------****------
-------**********
-------**********
-------**********
-------**********
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
+patchblock:id=55,data=3,patch0=HorizY001ZTopNE@180
 # Redstone wire (NW)
-block:id=55,data=4,scale=16
-rotate:id=55,data=3,rot=270
+patchblock:id=55,data=4,patch0=HorizY001ZTopNE@90
 # Redstone wire (SE)
-block:id=55,data=5,scale=16
-rotate:id=55,data=3,rot=90
+patchblock:id=55,data=5,patch0=HorizY001ZTopNE@270
 # Redstone wire (SW)
-block:id=55,data=6,scale=16
-rotate:id=55,data=3,rot=180
+patchblock:id=55,data=6,patch0=HorizY001ZTopNE
 # Redstone wire (NSE)
-block:id=55,data=7,scale=16
-layer:0,1
-------****------
-------****------
-------****------
-------****------
-------****------
-------****------
-------**********
-------**********
-------**********
-------**********
-------****------
-------****------
-------****------
-------****------
-------****------
-------****------
+patchblock:id=55,data=7,patch0=HorizY001ZTopNEW@180
 # Redstone wire (NSW)
-block:id=55,data=8,scale=16
-rotate:id=55,data=7,rot=180
+patchblock:id=55,data=8,patch0=HorizY001ZTopNEW
 # Redstone wire (NEW)
-block:id=55,data=9,scale=16
-rotate:id=55,data=7,rot=270
+patchblock:id=55,data=9,patch0=HorizY001ZTopNEW@90
 # Redstone wire (SEW)
-block:id=55,data=10,scale=16
-rotate:id=55,data=7,rot=90
+patchblock:id=55,data=10,patch0=HorizY001ZTopNEW@270
+# Redstone wire (None)
+patchblock:id=55,data=11,patch0=HorizY001ZTopNone
 # Signpost - facing west
 block:id=63,data=0,scale=16
 layer:0,1,2,3,4,5
@@ -1161,24 +1089,7 @@ patchblock:id=69,data=14,patch0=LeverBase1@270,patch1=LeverBase1@90,patch2=Lever
 patchblock:id=69,data=5,patch0=LeverBase1,patch1=LeverBase1@180,patch2=LeverBase2,patch3=LeverBase2@180,patch4=LeverBase3,patch5=LeverSide1,patch6=LeverSide2,patch7=LeverSide3,patch8=LeverSide4
 patchblock:id=69,data=13,patch0=LeverBase1,patch1=LeverBase1@180,patch2=LeverBase2,patch3=LeverBase2@180,patch4=LeverBase3,patch5=LeverSide1@180,patch6=LeverSide2@180,patch7=LeverSide3@180,patch8=LeverSide4@180
 # Cactus
-block:id=81,data=*,scale=16
-layer:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
--*------------*-
-****************
--**************-
--**************-
--**************-
--**************-
--**************-
--**************-
--**************-
--**************-
--**************-
--**************-
--**************-
--**************-
-****************
--*------------*-
+patchblock:id=81,data=*,patch0=VertX00625,patch1=VertX00625@90,patch2=VertX00625@180,patch3=VertX00625@270,patch4=HorizY100ZTop,patch5=HorizY100ZTop@180/0/0
 # Redstone repeater (on) facing east
 # Redstone repeater (off) facing east
 block:id=93,id=94,data=0,data=4,data=8,data=12,scale=16
@@ -1438,90 +1349,35 @@ patchblock:id=102,id=101,data=3,patch0=VertX05Left@90,patch1=HorizY100ZTopStripT
 patchblock:id=6,id=30,id=31,id=32,id=37,id=38,id=39,id=40,id=83,id=115,data=*,patch0=VertX1Z0ToX0Z1,patch1=VertX1Z0ToX0Z1@90
 
 # Vines - N side of block
-block:id=106,data=2,scale=8
-layer:0,1,2,3,4,5,6,7
-********
---------
---------
---------
---------
---------
---------
---------
+patchblock:id=106,data=2,patch0=VertX0In
 # Vines - E side of block
-block:id=106,data=4,scale=8
-rotate:id=106,data=2,rot=90
+patchblock:id=106,data=4,patch0=VertX0In@90
 # Vines - S side of block
-block:id=106,data=8,scale=8
-rotate:id=106,data=2,rot=180
+patchblock:id=106,data=8,patch0=VertX0In@180
 # Vines - W side of block
-block:id=106,data=1,scale=8
-rotate:id=106,data=2,rot=270
+patchblock:id=106,data=1,patch0=VertX0In@270
 # Vines - N+E sides of block
-block:id=106,data=6,scale=8
-layer:0,1,2,3,4,5,6,7
-********
--------*
--------*
--------*
--------*
--------*
--------*
--------*
+patchblock:id=106,data=6,patch0=VertX0In,patch1=VertX0In@90
 # Vines - E+S side of block
-block:id=106,data=12,scale=8
-rotate:id=106,data=6,rot=90
+patchblock:id=106,data=12,patch0=VertX0In@90,patch1=VertX0In@180
 # Vines - S+W side of block
-block:id=106,data=9,scale=8
-rotate:id=106,data=6,rot=180
+patchblock:id=106,data=9,patch0=VertX0In@180,patch1=VertX0In@270
 # Vines - W+N side of block
-block:id=106,data=3,scale=8
-rotate:id=106,data=6,rot=270
+patchblock:id=106,data=3,patch0=VertX0In@270,patch1=VertX0In
 # Vines - N+S sides of block
-block:id=106,data=10,scale=8
-layer:0,1,2,3,4,5,6,7
-********
---------
---------
---------
---------
---------
---------
-********
+patchblock:id=106,data=10,patch0=VertX0In,patch1=VertX0In@180
 # Vines - E+W side of block
-block:id=106,data=5,scale=8
-rotate:id=106,data=10,rot=90
+patchblock:id=106,data=5,patch0=VertX0In@90,patch1=VertX0In@270
 # Vines - N+E+W sides of block
-block:id=106,data=7,scale=8
-layer:0,1,2,3,4,5,6,7
-********
-*------*
-*------*
-*------*
-*------*
-*------*
-*------*
-*------*
+patchblock:id=106,data=7,patch0=VertX0In@90,patch1=VertX0In@270,patch2=VertX0In
 # Vines - N+E+S side of block
-block:id=106,data=14,scale=8
-rotate:id=106,data=7,rot=90
+patchblock:id=106,data=14,patch0=VertX0In@180,patch1=VertX0In,patch2=VertX0In@90
 # Vines - E+S+W side of block
-block:id=106,data=13,scale=8
-rotate:id=106,data=7,rot=180
+patchblock:id=106,data=13,patch0=VertX0In@270,patch1=VertX0In@90,patch2=VertX0In@180
 # Vines - N+S+W side of block
-block:id=106,data=11,scale=8
-rotate:id=106,data=7,rot=270
+patchblock:id=106,data=11,patch0=VertX0In,patch1=VertX0In@180,patch2=VertX0In@270
 # Vines - N+S+E+W sides of block
-block:id=106,data=15,scale=8
-layer:0,1,2,3,4,5,6,7
-********
-*------*
-*------*
-*------*
-*------*
-*------*
-*------*
-********
+patchblock:id=106,data=15,patch0=VertX0In@270,patch1=VertX0In@90,patch2=VertX0In@180,patch3=VertX0In
 # Fence gate - closed - northsouth
 block:id=107,data=0,data=2,scale=16
 layer:6,7,8,12,13,14
@@ -1661,24 +1517,7 @@ layer:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
 ----------------
 ----------------
 # Lily pad
-block:id=111,data=*,scale=16
-layer:0
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
+patchblock:id=111,data=*,patch0=HorizY001ZTop
 # Water (full)
 # Lava (full)
 #block:id=8,id=9,id=10,id=11,data=0,scale=16

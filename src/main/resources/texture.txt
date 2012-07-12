@@ -340,11 +340,10 @@ block:id=54,data=10,top=4279,bottom=4287,south=282,north=283,east=281,west=285,u
 # Chest - right side of double, facing north
 block:id=54,data=11,top=5279,bottom=5287,south=285,north=281,east=282,west=283,userenderdata=true
 # Redstone wire (all but NS and EW)
-block:id=55,data=0,data=3,data=4,data=5,data=6,data=7,data=8,data=9,data=10,allfaces=180,transparency=TRANSPARENT,userenderdata=true
-# Redstone wire (EW)
-block:id=55,data=2,allfaces=181,transparency=TRANSPARENT,userenderdata=true
+block:id=55,data=0,data=3,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,patch0=180,transparency=TRANSPARENT,userenderdata=true
 # Redstone wire (NS)
-block:id=55,data=1,allfaces=4181,transparency=TRANSPARENT,userenderdata=true
+# Redstone wire (EW)
+block:id=55,data=1,data=2,patch0=181,transparency=TRANSPARENT,userenderdata=true
 # Diamond ore
 block:id=56,allfaces=50
 # Diamond block
@@ -402,7 +401,7 @@ block:id=64,data=10,data=11,north=7081,south=81,east=7081,west=81,topbottom=4,tr
 block:id=64,data=12,data=13,north=7081,south=81,east=7081,west=81,topbottom=4,transparency=TRANSPARENT,userenderdata=true
 block:id=64,data=14,data=15,north=81,south=7081,east=81,west=7081,topbottom=4,transparency=TRANSPARENT,userenderdata=true
 # Ladders
-block:id=65,allsides=83,topbottom=4,transparency=TRANSPARENT
+block:id=65,patch0=83,transparency=TRANSPARENT
 # Rail - heading east-west
 block:id=66,data=0,patch0=128,transparency=TRANSPARENT
 # Rail - incline to east
@@ -459,7 +458,7 @@ block:id=79,allfaces=12067,transparency=TRANSPARENT
 # Snow block
 block:id=80,allfaces=66
 # Cactus
-block:id=81,top=69,allsides=70,bottom=71,transparency=SEMITRANSPARENT
+block:id=81,patch0=70,patch1=70,patch2=70,patch3=70,patch4=69,patch5=71,transparency=SEMITRANSPARENT
 # Clay block
 block:id=82,allfaces=72
 # Sugar Cane
@@ -575,7 +574,7 @@ block:id=104,allsides=1111,transparency=TRANSPARENT
 # Melon stem
 block:id=105,allsides=1111,transparency=TRANSPARENT
 # Vines
-block:id=106,allsides=2143,transparency=TRANSPARENT
+block:id=106,patch0=2143,patch1=2143,patch2=2143,patch3=2143,patch4=2143,transparency=TRANSPARENT
 # Fence gate
 block:id=107,allsides=4,topbottom=4004,transparency=TRANSPARENT
 # Brick stair
@@ -585,7 +584,7 @@ block:id=109,allfaces=54,transparency=SEMITRANSPARENT
 # Mycelium
 block:id=110,top=78,allsides=77,bottom=2
 # Lily pad
-block:id=111,topbottom=15076,transparency=TRANSPARENT
+block:id=111,patch0=15076,transparency=TRANSPARENT
 # Nether brick
 block:id=112,allfaces=224
 # Nether brick fence
