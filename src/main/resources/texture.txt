@@ -387,7 +387,7 @@ block:id=62,data=4,top=62,north=61,south=45,east=45,west=45,bottom=62
 # Burning Furnace (facing south)
 block:id=62,data=5,top=62,south=61,north=45,east=45,west=45,bottom=62
 # Signpost
-block:id=63,allsides=4,topbottom=4004,transparency=TRANSPARENT
+block:id=63,patch0=288,patch1=289,patch2=290,patch3=291,patch4=292,patch5=293,patch6=294,patch7=295,patch8=296,patch9=297,transparency=TRANSPARENT
 # Wooden Door - bottom (left hinge)
 block:id=64,data=0,data=1,north=97,south=7097,east=97,west=7097,topbottom=4,transparency=TRANSPARENT,userenderdata=true
 block:id=64,data=2,data=3,north=7097,south=97,east=7097,west=97,,topbottom=4,transparency=TRANSPARENT,userenderdata=true
@@ -420,7 +420,7 @@ block:id=66,data=6,data=7,data=8,data=9,patch0=112,transparency=TRANSPARENT
 # Cobblestone Stairs
 block:id=67,allfaces=16,transparency=SEMITRANSPARENT
 # Wall sign
-block:id=68,allsides=4,topbottom=4004,transparency=TRANSPARENT
+block:id=68,patch0=288,patch1=289,patch2=290,patch3=291,patch4=292,patch5=293,transparency=TRANSPARENT
 # Lever
 block:id=69,patch0=16,patch1=16,patch2=16,patch3=16,patch4=16,patch5=96,patch6=96,patch7=96,patch8=96,transparency=TRANSPARENT
 # Stone pressure plate

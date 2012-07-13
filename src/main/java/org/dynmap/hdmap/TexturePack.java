@@ -63,6 +63,7 @@ public class TexturePack {
     private static final String CHEST_PNG = "item/chest.png";
     private static final String ENDERCHEST_PNG = "item/enderchest.png";
     private static final String BIGCHEST_PNG = "item/largechest.png";
+    private static final String SIGN_PNG = "item/sign.png";
 
 	private static final String STANDARDTP = "standard";
     /* Color modifier codes (x1000 for value in mapping code) */
@@ -129,8 +130,19 @@ public class TexturePack {
     private static final int TILEINDEX_BIGCHEST_BACKRIGHT = 285;
     private static final int TILEINDEX_BIGCHEST_BOTTOMLEFT = 286;
     private static final int TILEINDEX_BIGCHEST_BOTTOMRIGHT = 287;
+    private static final int TILEINDEX_SIGN_FRONT = 288;
+    private static final int TILEINDEX_SIGN_BACK = 289;
+    private static final int TILEINDEX_SIGN_TOP = 290;
+    private static final int TILEINDEX_SIGN_BOTTOM = 291;
+    private static final int TILEINDEX_SIGN_LEFTSIDE = 292;
+    private static final int TILEINDEX_SIGN_RIGHTSIDE = 293;
+    private static final int TILEINDEX_SIGN_POSTFRONT = 294;
+    private static final int TILEINDEX_SIGN_POSTBACK = 295;
+    private static final int TILEINDEX_SIGN_POSTLEFT = 296;
+    private static final int TILEINDEX_SIGN_POSTRIGHT = 297;
+
     
-    private static final int MAX_TILEINDEX = 287;  /* Index of last static tile definition */
+    private static final int MAX_TILEINDEX = 297;  /* Index of last static tile definition */
     private static final int TILETABLE_LEN = 1000;  /* Leave room for dynmaic tiles */
 
     private static final int BLOCKTABLELEN = 256;  /* Enough for normal block IDs */
@@ -172,7 +184,8 @@ public class TexturePack {
     private static final int IMG_CHEST = 14;
     private static final int IMG_ENDERCHEST = 15;
     private static final int IMG_LARGECHEST = 16;
-    private static final int IMG_CNT = 17;
+    private static final int IMG_SIGN = 17;
+    private static final int IMG_CNT = 18;
     /* 0-(IMG_CNT-1) are fixed, IMG_CNT+x is dynamic file x */
     private LoadedImage[] imgs;
 
@@ -441,6 +454,19 @@ public class TexturePack {
             is.close();
             patchChestImages(IMG_ENDERCHEST, TILEINDEX_ENDERCHEST_TOP, TILEINDEX_ENDERCHEST_BOTTOM, TILEINDEX_ENDERCHEST_FRONT, TILEINDEX_ENDERCHEST_BACK, TILEINDEX_ENDERCHEST_LEFT, TILEINDEX_ENDERCHEST_RIGHT);
 
+            /* Try to find and load item/sign.png */
+            ze = zf.getEntry(SIGN_PNG);
+            if(ze != null) {    /* Fall back to standard file */
+                is = zf.getInputStream(ze);
+            } else {
+                /* Get standard one */
+                File ff = new File(texturedir, STANDARDTP + "/" + SIGN_PNG);
+                is = new FileInputStream(ff);
+            }
+            loadImage(is, IMG_SIGN);
+            is.close();
+            patchSignImages(IMG_SIGN, TILEINDEX_SIGN_FRONT, TILEINDEX_SIGN_BACK, TILEINDEX_SIGN_TOP, TILEINDEX_SIGN_BOTTOM, TILEINDEX_SIGN_LEFTSIDE, TILEINDEX_SIGN_RIGHTSIDE, TILEINDEX_SIGN_POSTFRONT, TILEINDEX_SIGN_POSTBACK, TILEINDEX_SIGN_POSTLEFT, TILEINDEX_SIGN_POSTRIGHT);
+
             /* Optional files - process if they exist */
             ze = zf.getEntry(CUSTOMLAVASTILL_PNG);
             if(ze == null)
@@ -597,6 +623,15 @@ public class TexturePack {
             loadImage(fis, IMG_LARGECHEST);
             fis.close();
             patchLargeChestImages(IMG_LARGECHEST, TILEINDEX_BIGCHEST_TOPRIGHT, TILEINDEX_BIGCHEST_TOPLEFT, TILEINDEX_BIGCHEST_BOTTOMRIGHT, TILEINDEX_BIGCHEST_BOTTOMLEFT, TILEINDEX_BIGCHEST_RIGHT, TILEINDEX_BIGCHEST_LEFT, TILEINDEX_BIGCHEST_FRONTRIGHT, TILEINDEX_BIGCHEST_FRONTLEFT, TILEINDEX_BIGCHEST_BACKRIGHT, TILEINDEX_BIGCHEST_BACKLEFT);
+            /* Check for item/sign.png */
+            f = new File(texturedir, tpname + "/" + SIGN_PNG);
+            if(!f.canRead()) {
+                f = new File(texturedir, STANDARDTP + "/" + SIGN_PNG);
+            }
+            fis = new FileInputStream(f);
+            loadImage(fis, IMG_SIGN);
+            fis.close();
+            patchSignImages(IMG_SIGN, TILEINDEX_SIGN_FRONT, TILEINDEX_SIGN_BACK, TILEINDEX_SIGN_TOP, TILEINDEX_SIGN_BOTTOM, TILEINDEX_SIGN_LEFTSIDE, TILEINDEX_SIGN_RIGHTSIDE, TILEINDEX_SIGN_POSTFRONT, TILEINDEX_SIGN_POSTBACK, TILEINDEX_SIGN_POSTLEFT, TILEINDEX_SIGN_POSTRIGHT);
             
             /* Optional files - process if they exist */
             f = new File(texturedir, tpname + "/" + CUSTOMLAVASTILL_PNG);
@@ -768,6 +803,40 @@ public class TexturePack {
         makeChestTopBottomImage(img_id, tile_bottomright, 49, 19, 15, 0, HandlePos.LEFT);
     }
 
+    /**
+     * Make sign image (based on sign layouts)
+     * @param img_id - source image ID
+     * @param dest_idx - destination tile index
+     * @param src_x - starting X of source (scaled based on 32 high)
+     * @param src_y - starting Y of source (scaled based on 32 high)
+     * @param width - width to copy (scaled based on 32 high)
+     * @param height - height to copy (scaled based on 32 high)
+     */
+    private void makeSignImage(int img_id, int dest_idx, int src_x, int src_y, int width, int height) {
+        int mult = imgs[img_id].height / 32; /* Nominal height for sign images is 32 */
+        int[] tile = new int[24 * 24 * mult * mult];    /* Make image (all are 24x24) */
+        copySubimageFromImage(img_id, src_x * mult, src_y * mult, 0, (24-height)*mult, width * mult, height * mult, tile, 24 * mult);
+        /* Put scaled result into tile buffer */
+        int new_argb[] = new int[native_scale*native_scale];
+        scaleTerrainPNGSubImage(24*mult, native_scale, tile, new_argb);
+        terrain_argb[dest_idx] = new_argb;
+    }
+
+    private void patchSignImages(int img, int sign_front, int sign_back, int sign_top, int sign_bottom, int sign_left, int sign_right, int post_front, int post_back, int post_left, int post_right)
+    {
+        /* Load images at lower left corner of each tile */
+        makeSignImage(img, sign_front, 2, 2, 24, 12);
+        makeSignImage(img, sign_back, 28, 2, 24, 12);
+        makeSignImage(img, sign_top, 2, 0, 24, 2);
+        makeSignImage(img, sign_left, 0, 2, 2, 12);
+        makeSignImage(img, sign_right, 26, 2, 2, 12);
+        makeSignImage(img, sign_bottom, 26, 0, 24, 2);
+        makeSignImage(img, post_front, 0, 16, 2, 14);
+        makeSignImage(img, post_right, 2, 16, 2, 14);
+        makeSignImage(img, post_back, 4, 16, 2, 14);
+        makeSignImage(img, post_left, 6, 16, 2, 14);
+    }
+    
     /* Copy texture pack */
     private TexturePack(TexturePack tp) {
         this.terrain_argb = new int[tp.terrain_argb.length][];

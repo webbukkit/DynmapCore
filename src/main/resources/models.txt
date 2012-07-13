@@ -96,6 +96,26 @@ patch:id=HorizY001ZTopNEW,Ox=0.0,Oy=0.01,Oz=0.0,Ux=1.0,Uy=0.01,Uz=0.0,Vx=0.0,Vy=
 # Wire patch - Y+ facing at Y=0.01, top of texture at +Z (NESW)
 patch:id=HorizY001ZTopNESW,Ox=0.0,Oy=0.01,Oz=0.0,Ux=1.0,Uy=0.01,Uz=0.0,Vx=0.0,Vy=0.01,Vz=1.0,visibility=bottom
 
+# Wall sign patches
+patch:id=WSignFront,Ox=0.0,Oy=0.25,Oz=0.9166,Ux=1.0,Uy=0.25,Uz=0.9166,Vx=0.0,Vy=1.25,Vz=0.9166,visibility=bottom
+patch:id=WSignBack,Ox=0.0,Oy=0.25,Oz=1.0,Ux=1.0,Uy=0.25,Uz=1.0,Vx=0.0,Vy=1.25,Vz=1.0,visibility=top
+patch:id=WSignTop,Ox=0.0,Oy=0.75,Oz=0.9166,Ux=1.0,Uy=0.75,Uz=0.9166,Vx=0.0,Vy=0.75,Vz=1.9166,visibility=bottom
+patch:id=WSignBottom,Ox=0.0,Oy=0.25,Oz=0.9166,Ux=1.0,Uy=0.25,Uz=0.9166,Vx=0.0,Vy=0.25,Vz=1.9166,visibility=top
+patch:id=WSignLeft,Ox=0.0,Oy=0.25,Oz=0.9166,Ux=0.0,Uy=0.25,Uz=1.9166,Vx=0.0,Vy=1.25,Vz=0.9166,visibility=top
+patch:id=WSignRight,Ox=1.0,Oy=0.25,Oz=0.9166,Ux=1.0,Uy=0.25,Uz=1.9166,Vx=1.0,Vy=1.25,Vz=0.9166,visibility=bottom
+
+# Sign post patches
+patch:id=SignFront,Ox=0.0,Oy=0.5,Oz=0.45833,Ux=1.0,Uy=0.5,Uz=0.45833,Vx=0.0,Vy=1.5,Vz=0.45833,visibility=bottom
+patch:id=SignBack,Ox=0.0,Oy=0.5,Oz=0.54166,Ux=1.0,Uy=0.5,Uz=0.54166,Vx=0.0,Vy=1.5,Vz=0.54166,visibility=top
+patch:id=SignTop,Ox=0.0,Oy=1.0,Oz=0.45833,Ux=1.0,Uy=1.0,Uz=0.45833,Vx=0.0,Vy=1.0,Vz=1.45833,visibility=bottom
+patch:id=SignBottom,Ox=0.0,Oy=0.5,Oz=0.45833,Ux=1.0,Uy=0.5,Uz=0.45833,Vx=0.0,Vy=0.5,Vz=1.45833,visibility=top
+patch:id=SignLeft,Ox=0.0,Oy=0.5,Oz=0.45833,Ux=0.0,Uy=0.5,Uz=1.45833,Vx=0.0,Vy=1.5,Vz=0.45833,visibility=top
+patch:id=SignRight,Ox=1.0,Oy=0.5,Oz=0.45833,Ux=1.0,Uy=0.5,Uz=1.45833,Vx=1.0,Vy=1.5,Vz=0.45833,visibility=bottom
+patch:id=PostFront,Ox=0.45833,Oy=0.0,Oz=0.45833,Ux=1.45833,Uy=0.0,Uz=0.45833,Vx=0.45833,Vy=1.0,Vz=0.45833,visibility=bottom
+patch:id=PostBack,Ox=0.45833,Oy=0.0,Oz=0.54166,Ux=1.45833,Uy=0.0,Uz=0.54166,Vx=0.45833,Vy=1.0,Vz=0.54166,visibility=top
+patch:id=PostLeft,Ox=0.45833,Oy=0.0,Oz=0.45833,Ux=0.45833,Uy=0.0,Uz=1.45833,Vx=0.45833,Vy=1.0,Vz=0.45833,visibility=top
+patch:id=PostRight,Ox=0.54166,Oy=0.0,Oz=0.45833,Ux=0.54166,Uy=0.0,Uz=1.45833,Vx=0.54166,Vy=1.0,Vz=0.45833,visibility=bottom
+
 # Wood Stair - up south
 # Cobblestone Stair - up south
 # Brick Stair - up south
@@ -702,25 +722,14 @@ patchblock:id=65,data=4,patch0=VertX0In@180
 # Ladder - attached to south side of block
 patchblock:id=65,data=5,patch0=VertX0In
 # Wall sign - facing east
-block:id=68,data=2,scale=8
-layer:2,3,4,5
-*-------
-*-------
-*-------
-*-------
-*-------
-*-------
-*-------
-*-------
+patchblock:id=68,data=2,patch0=WSignFront,patch1=WSignBack,patch2=WSignTop,patch3=WSignBottom,patch4=WSignLeft,patch5=WSignRight
 # Wall sign - facing west
-block:id=68,data=3,scale=8
-rotate:id=68,data=2,rot=180
+patchblock:id=68,data=3,patch0=WSignFront@180,patch1=WSignBack@180,patch2=WSignTop@180,patch3=WSignBottom@180,patch4=WSignLeft@180,patch5=WSignRight@180
 # Wall sign - facing north
-block:id=68,data=4,scale=8
-rotate:id=68,data=2,rot=270
+patchblock:id=68,data=4,patch0=WSignFront@270,patch1=WSignBack@270,patch2=WSignTop@270,patch3=WSignBottom@270,patch4=WSignLeft@270,patch5=WSignRight@270
 # Wall sign - facing south
-block:id=68,data=5,scale=8
-rotate:id=68,data=2,rot=90
+patchblock:id=68,data=5,patch0=WSignFront@90,patch1=WSignBack@90,patch2=WSignTop@90,patch3=WSignBottom@90,patch4=WSignLeft@90,patch5=WSignRight@90
+
 # Redstone - render alg
 linkmap:id=55,linkalg=3
 
@@ -749,185 +758,37 @@ patchblock:id=55,data=10,patch0=HorizY001ZTopNEW@270
 # Redstone wire (None)
 patchblock:id=55,data=11,patch0=HorizY001ZTopNone
 # Signpost - facing west
-block:id=63,data=0,scale=16
-layer:0,1,2,3,4,5
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
--------**-------
--------**-------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-layer:6,7,8,9,10,11,12
-----------------
-------**--------
-------**--------
-------**--------
-------**--------
-------**--------
-------**--------
-------***-------
-------***-------
-------**--------
-------**--------
-------**--------
-------**--------
-------**--------
-------**--------
-----------------
+patchblock:id=63,data=0,patch0=SignFront@180,patch1=SignBack@180,patch2=SignTop@180,patch3=SignBottom@180,patch4=SignLeft@180,patch5=SignRight@180,patch6=PostFront@180,patch7=PostBack@180,patch8=PostLeft@180,patch9=PostRight@180
 # Signpost - facing north
-block:id=63,data=4,scale=16
-rotate:id=63,data=0,rot=90
+patchblock:id=63,data=4,patch0=SignFront@270,patch1=SignBack@270,patch2=SignTop@270,patch3=SignBottom@270,patch4=SignLeft@270,patch5=SignRight@270,patch6=PostFront@270,patch7=PostBack@270,patch8=PostLeft@270,patch9=PostRight@270
 # Signpost - facing east
-block:id=63,data=8,scale=16
-rotate:id=63,data=0,rot=180
+patchblock:id=63,data=8,patch0=SignFront,patch1=SignBack,patch2=SignTop,patch3=SignBottom,patch4=SignLeft,patch5=SignRight,patch6=PostFront,patch7=PostBack,patch8=PostLeft,patch9=PostRight
 # Signpost - facing south
-block:id=63,data=12,scale=16
-rotate:id=63,data=0,rot=270
+patchblock:id=63,data=12,patch0=SignFront@90,patch1=SignBack@90,patch2=SignTop@90,patch3=SignBottom@90,patch4=SignLeft@90,patch5=SignRight@90,patch6=PostFront@90,patch7=PostBack@90,patch8=PostLeft@90,patch9=PostRight@90
 # Signpost - facing northwest
-block:id=63,data=2,scale=16
-layer:0,1,2,3,4,5
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
--------**-------
--------**-------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-layer:6,7,8,9,10,11,12
-----------------
----------**-----
----------**-----
---------**------
---------**------
--------**-------
--------**-------
-------***-------
-------***-------
------**---------
------**---------
-----**----------
-----**----------
----**-----------
----**-----------
-----------------
+patchblock:id=63,data=2,patch0=SignFront@225,patch1=SignBack@225,patch2=SignTop@225,patch3=SignBottom@225,patch4=SignLeft@225,patch5=SignRight@225,patch6=PostFront@225,patch7=PostBack@225,patch8=PostLeft@225,patch9=PostRight@225
 # Signpost - facing northeast
-block:id=63,data=6,scale=16
-rotate:id=63,data=2,rot=90
+patchblock:id=63,data=6,patch0=SignFront@315,patch1=SignBack@315,patch2=SignTop@315,patch3=SignBottom@315,patch4=SignLeft@315,patch5=SignRight@315,patch6=PostFront@315,patch7=PostBack@315,patch8=PostLeft@315,patch9=PostRight@315
 # Signpost - facing southeast
-block:id=63,data=10,scale=16
-rotate:id=63,data=2,rot=180
+patchblock:id=63,data=10,patch0=SignFront@45,patch1=SignBack@45,patch2=SignTop@45,patch3=SignBottom@45,patch4=SignLeft@45,patch5=SignRight@45,patch6=PostFront@45,patch7=PostBack@45,patch8=PostLeft@45,patch9=PostRight@45
 # Signpost - facing southwest
-block:id=63,data=14,scale=16
-rotate:id=63,data=2,rot=270
+patchblock:id=63,data=14,patch0=SignFront@135,patch1=SignBack@135,patch2=SignTop@135,patch3=SignBottom@135,patch4=SignLeft@135,patch5=SignRight@135,patch6=PostFront@135,patch7=PostBack@135,patch8=PostLeft@135,patch9=PostRight@135
 # Signpost - facing west-northwest
-block:id=63,data=1,scale=16
-layer:0,1,2,3,4,5
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
--------**-------
--------**-------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-layer:6,7,8,9,10,11,12
-----------------
--------**-------
--------**-------
--------**-------
--------**-------
-------**--------
-------**--------
-------***-------
-------***-------
-------**--------
-------**--------
------**---------
------**---------
------**---------
------**---------
-----------------
+patchblock:id=63,data=1,patch0=SignFront@203,patch1=SignBack@203,patch2=SignTop@203,patch3=SignBottom@203,patch4=SignLeft@203,patch5=SignRight@203,patch6=PostFront@203,patch7=PostBack@203,patch8=PostLeft@203,patch9=PostRight@203
 # Signpost - facing north-northeast
-block:id=63,data=5,scale=16
-rotate:id=63,data=1,rot=90
+patchblock:id=63,data=5,patch0=SignFront@293,patch1=SignBack@293,patch2=SignTop@293,patch3=SignBottom@293,patch4=SignLeft@293,patch5=SignRight@293,patch6=PostFront@293,patch7=PostBack@293,patch8=PostLeft@293,patch9=PostRight@293
 # Signpost - facing north-northeast
-block:id=63,data=9,scale=16
-rotate:id=63,data=1,rot=180
+patchblock:id=63,data=9,patch0=SignFront@23,patch1=SignBack@23,patch2=SignTop@23,patch3=SignBottom@23,patch4=SignLeft@23,patch5=SignRight@23,patch6=PostFront@23,patch7=PostBack@23,patch8=PostLeft@23,patch9=PostRight@23
 # Signpost - facing north-northeast
-block:id=63,data=13,scale=16
-rotate:id=63,data=1,rot=270
+patchblock:id=63,data=13,patch0=SignFront@113,patch1=SignBack@113,patch2=SignTop@113,patch3=SignBottom@113,patch4=SignLeft@113,patch5=SignRight@113,patch6=PostFront@113,patch7=PostBack@113,patch8=PostLeft@113,patch9=PostRight@113
 # Signpost - facing west-southwest
-block:id=63,data=15,scale=16
-layer:0,1,2,3,4,5
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
--------**-------
--------**-------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-layer:6,7,8,9,10,11,12
-----------------
------**---------
------**---------
------**---------
------**---------
-------**--------
-------**--------
-------***-------
-------***-------
-------**--------
-------**--------
--------**-------
--------**-------
--------**-------
--------**-------
-----------------
+patchblock:id=63,data=15,patch0=SignFront@157,patch1=SignBack@157,patch2=SignTop@157,patch3=SignBottom@157,patch4=SignLeft@157,patch5=SignRight@157,patch6=PostFront@157,patch7=PostBack@157,patch8=PostLeft@157,patch9=PostRight@157
 # Signpost - facing north-northwest
-block:id=63,data=3,scale=16
-rotate:id=63,data=15,rot=90
+patchblock:id=63,data=3,patch0=SignFront@247,patch1=SignBack@247,patch2=SignTop@247,patch3=SignBottom@247,patch4=SignLeft@247,patch5=SignRight@247,patch6=PostFront@247,patch7=PostBack@247,patch8=PostLeft@247,patch9=PostRight@247
 # Signpost - facing east-northeast
-block:id=63,data=7,scale=16
-rotate:id=63,data=15,rot=180
+patchblock:id=63,data=7,patch0=SignFront@337,patch1=SignBack@337,patch2=SignTop@337,patch3=SignBottom@337,patch4=SignLeft@337,patch5=SignRight@337,patch6=PostFront@337,patch7=PostBack@337,patch8=PostLeft@337,patch9=PostRight@337
 # Signpost - facing south-southeast
-block:id=63,data=11,scale=16
-rotate:id=63,data=15,rot=270
+patchblock:id=63,data=11,patch0=SignFront@67,patch1=SignBack@67,patch2=SignTop@67,patch3=SignBottom@67,patch4=SignLeft@67,patch5=SignRight@67,patch6=PostFront@67,patch7=PostBack@67,patch8=PostLeft@67,patch9=PostRight@67
 # Fire
 patchblock:id=51,data=*,patch0=VertX0,patch1=VertX0@90,patch2=VertX0@180,patch3=VertX0@270,patch4=SlopeXUpZTop675,patch5=SlopeXUpZTop675@90,patch6=SlopeXUpZTop675@180,patch4=SlopeXUpZTop675@270
 # Bed - head - pointing west

@@ -131,15 +131,21 @@ public class HDBlockModels {
         
         private void rotate(Vector3D vec, int xcnt, int ycnt, int zcnt) {
             vec.subtract(offsetCenter); /* Shoft to center of block */
-            for(int i = 0; i < xcnt; i++) {
-                rotate90X.transform(vec);
-            }
-            for(int i = 0; i < ycnt; i++) {
-                rotate90Y.transform(vec);
-            }
-            for(int i = 0; i < zcnt; i++) {
-                rotate90Z.transform(vec);
-            }
+            /* Do X rotation */
+            double rot = Math.toRadians(xcnt);
+            double nval = vec.z * Math.sin(rot) + vec.y * Math.cos(rot);
+            vec.z = vec.z * Math.cos(rot) - vec.y * Math.sin(rot);
+            vec.y = nval;
+            /* Do Y rotation */
+            rot = Math.toRadians(ycnt);
+            nval = vec.x * Math.cos(rot) - vec.z * Math.sin(rot);
+            vec.z = vec.x * Math.sin(rot) + vec.z * Math.cos(rot);
+            vec.x = nval;
+            /* Do Z rotation */
+            rot = Math.toRadians(zcnt);
+            nval = vec.y * Math.sin(rot) + vec.x * Math.cos(rot);
+            vec.y = vec.y * Math.cos(rot) - vec.x * Math.sin(rot);
+            vec.x = nval;
             vec.add(offsetCenter); /* Shoft back to corner */
         }
         
@@ -898,8 +904,8 @@ public class HDBlockModels {
                                         roty = Integer.parseInt(rv[1]);
                                         rotz = Integer.parseInt(rv[2]);
                                     }
-                                    if((pdorig != null) && ((rotx % 90) == 0) && ((roty % 90) == 0) && ((rotz % 90) == 0)) {
-                                        pd = new HDPatchDefinition(pdorig, rotx/90, roty/90, rotz/90);
+                                    if(pdorig != null) {
+                                        pd = new HDPatchDefinition(pdorig, rotx, roty, rotz);
                                         patchdefs.put(av[1],  pd);  /* Add to map so we reuse it */
                                     }
                                 }
