@@ -945,7 +945,7 @@ patchblock:id=69,data=4,patch0=WLeverBase1@180,patch1=WLeverBase2@180,patch2=WLe
 patchblock:id=69,data=12,patch0=WLeverBase1@180,patch1=WLeverBase2@180,patch2=WLeverBase3@180,patch3=WLeverBase4@180,patch4=WLeverBase5@180,patch5=WLeverSide1@0/180/180,patch6=WLeverSide2@0/180/180,patch7=WLeverSide3@0/180/180,patch8=WLeverSide4@0/180/180
 # Ground lever, off tp south
 patchblock:id=69,data=6,patch0=LeverBase1@270,patch1=LeverBase1@90,patch2=LeverBase2@270,patch3=LeverBase2@90,patch4=LeverBase3@270,patch5=LeverSide1@270,patch6=LeverSide2@270,patch7=LeverSide3@270,patch8=LeverSide4@270
-patchblock:id=69,data=14,patch0=LeverBase1@270,patch1=LeverBase1@90,patch2=LeverBase2@270,patch3=LeverBase2@90,patch4=LeverBase3@270,patch5=WLeverSide1@0/270/180,patch6=WLeverSide2@0/270/180,patch7=WLeverSide3@0/270/180,patch8=WLeverSide4@0/270/180
+patchblock:id=69,data=14,patch0=LeverBase1@270,patch1=LeverBase1@90,patch2=LeverBase2@270,patch3=LeverBase2@90,patch4=LeverBase3@270,patch5=LeverSide1@90,patch6=LeverSide2@90,patch7=LeverSide3@90,patch8=LeverSide4@90
 # Ground lever, off tp west
 patchblock:id=69,data=5,patch0=LeverBase1,patch1=LeverBase1@180,patch2=LeverBase2,patch3=LeverBase2@180,patch4=LeverBase3,patch5=LeverSide1,patch6=LeverSide2,patch7=LeverSide3,patch8=LeverSide4
 patchblock:id=69,data=13,patch0=LeverBase1,patch1=LeverBase1@180,patch2=LeverBase2,patch3=LeverBase2@180,patch4=LeverBase3,patch5=LeverSide1@180,patch6=LeverSide2@180,patch7=LeverSide3@180,patch8=LeverSide4@180
