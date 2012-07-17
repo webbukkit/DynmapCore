@@ -25,7 +25,6 @@ import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapCore;
 import org.dynmap.Log;
 import org.dynmap.MapManager;
-import org.dynmap.common.BiomeMap;
 import org.dynmap.utils.DynmapBufferedImage;
 import org.dynmap.utils.MapIterator.BlockStep;
 import org.dynmap.utils.MapIterator;
@@ -60,9 +59,6 @@ public class TexturePack {
     private static final String CUSTOMWATERFLOWING_PNG = "custom_water_flowing.png";
     private static final String SWAMPGRASSCOLOR_PNG = "misc/swampgrasscolor.png";
     private static final String SWAMPFOLIAGECOLOR_PNG = "misc/swampfoliagecolor.png";
-    private static final String CHEST_PNG = "item/chest.png";
-    private static final String ENDERCHEST_PNG = "item/enderchest.png";
-    private static final String BIGCHEST_PNG = "item/largechest.png";
     private static final String SIGN_PNG = "item/sign.png";
 
 	private static final String STANDARDTP = "standard";
@@ -108,50 +104,60 @@ public class TexturePack {
     private static final int TILEINDEX_PANETOP_X = 263;
     private static final int TILEINDEX_AIRFRAME_EYE = 264;
     private static final int TILEINDEX_FIRE = 265;
-    private static final int TILEINDEX_CHEST_TOP = 266;
-    private static final int TILEINDEX_CHEST_LEFT = 267;
-    private static final int TILEINDEX_CHEST_RIGHT = 268;
-    private static final int TILEINDEX_CHEST_FRONT = 269;
-    private static final int TILEINDEX_CHEST_BACK = 270;
-    private static final int TILEINDEX_CHEST_BOTTOM = 271;
-    private static final int TILEINDEX_ENDERCHEST_TOP = 272;
-    private static final int TILEINDEX_ENDERCHEST_LEFT = 273;
-    private static final int TILEINDEX_ENDERCHEST_RIGHT = 274;
-    private static final int TILEINDEX_ENDERCHEST_FRONT = 275;
-    private static final int TILEINDEX_ENDERCHEST_BACK = 276;
-    private static final int TILEINDEX_ENDERCHEST_BOTTOM = 277;
-    private static final int TILEINDEX_BIGCHEST_TOPLEFT = 278;
-    private static final int TILEINDEX_BIGCHEST_TOPRIGHT = 279;
-    private static final int TILEINDEX_BIGCHEST_FRONTLEFT = 280;
-    private static final int TILEINDEX_BIGCHEST_FRONTRIGHT = 281;
-    private static final int TILEINDEX_BIGCHEST_LEFT = 282;
-    private static final int TILEINDEX_BIGCHEST_RIGHT = 283;
-    private static final int TILEINDEX_BIGCHEST_BACKLEFT = 284;
-    private static final int TILEINDEX_BIGCHEST_BACKRIGHT = 285;
-    private static final int TILEINDEX_BIGCHEST_BOTTOMLEFT = 286;
-    private static final int TILEINDEX_BIGCHEST_BOTTOMRIGHT = 287;
-    private static final int TILEINDEX_SIGN_FRONT = 288;
-    private static final int TILEINDEX_SIGN_BACK = 289;
-    private static final int TILEINDEX_SIGN_TOP = 290;
-    private static final int TILEINDEX_SIGN_BOTTOM = 291;
-    private static final int TILEINDEX_SIGN_LEFTSIDE = 292;
-    private static final int TILEINDEX_SIGN_RIGHTSIDE = 293;
-    private static final int TILEINDEX_SIGN_POSTFRONT = 294;
-    private static final int TILEINDEX_SIGN_POSTBACK = 295;
-    private static final int TILEINDEX_SIGN_POSTLEFT = 296;
-    private static final int TILEINDEX_SIGN_POSTRIGHT = 297;
-
-    
-    private static final int MAX_TILEINDEX = 297;  /* Index of last static tile definition */
+    private static final int MAX_TILEINDEX = 265;  /* Index of last static tile definition */
     private static final int TILETABLE_LEN = 1000;  /* Leave room for dynmaic tiles */
+
+    /* Indexes of faces in a CHEST format tile file */
+    private static final int TILEINDEX_CHEST_TOP = 0;
+    private static final int TILEINDEX_CHEST_LEFT = 1;
+    private static final int TILEINDEX_CHEST_RIGHT = 2;
+    private static final int TILEINDEX_CHEST_FRONT = 3;
+    private static final int TILEINDEX_CHEST_BACK = 4;
+    private static final int TILEINDEX_CHEST_BOTTOM = 5;
+    private static final int TILEINDEX_CHEST_COUNT = 6;
+
+    /* Indexes of faces in a BIGCHEST format tile file */
+    private static final int TILEINDEX_BIGCHEST_TOPLEFT = 0;
+    private static final int TILEINDEX_BIGCHEST_TOPRIGHT = 1;
+    private static final int TILEINDEX_BIGCHEST_FRONTLEFT = 2;
+    private static final int TILEINDEX_BIGCHEST_FRONTRIGHT = 3;
+    private static final int TILEINDEX_BIGCHEST_LEFT = 4;
+    private static final int TILEINDEX_BIGCHEST_RIGHT = 5;
+    private static final int TILEINDEX_BIGCHEST_BACKLEFT = 6;
+    private static final int TILEINDEX_BIGCHEST_BACKRIGHT = 7;
+    private static final int TILEINDEX_BIGCHEST_BOTTOMLEFT = 8;
+    private static final int TILEINDEX_BIGCHEST_BOTTOMRIGHT = 9;
+    private static final int TILEINDEX_BIGCHEST_COUNT = 10;
+
+    /* Indexes of faces in the SIGN format tile file */
+    private static final int TILEINDEX_SIGN_FRONT = 0;
+    private static final int TILEINDEX_SIGN_BACK = 1;
+    private static final int TILEINDEX_SIGN_TOP = 2;
+    private static final int TILEINDEX_SIGN_BOTTOM = 3;
+    private static final int TILEINDEX_SIGN_LEFTSIDE = 4;
+    private static final int TILEINDEX_SIGN_RIGHTSIDE = 5;
+    private static final int TILEINDEX_SIGN_POSTFRONT = 6;
+    private static final int TILEINDEX_SIGN_POSTBACK = 7;
+    private static final int TILEINDEX_SIGN_POSTLEFT = 8;
+    private static final int TILEINDEX_SIGN_POSTRIGHT = 9;
+    private static final int TILEINDEX_SIGN_COUNT = 10;
+
 
     private static final int BLOCKTABLELEN = 256;  /* Enough for normal block IDs */
 
+    private static enum TileFileFormat {
+        GRID,
+        CHEST,
+        BIGCHEST,
+        SIGN
+    };
+    
     private static int next_dynamic_tile = MAX_TILEINDEX+1;
     private static class DynamicTileFile {
         String filename;
         int tilecnt_x, tilecnt_y;   /* Number of tiles horizontally and vertically */
         int tile_to_dyntile[];      /* Mapping from tile index in tile file to dynamic ID in global tile table (terrain_argb): 0=unassigned */
+        TileFileFormat format;
     }
     private static ArrayList<DynamicTileFile> addonfiles = new ArrayList<DynamicTileFile>();
 
@@ -181,11 +187,7 @@ public class TexturePack {
     private static final int IMG_FIRE = 11;
     private static final int IMG_SWAMPGRASSCOLOR = 12;
     private static final int IMG_SWAMPFOLIAGECOLOR = 13;
-    private static final int IMG_CHEST = 14;
-    private static final int IMG_ENDERCHEST = 15;
-    private static final int IMG_LARGECHEST = 16;
-    private static final int IMG_SIGN = 17;
-    private static final int IMG_CNT = 18;
+    private static final int IMG_CNT = 14;
     /* 0-(IMG_CNT-1) are fixed, IMG_CNT+x is dynamic file x */
     private LoadedImage[] imgs;
 
@@ -415,57 +417,6 @@ public class TexturePack {
                 loadBiomeShadingImage(is, IMG_WATERCOLORX);
                 is.close();
             }
-            /* Try to find and load item/chest.png */
-            ze = zf.getEntry(CHEST_PNG);
-            if(ze != null) {    /* Fall back to standard file */
-                is = zf.getInputStream(ze);
-            } else {
-                /* Get standard one */
-                File ff = new File(texturedir, STANDARDTP + "/" + CHEST_PNG);
-                is = new FileInputStream(ff);
-            }
-            loadImage(is, IMG_CHEST);
-            is.close();
-            patchChestImages(IMG_CHEST, TILEINDEX_CHEST_TOP, TILEINDEX_CHEST_BOTTOM, TILEINDEX_CHEST_FRONT, TILEINDEX_CHEST_BACK, TILEINDEX_CHEST_LEFT, TILEINDEX_CHEST_RIGHT);
-            
-            /* Try to find and load item/largechest.png */
-            ze = zf.getEntry(BIGCHEST_PNG);
-            if(ze != null) {    /* Fall back to standard file */
-                is = zf.getInputStream(ze);
-            } else {
-                /* Get standard one */
-                File ff = new File(texturedir, STANDARDTP + "/" + BIGCHEST_PNG);
-                is = new FileInputStream(ff);
-            }
-            loadImage(is, IMG_LARGECHEST);
-            is.close();
-            patchLargeChestImages(IMG_LARGECHEST, TILEINDEX_BIGCHEST_TOPRIGHT, TILEINDEX_BIGCHEST_TOPLEFT, TILEINDEX_BIGCHEST_BOTTOMRIGHT, TILEINDEX_BIGCHEST_BOTTOMLEFT, TILEINDEX_BIGCHEST_RIGHT, TILEINDEX_BIGCHEST_LEFT, TILEINDEX_BIGCHEST_FRONTRIGHT, TILEINDEX_BIGCHEST_FRONTLEFT, TILEINDEX_BIGCHEST_BACKRIGHT, TILEINDEX_BIGCHEST_BACKLEFT);
-
-            /* Try to find and load item/enderchest.png */
-            ze = zf.getEntry(ENDERCHEST_PNG);
-            if(ze != null) {    /* Fall back to standard file */
-                is = zf.getInputStream(ze);
-            } else {
-                /* Get standard one */
-                File ff = new File(texturedir, STANDARDTP + "/" + ENDERCHEST_PNG);
-                is = new FileInputStream(ff);
-            }
-            loadImage(is, IMG_ENDERCHEST);
-            is.close();
-            patchChestImages(IMG_ENDERCHEST, TILEINDEX_ENDERCHEST_TOP, TILEINDEX_ENDERCHEST_BOTTOM, TILEINDEX_ENDERCHEST_FRONT, TILEINDEX_ENDERCHEST_BACK, TILEINDEX_ENDERCHEST_LEFT, TILEINDEX_ENDERCHEST_RIGHT);
-
-            /* Try to find and load item/sign.png */
-            ze = zf.getEntry(SIGN_PNG);
-            if(ze != null) {    /* Fall back to standard file */
-                is = zf.getInputStream(ze);
-            } else {
-                /* Get standard one */
-                File ff = new File(texturedir, STANDARDTP + "/" + SIGN_PNG);
-                is = new FileInputStream(ff);
-            }
-            loadImage(is, IMG_SIGN);
-            is.close();
-            patchSignImages(IMG_SIGN, TILEINDEX_SIGN_FRONT, TILEINDEX_SIGN_BACK, TILEINDEX_SIGN_TOP, TILEINDEX_SIGN_BOTTOM, TILEINDEX_SIGN_LEFTSIDE, TILEINDEX_SIGN_RIGHTSIDE, TILEINDEX_SIGN_POSTFRONT, TILEINDEX_SIGN_POSTBACK, TILEINDEX_SIGN_POSTLEFT, TILEINDEX_SIGN_POSTRIGHT);
 
             /* Optional files - process if they exist */
             ze = zf.getEntry(CUSTOMLAVASTILL_PNG);
@@ -514,7 +465,7 @@ public class TexturePack {
                 else {
                     is = zf.getInputStream(ze);
                 }
-                loadDynamicImage(is, i);
+                loadDynamicImage(is, i, dtf.format);
                 is.close();
             }
             
@@ -595,44 +546,6 @@ public class TexturePack {
                 loadBiomeShadingImage(fis, IMG_WATERCOLORX);
                 fis.close();
             }
-            /* Check for item/chest.png */
-            f = new File(texturedir, tpname + "/" + CHEST_PNG);
-            if(!f.canRead()) {
-                f = new File(texturedir, STANDARDTP + "/" + CHEST_PNG);
-            }
-            fis = new FileInputStream(f);
-            loadImage(fis, IMG_CHEST);
-            fis.close();
-            patchChestImages(IMG_CHEST, TILEINDEX_CHEST_TOP, TILEINDEX_CHEST_BOTTOM, TILEINDEX_CHEST_FRONT, TILEINDEX_CHEST_BACK, TILEINDEX_CHEST_LEFT, TILEINDEX_CHEST_RIGHT);
-
-            /* Check for item/enderchest.png */
-            f = new File(texturedir, tpname + "/" + ENDERCHEST_PNG);
-            if(!f.canRead()) {
-                f = new File(texturedir, STANDARDTP + "/" + ENDERCHEST_PNG);
-            }
-            fis = new FileInputStream(f);
-            loadImage(fis, IMG_ENDERCHEST);
-            fis.close();
-            patchChestImages(IMG_ENDERCHEST, TILEINDEX_ENDERCHEST_TOP, TILEINDEX_ENDERCHEST_BOTTOM, TILEINDEX_ENDERCHEST_FRONT, TILEINDEX_ENDERCHEST_BACK, TILEINDEX_ENDERCHEST_LEFT, TILEINDEX_ENDERCHEST_RIGHT);
-            /* Check for item/largechest.png */
-            f = new File(texturedir, tpname + "/" + BIGCHEST_PNG);
-            if(!f.canRead()) {
-                f = new File(texturedir, STANDARDTP + "/" + BIGCHEST_PNG);
-            }
-            fis = new FileInputStream(f);
-            loadImage(fis, IMG_LARGECHEST);
-            fis.close();
-            patchLargeChestImages(IMG_LARGECHEST, TILEINDEX_BIGCHEST_TOPRIGHT, TILEINDEX_BIGCHEST_TOPLEFT, TILEINDEX_BIGCHEST_BOTTOMRIGHT, TILEINDEX_BIGCHEST_BOTTOMLEFT, TILEINDEX_BIGCHEST_RIGHT, TILEINDEX_BIGCHEST_LEFT, TILEINDEX_BIGCHEST_FRONTRIGHT, TILEINDEX_BIGCHEST_FRONTLEFT, TILEINDEX_BIGCHEST_BACKRIGHT, TILEINDEX_BIGCHEST_BACKLEFT);
-            /* Check for item/sign.png */
-            f = new File(texturedir, tpname + "/" + SIGN_PNG);
-            if(!f.canRead()) {
-                f = new File(texturedir, STANDARDTP + "/" + SIGN_PNG);
-            }
-            fis = new FileInputStream(f);
-            loadImage(fis, IMG_SIGN);
-            fis.close();
-            patchSignImages(IMG_SIGN, TILEINDEX_SIGN_FRONT, TILEINDEX_SIGN_BACK, TILEINDEX_SIGN_TOP, TILEINDEX_SIGN_BOTTOM, TILEINDEX_SIGN_LEFTSIDE, TILEINDEX_SIGN_RIGHTSIDE, TILEINDEX_SIGN_POSTFRONT, TILEINDEX_SIGN_POSTBACK, TILEINDEX_SIGN_POSTLEFT, TILEINDEX_SIGN_POSTRIGHT);
-            
             /* Optional files - process if they exist */
             f = new File(texturedir, tpname + "/" + CUSTOMLAVASTILL_PNG);
             if(!f.canRead())
@@ -680,7 +593,7 @@ public class TexturePack {
                     f = new File(texturedir, STANDARDTP + "/" + dtf.filename);             
                 }
                 fis = new FileInputStream(f);
-                loadDynamicImage(fis, i);
+                loadDynamicImage(fis, i, dtf.format);
                 fis.close();
             }
         } catch (IOException iox) {
@@ -720,6 +633,7 @@ public class TexturePack {
      * @param handlepos - 0=middle,1=leftedge,2=rightedge
      */
     private void makeChestSideImage(int img_id, int dest_idx, int src_x, int width, int dest_x, HandlePos handlepos) {
+        if(dest_idx <= 0) return;
         int mult = imgs[img_id].height / 64; /* Nominal height for chest images is 64 */
         int[] tile = new int[16 * 16 * mult * mult];    /* Make image */
         /* Copy top part */
@@ -758,6 +672,8 @@ public class TexturePack {
      * @param handlepos - 0=middle,1=left-edge (righttop),2=right-edge (lefttop)
      */
     private void makeChestTopBottomImage(int img_id, int dest_idx, int src_x, int src_y, int width, int dest_x, HandlePos handlepos) {
+        if(dest_idx <= 0) return;
+        
         int mult = imgs[img_id].height / 64; /* Nominal height for chest images is 64 */
         int[] tile = new int[16 * 16 * mult * mult];    /* Make image */
         copySubimageFromImage(img_id, src_x * mult, src_y * mult, dest_x * mult, 1 * mult, width * mult, 14 * mult, tile, 16 * mult);
@@ -943,26 +859,39 @@ public class TexturePack {
     }
 
     /* Load dynamic texture files, and patch into terrain_argb */
-    private void loadDynamicImage(InputStream is, int idx) throws IOException {
+    private void loadDynamicImage(InputStream is, int idx, TileFileFormat format) throws IOException {
         loadImage(is, idx+IMG_CNT); /* Load image file */
         DynamicTileFile dtf = addonfiles.get(idx);  /* Get tile file definition */
         LoadedImage li = imgs[idx+IMG_CNT];
-        int dim = li.width / dtf.tilecnt_x; /* Dimension of each tile */
-        int old_argb[] = new int[dim*dim];
-        for(int x = 0; x < dtf.tilecnt_x; x++) {
-            for(int y = 0; y < dtf.tilecnt_y; y++) {
-                if(dtf.tile_to_dyntile[y*dtf.tilecnt_x + x] > 0) {    /* dynamic ID? */
-                    /* Copy source tile */
-                    for(int j = 0; j < dim; j++) {
-                        System.arraycopy(li.argb, (y*dim+j)*li.width + (x*dim), old_argb, j*dim, dim); 
+        switch(format) {
+            case GRID:  /* If grid format tile file */
+                int dim = li.width / dtf.tilecnt_x; /* Dimension of each tile */
+                int old_argb[] = new int[dim*dim];
+                for(int x = 0; x < dtf.tilecnt_x; x++) {
+                    for(int y = 0; y < dtf.tilecnt_y; y++) {
+                        if(dtf.tile_to_dyntile[y*dtf.tilecnt_x + x] > 0) {    /* dynamic ID? */
+                            /* Copy source tile */
+                            for(int j = 0; j < dim; j++) {
+                                System.arraycopy(li.argb, (y*dim+j)*li.width + (x*dim), old_argb, j*dim, dim); 
+                            }
+                            /* Rescale to match rest of terrain PNG */
+                            int new_argb[] = new int[native_scale*native_scale];
+                            scaleTerrainPNGSubImage(dim, native_scale, old_argb, new_argb);
+                            terrain_argb[dtf.tile_to_dyntile[y*dtf.tilecnt_x + x]] = new_argb;
+                        }
+
                     }
-                    /* Rescale to match rest of terrain PNG */
-                    int new_argb[] = new int[native_scale*native_scale];
-                    scaleTerrainPNGSubImage(dim, native_scale, old_argb, new_argb);
-                    terrain_argb[dtf.tile_to_dyntile[y*dtf.tilecnt_x + x]] = new_argb;
                 }
-                
-            }
+                break;
+            case CHEST:
+                patchChestImages(idx+IMG_CNT, dtf.tile_to_dyntile[TILEINDEX_CHEST_TOP], dtf.tile_to_dyntile[TILEINDEX_CHEST_BOTTOM], dtf.tile_to_dyntile[TILEINDEX_CHEST_FRONT], dtf.tile_to_dyntile[TILEINDEX_CHEST_BACK], dtf.tile_to_dyntile[TILEINDEX_CHEST_LEFT], dtf.tile_to_dyntile[TILEINDEX_CHEST_RIGHT]);
+                break;
+            case BIGCHEST:
+                patchLargeChestImages(idx+IMG_CNT, dtf.tile_to_dyntile[TILEINDEX_BIGCHEST_TOPRIGHT], dtf.tile_to_dyntile[TILEINDEX_BIGCHEST_TOPLEFT], dtf.tile_to_dyntile[TILEINDEX_BIGCHEST_BOTTOMRIGHT], dtf.tile_to_dyntile[TILEINDEX_BIGCHEST_BOTTOMLEFT], dtf.tile_to_dyntile[TILEINDEX_BIGCHEST_RIGHT], dtf.tile_to_dyntile[TILEINDEX_BIGCHEST_LEFT], dtf.tile_to_dyntile[TILEINDEX_BIGCHEST_FRONTRIGHT], dtf.tile_to_dyntile[TILEINDEX_BIGCHEST_FRONTLEFT], dtf.tile_to_dyntile[TILEINDEX_BIGCHEST_BACKRIGHT], dtf.tile_to_dyntile[TILEINDEX_BIGCHEST_BACKLEFT]);
+                break;
+            case SIGN:
+                patchSignImages(idx+IMG_CNT, dtf.tile_to_dyntile[TILEINDEX_SIGN_FRONT], dtf.tile_to_dyntile[TILEINDEX_SIGN_BACK], dtf.tile_to_dyntile[TILEINDEX_SIGN_TOP], dtf.tile_to_dyntile[TILEINDEX_SIGN_BOTTOM], dtf.tile_to_dyntile[TILEINDEX_SIGN_LEFTSIDE], dtf.tile_to_dyntile[TILEINDEX_SIGN_RIGHTSIDE], dtf.tile_to_dyntile[TILEINDEX_SIGN_POSTFRONT], dtf.tile_to_dyntile[TILEINDEX_SIGN_POSTBACK], dtf.tile_to_dyntile[TILEINDEX_SIGN_POSTLEFT], dtf.tile_to_dyntile[TILEINDEX_SIGN_POSTRIGHT]);
+                break;
         }
     }
     /* Load biome shading image into image array */
@@ -1357,6 +1286,7 @@ public class TexturePack {
                     int xdim = 16, ydim = 16;
                     String fname = null;
                     String id = null;
+                    TileFileFormat fmt = TileFileFormat.GRID;
                     for(String arg : args) {
                         String[] aval = arg.split("=");
                         if(aval.length < 2)
@@ -1369,10 +1299,17 @@ public class TexturePack {
                             xdim = Integer.parseInt(aval[1]);
                         else if(aval[0].equals("ycount"))
                             ydim = Integer.parseInt(aval[1]);
+                        else if(aval[0].equals("format")) {
+                            fmt = TileFileFormat.valueOf(aval[1].toUpperCase());
+                            if(fmt == null) {
+                                Log.severe("Invalid format type " + aval[1] + " - line " + rdr.getLineNumber() + " of " + txtname);
+                                return;
+                            }
+                        }
                     }
                     if((fname != null) && (id != null)) {
                         /* Register the file */
-                        int fid = findOrAddDynamicTileFile(fname, xdim, ydim);
+                        int fid = findOrAddDynamicTileFile(fname, xdim, ydim, fmt);
                         filetoidx.put(id, fid); /* Save lookup */
                     }
                     else {
@@ -1741,9 +1678,10 @@ public class TexturePack {
      * @param fname
      * @param xdim
      * @param ydim
+     * @param fmt 
      * @return dynamic file index
      */
-    private static int findOrAddDynamicTileFile(String fname, int xdim, int ydim) {
+    private static int findOrAddDynamicTileFile(String fname, int xdim, int ydim, TileFileFormat fmt) {
         DynamicTileFile f;
         /* Find existing, if already there */
         for(int i = 0; i < addonfiles.size(); i++) {
@@ -1757,6 +1695,21 @@ public class TexturePack {
         f.tilecnt_x = xdim;
         f.tilecnt_y = ydim;
         f.tile_to_dyntile = new int[xdim*ydim];
+        f.format = fmt;
+        switch(fmt) {
+            case GRID:
+                f.tile_to_dyntile = new int[xdim*ydim];
+                break;
+            case CHEST:
+                f.tile_to_dyntile = new int[TILEINDEX_CHEST_COUNT]; /* 6 images for chest tile */
+                break;
+            case BIGCHEST:
+                f.tile_to_dyntile = new int[TILEINDEX_BIGCHEST_COUNT]; /* 10 images for chest tile */
+                break;
+            case SIGN:
+                f.tile_to_dyntile = new int[TILEINDEX_SIGN_COUNT]; /* 10 images for sign tile */
+                break;
+        }
         addonfiles.add(f);
         
         return addonfiles.size()-1;
