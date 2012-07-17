@@ -5,7 +5,7 @@ enabled:railcraft-support
 var:railcraft-detectorBlock=202,railcraft-utilityBlock=204,railcraft-railAdvBlock=205,
 var:railcraft-elevatorBlock=207,railcraft-structureBlock=208,railcraft-cubeBlock=209
 # Files
-texturefile:id=blk0,filename=railcraft/railcraft.png,xcount=16,ycount=16
+texturefile:id=blk0,filename=railcraft/textures/railcraft.png,xcount=16,ycount=16
 # Blocks
 # (railcraft-detectorBlock:0) Detector - Storage
 block:id=railcraft-detectorBlock,data=0,top=6013,bottom=6013,south=14,north=13,east=13,west=13,txtid=blk0

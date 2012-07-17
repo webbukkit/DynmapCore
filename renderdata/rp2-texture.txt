@@ -11,13 +11,13 @@ var:rp2-array-array=149
 var:rp2-machine-machine=150,rp2-machine-machinePanel=151,rp2-machine-frame=152
 #TODO: rp2-control-backplane, rp2-control.peripheral, rp2-control-peripheralFlat
 # Files
-texturefile:id=base,filename=redpower2/base1.png,xcount=16,ycount=16
-texturefile:id=world,filename=redpower2/world1.png,xcount=16,ycount=16
-texturefile:id=worlditem,filename=redpower2/worlditems1.png,xcount=16,ycount=16
-texturefile:id=logic,filename=redpower2/logic1.png,xcount=16,ycount=16
-texturefile:id=lighting,filename=redpower2/lighting1.png,xcount=16,ycount=16
-texturefile:id=array,filename=redpower2/array1.png,xcount=16,ycount=16
-texturefile:id=machine,filename=redpower2/machine1.png,xcount=16,ycount=16
+texturefile:id=base,filename=eloraam/base/base1.png,xcount=16,ycount=16
+texturefile:id=world,filename=eloraam/world/world1.png,xcount=16,ycount=16
+texturefile:id=worlditem,filename=eloraam/world/worlditems1.png,xcount=16,ycount=16
+texturefile:id=logic,filename=eloraam/logic/logic1.png,xcount=16,ycount=16
+texturefile:id=lighting,filename=eloraam/lighting/lighting1.png,xcount=16,ycount=16
+texturefile:id=array,filename=eloraam/array/array1.png,xcount=16,ycount=16
+texturefile:id=machine,filename=eloraam/machine/machine1.png,xcount=16,ycount=16
 ############
 # Blocks from RedPowerCore-2
 ############

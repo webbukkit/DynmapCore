@@ -4,7 +4,7 @@ enabled:netherores-support
 # variables: set in configuration.txt to override
 var:netherores-NetherOreBlock=140
 # Files
-texturefile:id=blk0,filename=netherores/block0.png,xcount=16,ycount=16
+texturefile:id=blk0,filename=NetherOresSprites/block0.png,xcount=16,ycount=16
 # Blocks
 # Coal (NetherOreBlock:0)
 block:id=netherores-NetherOreBlock,data=0,allfaces=0,txtid=blk0

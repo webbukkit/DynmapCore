@@ -4,7 +4,7 @@ enabled:ic2-powerconverters-support
 # variables: set in configuration.txt to override
 var:ic2-blockPowerConverter=190
 # Files
-texturefile:id=blk0,filename=ic2/sprites/PowerConverters.png,xcount=16,ycount=16
+texturefile:id=blk0,filename=PowerConverterSprites/terrain_0.png,xcount=16,ycount=16
 # Blocks
 # (PowerConverterBlock:0) "Engine Generator (LV)"
 block:id=ic2-blockPowerConverter,data=0,top=4006,bottom=7,south=8,north=9,east=10,west=11,txtid=blk0
