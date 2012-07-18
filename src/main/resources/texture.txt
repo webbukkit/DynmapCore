@@ -604,7 +604,7 @@ block:id=115,data=3,data=4,data=5,data=6,data=7,patch0=228,patch1=228,transparen
 # Enchantment table
 block:id=116,data=*,top=166,allsides=182,bottom=183,transparency=TRANSPARENT
 # Brewing stand
-block:id=117,data=*,topbottom=156,allsides=157,transparency=TRANSPARENT
+block:id=117,data=*,patch0=156,patch1=157,patch2=157,patch3=157,patch4=157,patch5=157,patch6=157,patch7=157,transparency=TRANSPARENT
 # Cauldron
 block:id=118,data=*,top=139,bottom=155,allsides=154,transparency=TRANSPARENT
 # Air portal (need black-with-stars texture - using obsidian for now)

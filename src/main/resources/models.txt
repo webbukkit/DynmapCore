@@ -129,6 +129,11 @@ patch:id=VertX01875,Ox=0.1875,Oy=0.0,Oz=0.0,Ux=0.1875,Uy=0.0,Uz=1.0,Vx=0.1875,Vy
 # Vertical patch, Z- facing side from xz=0.0/0.1875 to 1.0/0.1875
 patch:id=VertZ01875,Ox=0.0,Oy=0.0,Oz=0.1875,Ux=1.0,Uy=0.0,Uz=0.1875,Vx=0.0,Vy=1.0,Vz=0.1875,visibility=top
 
+# Brewing stand patches
+patch:id=StandSide,Ox=0.0,Oy=0.0,Oz=0.4375,Ux=1.0,Uy=0.0,Uz=0.4375,Vx=0.0,Vy=1.0,Vz=0.4375,Umin=0.4375,Umax=0.5625,visibility=bottom
+patch:id=StandArm,Ox=0.0,Oy=0.0,Oz=0.5,Ux=1.0,Uy=0.0,Uz=0.5,Vx=0.0,Vy=1.0,Vz=0.5,Umin=0.5625,Umax=1.0
+
+
 # Wood Stair - up south
 # Cobblestone Stair - up south
 # Brick Stair - up south
@@ -1539,42 +1544,9 @@ layer:0,1,2
 ****
 ****
 ****
+
 # Brewing Stand
-block:id=117,data=*,scale=16
-layer:0
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-layer:1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
--------**-------
--------**-------
--------**-------
--------**-------
--------**-------
--------**-------
--------**-------
-****************
-****************
--------**-------
--------**-------
--------**-------
--------**-------
--------**-------
--------**-------
--------**-------
+patchblock:id=117,data=*,patch0=HorizY001ZTop,patch1=StandSide,patch2=StandSide@90,patch3=StandSide@180,patch4=StandSide@270,patch5=StandArm,patch6=StandArm@120,patch7=StandArm@240
 # Cauldron
 block:id=118,data=*,scale=8
 layer:0,1
