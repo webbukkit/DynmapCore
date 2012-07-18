@@ -393,18 +393,18 @@ block:id=62,data=5,top=62,south=61,north=45,east=45,west=45,bottom=62
 # Signpost
 block:id=63,patch0=0,patch1=1,patch2=2,patch3=3,patch4=4,patch5=5,patch6=6,patch7=7,patch8=8,patch9=9,transparency=TRANSPARENT,txtid=sign
 # Wooden Door - bottom (left hinge)
-block:id=64,data=0,data=1,north=97,south=7097,east=97,west=7097,topbottom=4,transparency=TRANSPARENT,userenderdata=true
-block:id=64,data=2,data=3,north=7097,south=97,east=7097,west=97,,topbottom=4,transparency=TRANSPARENT,userenderdata=true
+block:id=64,data=0,data=1,patch0=97,patch1=7097,patch2=7097,patch3=97,patch4=4097,patch5=4097,transparency=TRANSPARENT,userenderdata=true
+block:id=64,data=2,data=3,patch0=7097,patch1=97,patch2=7097,patch3=97,patch4=4097,patch5=4097,transparency=TRANSPARENT,userenderdata=true
 # Wooden Door - bottom (right hinge)
-block:id=64,data=4,data=5,north=7097,south=97,east=7097,west=97,topbottom=4,transparency=TRANSPARENT,userenderdata=true
-block:id=64,data=6,data=7,north=97,south=7097,east=97,west=7097,topbottom=4,transparency=TRANSPARENT,userenderdata=true
+block:id=64,data=4,data=5,patch0=7097,patch1=97,patch2=7097,patch3=97,patch4=4097,patch5=4097,transparency=TRANSPARENT,userenderdata=true
+block:id=64,data=6,data=7,patch0=97,patch1=7097,patch2=7097,patch3=97,patch4=4097,patch5=4097,transparency=TRANSPARENT,userenderdata=true
 # Wooden Door - top (left hinge)
-block:id=64,data=8,data=9,north=81,south=7081,east=81,west=7081,topbottom=4,transparency=TRANSPARENT,userenderdata=true
-block:id=64,data=10,data=11,north=7081,south=81,east=7081,west=81,topbottom=4,transparency=TRANSPARENT,userenderdata=true
+block:id=64,data=8,data=9,patch0=81,patch1=7081,patch2=7081,patch3=81,patch4=4081,patch5=4081,transparency=TRANSPARENT,userenderdata=true
+block:id=64,data=10,data=11,patch0=7081,patch1=81,patch2=7081,patch3=81,patch4=4081,patch5=4081,transparency=TRANSPARENT,userenderdata=true
 # Wooden Door - top (right hinge)
-block:id=64,data=12,data=13,north=7081,south=81,east=7081,west=81,topbottom=4,transparency=TRANSPARENT,userenderdata=true
-block:id=64,data=14,data=15,north=81,south=7081,east=81,west=7081,topbottom=4,transparency=TRANSPARENT,userenderdata=true
-# Ladders
+block:id=64,data=12,data=13,patch0=7081,patch1=81,patch2=7081,patch3=81,patch4=4081,patch5=4081,transparency=TRANSPARENT,userenderdata=true
+block:id=64,data=14,data=15,patch0=81,patch1=7081,patch2=7081,patch3=81,patch4=4081,patch5=4081,transparency=TRANSPARENT,userenderdata=true
+# Ladder
 block:id=65,patch0=83,transparency=TRANSPARENT
 # Rail - heading east-west
 block:id=66,data=0,patch0=128,transparency=TRANSPARENT
@@ -430,17 +430,17 @@ block:id=69,patch0=16,patch1=16,patch2=16,patch3=16,patch4=16,patch5=96,patch6=9
 # Stone pressure plate
 block:id=70,allfaces=1,transparency=TRANSPARENT
 # Iron Door - bottom (left hinge)
-block:id=71,data=0,data=1,north=98,south=7098,east=98,west=7098,topbottom=22,transparency=TRANSPARENT,userenderdata=true
-block:id=71,data=2,data=3,north=7098,south=98,east=7098,west=98,topbottom=22,transparency=TRANSPARENT,userenderdata=true
+block:id=71,data=0,data=1,patch0=98,patch1=7098,patch2=7098,patch3=98,patch4=4098,patch5=4098,transparency=TRANSPARENT,userenderdata=true
+block:id=71,data=2,data=3,patch0=7098,patch1=98,patch2=7098,patch3=98,patch4=4098,patch5=4098,transparency=TRANSPARENT,userenderdata=true
 # Iron Door - bottom (right hinge)
-block:id=71,data=4,data=5,north=7098,south=98,east=7098,west=98,topbottom=22,transparency=TRANSPARENT,userenderdata=true
-block:id=71,data=6,data=7,north=98,south=7098,east=98,west=7098,topbottom=22,transparency=TRANSPARENT,userenderdata=true
+block:id=71,data=4,data=5,patch0=7098,patch1=98,patch2=7098,patch3=98,patch4=4098,patch5=4098,transparency=TRANSPARENT,userenderdata=true
+block:id=71,data=6,data=7,patch0=98,patch1=7098,patch2=7098,patch3=98,patch4=4098,patch5=4098,transparency=TRANSPARENT,userenderdata=true
 # Iron Door - top (left hinge)
-block:id=71,data=8,data=9,north=82,south=7082,east=82,west=7082,topbottom=22,transparency=TRANSPARENT,userenderdata=true
-block:id=71,data=10,data=11,north=7082,south=82,east=7082,west=82,topbottom=22,transparency=TRANSPARENT,userenderdata=true
+block:id=71,data=8,data=9,patch0=82,patch1=7082,patch2=7082,patch3=82,patch4=4082,patch5=4082,transparency=TRANSPARENT,userenderdata=true
+block:id=71,data=10,data=11,patch0=7082,patch1=82,patch2=7082,patch3=82,patch4=4082,patch5=4082,transparency=TRANSPARENT,userenderdata=true
 # Iron Door - top (right hinge)
-block:id=71,data=12,data=13,north=7082,south=82,east=7082,west=82,topbottom=22,transparency=TRANSPARENT,userenderdata=true
-block:id=71,data=14,data=15,north=82,south=7082,east=82,west=7082,topbottom=22,transparency=TRANSPARENT,userenderdata=true
+block:id=71,data=12,data=13,patch0=7082,patch1=82,patch2=7082,patch3=82,patch4=4082,patch5=4082,transparency=TRANSPARENT,userenderdata=true
+block:id=71,data=14,data=15,patch0=82,patch1=7082,patch2=7082,patch3=82,patch4=4082,patch5=4082,transparency=TRANSPARENT,userenderdata=true
 # Wooden pressure plate
 block:id=72,allsides=4,topbottom=4004,transparency=TRANSPARENT
 # Redstone Ore
