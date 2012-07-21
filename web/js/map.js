@@ -614,7 +614,7 @@ DynMap.prototype = {
 						me.updatePlayer(player, playerUpdate);
 					} else {
 						me.addPlayer(playerUpdate);
-						if(me.initfollow && me.initfollow == name) {
+						if(me.initfollow && (me.initfollow == name)) {
 							me.followPlayer(me.players[name]);
 							me.initfollow = null;
 						}
@@ -731,7 +731,8 @@ DynMap.prototype = {
 				if (me.followingPlayer !== player) {
 					me.followPlayer(null);
 				}
-				me.panToLocation(player.location);
+				if(player.location.world)
+					me.panToLocation(player.location);
 			});
 			// Inject into playerlist alphabetically
 			var firstNodeAfter = me.playerlist.children().filter(function() {
@@ -781,6 +782,8 @@ DynMap.prototype = {
 		$('.following', me.playerlist).removeClass('following');
 		
 		if(player) {
+			if(!player.location.world)
+				return;
 			$(player.menuitem).addClass('following');
 			me.panToLocation(player.location, function() {
 				if(me.options.followmap && me.world) {
