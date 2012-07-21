@@ -27,6 +27,7 @@ public class PlayerFaces {
     private File body32x32dir;
     private boolean fetchskins;
     private boolean refreshskins;
+    private String skinurl;
     
     private class LoadPlayerImages implements Runnable {
         public String playername;
@@ -47,7 +48,7 @@ public class PlayerFaces {
             BufferedImage img = null;
             try {
                 if(fetchskins && (refreshskins || missing_any)) {
-                    URL url = new URL("http://s3.amazonaws.com/MinecraftSkins/" + playername + ".png");
+                    URL url = new URL(skinurl.replaceAll("%player%", playername));
                     img = ImageIO.read(url);    /* Load skin for player */
                 }
             } catch (IOException iox) {
@@ -178,7 +179,8 @@ public class PlayerFaces {
     public PlayerFaces(DynmapCore core) {
         fetchskins = core.configuration.getBoolean("fetchskins", true);    /* Control whether to fetch skins */ 
         refreshskins = core.configuration.getBoolean("refreshskins", true);    /* Control whether to update existing fetched skins or faces */ 
-
+        skinurl = core.configuration.getString("skin-url", "http://s3.amazonaws.com/MinecraftSkins/%player%.png");
+        
         core.listenerManager.addListener(EventType.PLAYER_JOIN, new PlayerEventListener() {
             @Override
             public void playerEvent(DynmapPlayer p) {
