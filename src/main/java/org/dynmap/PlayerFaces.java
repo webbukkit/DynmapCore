@@ -48,7 +48,7 @@ public class PlayerFaces {
             BufferedImage img = null;
             try {
                 if(fetchskins && (refreshskins || missing_any)) {
-                    URL url = new URL(skinurl.replaceAll("%player%", playername));
+                    URL url = new URL(skinurl.replace("%player%", playername));
                     img = ImageIO.read(url);    /* Load skin for player */
                 }
             } catch (IOException iox) {

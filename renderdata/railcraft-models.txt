@@ -9,35 +9,17 @@ var:railcraft-elevatorBlock=207,railcraft-structureBlock=208
 patch:id=HorizY001ZTop,Ox=0.0,Oy=0.01,Oz=0.0,Ux=1.0,Uy=0.01,Uz=0.0,Vx=0.0,Vy=0.01,Vz=1.0
 # Sloped patch - up to X+, top of texture at Z+
 patch:id=SlopeXUpZTop,Ox=0.0,Oy=0.0,Oz=0.0,Ux=0.0,Uy=0.0,Uz=1.0,Vx=1.0,Vy=1.0,Vz=0.0
+# Vertical patch at xz=0.0/0.0 to 1.0/0.0
+patch:id=VertX0,Ox=0.0,Oy=0.0,Oz=1.0,Ux=0.0,Uy=0.0,Uz=0.0,Vx=0.0,Vy=1.0,Vz=1.0,visibility=top
 
 # Elevator rail - east facing
-block:id=railcraft-elevatorBlock,data=2,data=10,scale=16
-layer:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
--*--------------
--*--------------
--*--------------
--*--------------
--*--------------
--*--------------
--*--------------
--*--------------
--*--------------
--*--------------
--*--------------
--*--------------
--*--------------
--*--------------
--*--------------
--*--------------
+patchblock:id=railcraft-elevatorBlock,data=2,data=10,patch0=VertX0@270
 # Elevator block - west facing
-block:id=railcraft-elevatorBlock,data=3,data=11,scale=16
-rotate:id=railcraft-elevatorBlock,data=2,rot=180
+patchblock:id=railcraft-elevatorBlock,data=3,data=11,patch0=VertX0@90
 # Elevator block - north facing
-block:id=railcraft-elevatorBlock,data=4,data=12,scale=16
-rotate:id=railcraft-elevatorBlock,data=2,rot=270
+patchblock:id=railcraft-elevatorBlock,data=4,data=12,patch0=VertX0@180
 # Elevator block - south facing
-block:id=railcraft-elevatorBlock,data=5,data=13,scale=16
-rotate:id=railcraft-elevatorBlock,data=2,rot=90
+patchblock:id=railcraft-elevatorBlock,data=5,data=13,patch0=VertX0
 # Advamced Rails - use same model as rails
 patchblock:id=railcraft-railAdvBlock,data=0,patch0=HorizY001ZTop
 patchblock:id=railcraft-railAdvBlock,data=1,patch0=HorizY001ZTop@90

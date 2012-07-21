@@ -28,21 +28,21 @@ block:id=railcraft-detectorBlock,data=8,top=6141,bottom=6141,south=142,north=141
 # (railcraft-detectorBlock:9) Detector - Advanced
 block:id=railcraft-detectorBlock,data=9,top=6157,bottom=6157,south=158,north=157,east=157,west=157,txtid=blk0
 # (railcraft-elevatorBlock:2) Elevator - Facing East - unpowered
-block:id=railcraft-elevatorBlock,data=2,east=85,transparency=TRANSPARENT,txtid=blk0
+block:id=railcraft-elevatorBlock,data=2,patch0=85,transparency=TRANSPARENT,txtid=blk0
 # (railcraft-elevatorBlock:3) Elevator - Facing West - unpowered
-block:id=railcraft-elevatorBlock,data=3,west=85,transparency=TRANSPARENT,txtid=blk0
+block:id=railcraft-elevatorBlock,data=3,patch0=85,transparency=TRANSPARENT,txtid=blk0
 # (railcraft-elevatorBlock:4) Elevator - Facing North - unpowered
-block:id=railcraft-elevatorBlock,data=4,north=85,transparency=TRANSPARENT,txtid=blk0
+block:id=railcraft-elevatorBlock,data=4,patch0=85,transparency=TRANSPARENT,txtid=blk0
 # (railcraft-elevatorBlock:5) Elevator - Facing South - unpowered
-block:id=railcraft-elevatorBlock,data=5,south=85,transparency=TRANSPARENT,txtid=blk0
+block:id=railcraft-elevatorBlock,data=5,patch0=85,transparency=TRANSPARENT,txtid=blk0
 # (railcraft-elevatorBlock:10) Elevator - Facing East - powered
-block:id=railcraft-elevatorBlock,data=10,east=84,transparency=TRANSPARENT,txtid=blk0
+block:id=railcraft-elevatorBlock,data=10,patch0=84,transparency=TRANSPARENT,txtid=blk0
 # (railcraft-elevatorBlock:11) Elevator - Facing West - powered
-block:id=railcraft-elevatorBlock,data=11,west=84,transparency=TRANSPARENT,txtid=blk0
+block:id=railcraft-elevatorBlock,data=11,patch0=84,transparency=TRANSPARENT,txtid=blk0
 # (railcraft-elevatorBlock:12) Elevator - Facing North - powered
-block:id=railcraft-elevatorBlock,data=12,north=84,transparency=TRANSPARENT,txtid=blk0
+block:id=railcraft-elevatorBlock,data=12,patch0=84,transparency=TRANSPARENT,txtid=blk0
 # (railcraft-elevatorBlock:13) Elevator - Facing South - powered
-block:id=railcraft-elevatorBlock,data=13,south=84,transparency=TRANSPARENT,txtid=blk0
+block:id=railcraft-elevatorBlock,data=13,patch0=84,transparency=TRANSPARENT,txtid=blk0
 # Adv Rail - heading east-west
 block:id=railcraft-railAdvBlock,data=0,patch0=9,transparency=TRANSPARENT,txtid=blk0
 # Adv Rail - incline to east
