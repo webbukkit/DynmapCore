@@ -1,7 +1,5 @@
 package org.dynmap;
 
-import java.util.concurrent.Callable;
-
 import org.dynmap.servlet.ClientUpdateServlet;
 import org.dynmap.servlet.SendMessageServlet;
 import org.json.simple.JSONObject;

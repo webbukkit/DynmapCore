@@ -18,8 +18,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import javax.imageio.ImageIO;
-
 public abstract class DynmapWorld {
 
     public enum AutoGenerateOption {
@@ -462,6 +460,7 @@ public abstract class DynmapWorld {
                     }
                     else {
                         Arrays.fill(argb, pd.background);
+                        f.delete(); /* Delete file - unreadable image */
                     }
                 }
                 else {
@@ -721,23 +720,27 @@ public abstract class DynmapWorld {
         /* Save auto-generate settings */
         String autogen = "none";
         switch(do_autogenerate) {
-        case PERMANENT:
-            autogen = "permanent";
-            break;
-        case FORMAPONLY:
-            autogen = "map-only";
-            break;
+            case PERMANENT:
+                autogen = "permanent";
+                break;
+            case FORMAPONLY:
+                autogen = "map-only";
+                break;
+            default:
+                break;
         }
         node.put("autogenerate-to-visibilitylimits", autogen);
         /* Handle hide style */
         String hide = "stone";
         switch(hiddenchunkstyle) {
-        case FILL_AIR:
-            hide = "air";
-            break;
-        case FILL_OCEAN:
-            hide = "ocean";
-            break;
+            case FILL_AIR:
+                hide = "air";
+                break;
+            case FILL_OCEAN:
+                hide = "ocean";
+                break;
+            default:
+                break;
         }
         node.put("hidestyle", hide);
         /* Handle map settings */

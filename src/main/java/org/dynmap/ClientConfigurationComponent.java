@@ -3,11 +3,7 @@ package org.dynmap;
 import static org.dynmap.JSONUtils.a;
 import static org.dynmap.JSONUtils.s;
 import static org.dynmap.JSONUtils.g;
-
-import java.util.List;
-
 import org.dynmap.Event.Listener;
-import org.dynmap.common.DynmapPlayer;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 

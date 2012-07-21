@@ -171,7 +171,6 @@ public class FlatMap extends MapType {
         FlatMapTile t = (FlatMapTile) tile;
         int maxheight = maximumHeight;
         int worldheight = tile.getDynmapWorld().worldheight - 1;
-        int hshift = tile.getDynmapWorld().heightshift - 7;
         
         if((maxheight < 0) || (maxheight == 127))
             maxheight = worldheight;

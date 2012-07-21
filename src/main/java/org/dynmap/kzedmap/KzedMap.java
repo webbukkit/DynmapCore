@@ -56,8 +56,6 @@ public class KzedMap extends MapType {
     }
     @Override
     public MapTile[] getTiles(DynmapWorld world, int x, int y, int z) {
-        int vscale = world.worldheight / 128;
-
         int dx = x;
         int dy = y - 127;
         int dz = z;
@@ -102,8 +100,6 @@ public class KzedMap extends MapType {
     @Override
     public MapTile[] getTiles(DynmapWorld world, int minx, int miny, int minz, int maxx, int maxy, int maxz) {
         ArrayList<MapTile> tiles = new ArrayList<MapTile>();
-        
-        int vscale = world.worldheight / 128;
         /* Transform both to tile coordinates */
         int dx = minx;
         int dy = miny - 127;

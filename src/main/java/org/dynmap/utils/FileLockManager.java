@@ -243,8 +243,7 @@ public class FileLockManager {
                 try {
                     ImageIO.setUseCache(false); /* Don't use file cache - too small to be worth it */
                     img = ImageIO.read(fname);
-                    if(img != null)
-                        done = true;
+                    done = true;    /* Done if no I/O error - retries don't fix format errors */
                 } catch (IOException iox) {
                 }
                 if(!done) {

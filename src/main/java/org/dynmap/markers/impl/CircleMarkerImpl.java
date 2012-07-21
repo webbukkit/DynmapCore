@@ -1,15 +1,10 @@
 package org.dynmap.markers.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.dynmap.ConfigurationNode;
-import org.dynmap.DynmapCore;
 import org.dynmap.DynmapWorld;
-import org.dynmap.MapManager;
-import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.CircleMarker;
 import org.dynmap.markers.MarkerSet;
 import org.dynmap.markers.impl.MarkerAPIImpl.MarkerUpdate;

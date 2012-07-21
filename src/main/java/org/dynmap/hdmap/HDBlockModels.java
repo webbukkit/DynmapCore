@@ -10,12 +10,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import org.dynmap.ConfigurationNode;
 import org.dynmap.Log;
 import org.dynmap.utils.MapIterator.BlockStep;
-import org.dynmap.utils.Matrix3D;
 import org.dynmap.utils.Vector3D;
 
 /**
@@ -84,12 +82,6 @@ public class HDBlockModels {
         public static final int MAX_PATCHES = 32;   /* Max patches per model */
         public BlockStep step;      /* Best approximation of orientation of surface */
         public SideVisibility sidevis;  /* Which side is visible */
-        /* Matrix for rotating vector around Y axis */
-        private static final Matrix3D rotate90Y = new Matrix3D(0, 0, -1, 0, 1, 0, 1, 0, 0);
-        /* Matrix for rotating vector around X axis */
-        private static final Matrix3D rotate90X = new Matrix3D(1, 0, 0, 0, 0, 1, 0, -1, 0);
-        /* Matrix for rotating vector around Z axis */
-        private static final Matrix3D rotate90Z = new Matrix3D(0, 1, 0, -1, 0, 0, 0, 0, 1);
         /* Offset vector of middle of block */
         private static final Vector3D offsetCenter = new Vector3D(0.5,0.5,0.5);
         

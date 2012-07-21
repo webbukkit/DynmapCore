@@ -3,7 +3,6 @@ package org.dynmap.hdmap;
 import org.dynmap.Color;
 import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapCore;
-import org.dynmap.Log;
 import org.dynmap.MapManager;
 import org.dynmap.hdmap.HDPerspectiveState.LightLevels;
 import org.dynmap.utils.MapIterator.BlockStep;

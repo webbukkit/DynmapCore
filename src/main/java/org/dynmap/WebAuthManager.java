@@ -28,7 +28,6 @@ public class WebAuthManager {
     public static final String WEBAUTHFILE = "webauth.txt";
     private static final String HASHSALT = "$HASH_SALT$";
     private static final String PWDHASH_PREFIX = "hash.";
-    private static final String PERM_PREFIX = "perm.";
     private Random rnd = new Random();
     private DynmapCore core;
     

@@ -3,7 +3,6 @@ package org.dynmap.servlet;
 import static org.dynmap.JSONUtils.s;
 
 import org.dynmap.DynmapCore;
-import org.dynmap.Log;
 import org.json.simple.JSONObject;
 
 import javax.servlet.*;

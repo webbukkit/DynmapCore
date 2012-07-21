@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.dynmap.ConfigurationNode;
-import org.dynmap.DynmapCore;
 import org.dynmap.DynmapWorld;
 import org.dynmap.MapManager;
 import org.dynmap.markers.AreaMarker;
