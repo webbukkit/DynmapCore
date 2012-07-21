@@ -32,6 +32,6 @@ public enum DynmapChatColor {
         if (input == null) {
             return null;
         }
-        return input.replaceAll("(?i)\u00A7[0-9A-F]", "");
+        return input.replaceAll("(?i)\u00A7[0-9A-Za-z]", "");
     }
 }
