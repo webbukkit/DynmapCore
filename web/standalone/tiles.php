@@ -50,7 +50,7 @@ if(count($parts) > 2) {
   $prefix = $parts[1];
   $plen = strlen($prefix);
   if(($plen > 4) && (substr($prefix, $plen - 4) === "_day")) {
-	$prefix = substr($prefx, 0, $plen - 4);
+	$prefix = substr($prefix, 0, $plen - 4);
   }
   $mapid = $world . "." . $prefix;
   if(isset($mapaccess[$mapid])) {
