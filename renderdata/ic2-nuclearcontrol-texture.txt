@@ -1,0 +1,20 @@
+# IC2 Nuclear Control Block mapping
+# define ic2-nuclearcontrol-support: true in configuration.txt to enable
+enabled:ic2-nuclearcontrol-support
+# variables: set in configuration.txt to override
+var:ic2-nuclearcontrol-blockNuclearControlMain=192
+# Files
+texturefile:id=blk0,filename=img/texture_thermo.png,xcount=16,ycount=16
+# Blocks
+# (ic2-nuclearcontrol-blockNuclearControlMain:0) Thermal monitor
+block:id=ic2-nuclearcontrol-blockNuclearControlMain,data=0,patch0=1,patch1=0,patch2=17,patch3=17,patch4=17,patch5=17,txtid=blk0,transparency=TRANSPARENT
+# (ic2-nuclearcontrol-blockNuclearControlMain:1) Industrial Alarm
+block:id=ic2-nuclearcontrol-blockNuclearControlMain,data=1,patch0=4,patch1=3,patch2=5,patch3=5,patch4=5,patch5=5,txtid=blk0,transparency=TRANSPARENT
+# (ic2-nuclearcontrol-blockNuclearControlMain:2) Howler Alarm
+block:id=ic2-nuclearcontrol-blockNuclearControlMain,data=2,patch0=8,patch1=7,patch2=9,patch3=9,patch4=9,patch5=9,txtid=blk0,transparency=TRANSPARENT
+# (ic2-nuclearcontrol-blockNuclearControlMain:3) Remote Thermal Monitor
+block:id=ic2-nuclearcontrol-blockNuclearControlMain,data=3,bottom=23,top=6025,allsides=24,txtid=blk0,transparency=TRANSPARENT
+# (ic2-nuclearcontrol-blockNuclearControlMain:4) Info panel
+block:id=ic2-nuclearcontrol-blockNuclearControlMain,data=4,bottom=23,top=6080,allsides=24,txtid=blk0,transparency=TRANSPARENT
+# (ic2-nuclearcontrol-blockNuclearControlMain:5) Info panel extender
+block:id=ic2-nuclearcontrol-blockNuclearControlMain,data=5,bottom=39,top=6080,allsides=40,txtid=blk0,transparency=TRANSPARENT
