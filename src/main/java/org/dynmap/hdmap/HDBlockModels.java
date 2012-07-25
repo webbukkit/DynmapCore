@@ -78,9 +78,10 @@ public class HDBlockModels {
         public double xv, yv, zv;   /* Coordinates of end of V vector (relative to origin) - corresponds to v=1.0 (upper left corner) */
         public double umin, umax;   /* Limits of patch - minimum and maximum u value */
         public double vmin, vmax;   /* Limits of patch - minimum and maximum v value */
+        public double uplusvmax;    /* Limits of patch - max of u+v (triangle) */
         public Vector3D u, v;       /* U and V vector, relative to origin */
         public static final int MAX_PATCHES = 32;   /* Max patches per model */
-        public BlockStep step;      /* Best approximation of orientation of surface */
+        public BlockStep step;      /* Best approximation of orientation of surface, from top (positive determinent) */
         public SideVisibility sidevis;  /* Which side is visible */
         /* Offset vector of middle of block */
         private static final Vector3D offsetCenter = new Vector3D(0.5,0.5,0.5);
@@ -91,6 +92,7 @@ public class HDBlockModels {
             yv = zv = 0.0; xv = 1.0;
             umin = vmin = 0.0;
             umax = vmax = 1.0;
+            uplusvmax = Double.MAX_VALUE;
             u = new Vector3D();
             v = new Vector3D();
             sidevis = SideVisibility.BOTH;
@@ -115,6 +117,7 @@ public class HDBlockModels {
             xv = vec.x; yv = vec.y; zv = vec.z;
             umin = orig.umin; vmin = orig.vmin;
             umax = orig.umax; vmax = orig.vmax;
+            uplusvmax = orig.uplusvmax;
             sidevis = orig.sidevis;
             u = new Vector3D();
             v = new Vector3D();
@@ -148,7 +151,7 @@ public class HDBlockModels {
             Vector3D d = new Vector3D(u);
             d.crossProduct(v);
             /* Now, find the largest component of the normal (dominant direction) */
-            if(Math.abs(d.x) > Math.abs(d.y)) { /* If X > Y */
+            if(Math.abs(d.x) > (Math.abs(d.y)*0.9)) { /* If X > 0.9Y */
                 if(Math.abs(d.x) > Math.abs(d.z)) { /* If X > Z */
                     if(d.x > 0) {
                         step = BlockStep.X_PLUS;
@@ -167,7 +170,7 @@ public class HDBlockModels {
                 }
             }
             else {  /* Else Y >= X */
-                if(Math.abs(d.y) > Math.abs(d.z)) { /* If Y > Z */
+                if((Math.abs(d.y)*0.9) > Math.abs(d.z)) { /* If 0.9Y > Z */
                     if(d.y > 0) {
                         step = BlockStep.Y_PLUS;
                     }
@@ -608,6 +611,7 @@ public class HDBlockModels {
         try {
             String line;
             ArrayList<HDBlockVolumetricModel> modlist = new ArrayList<HDBlockVolumetricModel>();
+            ArrayList<HDBlockPatchModel> pmodlist = new ArrayList<HDBlockPatchModel>();
             HashMap<String,Integer> varvals = new HashMap<String,Integer>();
             HashMap<String, HDPatchDefinition> patchdefs = new HashMap<String, HDPatchDefinition>();
             int layerbits = 0;
@@ -706,6 +710,42 @@ public class HDBlockModels {
                                     }
                                 }
                             }
+                        }
+                    }
+                    else {
+                        Log.severe("Invalid rotate error - line " + rdr.getLineNumber() + " of " + fname);
+                        return;
+                    }
+                }
+                else if(line.startsWith("patchrotate:")) {
+                    line = line.substring(12);
+                    String args[] = line.split(",");
+                    int id = -1;
+                    int data = -1;
+                    int rotx = 0;
+                    int roty = 0;
+                    int rotz = 0;
+                    for(String a : args) {
+                        String[] av = a.split("=");
+                        if(av.length < 2) continue;
+                        if(av[0].equals("id")) { id = getIntValue(varvals,av[1]); }
+                        if(av[0].equals("data")) { data = getIntValue(varvals,av[1]); }
+                        if(av[0].equals("rot")) { roty = Integer.parseInt(av[1]); }
+                        if(av[0].equals("roty")) { roty = Integer.parseInt(av[1]); }
+                        if(av[0].equals("rotx")) { rotx = Integer.parseInt(av[1]); }
+                        if(av[0].equals("rotz")) { rotz = Integer.parseInt(av[1]); }
+                    }
+                    /* get old model to be rotated */
+                    HDBlockModel mod = models_by_id_data.get((id<<4)+data);
+                    if((mod != null) && (mod instanceof HDBlockPatchModel)) {
+                        HDBlockPatchModel pmod = (HDBlockPatchModel)mod;
+                        HDPatchDefinition patches[] = pmod.getPatches();
+                        HDPatchDefinition newpatches[] = new HDPatchDefinition[patches.length];
+                        for(int i = 0; i < patches.length; i++) {
+                            newpatches[i] = new HDPatchDefinition(patches[i], rotx, roty, rotz);
+                        }
+                        for(HDBlockPatchModel patchmod : pmodlist) {
+                            patchmod.patches = newpatches;
                         }
                     }
                     else {
@@ -835,6 +875,9 @@ public class HDBlockModels {
                         else if(av[0].equals("Vmax")) {
                             pd.vmax = Double.parseDouble(av[1]);
                         }
+                        else if(av[0].equals("UplusVmax")) {
+                            pd.uplusvmax = Double.parseDouble(av[1]);
+                        }
                         else if(av[0].equals("visibility")) {
                             if(av[1].equals("top"))
                                 pd.sidevis = SideVisibility.TOP;
@@ -911,11 +954,12 @@ public class HDBlockModels {
                         }
                     }
                     /* If we have everything, build block */
-                    if((blkids.size() > 0) && (databits != 0) && (patches.size() > 0)) {
+                    pmodlist.clear();
+                    if((blkids.size() > 0) && (databits != 0)) {
                         HDPatchDefinition[] patcharray = patches.toArray(new HDPatchDefinition[patches.size()]);
                         for(Integer id : blkids) {
                             if(id > 0) {
-                                new HDBlockPatchModel(id.intValue(), databits, patcharray);
+                                pmodlist.add(new HDBlockPatchModel(id.intValue(), databits, patcharray));
                                 cnt++;
                             }
                         }

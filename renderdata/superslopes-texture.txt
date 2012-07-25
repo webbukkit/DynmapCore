@@ -26,64 +26,64 @@ var:BlockKaevBrownWoolSlopes=0,BlockKaevBlueWoolSlopes=0,BlockKaevPurpleWoolSlop
 var:BlockKaevSilverWoolSlopes=0,BlockKaevGrayWoolSlopes=0,BlockKaevPinkWoolSlopes=0,BlockKaevLimeWoolSlopes=0
 var:BlockKaevYellowWoolSlopes=0,BlockKaevLightBlueWoolSlopes=0,BlockKaevMagentaWoolSlopes=0,BlockKaevOrangeWoolSlopes=0
 # Wood slopes, corners
-block:id=BlockKaevWoodSlopes,id=BlockKaevWoodCorners,id=BlockKaevWoodIntCorners,data=*,allsides=4,topbottom=4004
+block:id=BlockKaevWoodSlopes,id=BlockKaevWoodCorners,id=BlockKaevWoodIntCorners,data=*,allsides=4,topbottom=4004,transparency=TRANSPARENT
 # Cobblestone slopes, corners
-block:id=BlockKaevCobblestoneSlopes,id=BlockKaevCobblestoneCorners,id=BlockKaevCobblestoneIntCorners,data=*,allsides=16,topbottom=4016
+block:id=BlockKaevCobblestoneSlopes,id=BlockKaevCobblestoneCorners,id=BlockKaevCobblestoneIntCorners,data=*,allsides=16,topbottom=4016,transparency=TRANSPARENT
 # Glass slopes, corners
 block:id=BlockKaevGlassSlopes,id=BlockKaevGlassCorners,id=BlockKaevGlassIntCorners,data=*,allfaces=12049,transparency=TRANSPARENT
 # Sandstone slopes, corners
-block:id=BlockKaevSandstoneSlopes,id=BlockKaevSandstoneCorners,id=BlockKaevSandstoneIntCorners,data=*,top=176,bottom=208,allsides=192
+block:id=BlockKaevSandstoneSlopes,id=BlockKaevSandstoneCorners,id=BlockKaevSandstoneIntCorners,data=*,allfaces=192,transparency=TRANSPARENT
 # Dirt slopes, corners
-block:id=BlockKaevDirtSlopes,id=BlockKaevDirtCorners,id=BlockKaevDirtIntCorners,data=*,allsides=2,topbottom=4002
+block:id=BlockKaevDirtSlopes,id=BlockKaevDirtCorners,id=BlockKaevDirtIntCorners,data=*,allsides=2,topbottom=4002,transparency=TRANSPARENT
 # Stone slopes, corners
-block:id=BlockKaevStoneSlopes,id=BlockKaevStoneCorners,id=BlockKaevStoneIntCorners,data=*,allsides=1,topbottom=4001
+block:id=BlockKaevStoneSlopes,id=BlockKaevStoneCorners,id=BlockKaevStoneIntCorners,data=*,allsides=1,topbottom=4001,transparency=TRANSPARENT
 # Sand slopes, corners
-block:id=BlockKaevSandSlopes,id=BlockKaevSandCorners,id=BlockKaevSandIntCorners,data=*,allsides=18,topbottom=4018
+block:id=BlockKaevSandSlopes,id=BlockKaevSandCorners,id=BlockKaevSandIntCorners,data=*,allsides=18,topbottom=4018,transparency=TRANSPARENT
 # Snow slopes, corners
 block:id=BlockKaevSnowSlopes,id=BlockKaevSnowCorners,id=BlockKaevSnowIntCorners,data=*,allsides=66,topbottom=4066,transparency=TRANSPARENT
 # Grass slopes, corners
-block:id=BlockKaevGrassSlopes,id=BlockKaevGrassCorners,id=BlockKaevGrassIntCorners,data=*,allsides=11003,top=1000,bottom=2
+block:id=BlockKaevGrassSlopes,id=BlockKaevGrassCorners,id=BlockKaevGrassIntCorners,data=*,allsides=11003,top=1000,bottom=2,transparency=TRANSPARENT
 # Brick slopes, corners
-block:id=BlockKaevBricksSlopes,id=BlockKaevBricksCorners,id=BlockKaevBricksIntCorners,data=*,allsides=7,topbottom=4007
+block:id=BlockKaevBricksSlopes,id=BlockKaevBricksCorners,id=BlockKaevBricksIntCorners,data=*,allsides=7,topbottom=4007,transparency=TRANSPARENT
 # Gravel slopes, corners
-block:id=BlockKaevGravelSlopes,id=BlockKaevGravelCorners,id=BlockKaevGravelIntCorners,data=*,allsides=19,topbottom=4019
+block:id=BlockKaevGravelSlopes,id=BlockKaevGravelCorners,id=BlockKaevGravelIntCorners,data=*,allsides=19,topbottom=4019,transparency=TRANSPARENT
 # Gold slopes, corners
-block:id=BlockKaevGoldSlopes,id=BlockKaevGoldCorners,id=BlockKaevGoldIntCorners,data=*,allsides=23,topbottom=4023
+block:id=BlockKaevGoldSlopes,id=BlockKaevGoldCorners,id=BlockKaevGoldIntCorners,data=*,allsides=23,topbottom=4023,transparency=TRANSPARENT
 # Steel slopes, corners
-block:id=BlockKaevSteelSlopes,id=BlockKaevSteelCorners,id=BlockKaevSteelIntCorners,data=*,allsides=22,topbottom=4022
+block:id=BlockKaevSteelSlopes,id=BlockKaevSteelCorners,id=BlockKaevSteelIntCorners,data=*,allsides=22,topbottom=4022,transparency=TRANSPARENT
 # Obsidian slopes, corners
-block:id=BlockKaevObsidianSlopes,id=BlockKaevObsidianCorners,id=BlockKaevObsidianIntCorners,data=*,allsides=37,topbottom=4037
+block:id=BlockKaevObsidianSlopes,id=BlockKaevObsidianCorners,id=BlockKaevObsidianIntCorners,data=*,allsides=37,topbottom=4037,transparency=TRANSPARENT
 # Diamond slopes, corners
-block:id=BlockKaevDiamondSlopes,id=BlockKaevDiamondCorners,id=BlockKaevDiamondIntCorners,data=*,allsides=24,topbottom=4024
+block:id=BlockKaevDiamondSlopes,id=BlockKaevDiamondCorners,id=BlockKaevDiamondIntCorners,data=*,allsides=24,topbottom=4024,transparency=TRANSPARENT
 # White wool slopes, corners
-block:id=BlockKaevWhiteWoolSlopes,id=BlockKaevWhiteWoolCorners,id=BlockKaevWhiteWoolIntCorners,data=*,allfaces=64
+block:id=BlockKaevWhiteWoolSlopes,id=BlockKaevWhiteWoolCorners,id=BlockKaevWhiteWoolIntCorners,data=*,allfaces=64,transparency=TRANSPARENT
 # Black wool slopes, corners
-block:id=BlockKaevBlackWoolSlopes,id=BlockKaevBlackWoolCorners,id=BlockKaevBlackWoolIntCorners,data=*,allfaces=113
+block:id=BlockKaevBlackWoolSlopes,id=BlockKaevBlackWoolCorners,id=BlockKaevBlackWoolIntCorners,data=*,allfaces=113,transparency=TRANSPARENT
 # Red wool slopes, corners
-block:id=BlockKaevRedWoolSlopes,id=BlockKaevRedWoolCorners,id=BlockKaevRedWoolIntCorners,data=*,allfaces=129
+block:id=BlockKaevRedWoolSlopes,id=BlockKaevRedWoolCorners,id=BlockKaevRedWoolIntCorners,data=*,allfaces=129,transparency=TRANSPARENT
 # Green wool slopes, corners
-block:id=BlockKaevGreenWoolSlopes,id=BlockKaevGreenWoolCorners,id=BlockKaevGreenWoolIntCorners,data=*,allfaces=145
+block:id=BlockKaevGreenWoolSlopes,id=BlockKaevGreenWoolCorners,id=BlockKaevGreenWoolIntCorners,data=*,allfaces=145,transparency=TRANSPARENT
 # Brown wool slopes, corners
-block:id=BlockKaevBrownWoolSlopes,id=BlockKaevBrownWoolCorners,id=BlockKaevBrownWoolIntCorners,data=*,allfaces=161
+block:id=BlockKaevBrownWoolSlopes,id=BlockKaevBrownWoolCorners,id=BlockKaevBrownWoolIntCorners,data=*,allfaces=161,transparency=TRANSPARENT
 # Blue wool slopes, corners
-block:id=BlockKaevBlueWoolSlopes,id=BlockKaevBlueWoolCorners,id=BlockKaevBlueWoolIntCorners,data=*,allfaces=177
+block:id=BlockKaevBlueWoolSlopes,id=BlockKaevBlueWoolCorners,id=BlockKaevBlueWoolIntCorners,data=*,allfaces=177,transparency=TRANSPARENT
 # Purple wool slopes, corners
-block:id=BlockKaevPurpleWoolSlopes,id=BlockKaevPurpleWoolCorners,id=BlockKaevPurpleWoolIntCorners,data=*,allfaces=193
+block:id=BlockKaevPurpleWoolSlopes,id=BlockKaevPurpleWoolCorners,id=BlockKaevPurpleWoolIntCorners,data=*,allfaces=193,transparency=TRANSPARENT
 # Cyan wool slopes, corners
-block:id=BlockKaevCyanWoolSlopes,id=BlockKaevCyanWoolCorners,id=BlockKaevCyanWoolIntCorners,data=*,allfaces=209
+block:id=BlockKaevCyanWoolSlopes,id=BlockKaevCyanWoolCorners,id=BlockKaevCyanWoolIntCorners,data=*,allfaces=209,transparency=TRANSPARENT
 # Silver wool slopes, corners
-block:id=BlockKaevSilverWoolSlopes,id=BlockKaevSilverWoolCorners,id=BlockKaevSilverWoolIntCorners,data=*,allfaces=225
+block:id=BlockKaevSilverWoolSlopes,id=BlockKaevSilverWoolCorners,id=BlockKaevSilverWoolIntCorners,data=*,allfaces=225,transparency=TRANSPARENT
 # Gray wool slopes, corners
-block:id=BlockKaevGrayWoolSlopes,id=BlockKaevGrayWoolCorners,id=BlockKaevGrayWoolIntCorners,data=*,allfaces=114
+block:id=BlockKaevGrayWoolSlopes,id=BlockKaevGrayWoolCorners,id=BlockKaevGrayWoolIntCorners,data=*,allfaces=114,transparency=TRANSPARENT
 # Pink wool slopes, corners
-block:id=BlockKaevPinkWoolSlopes,id=BlockKaevPinkWoolCorners,id=BlockKaevPinkWoolIntCorners,data=*,allfaces=130
+block:id=BlockKaevPinkWoolSlopes,id=BlockKaevPinkWoolCorners,id=BlockKaevPinkWoolIntCorners,data=*,allfaces=130,transparency=TRANSPARENT
 # Lime wool slopes, corners
-block:id=BlockKaevLimeWoolSlopes,id=BlockKaevLimeWoolCorners,id=BlockKaevLimeWoolIntCorners,data=*,allfaces=146
+block:id=BlockKaevLimeWoolSlopes,id=BlockKaevLimeWoolCorners,id=BlockKaevLimeWoolIntCorners,data=*,allfaces=146,transparency=TRANSPARENT
 # Yellow wool slopes, corners
-block:id=BlockKaevYellowWoolSlopes,id=BlockKaevYellowWoolCorners,id=BlockKaevYellowWoolIntCorners,data=*,allfaces=162
+block:id=BlockKaevYellowWoolSlopes,id=BlockKaevYellowWoolCorners,id=BlockKaevYellowWoolIntCorners,data=*,allfaces=162,transparency=TRANSPARENT
 # Light blue wool slopes, corners
-block:id=BlockKaevLightBlueWoolSlopes,id=BlockKaevLightBlueWoolCorners,id=BlockKaevLightBlueWoolIntCorners,data=*,allfaces=178
+block:id=BlockKaevLightBlueWoolSlopes,id=BlockKaevLightBlueWoolCorners,id=BlockKaevLightBlueWoolIntCorners,data=*,allfaces=178,transparency=TRANSPARENT
 # Magenta wool slopes, corners
-block:id=BlockKaevMagentaWoolSlopes,id=BlockKaevMagentaWoolCorners,id=BlockKaevMagentaWoolIntCorners,data=*,allfaces=194
+block:id=BlockKaevMagentaWoolSlopes,id=BlockKaevMagentaWoolCorners,id=BlockKaevMagentaWoolIntCorners,data=*,allfaces=194,transparency=TRANSPARENT
 # Orange wool slopes, corners
-block:id=BlockKaevOrangeWoolSlopes,id=BlockKaevOrangeWoolCorners,id=BlockKaevOrangeWoolIntCorners,data=*,allfaces=210
+block:id=BlockKaevOrangeWoolSlopes,id=BlockKaevOrangeWoolCorners,id=BlockKaevOrangeWoolIntCorners,data=*,allfaces=210,transparency=TRANSPARENT

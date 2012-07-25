@@ -123,6 +123,7 @@ public class IsoHDPerspective implements HDPerspective {
         double patch_t[] = new double[HDPatchDefinition.MAX_PATCHES];
         double patch_u[] = new double[HDPatchDefinition.MAX_PATCHES];
         double patch_v[] = new double[HDPatchDefinition.MAX_PATCHES];
+        BlockStep patch_step[] = new BlockStep[HDPatchDefinition.MAX_PATCHES];
         int patch_id[] = new int[HDPatchDefinition.MAX_PATCHES];
         int cur_patch = -1;
         double cur_patch_u;
@@ -694,7 +695,7 @@ public class IsoHDPerspective implements HDPerspective {
                 vS.crossProduct(pd.u);
                 /* Compute V using slope times inner product of direction and cross product */
                 double v = inv_det * direction.innerProduct(vS);
-                if((v <= pd.vmin) || (v >= pd.vmax)) {
+                if((v <= pd.vmin) || (v >= pd.vmax) || ((u + v) >= pd.uplusvmax)) {
                     continue;
                 }
                 /* Compute parametric value of intercept */
@@ -704,6 +705,10 @@ public class IsoHDPerspective implements HDPerspective {
                     patch_u[hitcnt] = u;
                     patch_v[hitcnt] = v;
                     patch_id[hitcnt] = i;
+                    if(det > 0)
+                        patch_step[hitcnt] = pd.step;
+                    else
+                        patch_step[hitcnt] = pd.step.opposite();
                     hitcnt++;
                 }
             }
@@ -726,7 +731,7 @@ public class IsoHDPerspective implements HDPerspective {
                 cur_patch = patch_id[best_patch]; /* Mark this as current patch */
                 cur_patch_u = patch_u[best_patch];
                 cur_patch_v = patch_v[best_patch];
-                laststep = patches[cur_patch].step;
+                laststep = patch_step[best_patch];
                 /* Process the shaders */
                 boolean done = true;
                 for(int j = 0; j < shaderstate.length; j++) {
