@@ -1224,18 +1224,30 @@ public class TexturePack {
                                 faces[BlockStep.Y_PLUS.ordinal()] = Integer.parseInt(av[1]);
                         }
                         else if(av[0].startsWith("patch")) {
-                            int patchid = Integer.parseInt(av[0].substring(5));
-                            if(patchid < 0) {
+                            int patchid0, patchid1;
+                            String idrange = av[0].substring(5);
+                            String[] ids = idrange.split("-");
+                            if(ids.length > 1) {
+                                patchid0 = Integer.parseInt(ids[0]);
+                                patchid1 = Integer.parseInt(ids[1]);
+                            }
+                            else {
+                                patchid0 = patchid1 = Integer.parseInt(ids[0]);
+                            }
+                            if((patchid0 < 0) || (patchid1 < patchid0)) {
                                 Log.severe("Texture mapping has invalid patch index - " + av[1] + " - line " + rdr.getLineNumber() + " of " + txtname);
                                 return;
                             }
-                            if(faces.length <= patchid) {
-                                int[] newfaces = new int[patchid+1];
+                            if(faces.length <= patchid1) {
+                                int[] newfaces = new int[patchid1+1];
                                 Arrays.fill(newfaces, TILEINDEX_BLANK);
                                 System.arraycopy(faces, 0, newfaces, 0, faces.length);
                                 faces = newfaces;
                             }
-                            faces[patchid] = Integer.parseInt(av[1]);
+                            int txtid = Integer.parseInt(av[1]);
+                            for(int i = patchid0; i <= patchid1; i++) {
+                                faces[i] = txtid;
+                            }
                         }
                         else if(av[0].equals("transparency")) {
                             trans = BlockTransparency.valueOf(av[1]);

@@ -914,9 +914,22 @@ public class HDBlockModels {
                                 databits |= (1 << getIntValue(varvals,av[1]));
                         }
                         else if(av[0].startsWith("patch")) {
-                            int patchnum = Integer.parseInt(av[0].substring(5));    /* Get index */
-                            if((patchnum < 0) || (patchnum >= HDPatchDefinition.MAX_PATCHES)) {
-                                Log.severe("Invalid patch index " + patchnum + " - line " + rdr.getLineNumber() + " of " + fname);
+                            int patchnum0, patchnum1;
+                            String ids = av[0].substring(5);
+                            String[] ids2 = ids.split("-");
+                            if(ids2.length == 1) {
+                                patchnum0 = patchnum1 = Integer.parseInt(ids2[0]);
+                            }
+                            else {
+                                patchnum0 = Integer.parseInt(ids2[0]);
+                                patchnum1 = Integer.parseInt(ids2[1]);
+                            }
+                            if((patchnum0 < 0) || (patchnum0 >= HDPatchDefinition.MAX_PATCHES)) {
+                                Log.severe("Invalid patch index " + patchnum0 + " - line " + rdr.getLineNumber() + " of " + fname);
+                                return;
+                            }
+                            if((patchnum1 < 0) || (patchnum1 >= HDPatchDefinition.MAX_PATCHES)) {
+                                Log.severe("Invalid patch index " + patchnum1 + " - line " + rdr.getLineNumber() + " of " + fname);
                                 return;
                             }
                             HDPatchDefinition pd = patchdefs.get(av[1]);
@@ -949,7 +962,9 @@ public class HDBlockModels {
                                 Log.severe("Invalid patch ID " + av[1] + " - line " + rdr.getLineNumber() + " of " + fname);
                             }
                             else {
-                                patches.add(patchnum,  pd);
+                                for(int i = patchnum0; i <= patchnum1; i++) {
+                                    patches.add(i,  pd);
+                                }
                             }
                         }
                     }
