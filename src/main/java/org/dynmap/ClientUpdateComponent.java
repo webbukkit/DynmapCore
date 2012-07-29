@@ -21,6 +21,8 @@ public class ClientUpdateComponent extends Component {
         hideifunder = configuration.getInteger("hideifundercover", 15);
         hideifsneaking = configuration.getBoolean("hideifsneaking", false);
         is_protected = configuration.getBoolean("protected-player-info", false);
+        if(is_protected)
+            core.player_info_protected = true;
         
         core.events.addListener("buildclientupdate", new Event.Listener<ClientUpdateEvent>() {
             @Override

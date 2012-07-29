@@ -76,6 +76,7 @@ public class DynmapCore {
     private HashSet<String> enabledTriggers = new HashSet<String>();
     public boolean disable_chat_to_web = false;
     private WebAuthManager authmgr;
+    public boolean player_info_protected;
         
     public CompassMode compassmode = CompassMode.PRE19;
     private int     config_hashcode;    /* Used to signal need to reload web configuration (world changes, config update, etc) */
@@ -239,7 +240,9 @@ public class DynmapCore {
     public boolean enableCore() {
         /* Start with clean events */
         events = new Events();
-
+        /* Default to being unprotected - set to protected by update components */
+        player_info_protected = false;
+        
         /* Load plugin version info */
         loadVersion();
         
@@ -1534,5 +1537,12 @@ public class DynmapCore {
             return markerapi.getPlayersVisibleToPlayer(player);
         else
             return Collections.singleton(player.toLowerCase());
+    }
+    /**
+     * Test if player position/information is protected on map view
+     * @return true if protected, false if visible to guests and all players
+     */
+    public boolean testIfPlayerInfoProtected() {
+        return player_info_protected;
     }
 }
