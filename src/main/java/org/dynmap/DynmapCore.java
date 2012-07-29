@@ -12,6 +12,7 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -1513,5 +1514,25 @@ public class DynmapCore {
         if(authmgr != null)
             return authmgr.processCompletedRegister(uid, pc, hash);
         return false;
+    }
+    public boolean testIfPlayerVisibleToPlayer(String player, String player_to_see) {
+        player = player.toLowerCase();
+        player_to_see = player_to_see.toLowerCase();
+        /* Can always see self */
+        if(player.equals(player_to_see)) return true;
+        /* If player is hidden, that is dominant */
+        if(getPlayerVisbility(player_to_see) == false) return false;
+        /* Check if player has see-all permission */
+        if(checkPermission(player, "playermarkers.seeall")) return true;
+        if(markerapi != null) {
+            return markerapi.testIfPlayerVisible(player, player_to_see);
+        }
+        return false;
+    }
+    public Set<String> getPlayersVisibleToPlayer(String player) {
+        if(markerapi != null)
+            return markerapi.getPlayersVisibleToPlayer(player);
+        else
+            return Collections.singleton(player.toLowerCase());
     }
 }

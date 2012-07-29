@@ -14,15 +14,15 @@ public class ClientUpdateComponent extends Component {
     private boolean hideifsneaking;
     private boolean is_protected;
     
-    public ClientUpdateComponent(final DynmapCore plugin, ConfigurationNode configuration) {
-        super(plugin, configuration);
+    public ClientUpdateComponent(final DynmapCore core, ConfigurationNode configuration) {
+        super(core, configuration);
         
         hideifshadow = configuration.getInteger("hideifshadow", 15);
         hideifunder = configuration.getInteger("hideifundercover", 15);
         hideifsneaking = configuration.getBoolean("hideifsneaking", false);
         is_protected = configuration.getBoolean("protected-player-info", false);
         
-        plugin.events.addListener("buildclientupdate", new Event.Listener<ClientUpdateEvent>() {
+        core.events.addListener("buildclientupdate", new Event.Listener<ClientUpdateEvent>() {
             @Override
             public void triggered(ClientUpdateEvent e) {
                 buildClientUpdate(e);
@@ -89,7 +89,7 @@ public class ClientUpdateComponent extends Component {
             }
             if((!hide) && is_protected && (!see_all)) {
                 if(e.user != null) {
-                    hide = !p.getName().equalsIgnoreCase(e.user);
+                    hide = !core.testIfPlayerVisibleToPlayer(e.user, p.getName());
                 }
                 else {
                     hide = true;

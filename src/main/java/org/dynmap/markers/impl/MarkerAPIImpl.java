@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -37,6 +38,7 @@ import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerIcon;
 import org.dynmap.markers.MarkerIcon.MarkerSize;
 import org.dynmap.markers.MarkerSet;
+import org.dynmap.markers.PlayerSet;
 import org.dynmap.markers.PolyLineMarker;
 import org.dynmap.web.Json;
 
@@ -51,6 +53,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     private HashMap<String, MarkerIconImpl> markericons = new HashMap<String, MarkerIconImpl>();
     private HashMap<String, MarkerSetImpl> markersets = new HashMap<String, MarkerSetImpl>();
     private HashMap<String, List<DynmapLocation>> pointaccum = new HashMap<String, List<DynmapLocation>>();
+    private HashMap<String, PlayerSetImpl> playersets = new HashMap<String, PlayerSetImpl>();
     private DynmapCore core;
     static MarkerAPIImpl api;
 
@@ -548,7 +551,32 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         }
         return null;
     }
-    
+
+    @Override
+    public Set<PlayerSet> getPlayerSets() {
+        return new HashSet<PlayerSet>(playersets.values());
+    }
+
+    @Override
+    public PlayerSet getPlayerSet(String id) {
+        return playersets.get(id);
+    }
+
+    @Override
+    public PlayerSet createPlayerSet(String id, boolean symmetric, Set<String> players, boolean persistent) {
+        if(playersets.containsKey(id)) return null; /* Exists? */
+        
+        PlayerSetImpl set = new PlayerSetImpl(id, symmetric, players, persistent);
+
+        playersets.put(id, set);    /* Add to list */
+        if(persistent) {
+            saveMarkers();
+        }
+        playerSetUpdated(set, MarkerUpdate.CREATED); /* Notify update */
+        
+        return set;
+    }
+
     /**
      * Save persistence for markers
      */
@@ -557,6 +585,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             api.dirty_markers = true;
         }
     }
+    
     private void doSaveMarkers() {
         if(api != null) {
             ConfigurationNode conf = new ConfigurationNode(api.markerpersist);  /* Make configuration object */
@@ -582,6 +611,18 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 }
             }
             conf.put("sets", sets);
+            /* Then, save persistent player sets */
+            HashMap<String, Object> psets = new HashMap<String, Object>();
+            for(String id : api.playersets.keySet()) {
+                PlayerSetImpl set = api.playersets.get(id);
+                if(set.isPersistentSet()) {
+                    Map<String, Object> dat = set.getPersistentData();
+                    if(dat != null) {
+                        psets.put(id, dat);
+                    }
+                }
+            }
+            conf.put("playersets", psets);
             /* And shift old file file out */
             if(api.markerpersist_old.exists()) api.markerpersist_old.delete();
             if(api.markerpersist.exists()) api.markerpersist.renameTo(api.markerpersist_old);
@@ -624,6 +665,16 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 MarkerSetImpl set = new MarkerSetImpl(id);
                 if(set.loadPersistentData(sets.getNode(id))) {
                     markersets.put(id, set);
+                }
+            }
+        }
+        /* Get player sets */
+        ConfigurationNode psets = conf.getNode("playersets");
+        if(psets != null) {
+            for(String id: psets.keySet()) {
+                PlayerSetImpl set = new PlayerSetImpl(id);
+                if(set.loadPersistentData(sets.getNode(id))) {
+                    playersets.put(id, set);
                 }
             }
         }
@@ -698,6 +749,15 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         if(MapManager.mapman != null)
             MapManager.mapman.pushUpdate(new MarkerSetUpdated(markerset, update == MarkerUpdate.DELETED));
     }
+    /**
+     * Signal player set update
+     * @param playerset - updated player set
+     * @param update - type of update
+     */
+    static void playerSetUpdated(PlayerSetImpl pset, MarkerUpdate update) {
+        if(api != null)
+            api.core.events.trigger("playersetupdated", null);
+    }
     
     /**
      * Remove marker set
@@ -711,7 +771,20 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             markerSetUpdated(markerset, MarkerUpdate.DELETED); /* Signal delete of set */
         }
     }
-    
+
+    /**
+     * Remove player set
+     */
+    static void removePlayerSet(PlayerSetImpl pset) {
+        if(api != null) {
+            api.playersets.remove(pset.getSetID());  /* Remove set from list */
+            if(pset.isPersistentSet()) {   /* If persistent */
+                MarkerAPIImpl.saveMarkers();        /* Drive save */
+            }
+            playerSetUpdated(pset, MarkerUpdate.DELETED); /* Signal delete of set */
+        }
+    }
+
     private static boolean processAreaArgs(DynmapCommandSender sender, AreaMarker marker, Map<String,String> parms) {
         String val = null;
         try {
@@ -2328,5 +2401,47 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         api.markericons.remove(ico.getMarkerIconID());
         saveMarkers();
     }
-
+    /**
+     * Test if given player can see another player on the map (based on player sets and privileges).
+     * @param player - player attempting to observe
+     * @param player_to_see - player to be observed by 'player'
+     * @return true if can be seen on map, false if cannot be seen
+     */
+    public boolean testIfPlayerVisible(String player, String player_to_see)
+    {
+        if(api == null) return false;
+        /* Go through player sets - see if any are applicable */
+        for(Entry<String, PlayerSetImpl> s : playersets.entrySet()) {
+            PlayerSetImpl ps = s.getValue();
+            if(!ps.isPlayerInSet(player_to_see)) { /* Is in set? */
+                continue;
+            }
+            if(ps.isSymmetricSet() && ps.isPlayerInSet(player)) {   /* If symmetric, and observer is there */
+                return true;
+            }
+            if(core.checkPermission(player, "playerset." + s.getKey())) {   /* If player has privilege */
+                return true;
+            }
+        }
+        return false;
+    }
+    /**
+     * Get set of player visible to given player
+     */
+    public Set<String> getPlayersVisibleToPlayer(String player) {
+        player = player.toLowerCase();
+        HashSet<String> pset = new HashSet<String>();
+        pset.add(player);
+        /* Go through player sets - see if any are applicable */
+        for(Entry<String, PlayerSetImpl> s : playersets.entrySet()) {
+            PlayerSetImpl ps = s.getValue();
+            if(ps.isSymmetricSet() && ps.isPlayerInSet(player)) {   /* If symmetric, and observer is there */
+                pset.addAll(ps.getPlayers());
+            }
+            else if(core.checkPermission(player, "playerset." + s.getKey())) {   /* If player has privilege */
+                pset.addAll(ps.getPlayers());
+            }
+        }
+        return pset;
+    }
 }

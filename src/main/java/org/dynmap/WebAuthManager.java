@@ -285,14 +285,31 @@ public class WebAuthManager {
         }
         sb.append(");\n");
 
+        HashSet<String> cantseeall = new HashSet<String>();
         String perm = "playermarkers.seeall";
         sb.append("$seeallmarkers = \'");
         for(String uid : pwdhash_by_userid.keySet()) {
             if(core.getServer().checkPlayerPermission(uid, perm)) {
                 sb.append("[").append(esc(uid)).append("]");
             }
+            else {
+                cantseeall.add(uid);
+            }
         }
         sb.append("\';\n");
+        /* Add visibility lists for each player that doesn't see everything */
+        sb.append("$playervisible = array(\n");
+        for(String id : cantseeall) {
+            id = id.toLowerCase();
+            Set<String> vis = core.getPlayersVisibleToPlayer(id);
+            if((vis.size() == 1) && vis.contains(id)) continue;
+            sb.append("  \'").append(esc(id)).append("\' => \'");
+            for(String uid : vis) {
+                sb.append("[").append(esc(uid)).append("]");
+            }
+            sb.append("\',\n");
+        }
+        sb.append(");\n");
 
         String p = core.getTilesFolder().getAbsolutePath();
         if(!p.endsWith("/"))

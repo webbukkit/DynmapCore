@@ -195,6 +195,12 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                 writeAccess();
             }
         });
+        core.events.addListener("playersetupdated", new Event.Listener<Object>() {
+            @Override
+            public void triggered(Object t) {
+                writeAccess();
+            }
+        });
     }
     
     protected File getStandaloneFile(String filename) {

@@ -37,7 +37,8 @@ if(!is_readable($fname)) {
 	return;
 }
 
-$uid = '[' . strtolower($userid) . ']';
+$useridlc = strtolower($userid);
+$uid = '[' . $useridlc . ']';
 
 if(isset($worldaccess[$world])) {
     $ss = stristr($worldaccess[$world], $uid);
@@ -65,14 +66,29 @@ else {
 	if (isset($json->protected) && $json->protected) {
 	    $ss = stristr($seeallmarkers, $uid);
 		if($ss === false) {
-			$pcnt = count($json->players);
-			for($i = 0; $i < $pcnt; $i++) {
-				$p = $json->players[$i];
-				if(strcasecmp($userid, $p->account) != 0) {
-					$p->world = "-some-other-bogus-world-";
-					$p->x = 0.0;
-					$p->y = 64.0;
-					$p->z = 0.0;
+			if(isset($playervisible[$useridlc])) {
+				$plist = $playervisible[$useridlc];
+				$pcnt = count($json->players);
+				for($i = 0; $i < $pcnt; $i++) {
+					$p = $json->players[$i];
+					if(!stristr($plist, '[' . $p->account . ']')) { 
+						$p->world = "-some-other-bogus-world-";
+						$p->x = 0.0;
+						$p->y = 64.0;
+						$p->z = 0.0;
+					}
+				}
+			}
+			else {
+				$pcnt = count($json->players);
+				for($i = 0; $i < $pcnt; $i++) {
+					$p = $json->players[$i];
+					if(strcasecmp($userid, $p->account) != 0) {
+						$p->world = "-some-other-bogus-world-";
+						$p->x = 0.0;
+						$p->y = 64.0;
+						$p->z = 0.0;
+					}
 				}
 			}
 		}
