@@ -497,6 +497,7 @@ public class DynmapCore {
         webServer.setHandler(hlist);
         
         addServlet("/up/configuration", new org.dynmap.servlet.ClientConfigurationServlet(this));
+        addServlet("/standalone/config.js", new org.dynmap.servlet.ConfigJSServlet(this));
         if(authmgr != null) {
             LoginServlet login = new LoginServlet(this);
             addServlet("/up/login", login);

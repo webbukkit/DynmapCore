@@ -2,6 +2,7 @@ package org.dynmap;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.FileInputStream;
 import java.io.RandomAccessFile;
@@ -141,6 +142,8 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
         } catch (NoSuchAlgorithmException nsax) {
             Log.severe("Unable to get message digest SHA-1");
         }
+        /* Generate our config.js file */
+        generateConfigJS(core);
         
         core.getServer().scheduleServerTask(new Runnable() {
             @Override
@@ -209,6 +212,77 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
             return webpath;
         else
             return new File(core.getDataFolder(), webpath.toString());
+    }
+    
+    private void generateConfigJS(DynmapCore core) {
+        /* Test if login support is enabled */
+        boolean login_enabled = core.isLoginSupportEnabled();
+
+        // configuration: 'standalone/dynmap_config.json?_={timestamp}',
+        // update: 'standalone/dynmap_{world}.json?_={timestamp}',
+        // sendmessage: 'standalone/sendmessage.php',
+        // login: 'standalone/login.php',
+        // register: 'standalone/register.php',
+        // tiles : 'tiles/',
+        // markers : 'tiles/'
+
+        // configuration: 'standalone/configuration.php',
+        // update: 'standalone/update.php?world={world}&ts={timestamp}',
+        // sendmessage: 'standalone/sendmessage.php',
+        // login: 'standalone/login.php',
+        // register: 'standalone/register.php',
+        // tiles : 'standalone/tiles.php?tile=',
+        // markers : 'standalone/markers.php?marker='
+        
+        Charset cs_utf8 = Charset.forName("UTF-8");
+        StringBuilder sb = new StringBuilder();
+        sb.append("var config = {\n");
+        sb.append(" url : {\n");
+        /* Get configuration URL */
+        sb.append("  configuration: '");
+        sb.append(core.configuration.getString("url/configuration", login_enabled?"standalone/configuration.php":"standalone/dynmap_config.json?_={timestamp}"));
+        sb.append("',\n");
+        /* Get update URL */
+        sb.append("  update: '");
+        sb.append(core.configuration.getString("url/update", login_enabled?"standalone/update.php?world={world}&ts={timestamp}":"standalone/dynmap_{world}.json?_={timestamp}"));
+        sb.append("',\n");
+        /* Get sendmessage URL */
+        sb.append("  sendmessage: '");
+        sb.append(core.configuration.getString("url/sendmessage", "standalone/sendmessage.php"));
+        sb.append("',\n");
+        /* Get login URL */
+        sb.append("  login: '");
+        sb.append(core.configuration.getString("url/login", "standalone/login.php"));
+        sb.append("',\n");
+        /* Get register URL */
+        sb.append("  register: '");
+        sb.append(core.configuration.getString("url/register", "standalone/register.php"));
+        sb.append("',\n");
+        /* Get tiles URL */
+        sb.append("  tiles: '");
+        sb.append(core.configuration.getString("url/tiles", login_enabled?"standalone/tiles.php?tile=":"tiles/"));
+        sb.append("',\n");
+        /* Get markers URL */
+        sb.append("  markers: '");
+        sb.append(core.configuration.getString("url/markers", login_enabled?"standalone/markers.php?marker=":"tiles/"));
+        sb.append("'\n }\n};\n");
+        
+        byte[] outputBytes = sb.toString().getBytes(cs_utf8);
+        File f = getStandaloneFile("config.js");
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(f);
+            fos.write(outputBytes);
+        } catch (IOException iox) {
+            Log.severe("Exception while writing " + f.getPath(), iox);
+        } finally {
+            if(fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException x) {}
+                fos = null;
+            }
+        }
     }
     
     private static final int RETRY_LIMIT = 5;
