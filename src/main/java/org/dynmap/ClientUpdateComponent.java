@@ -54,6 +54,7 @@ public class ClientUpdateComponent extends Component {
         s(u, "servertime", world.getTime() % 24000);
         s(u, "hasStorm", world.hasStorm());
         s(u, "isThundering", world.isThundering());
+        s(u, "currentcount", core.getCurrentPlayers());
 
         s(u, "players", new JSONArray());
         List<DynmapPlayer> players = core.playerList.getVisiblePlayers();

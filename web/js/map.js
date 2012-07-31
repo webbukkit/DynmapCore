@@ -53,6 +53,9 @@ DynMap.prototype = {
 	followingPlayer: '',
 	initfollow: null,
 	missedupdates: 0,
+	maxcount: -1,
+	currentcount: 0,
+	playerfield: null,
 	layercontrol: undefined,
 	formatUrl: function(name, options) {
 		var url = this.options.url[name];
@@ -317,7 +320,7 @@ DynMap.prototype = {
 		// The Player List
 		var playerlist;
 		$('<fieldset/>')
-			.append($('<legend/>').text(me.options['msg-players']))
+			.append(me.playerfield = $('<legend/>').text(me.options['msg-players']))
 			.append(upbtn)
 			.append(me.playerlist = playerlist = $('<ul/>').addClass('playerlist')
 				.bind('mousewheel', function(event, delta){ 
@@ -592,6 +595,7 @@ DynMap.prototype = {
 					window.location.reload(true);
 					return;
 				}
+				me.playerfield.text(me.options['msg-players'] + " [" + update.currentcount + "/" + me.options.maxcount + "]");
 
 				me.servertime = update.servertime;                
 				var newserverday = (me.servertime > 23100 || me.servertime < 12900);

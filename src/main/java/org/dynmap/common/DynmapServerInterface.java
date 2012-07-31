@@ -111,4 +111,12 @@ public interface DynmapServerInterface {
      */
     public MapChunkCache createMapChunkCache(DynmapWorld w, List<DynmapChunk> chunks, 
         boolean blockdata, boolean highesty, boolean biome, boolean rawbiome);
+    /**
+     * Get maximum player count
+     */
+    public int getMaxPlayers();
+    /**
+     * Get current player count
+     */
+    public int getCurrentPlayers();
 }

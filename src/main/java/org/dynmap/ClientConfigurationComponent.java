@@ -36,6 +36,7 @@ public class ClientConfigurationComponent extends Component {
                 s(t, "msg-players", c.getString("msg/players", "Players"));
                 s(t, "msg-chatrequireslogin", c.getString("msg/chatrequireslogin", "Chat Requires Login"));
                 s(t, "msg-chatnotallowed", c.getString("msg/chatnotallowed", "You are not permitted to send chat messages"));
+                s(t, "maxcount", core.getMaxPlayers());
                 
                 String player = null;
                 boolean check_protected = false;

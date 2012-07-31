@@ -1546,4 +1546,11 @@ public class DynmapCore {
     public boolean testIfPlayerInfoProtected() {
         return player_info_protected;
     }
+    
+    public int getMaxPlayers() {
+        return server.getMaxPlayers();
+    }
+    public int getCurrentPlayers() {
+        return server.getCurrentPlayers();
+    }
 }
