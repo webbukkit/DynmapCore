@@ -61,18 +61,22 @@ block:id=16,allfaces=34
 block:id=17,data=0,allsides=20,top=21,bottom=21
 block:id=17,data=4,north=21,south=21,east=4020,west=4020,top=20,bottom=20
 block:id=17,data=8,north=4020,south=4020,east=21,west=21,top=4020,bottom=4020
+block:id=17,data=12,allfaces=20
 # Wood (spruce/pine)
 block:id=17,data=1,allsides=116,top=21,bottom=21
 block:id=17,data=5,north=21,south=21,east=4116,west=4116,top=116,bottom=116
 block:id=17,data=9,north=4116,south=4116,east=21,west=21,top=4116,bottom=4116
+block:id=17,data=13,allfaces=116
 # Wood (birch)
 block:id=17,data=2,allsides=117,top=21,bottom=21
 block:id=17,data=6,north=21,south=21,east=4117,west=4117,top=117,bottom=117
 block:id=17,data=10,north=4117,south=4117,east=21,west=21,top=4117,bottom=4117
+block:id=17,data=14,allfaces=117
 # Wood (jungle)
 block:id=17,data=3,allsides=153,top=21,bottom=21
 block:id=17,data=7,north=21,south=21,east=4153,west=4153,top=153,bottom=153
 block:id=17,data=11,north=4153,south=4153,east=21,west=21,top=4153,bottom=4153
+block:id=17,data=15,allfaces=153
 # Leaves (std)
 block:id=18,data=0,data=4,data=8,data=12,allfaces=2052,transparency=TRANSPARENT
 # Leaves (spruce/pine)
