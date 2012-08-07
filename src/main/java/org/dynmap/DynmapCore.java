@@ -20,6 +20,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.common.DynmapListenerManager;
@@ -48,6 +50,7 @@ import org.eclipse.jetty.server.session.HashSessionIdManager;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.resource.FileResource;
+import org.eclipse.jetty.util.thread.ExecutorThreadPool;
 import org.yaml.snakeyaml.Yaml;
 
 import javax.servlet.*;
@@ -447,7 +450,18 @@ public class DynmapCore {
         webServer = new Server();
         webServer.setSessionIdManager(new HashSessionIdManager());
 
-        Connector connector=new SelectChannelConnector();
+        int maxconnections = configuration.getInteger("max-sessions", 30);
+        if(maxconnections < 2) maxconnections = 2;
+        LinkedBlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>(maxconnections);
+        ExecutorThreadPool pool = new ExecutorThreadPool(2, maxconnections, 60, TimeUnit.MILLISECONDS, queue);
+        webServer.setThreadPool(pool);
+        
+        SelectChannelConnector connector=new SelectChannelConnector();
+        connector.setMaxIdleTime(5000);
+        connector.setAcceptors(1);
+        connector.setAcceptQueueSize(50);
+        connector.setLowResourcesMaxIdleTime(1000);
+        connector.setLowResourcesConnections(maxconnections/2);
         if(webhostname.equals("0.0.0.0") == false)
             connector.setHost(webhostname);
         connector.setPort(webport);
@@ -457,8 +471,6 @@ public class DynmapCore {
         //webServer.setGracefulShutdown(1000);
         
         final boolean allow_symlinks = configuration.getBoolean("allow-symlinks", false);
-        int maxconnections = configuration.getInteger("max-sessions", 30);
-        if(maxconnections < 2) maxconnections = 2;
         router = new HandlerRouter() {{
             this.addHandler("/", new FileLockResourceHandler() {{
                 this.setAliases(allow_symlinks);
