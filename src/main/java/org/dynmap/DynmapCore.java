@@ -453,7 +453,7 @@ public class DynmapCore {
         int maxconnections = configuration.getInteger("max-sessions", 30);
         if(maxconnections < 2) maxconnections = 2;
         LinkedBlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>(maxconnections);
-        ExecutorThreadPool pool = new ExecutorThreadPool(2, maxconnections, 60, TimeUnit.MILLISECONDS, queue);
+        ExecutorThreadPool pool = new ExecutorThreadPool(2, maxconnections, 60, TimeUnit.SECONDS, queue);
         webServer.setThreadPool(pool);
         
         SelectChannelConnector connector=new SelectChannelConnector();
