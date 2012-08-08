@@ -57,6 +57,16 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
 
 public class DynmapCore {
+    /**
+     * Callbacks for core initialization - subclassed by platform plugins
+     */
+    public static abstract class EnableCoreCallbacks {
+        /**
+         * Called during enableCore to report that confniguration.txt is loaded
+         */
+        public abstract void configurationLoaded();
+    }
+    
     private DynmapServerInterface server;
     private String version;
     private Server webServer = null;
@@ -239,8 +249,12 @@ public class DynmapCore {
             }
         }
     }
-        
+
     public boolean enableCore() {
+        return enableCore(null);
+    }
+    
+    public boolean enableCore(EnableCoreCallbacks cb) {
         /* Start with clean events */
         events = new Events();
         /* Default to being unprotected - set to protected by update components */
@@ -258,7 +272,10 @@ public class DynmapCore {
         /* Load configuration.txt */
         configuration = new ConfigurationNode(f);
         configuration.load();
-
+        /* Call back to plugin to report that configuration is available */
+        if(cb != null)
+            cb.configurationLoaded();
+        
         /* Initialize authorization manager */
         if(configuration.getBoolean("login-enabled", false))
             authmgr = new WebAuthManager(this);
