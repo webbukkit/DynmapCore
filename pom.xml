@@ -57,9 +57,20 @@
 							<artifactSet>
 								<includes>
 									<include>org.eclipse.jetty:jetty-*:jar:*</include>
-									<include>javax.servlet:javax.servlet-api:jar:*</include>
+									<include>org.eclipse.jetty.orbit:javax.servlet:jar:*</include>
 								</includes>
 							</artifactSet>
+							<filters>
+<filter>
+<artifact>*</artifact>
+<excludes>
+<exclude>META-INF/*.SF</exclude>
+<exclude>META-INF/*.RSA</exclude>
+<exclude>META-INF/*.INF</exclude>
+</excludes>
+</filter>
+</filters>
+							
 						</configuration>
 					</execution>
 				</executions>
@@ -98,11 +109,6 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.0.1</version>
-		</dependency>
-		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
 			<version>8.1.5.v20120716</version>
@@ -125,6 +131,11 @@
 			<artifactId>snakeyaml</artifactId>
 			<version>1.9</version>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty.orbit</groupId>
+			<artifactId>javax.servlet</artifactId>
+			<version>3.0.0.v201112011016</version>
 		</dependency>
 	</dependencies>
 </project>
