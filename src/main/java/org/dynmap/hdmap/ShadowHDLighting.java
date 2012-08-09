@@ -4,8 +4,8 @@ import org.dynmap.Color;
 import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapCore;
 import org.dynmap.MapManager;
-import org.dynmap.hdmap.HDPerspectiveState.LightLevels;
-import org.dynmap.utils.MapIterator.BlockStep;
+import org.dynmap.utils.LightLevels;
+import org.dynmap.utils.BlockStep;
 
 public class ShadowHDLighting extends DefaultHDLighting {
 
@@ -106,9 +106,12 @@ public class ShadowHDLighting extends DefaultHDLighting {
             break;
         }
         /* Now get the 3 needed light levels */
-        LightLevels skyemit0 = ps.getLightLevels();
-        LightLevels skyemit1 = ps.getLightLevelsAtStep(s1);
-        LightLevels skyemit2 = ps.getLightLevelsAtStep(s2);
+        LightLevels skyemit0 = ps.getCachedLightLevels(0);
+        ps.getLightLevels(skyemit0);
+        LightLevels skyemit1 = ps.getCachedLightLevels(1);
+        ps.getLightLevelsAtStep(s1, skyemit1);
+        LightLevels skyemit2 = ps.getCachedLightLevels(2);
+        ps.getLightLevelsAtStep(s2, skyemit2);
 
         /* Get light levels */
         int ll0 = getLightLevel(skyemit0, true);
@@ -217,7 +220,8 @@ public class ShadowHDLighting extends DefaultHDLighting {
         int lightlevel = 15, lightlevel_day = 15;
         /* If processing for shadows, use sky light level as base lighting */
         if(shadowscale != null) {
-            ll = ps.getLightLevels();
+            ll = ps.getCachedLightLevels(0);
+            ps.getLightLevels(ll);
             lightlevel = lightlevel_day = ll.sky;
         }
         /* If ambient light, adjust base lighting for it */

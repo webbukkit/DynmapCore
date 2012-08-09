@@ -25,7 +25,7 @@ import org.dynmap.utils.DynmapBufferedImage;
 import org.dynmap.utils.FileLockManager;
 import org.dynmap.utils.MapChunkCache;
 import org.dynmap.utils.MapIterator;
-import org.dynmap.utils.MapIterator.BlockStep;
+import org.dynmap.utils.BlockStep;
 import org.json.simple.JSONObject;
 
 public class DefaultTileRenderer implements MapTileRenderer {

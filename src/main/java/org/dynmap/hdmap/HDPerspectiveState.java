@@ -1,26 +1,19 @@
 package org.dynmap.hdmap;
 
 import org.dynmap.utils.MapIterator;
-import org.dynmap.utils.MapIterator.BlockStep;
+import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.Vector3D;
+import org.dynmap.utils.LightLevels;
 
 public interface HDPerspectiveState {
-    public static class LightLevels {
-        public final int sky;
-        public final int emitted;
-        public LightLevels(int sky, int emitted) {
-            this.sky = sky;
-            this.emitted = emitted;
-        }
-    }
     /**
      * Get light levels - only available if shader requested it
      */
-    LightLevels getLightLevels();
+    void getLightLevels(LightLevels ll);
     /**
      * Get sky light level - only available if shader requested it
      */
-    LightLevels getLightLevelsAtStep(BlockStep step);
+    void getLightLevelsAtStep(BlockStep step, LightLevels ll);
     /**
      * Get current block type ID
      */
@@ -81,4 +74,9 @@ public interface HDPerspectiveState {
      * Get current V of patch intercept
      */
     double getPatchV();
+    /**
+     * Light level cache
+     * @param index of light level (0-3)
+     */
+    LightLevels getCachedLightLevels(int idx);
 }

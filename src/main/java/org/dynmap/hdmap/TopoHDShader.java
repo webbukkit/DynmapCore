@@ -10,7 +10,7 @@ import org.dynmap.DynmapCore;
 import org.dynmap.Log;
 import org.dynmap.utils.MapChunkCache;
 import org.dynmap.utils.MapIterator;
-import org.dynmap.utils.MapIterator.BlockStep;
+import org.dynmap.utils.BlockStep;
 import org.json.simple.JSONObject;
 
 public class TopoHDShader implements HDShader {

@@ -13,7 +13,7 @@ import java.util.Map;
 
 import org.dynmap.ConfigurationNode;
 import org.dynmap.Log;
-import org.dynmap.utils.MapIterator.BlockStep;
+import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.Vector3D;
 
 /**

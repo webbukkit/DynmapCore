@@ -23,12 +23,13 @@ import org.dynmap.MapType;
 import org.dynmap.MapType.ImageFormat;
 import org.dynmap.TileHashManager;
 import org.dynmap.debug.Debug;
-import org.dynmap.utils.MapIterator.BlockStep;
+import org.dynmap.utils.BlockStep;
 import org.dynmap.hdmap.HDBlockModels.HDPatchDefinition;
 import org.dynmap.hdmap.TexturePack.BlockTransparency;
 import org.dynmap.hdmap.TexturePack.HDTextureMap;
 import org.dynmap.utils.DynmapBufferedImage;
 import org.dynmap.utils.FileLockManager;
+import org.dynmap.utils.LightLevels;
 import org.dynmap.utils.MapChunkCache;
 import org.dynmap.utils.MapIterator;
 import org.dynmap.utils.Matrix3D;
@@ -80,7 +81,8 @@ public class IsoHDPerspective implements HDPerspective {
     private enum ChestData {
         SINGLE_WEST, SINGLE_SOUTH, SINGLE_EAST, SINGLE_NORTH, LEFT_WEST, LEFT_SOUTH, LEFT_EAST, LEFT_NORTH, RIGHT_WEST, RIGHT_SOUTH, RIGHT_EAST, RIGHT_NORTH
     };
-    
+    private static final BlockStep [] semi_steps = { BlockStep.Y_PLUS, BlockStep.X_MINUS, BlockStep.X_PLUS, BlockStep.Z_MINUS, BlockStep.Z_PLUS };
+
     private class OurPerspectiveState implements HDPerspectiveState {
         int blocktypeid = 0;
         int blockdata = 0;
@@ -135,6 +137,7 @@ public class IsoHDPerspective implements HDPerspective {
         boolean skiptoair;
         int worldheight;
         int heightmask;
+        LightLevels llcache[];
 
         public OurPerspectiveState(MapIterator mi, boolean isnether) {
             mapiter = mi;
@@ -143,13 +146,14 @@ public class IsoHDPerspective implements HDPerspective {
             int shift;
             for(shift = 0; (1<<shift) < worldheight; shift++) {}
             heightmask = (1<<shift) - 1;
+            llcache = new LightLevels[4];
+            for(int i = 0; i < llcache.length; i++)
+                llcache[i] = new LightLevels();
         }
-        private final LightLevels updateSemitransparentLight() {
-    		BlockStep [] steps = { BlockStep.Y_PLUS, BlockStep.X_MINUS, BlockStep.X_PLUS, 
-    				BlockStep.Z_MINUS, BlockStep.Z_PLUS };
+        private final void updateSemitransparentLight(LightLevels ll) {
         	int emitted = 0, sky = 0;
-        	for(int i = 0; i < steps.length; i++) {
-        	    BlockStep s = steps[i];
+        	for(int i = 0; i < semi_steps.length; i++) {
+        	    BlockStep s = semi_steps[i];
         		mapiter.stepPosition(s);
         		int v = mapiter.getBlockEmittedLight();
         		if(v > emitted) emitted = v;
@@ -157,65 +161,68 @@ public class IsoHDPerspective implements HDPerspective {
         		if(v > sky) sky = v;
         		mapiter.unstepPosition(s);
         	}
-        	return new LightLevels(sky,emitted);
+        	ll.sky = sky;
+        	ll.emitted = emitted;
         }
         /**
          * Update sky and emitted light 
          */
-        private final LightLevels updateLightLevel(int blktypeid) {
-            LightLevels ll;
+        private final void updateLightLevel(int blktypeid, LightLevels ll) {
             /* Look up transparency for current block */
             BlockTransparency bt = HDTextureMap.getTransparency(blktypeid);
             switch(bt) {
             	case TRANSPARENT:
-            		ll = new LightLevels( mapiter.getBlockSkyLight(), mapiter.getBlockEmittedLight());
+            		ll.sky = mapiter.getBlockSkyLight();
+            		ll.emitted = mapiter.getBlockEmittedLight();
             		break;
             	case OPAQUE:
         			if(HDTextureMap.getTransparency(lastblocktypeid) != BlockTransparency.SEMITRANSPARENT) {
                 		mapiter.unstepPosition(laststep);  /* Back up to block we entered on */
                 		if(mapiter.getY() < worldheight) {
-                			ll = new LightLevels(mapiter.getBlockSkyLight(), mapiter.getBlockEmittedLight());
+                		    ll.sky = mapiter.getBlockSkyLight();
+                		    ll.emitted = mapiter.getBlockEmittedLight();
                 		} else {
-                		    ll = new LightLevels(15, 0);
+                		    ll.sky = 15;
+                		    ll.emitted = 0;
                 		}
                 		mapiter.stepPosition(laststep);
         			}
         			else {
                 		mapiter.unstepPosition(laststep);  /* Back up to block we entered on */
-                		ll = updateSemitransparentLight();
+                		updateSemitransparentLight(ll);
                 		mapiter.stepPosition(laststep);
         			}
         			break;
             	case SEMITRANSPARENT:
-            		ll = updateSemitransparentLight();
+            		updateSemitransparentLight(ll);
             		break;
         		default:
-                    ll = new LightLevels( mapiter.getBlockSkyLight(), mapiter.getBlockEmittedLight());
+                    ll.sky = mapiter.getBlockSkyLight();
+                    ll.emitted = mapiter.getBlockEmittedLight();
                     break;
             }
-            return ll;
         }
         /**
          * Get light level - only available if shader requested it
          */
-        public final LightLevels getLightLevels() {
-            return updateLightLevel(blocktypeid);
+        public final void getLightLevels(LightLevels ll) {
+            updateLightLevel(blocktypeid, ll);
         }
         /**
          * Get sky light level - only available if shader requested it
          */
-        public final LightLevels  getLightLevelsAtStep(BlockStep step) {
+        public final void getLightLevelsAtStep(BlockStep step, LightLevels ll) {
             if(((step == BlockStep.Y_MINUS) && (y == 0)) ||
                     ((step == BlockStep.Y_PLUS) && (y == worldheight))) {
-                return getLightLevels();
+                getLightLevels(ll);
+                return;
             }
             BlockStep blast = laststep;
             mapiter.stepPosition(step);
             laststep = blast;
-            LightLevels ll = updateLightLevel(mapiter.getBlockTypeID());
+            updateLightLevel(mapiter.getBlockTypeID(), ll);
             mapiter.unstepPosition(step);
             laststep = blast;
-            return ll;
         }
         /**
          * Get current block type ID
@@ -1063,6 +1070,13 @@ public class IsoHDPerspective implements HDPerspective {
          */
         public double getPatchV() {
             return cur_patch_v;
+        }
+        /**
+         * Light level cache
+         * @param index of light level (0-3)
+         */
+        public final LightLevels getCachedLightLevels(int idx) {
+            return llcache[idx];
         }
     }
     

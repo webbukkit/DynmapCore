@@ -5,7 +5,7 @@ import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapCore;
 import org.dynmap.DynmapWorld;
 import org.dynmap.utils.MapIterator;
-import org.dynmap.utils.MapIterator.BlockStep;
+import org.dynmap.utils.BlockStep;
 
 public class CaveTileRenderer extends DefaultTileRenderer {
 	private boolean iflit;

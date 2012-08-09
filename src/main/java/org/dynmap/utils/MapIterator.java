@@ -6,28 +6,6 @@ import org.dynmap.common.BiomeMap;
  * Iterator for traversing map chunk cache (base is for non-snapshot)
  */
 public interface MapIterator {
-    /* Represents last step of movement of the ray (don't alter order here - ordinal sensitive) */
-    public enum BlockStep {
-        X_PLUS,
-        Y_PLUS,
-        Z_PLUS,
-        X_MINUS,
-        Y_MINUS,
-        Z_MINUS;
-        
-        private BlockStep op;
-        public BlockStep opposite() {
-            return op;
-        }
-        static {
-            X_PLUS.op = X_MINUS;
-            Y_PLUS.op = Y_MINUS;
-            Z_PLUS.op = Z_MINUS;
-            X_MINUS.op = X_PLUS;
-            Y_MINUS.op = Y_PLUS;
-            Z_MINUS.op = Z_PLUS;
-        }
-    };
     /**
      * Initialize iterator at given coordinates
      * 

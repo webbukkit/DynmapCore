@@ -26,7 +26,7 @@ import org.dynmap.DynmapCore;
 import org.dynmap.Log;
 import org.dynmap.MapManager;
 import org.dynmap.utils.DynmapBufferedImage;
-import org.dynmap.utils.MapIterator.BlockStep;
+import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.MapIterator;
 
 /**
