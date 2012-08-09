@@ -1615,7 +1615,11 @@ public class TexturePack {
                 break;
         }
         /* Read color from texture */
-        rslt.setARGB(texture[v*native_scale + u]);
+        try {
+            rslt.setARGB(texture[v*native_scale + u]);
+        } catch (ArrayIndexOutOfBoundsException aioobx) {
+            rslt.setARGB(0);
+        }
 
         int clrmult = -1;
         /* Switch based on texture modifier */
