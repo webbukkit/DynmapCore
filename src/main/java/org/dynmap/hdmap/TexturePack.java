@@ -1454,8 +1454,11 @@ public class TexturePack {
             try {
                 rslt.setARGB(texture[v*native_scale + u]);
             } catch(ArrayIndexOutOfBoundsException aoobx) {
-                Log.info("U=" + u + ",V=" + v + ",textid=" + textid + ",patchid=" + patchid + ".native_scale="+native_scale+",txtlen=" + texture.length);
-                Log.info("patchU=" + ps.getPatchU() + ",patchV=" + ps.getPatchV());
+                u = ((u < 0) ? 0 : ((u >= native_scale) ? (native_scale-1) : u));
+                v = ((v < 0) ? 0 : ((v >= native_scale) ? (native_scale-1) : v));
+                try {
+                    rslt.setARGB(texture[v*native_scale + u]);
+                } catch(ArrayIndexOutOfBoundsException oob2) { }
             }
             
             return;            
