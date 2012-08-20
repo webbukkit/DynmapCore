@@ -105,7 +105,7 @@ public class TexturePack {
     private static final int TILEINDEX_AIRFRAME_EYE = 264;
     private static final int TILEINDEX_FIRE = 265;
     private static final int MAX_TILEINDEX = 265;  /* Index of last static tile definition */
-    private static final int TILETABLE_LEN = 1000;  /* Leave room for dynmaic tiles */
+    private static final int TILETABLE_LEN = 2000;  /* Leave room for dynmaic tiles */
 
     /* Indexes of faces in a CHEST format tile file */
     private static final int TILEINDEX_CHEST_TOP = 0;
