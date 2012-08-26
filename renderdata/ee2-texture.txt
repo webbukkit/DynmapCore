@@ -1,0 +1,43 @@
+# Equivalent Exchange 2 Block mapping
+# define ee2-support: true in configuration.txt to enable
+enabled:ee2-support
+# Variables - can be altered in configuration.txt
+var:ee2-BlockEEStone=126,ee2-BlockEEPedestal=127,ee2-BlockEEChest=128,ee2-BlockEETorch=129,ee2-BlockEEDevice=130
+# Files
+texturefile:id=blk,filename=ee/art/sprites/eqexterra.png,xcount=16,ycount=16
+texturefile:id=alchchest,filename=ee/art/sprites/alchchest.png,format=CHEST
+texturefile:id=condenser,filename=ee/art/sprites/condenser.png,format=CHEST
+# Alchemical Chest Chest (facing east)
+block:id=ee2-BlockEEChest,data=0,top=6000,east=3,south=1,north=2,west=4,bottom=6005,txtid=alchchest
+# Energy Condenser (facing east)
+block:id=ee2-BlockEEChest,data=1,top=6000,east=3,south=1,north=2,west=4,bottom=6005,txtid=condenser
+# Energy Collector (ee2-BlockEEStone:0)
+block:id=ee2-BlockEEStone,data=0,top=11,bottom=10,east=9,west=10,north=10,south=10,txtid=blk
+# Energy Collector Mk2 (ee2-BlockEEStone:1)
+block:id=ee2-BlockEEStone,data=1,top=21,bottom=10,east=9,west=10,north=10,south=10,txtid=blk
+# Energy Collector Mk3 (ee2-BlockEEStone:2)
+block:id=ee2-BlockEEStone,data=2,top=22,bottom=10,east=9,west=10,north=10,south=10,txtid=blk
+# Dark Matter Furnace (ee2-BlockEEStone:3)
+block:id=ee2-BlockEEStone,data=3,topbottom=13,east=12,west=13,north=13,south=13,txtid=blk
+# Red Matter Furnace (ee2-BlockEEStone:4)
+block:id=ee2-BlockEEStone,data=4,topbottom=15,east=14,west=15,north=15,south=15,txtid=blk
+# Antimatter Array (ee2-BlockEEStone:5)
+block:id=ee2-BlockEEStone,data=5,top=8,bottom=7,east=6,west=7,north=7,south=7,txtid=blk
+# Antimatter Array Mk2 (ee2-BlockEEStone:6)
+block:id=ee2-BlockEEStone,data=6,top=23,bottom=7,east=6,west=7,north=7,south=7,txtid=blk
+# Antimatter Array Mk3 (ee2-BlockEEStone:7)
+block:id=ee2-BlockEEStone,data=7,top=24,bottom=7,east=6,west=7,north=7,south=7,txtid=blk
+# Dark Matter Block (ee2-BlockEEStone:8)
+block:id=ee2-BlockEEStone,data=8,allfaces=13,txtid=blk
+# Red Matter Block (ee2-BlockEEStone:9)
+block:id=ee2-BlockEEStone,data=9,allfaces=15,txtid=blk
+# Nova Catalyst (ee2-BlockEEStone:10)
+block:id=ee2-BlockEEStone,data=10,top=19,bottom=20,allsides=17,txtid=blk
+# Nova Cataclysm (ee2-BlockEEStone:11)
+block:id=ee2-BlockEEStone,data=11,top=19,bottom=20,allsides=18,txtid=blk
+# Transmutation Tablet (ee2-BlockEEDevice:0)
+block:id=ee2-BlockEEDevice,data=0,top=27,bottom=26,allsides=25,txtid=blk,transparency=TRANSPARENT
+# Interdiction Torch (ee2-BlockEETorch:0)
+block:id=ee2-BlockEETorch,data=1,data=2,data=3,data=4,data=5,patch0-4=16,transparency=TRANSPARENT,txtid=blk
+# Pedistal (ee2-BlockEEPedistal)
+block:id=ee2-BlockEEPedestal,data=*,allfaces=13,txtid=blk,transparency=TRANSPARENT
