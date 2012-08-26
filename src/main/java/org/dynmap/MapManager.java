@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -552,6 +553,8 @@ public class MapManager {
                 for(int i = 0; i < rslt.size(); i++) {
                     try {
                         notdone = notdone && rslt.get(i).get();
+                    } catch (CancellationException cx) {
+                        notdone = false;
                     } catch (ExecutionException xx) {
                         Log.severe(xx);
                         notdone = false;
@@ -696,6 +699,8 @@ public class MapManager {
             });
             try {
                 f.get();
+            } catch (CancellationException cx) {
+                return;
             } catch (Exception ix) {
                 Log.severe(ix);
             }
