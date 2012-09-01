@@ -62,6 +62,13 @@ shaders:
   - class: org.dynmap.hdmap.TexturePackHDShader
     name: stdtexture
     texturepack: standard
+
+  # Standard texture cave view shader
+  - class: org.dynmap.hdmap.TexturePackHDCaveShader
+    name: stdtexture-cave
+    texturepack: standard
+    max-sky-light: 0
+    min-emitted-light: 1
     
   # Texture pack based shader for standard Minecraft textures, without biome-tinted grass/leaves
   - class: org.dynmap.hdmap.TexturePackHDShader

@@ -78,7 +78,7 @@ public class TexturePackHDShader implements HDShader {
         final boolean do_biome_shading;
         final boolean do_better_grass;
         
-        private ShaderState(MapIterator mapiter, HDMap map, MapChunkCache cache) {
+        protected ShaderState(MapIterator mapiter, HDMap map, MapChunkCache cache) {
             this.mapiter = mapiter;
             this.map = map;
             this.lighting = map.getLighting();

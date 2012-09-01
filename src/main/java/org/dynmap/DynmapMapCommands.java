@@ -472,7 +472,7 @@ public class DynmapMapCommands {
                     sender.sendMessage("Invalid mapzoomin value: " + tok[1]);
                     return true;
                 }
-                did_update |= mt.setTitle(tok[1]);
+                did_update |= mt.setMapZoomIn(mzi);
             }
             else if(tok[0].equalsIgnoreCase("perspective")) {
                 if(MapManager.mapman != null) {
