@@ -33,6 +33,7 @@
 .dynmap legend {
     padding: 8px 4px;
     font-weight: bold;
+	color: #fff;
 }
 
 .leaflet-control-layers {
@@ -271,6 +272,8 @@
 
 .digitalclock {
 	text-align: center;
+	font-size: 20px;
+	font-weight:bold;
 }
 
 .digitalclock.night {
@@ -323,7 +326,7 @@
 
 .timeofday.digitalclock {
 	position: relative;
-	bottom: 16px;
+	bottom: 25px;
 }
 
 /*******************
@@ -332,31 +335,50 @@
 
 .weather {
     position: absolute;
-    top: 17px;
-    right: 5px;
-    width: 25px;
-    height: 23px;
+    top: 5px;
+    right: 0px;
+    width: 32px;
+    height: 32px;
     display: block;
     background-repeat: no-repeat;
 }
 
-.weather.sunny {
-    background-image: url(../images/weather_sunny.png);
+.weather.sunny_day {
+    background-image: url(../images/weather_sunny_day.png);
 }
 
-.weather.stormy {
-    background-image: url(../images/weather_stormy.png);
+.weather.stormy_day {
+    background-image: url(../images/weather_stormy_day.png);
 }
-.weather .thunder {
+.weather .thunder_day {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
-    width: 25px;
-    height: 25px;
+    width: 32px;
+    height: 32px;
     display: none;
     background-repeat: no-repeat;
-    background-image: url(../images/weather_thunder.png);
+    background-image: url(../images/weather_thunder_day.png);
+}
+
+.weather.sunny_night {
+    background-image: url(../images/weather_sunny_night.png);
+}
+
+.weather.stormy_night {
+    background-image: url(../images/weather_stormy_night.png);
+}
+.weather .thunder_night {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 32px;
+    height: 32px;
+    display: none;
+    background-repeat: no-repeat;
+    background-image: url(../images/weather_thunder_night.png);
 }
 
 /*******************
