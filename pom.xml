@@ -6,6 +6,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<BUILD_NUMBER>dev</BUILD_NUMBER>
+		<nbtVersion>1.0.5-SNAPSHOT</nbtVersion>
 	</properties>
 	<version>0.90</version>
 	<url>http://github.com/webbukkit/DynmapCore/</url>
@@ -58,8 +59,15 @@
 								<includes>
 									<include>org.eclipse.jetty:jetty-*:jar:*</include>
 									<include>org.eclipse.jetty.orbit:javax.servlet:jar:*</include>
+									<include>org.spout:simplenbt:jar:*</include>
 								</includes>
 							</artifactSet>
+           					<relocations>
+               					<relocation>
+               						<pattern>org.spout.nbt</pattern>
+               						<shadedPattern>org.dynmap.nbt</shadedPattern>
+               					</relocation>
+           					</relocations>							
 							<filters>
 <filter>
 <artifact>*</artifact>
@@ -136,6 +144,11 @@
 			<groupId>org.eclipse.jetty.orbit</groupId>
 			<artifactId>javax.servlet</artifactId>
 			<version>3.0.0.v201112011016</version>
+		</dependency>
+		<dependency>
+			<groupId>org.spout</groupId>
+			<artifactId>simplenbt</artifactId>
+			<version>${nbtVersion}</version>
 		</dependency>
 	</dependencies>
 </project>
