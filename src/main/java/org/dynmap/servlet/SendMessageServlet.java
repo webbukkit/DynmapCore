@@ -81,19 +81,22 @@ public class SendMessageServlet extends HttpServlet {
 
             final Message message = new Message();
 
-            if(userID.equals(LoginServlet.USERID_GUEST)) {
+            if (userID.equals(LoginServlet.USERID_GUEST)) {
                 message.name = "";
-                if(trustclientname) {
+                if (trustclientname) {
                     message.name = String.valueOf(o.get("name"));
                 }
                 boolean isip = true;
-                if((message.name == null) || message.name.equals("")) {
-                    /* If proxied client address, get original */
-                    if(request.getHeader("X-Forwarded-For") != null)
-                        message.name = request.getHeader("X-Forwarded-For");
+                if ((message.name == null) || message.name.equals("")) {
                     /* If from loopback, we're probably getting from proxy - need to trust client */
-                    else if(request.getRemoteAddr() == "127.0.0.1")
-                        message.name = String.valueOf(o.get("name"));
+                    if (request.getRemoteAddr().equals("127.0.0.1")) {
+                        /* If proxied client address, get original IP */
+                        if (request.getHeader("X-Forwarded-For") != null) {
+                            message.name = request.getHeader("X-Forwarded-For");
+                        } else {
+                            message.name = String.valueOf(o.get("name"));
+                        }
+                    }
                     else
                         message.name = request.getRemoteAddr();
                 }
