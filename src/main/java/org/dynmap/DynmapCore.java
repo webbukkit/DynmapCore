@@ -251,10 +251,13 @@ public class DynmapCore {
     }
 
     public boolean enableCore() {
-        return enableCore(null);
+        boolean rslt = initConfiguration(null);
+        if (rslt)
+            rslt = enableCore(null);
+        return rslt;
     }
-    
-    public boolean enableCore(EnableCoreCallbacks cb) {
+
+    public boolean initConfiguration(EnableCoreCallbacks cb) {
         /* Start with clean events */
         events = new Events();
         /* Default to being unprotected - set to protected by update components */
@@ -272,10 +275,18 @@ public class DynmapCore {
         /* Load configuration.txt */
         configuration = new ConfigurationNode(f);
         configuration.load();
+        /* Register API with plugin, if needed */
+        if(!markerAPIInitialized()) {
+            MarkerAPIImpl api = MarkerAPIImpl.initializeMarkerAPI(this);
+            this.registerMarkerAPI(api);
+        }
         /* Call back to plugin to report that configuration is available */
         if(cb != null)
             cb.configurationLoaded();
-        
+        return true;
+    }
+
+    public boolean enableCore(EnableCoreCallbacks cb) {
         /* Initialize authorization manager */
         if(configuration.getBoolean("login-enabled", false))
             authmgr = new WebAuthManager(this);
@@ -316,7 +327,7 @@ public class DynmapCore {
         TexturePack.loadTextureMapping(dataDirectory, configuration);
         
         /* Now, process worlds.txt - merge it in as an override of existing values (since it is only user supplied values) */
-        f = new File(dataDirectory, "worlds.txt");
+        File f = new File(dataDirectory, "worlds.txt");
         if(!createDefaultFileFromResource("/worlds.txt", f)) {
             return false;
         }
