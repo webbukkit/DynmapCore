@@ -49,7 +49,6 @@ public class HDBlockModels {
                 }
                 m = modelvectors[blocktype];
             } catch (ArrayIndexOutOfBoundsException aioobx) {
-                Log.info("Exception: " + blocktype + "," + blockdata + "," + blockrenderdata);
                 short[][][] newmodels = new short[blocktype+1][][];
                 System.arraycopy(modelvectors, 0, newmodels, 0, modelvectors.length);
                 modelvectors = newmodels;
