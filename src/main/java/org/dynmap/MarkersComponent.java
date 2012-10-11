@@ -10,16 +10,16 @@ import org.dynmap.common.DynmapListenerManager.WorldEventListener;
 import org.dynmap.common.DynmapListenerManager.PlayerEventListener;
 import org.dynmap.common.DynmapPlayer;
 import org.dynmap.markers.Marker;
+import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerIcon;
 import org.dynmap.markers.MarkerSet;
-import org.dynmap.markers.impl.MarkerAPIImpl;
 import org.dynmap.markers.impl.MarkerSignManager;
 
 /**
  * Markers component - ties in the component system, both on the server and client
  */
 public class MarkersComponent extends ClientComponent {
-    private MarkerAPIImpl api;
+    private MarkerAPI api;
     private MarkerSignManager signmgr;
     private MarkerIcon spawnicon;
     private String spawnlbl;
@@ -35,14 +35,9 @@ public class MarkersComponent extends ClientComponent {
     
     public MarkersComponent(final DynmapCore core, ConfigurationNode configuration) {
         super(core, configuration);
-        /* Register API with plugin, if needed */
-        if(core.markerAPIInitialized()) {
-            api = (MarkerAPIImpl)core.getMarkerAPI();
-        }
-        else {
-            api = MarkerAPIImpl.initializeMarkerAPI(core);
-            core.registerMarkerAPI(api);
-        }
+        
+        api = core.getMarkerAPI();
+        
         /* If configuration has enabled sign support, prime it too */
         if(configuration.getBoolean("enablesigns", false)) {
             signmgr = MarkerSignManager.initializeSignManager(core);

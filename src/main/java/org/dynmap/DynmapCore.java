@@ -275,6 +275,13 @@ public class DynmapCore {
         /* Load configuration.txt */
         configuration = new ConfigurationNode(f);
         configuration.load();
+
+        /* Prime the tiles directory */
+        tilesDirectory = getFile(configuration.getString("tilespath", "web/tiles"));
+        if (!tilesDirectory.isDirectory() && !tilesDirectory.mkdirs()) {
+            Log.warning("Could not create directory for tiles ('" + tilesDirectory + "').");
+        }
+        
         /* Register API with plugin, if needed */
         if(!markerAPIInitialized()) {
             MarkerAPIImpl api = MarkerAPIImpl.initializeMarkerAPI(this);
@@ -344,10 +351,6 @@ public class DynmapCore {
         
         loadDebuggers();
 
-        tilesDirectory = getFile(configuration.getString("tilespath", "web/tiles"));
-        if (!tilesDirectory.isDirectory() && !tilesDirectory.mkdirs()) {
-            Log.warning("Could not create directory for tiles ('" + tilesDirectory + "').");
-        }
 
         playerList = new PlayerList(getServer(), getFile("hiddenplayers.txt"), configuration);
         playerList.load();
