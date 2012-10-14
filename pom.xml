@@ -60,12 +60,22 @@
 									<include>org.eclipse.jetty:jetty-*:jar:*</include>
 									<include>org.eclipse.jetty.orbit:javax.servlet:jar:*</include>
 									<include>org.spout:simplenbt:jar:*</include>
+									<include>com.googlecode.json-simple:json-simple:*</include>
+									<include>org.yaml:snakeyaml:*</include>
 								</includes>
 							</artifactSet>
            					<relocations>
                					<relocation>
                						<pattern>org.spout.nbt</pattern>
                						<shadedPattern>org.dynmap.nbt</shadedPattern>
+               					</relocation>
+               					<relocation>
+               						<pattern>org.json.simple</pattern>
+               						<shadedPattern>org.dynmap.json.simple</shadedPattern>
+               					</relocation>
+               					<relocation>
+               						<pattern>org.yaml.snakeyaml</pattern>
+               						<shadedPattern>org.dynmap.snakeyaml</shadedPattern>
                					</relocation>
            					</relocations>							
 							<filters>
