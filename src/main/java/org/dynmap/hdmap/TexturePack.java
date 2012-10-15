@@ -1379,11 +1379,16 @@ public class TexturePack {
                     }
                 }
                 else if(line.startsWith("modname:")) {
-                    String n = line.substring(8).trim();
-                    if(core.getServer().isModLoaded(n) == false) {
-                        return;
+                    String[] names = line.substring(8).split(",");
+                    boolean found = false;
+                    for(String n : names) {
+                        if(core.getServer().isModLoaded(n.trim()) == true) {
+                            found = true;
+                            Log.info(n + " models enabled");
+                            break;
+                        }
                     }
-                    Log.info(n + " textures enabled");
+                    if(!found) return;
                 }
             }
             Log.verboseinfo("Loaded " + cnt + " texture mappings from " + txtname);

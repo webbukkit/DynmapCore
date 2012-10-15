@@ -1001,11 +1001,16 @@ public class HDBlockModels {
                     }
                 }
                 else if(line.startsWith("modname:")) {
-                    String n = line.substring(8).trim();
-                    if(core.getServer().isModLoaded(n) == false) {
-                        return;
+                    String[] names = line.substring(8).split(",");
+                    boolean found = false;
+                    for(String n : names) {
+                        if(core.getServer().isModLoaded(n.trim()) == true) {
+                            found = true;
+                            Log.info(n + " models enabled");
+                            break;
+                        }
                     }
-                    Log.info(n + " models enabled");
+                    if(!found) return;
                 }
                 else if(layerbits != 0) {   /* If we're working pattern lines */
                     /* Layerbits determine Y, rows count from North to South (X=0 to X=N-1), columns Z are West to East (N-1 to 0) */
