@@ -14,6 +14,7 @@ import java.util.Map;
 import org.dynmap.ConfigurationNode;
 import org.dynmap.Log;
 import org.dynmap.utils.BlockStep;
+import org.dynmap.utils.ForgeConfigFile;
 import org.dynmap.utils.Vector3D;
 
 /**
@@ -825,6 +826,16 @@ public class HDBlockModels {
                             Log.severe("Format error - line " + rdr.getLineNumber() + " of " + fname);
                             return;
                         }
+                    }
+                }
+                else if(line.startsWith("cfgfile:")) { /* If config file */
+                    File cfgfile = new File(line.substring(8).trim());
+                    ForgeConfigFile cfg = new ForgeConfigFile(cfgfile);
+                    if(cfg.load()) {
+                        cfg.addBlockIDs(varvals);
+                    }
+                    else {
+                        Log.severe("Error loading configuration file : " + cfgfile.getPath());
                     }
                 }
                 else if(line.startsWith("patch:")) {

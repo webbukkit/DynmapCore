@@ -1,9 +1,8 @@
 # Railcraft Block mapping
 # define railcraft-support: true in configuration.txt to enable
 enabled:railcraft-support
-# variables: set in configuration.txt to override
-var:railcraft-detectorBlock=202,railcraft-utilityBlock=204,railcraft-railAdvBlock=205,
-var:railcraft-elevatorBlock=207,railcraft-structureBlock=208
+# configuration file
+cfgfile:config/railcraft/railcraft.cfg
 
 # Horizontal patch - Y+ facing at Y=0.01, top of texture at +Z
 patch:id=HorizY001ZTop,Ox=0.0,Oy=0.01,Oz=0.0,Ux=1.0,Uy=0.01,Uz=0.0,Vx=0.0,Vy=0.01,Vz=1.0
@@ -13,30 +12,30 @@ patch:id=SlopeXUpZTop,Ox=0.0,Oy=0.0,Oz=0.0,Ux=0.0,Uy=0.0,Uz=1.0,Vx=1.0,Vy=1.0,Vz
 patch:id=VertX0,Ox=0.0,Oy=0.0,Oz=1.0,Ux=0.0,Uy=0.0,Uz=0.0,Vx=0.0,Vy=1.0,Vz=1.0,visibility=top
 
 # Elevator rail - east facing
-patchblock:id=railcraft-elevatorBlock,data=2,data=10,patch0=VertX0@270
+patchblock:id=block.elevator,data=2,data=10,patch0=VertX0@270
 # Elevator block - west facing
-patchblock:id=railcraft-elevatorBlock,data=3,data=11,patch0=VertX0@90
+patchblock:id=block.elevator,data=3,data=11,patch0=VertX0@90
 # Elevator block - north facing
-patchblock:id=railcraft-elevatorBlock,data=4,data=12,patch0=VertX0@180
+patchblock:id=block.elevator,data=4,data=12,patch0=VertX0@180
 # Elevator block - south facing
-patchblock:id=railcraft-elevatorBlock,data=5,data=13,patch0=VertX0
+patchblock:id=block.elevator,data=5,data=13,patch0=VertX0
 # Advamced Rails - use same model as rails
-patchblock:id=railcraft-railAdvBlock,data=0,patch0=HorizY001ZTop
-patchblock:id=railcraft-railAdvBlock,data=1,patch0=HorizY001ZTop@90
-patchblock:id=railcraft-railAdvBlock,data=2,patch0=SlopeXUpZTop
-patchblock:id=railcraft-railAdvBlock,data=3,patch0=SlopeXUpZTop@180
-patchblock:id=railcraft-railAdvBlock,data=4,patch0=SlopeXUpZTop@270
-patchblock:id=railcraft-railAdvBlock,data=5,patch0=SlopeXUpZTop@90
-patchblock:id=railcraft-railAdvBlock,data=6,patch0=HorizY001ZTop@90
-patchblock:id=railcraft-railAdvBlock,data=7,patch0=HorizY001ZTop@180
-patchblock:id=railcraft-railAdvBlock,data=8,patch0=HorizY001ZTop@270
-patchblock:id=railcraft-railAdvBlock,data=9,patch0=HorizY001ZTop
+patchblock:id=block.track,data=0,patch0=HorizY001ZTop
+patchblock:id=block.track,data=1,patch0=HorizY001ZTop@90
+patchblock:id=block.track,data=2,patch0=SlopeXUpZTop
+patchblock:id=block.track,data=3,patch0=SlopeXUpZTop@180
+patchblock:id=block.track,data=4,patch0=SlopeXUpZTop@270
+patchblock:id=block.track,data=5,patch0=SlopeXUpZTop@90
+patchblock:id=block.track,data=6,patch0=HorizY001ZTop@90
+patchblock:id=block.track,data=7,patch0=HorizY001ZTop@180
+patchblock:id=block.track,data=8,patch0=HorizY001ZTop@270
+patchblock:id=block.track,data=9,patch0=HorizY001ZTop
 
-# (railcraft-structureBlock:0) iron post
-block:id=railcraft-structureBlock,data=0,scale=16
+# (block.structure:0) iron post
+block:id=block.structure,data=0,scale=16
 rotate:id=85,data=0,rot=0
-# (railcraft-structureBlock:1) dual head block signal
-block:id=railcraft-structureBlock,data=1,scale=16
+# (block.structure:1) dual head block signal
+block:id=block.structure,data=1,scale=16
 layer:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
 ----------------
 ----------------
@@ -54,9 +53,9 @@ layer:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
 ----------------
 ----------------
 ----------------
-# (railcraft-structureBlock:2) switch motor
-# (railcraft-structureBlock:4) switch lever
-block:id=railcraft-structureBlock,data=2,data=4,scale=16
+# (block.structure:2) switch motor
+# (block.structure:4) switch lever
+block:id=block.structure,data=2,data=4,scale=16
 layer:0,1,2
 ------****------
 ------****------
@@ -127,9 +126,9 @@ layer:8,9,10
 ----------------
 ----------------
 ----------------
-# (railcraft-structureBlock:3) signal light
-# (railcraft-structureBlock:10) distant signal light
-block:id=railcraft-structureBlock,data=3,data=10,scale=16
+# (block.structure:3) signal light
+# (block.structure:10) distant signal light
+block:id=block.structure,data=3,data=10,scale=16
 layer:0,1,2,3,4
 ----------------
 ----------------
@@ -164,11 +163,11 @@ layer:5,6,7,8,9,10,11,12,13,14
 ----------------
 ----------------
 ----------------
-# (railcraft-structureBlock:5) wood post
-block:id=railcraft-structureBlock,data=5,scale=16
+# (block.structure:5) wood post
+block:id=block.structure,data=5,scale=16
 rotate:id=85,data=0,rot=0
-# (railcraft-structureBlock:6) stone post
-block:id=railcraft-structureBlock,data=6,scale=16
+# (block.structure:6) stone post
+block:id=block.structure,data=6,scale=16
 layer:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
 ----------------
 ----------------
@@ -186,9 +185,9 @@ layer:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
 ----------------
 ----------------
 ----------------
-# (railcraft-structureBlock:8) signal box receiver
-# (railcraft-structureBlock:9) signal box controller
-block:id=railcraft-structureBlock,data=8,data=9,scale=16
+# (block.structure:8) signal box receiver
+# (block.structure:9) signal box controller
+block:id=block.structure,data=8,data=9,scale=16
 layer:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
 ----------------
 ----------------

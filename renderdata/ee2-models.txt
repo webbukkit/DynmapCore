@@ -1,8 +1,8 @@
 # Equivalent Exchange 2 Block mapping
 # define ee2-support: true in configuration.txt to enable
 enabled:ee2-support
-# Variables - can be altered in configuration.txt
-var:ee2-BlockEEStone=126,ee2-BlockEEPedestal=127,ee2-BlockEEChest=128,ee2-BlockEETorch=129,ee2-BlockEEDevice=130
+# configuration file
+cfgfile:mod_EE.props
 
 # Torch slanted side - vertical, shifted to side and up (x=-0.5,y=0.2) and slanted out (Y offset by 0.4)
 patch:id=TorchSide1,Ox=-0.5,Oy=0.2,Oz=0.4375,Ux=0.5,Uy=0.2,Uz=0.4375,Vx=-0.1,Vy=1.2,Vz=0.4375,Vmax=0.8,visibility=bottom
@@ -15,31 +15,31 @@ patch:id=VertX04375,Ox=0.4375,Oy=0.0,Oz=0.0,Ux=0.4375,Uy=0.0,Uz=1.0,Vx=0.4375,Vy
 
 # Alchemist Chest - facing east
 # Condenser - facing east
-block:id=ee2-BlockEEChest,data=0,data=1,scale=16
+block:id=BlockEEChest,data=0,data=1,scale=16
 rotate:id=54,data=0,rot=180
-# Stone Models (ee2-BlockEEStone:*)
-block:id=ee2-BlockEEStone,data=*,scale=1
+# Stone Models (BlockEEStone:*)
+block:id=BlockEEStone,data=*,scale=1
 layer:0
 *
 # Interdiction Torch - up
-patchblock:id=ee2-BlockEETorch,data=5,data=0,patch0=VertX04375,patch1=VertX04375@90,patch2=VertX04375@180,patch3=VertX04375@270,patch4=TorchTop
+patchblock:id=BlockEETorch,data=5,data=0,patch0=VertX04375,patch1=VertX04375@90,patch2=VertX04375@180,patch3=VertX04375@270,patch4=TorchTop
 # Interdiction Torch - pointing south
-patchblock:id=ee2-BlockEETorch,data=1,patch0=TorchSide1,patch1=TorchSide2,patch2=TorchSide3,patch3=TorchSide4,patch4=TorchTopSlope@270
+patchblock:id=BlockEETorch,data=1,patch0=TorchSide1,patch1=TorchSide2,patch2=TorchSide3,patch3=TorchSide4,patch4=TorchTopSlope@270
 # Interdiction Torch - pointing north
-patchblock:id=ee2-BlockEETorch,data=2,patch0=TorchSide1@180,patch1=TorchSide2@180,patch2=TorchSide3@180,patch3=TorchSide4@180,patch4=TorchTopSlope@90
+patchblock:id=BlockEETorch,data=2,patch0=TorchSide1@180,patch1=TorchSide2@180,patch2=TorchSide3@180,patch3=TorchSide4@180,patch4=TorchTopSlope@90
 # Interdiction Torch - pointing west
-patchblock:id=ee2-BlockEETorch,data=3,patch0=TorchSide1@90,patch1=TorchSide2@90,patch2=TorchSide3@90,patch3=TorchSide4@90,patch4=TorchTopSlope
+patchblock:id=BlockEETorch,data=3,patch0=TorchSide1@90,patch1=TorchSide2@90,patch2=TorchSide3@90,patch3=TorchSide4@90,patch4=TorchTopSlope
 # Interdiction Torch - pointing east
-patchblock:id=ee2-BlockEETorch,data=4,patch0=TorchSide1@270,patch1=TorchSide2@270,patch2=TorchSide3@270,patch3=TorchSide4@270,patch4=TorchTopSlope@180
-# Transmutation Tablet (ee2-BlockEEDevice:0)
-block:id=ee2-BlockEEDevice,data=0,scale=4
+patchblock:id=BlockEETorch,data=4,patch0=TorchSide1@270,patch1=TorchSide2@270,patch2=TorchSide3@270,patch3=TorchSide4@270,patch4=TorchTopSlope@180
+# Transmutation Tablet (BlockEEDevice:0)
+block:id=BlockEEDevice,data=0,scale=4
 layer:0
 ****
 ****
 ****
 ****
-# Pedistal (ee2-BlockEEPedestal:*)
-block:id=ee2-BlockEEPedestal,data=*,scale=16
+# Pedistal (BlockEEPedestal:*)
+block:id=BlockEEPedestal,data=*,scale=16
 layer:0,1
 ----------------
 ----------------

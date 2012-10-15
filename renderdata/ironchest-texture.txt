@@ -1,8 +1,9 @@
 # Iron Chest Block mapping
 # define ironchest-support: true in configuration.txt to enable
 enabled:ironchest-support
-# variables: set in configuration.txt to override
-var:ironchest-ironChestsID=181
+# configuration file
+cfgfile:config/IronChest.cfg
+
 # Files
 texturefile:id=copper,filename=cpw/mods/ironchest/sprites/copperchest.png,format=CHEST
 texturefile:id=crystal,filename=cpw/mods/ironchest/sprites/crystalchest.png,format=CHEST
@@ -12,17 +13,17 @@ texturefile:id=iron,filename=cpw/mods/ironchest/sprites/ironchest.png,format=CHE
 texturefile:id=silver,filename=cpw/mods/ironchest/sprites/silverchest.png,format=CHEST
 # Blocks
 # Iron Chest - facing west
-block:id=ironchest-ironChestsID,data=0,top=6000,bottom=6005,south=2,north=1,east=4,west=3,txtid=iron
+block:id=ironChests,data=0,top=6000,bottom=6005,south=2,north=1,east=4,west=3,txtid=iron
 # Gold Chest - facing west
-block:id=ironchest-ironChestsID,data=1,top=6000,bottom=6005,south=2,north=1,east=4,west=3,txtid=gold
+block:id=ironChests,data=1,top=6000,bottom=6005,south=2,north=1,east=4,west=3,txtid=gold
 # Diamond Chest - facing west
-block:id=ironchest-ironChestsID,data=2,top=6000,bottom=6005,south=2,north=1,east=4,west=3,txtid=diamond
+block:id=ironChests,data=2,top=6000,bottom=6005,south=2,north=1,east=4,west=3,txtid=diamond
 # Copper Chest - facing west
-block:id=ironchest-ironChestsID,data=3,top=6000,bottom=6005,south=2,north=1,east=4,west=3,txtid=copper
+block:id=ironChests,data=3,top=6000,bottom=6005,south=2,north=1,east=4,west=3,txtid=copper
 # Silver Chest - facing west
-block:id=ironchest-ironChestsID,data=4,top=6000,bottom=6005,south=2,north=1,east=4,west=3,txtid=silver
+block:id=ironChests,data=4,top=6000,bottom=6005,south=2,north=1,east=4,west=3,txtid=silver
 # Crystal Chest - facing west
-block:id=ironchest-ironChestsID,data=5,top=6000,bottom=6005,south=2,north=1,east=4,west=3,txtid=crystal
+block:id=ironChests,data=5,top=6000,bottom=6005,south=2,north=1,east=4,west=3,txtid=crystal
 
 
 

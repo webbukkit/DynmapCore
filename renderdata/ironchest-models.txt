@@ -1,11 +1,11 @@
 # Iron Chest Block mapping
 # define ironchest-support: true in configuration.txt to enable
 enabled:ironchest-support
-# variables: set in configuration.txt to override
-var:ironchest-ironChestsID=181
+# configuration file
+cfgfile:config/IronChest.cfg
 
 # Chest - single, facing west
-block:id=ironchest-ironChestsID,data=0,data=1,data=2,data=3,data=4,data=5,scale=16
+block:id=ironChests,data=0,data=1,data=2,data=3,data=4,data=5,scale=16
 layer:0,1,2,3,4,5,6,7,12,13
 ----------------
 -**************-

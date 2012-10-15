@@ -27,6 +27,7 @@ import org.dynmap.Log;
 import org.dynmap.MapManager;
 import org.dynmap.utils.DynmapBufferedImage;
 import org.dynmap.utils.BlockStep;
+import org.dynmap.utils.ForgeConfigFile;
 import org.dynmap.utils.MapIterator;
 
 /**
@@ -1364,6 +1365,16 @@ public class TexturePack {
                             Log.severe("Format error - line " + rdr.getLineNumber() + " of " + txtname);
                             return;
                         }
+                    }
+                }
+                else if(line.startsWith("cfgfile:")) { /* If config file */
+                    File cfgfile = new File(line.substring(8).trim());
+                    ForgeConfigFile cfg = new ForgeConfigFile(cfgfile);
+                    if(cfg.load()) {
+                        cfg.addBlockIDs(varvals);
+                    }
+                    else {
+                        Log.severe("Error loading configuration file : " + cfgfile.getPath());
                     }
                 }
             }

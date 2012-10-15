@@ -1,30 +1,9 @@
 # Kaevalor's SuperSlopes Block mapping
 # define superslopes-support: true in configuration.txt to enable
 enabled:superslopes-support
-# variables: set in configuration.txt to override
-var:BlockKaevWoodCorners=182,BlockKaevCobblestoneCorners=183,BlockKaevGlassCorners=184,BlockKaevSandstoneCorners=185
-var:BlockKaevDirtCorners=186,BlockKaevStoneCorners=187,BlockKaevSandCorners=188,BlockKaevSnowCorners=189
-var:BlockKaevGrassCorners=190,BlockKaevBricksCorners=191,BlockKaevGravelCorners=192,BlockKaevGoldCorners=193
-var:BlockKaevSteelCorners=194,BlockKaevObsidianCorners=195,BlockKaevDiamondCorners=196,BlockKaevWhiteWoolCorners=0
-var:BlockKaevBlackWoolCorners=0,BlockKaevRedWoolCorners=0,BlockKaevGreenWoolCorners=0,BlockKaevBrownWoolCorners=0
-var:BlockKaevBlueWoolCorners=0,BlockKaevPurpleWoolCorners=0,BlockKaevCyanWoolCorners=0,BlockKaevSilverWoolCorners=0
-var:BlockKaevGrayWoolCorners=0,BlockKaevPinkWoolCorners=0,BlockKaevLimeWoolCorners=0,BlockKaevYellowWoolCorners=0
-var:BlockKaevLightBlueWoolCorners=0,BlockKaevMagentaWoolCorners=0,BlockKaevOrangeWoolCorners=0,BlockKaevWoodIntCorners=197
-var:BlockKaevCobblestoneIntCorners=198,BlockKaevGlassIntCorners=199,BlockKaevSandstoneIntCorners=200,BlockKaevDirtIntCorners=201
-var:BlockKaevStoneIntCorners=202,BlockKaevSandIntCorners=203,BlockKaevSnowIntCorners=204,BlockKaevGrassIntCorners=205
-var:BlockKaevBricksIntCorners=206,BlockKaevGravelIntCorners=207,BlockKaevGoldIntCorners=208,BlockKaevSteelIntCorners=209
-var:BlockKaevObsidianIntCorners=210,BlockKaevDiamondIntCorners=211,BlockKaevWhiteWoolIntCorners=0,BlockKaevBlackWoolIntCorners=0
-var:BlockKaevRedWoolIntCorners=0,BlockKaevGreenWoolIntCorners=0,BlockKaevBrownWoolIntCorners=0,BlockKaevBlueWoolIntCorners=0
-var:BlockKaevPurpleWoolIntCorners=0,BlockKaevCyanWoolIntCorners=0,BlockKaevSilverWoolIntCorners=0,BlockKaevGrayWoolIntCorners=0
-var:BlockKaevPinkWoolIntCorners=0,BlockKaevLimeWoolIntCorners=0,BlockKaevYellowWoolIntCorners=0,BlockKaevLightBlueWoolIntCorners=0
-var:BlockKaevMagentaWoolIntCorners=0,BlockKaevOrangeWoolIntCorners=0,BlockKaevWoodSlopes=167,BlockKaevCobblestoneSlopes=168
-var:BlockKaevGlassSlopes=169,BlockKaevSandstoneSlopes=170,BlockKaevDirtSlopes=171,BlockKaevStoneSlopes=172,BlockKaevSandSlopes=173
-var:BlockKaevSnowSlopes=174,BlockKaevGrassSlopes=175,BlockKaevBricksSlopes=176,BlockKaevGravelSlopes=177
-var:BlockKaevGoldSlopes=178,BlockKaevSteelSlopes=179,BlockKaevObsidianSlopes=180,BlockKaevDiamondSlopes=181
-var:BlockKaevWhiteWoolSlopes=215,BlockKaevBlackWoolSlopes=0,BlockKaevRedWoolSlopes=0,BlockKaevGreenWoolSlopes=0
-var:BlockKaevBrownWoolSlopes=0,BlockKaevBlueWoolSlopes=0,BlockKaevPurpleWoolSlopes=0,BlockKaevCyanWoolSlopes=0
-var:BlockKaevSilverWoolSlopes=0,BlockKaevGrayWoolSlopes=0,BlockKaevPinkWoolSlopes=0,BlockKaevLimeWoolSlopes=0
-var:BlockKaevYellowWoolSlopes=0,BlockKaevLightBlueWoolSlopes=0,BlockKaevMagentaWoolSlopes=0,BlockKaevOrangeWoolSlopes=0
+# configuration file
+cfgfile:config/KaevatorSuperSlopes.props
+
 # Wood slopes, corners
 block:id=BlockKaevWoodSlopes,id=BlockKaevWoodCorners,id=BlockKaevWoodIntCorners,data=*,patch0-6=4,transparency=TRANSPARENT
 # Cobblestone slopes, corners
