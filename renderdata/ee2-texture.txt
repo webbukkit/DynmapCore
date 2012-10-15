@@ -1,6 +1,5 @@
 # Equivalent Exchange 2 Block mapping
-# define ee2-support: true in configuration.txt to enable
-enabled:ee2-support
+modname:mod_EE
 # configuration file
 cfgfile:mod_EE.props
 

@@ -1,6 +1,5 @@
 # Kaevalor's SuperSlopes Block models
-# define superslopes-support: true in configuration.txt to enable
-enabled:superslopes-support
+modname:mod_Kaevator_Slopes
 # configuration file
 cfgfile:config/KaevatorSuperSlopes.props
 

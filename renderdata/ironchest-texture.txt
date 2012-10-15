@@ -1,6 +1,5 @@
 # Iron Chest Block mapping
-# define ironchest-support: true in configuration.txt to enable
-enabled:ironchest-support
+modname:mod_IronChest
 # configuration file
 cfgfile:config/IronChest.cfg
 

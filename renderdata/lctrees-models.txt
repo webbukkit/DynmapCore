@@ -1,6 +1,5 @@
 # LC Trees++ models
-# define lctrees-support: true in configuration.txt to enable
-enabled:lctrees-support
+modname:mod_LCTrees
 # Configuration file
 cfgfile:config/Trees++.cfg
 

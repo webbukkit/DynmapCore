@@ -1,6 +1,5 @@
 # Industrial Craft 2 Advanced Machines Block mapping
-# define ic2-advancedmachines-support: true in configuration.txt to enable
-enabled:ic2-advancedmachines-support
+modname:mod_IC2AdvancedMachines
 # configuration file
 cfgfile:config/IC2AdvancedMachine.cfg
 

@@ -1,6 +1,5 @@
 # Industrial Craft 2 Power Converters Block mapping
-# define ic2-powerconverters-support: true in configuration.txt to enable
-enabled:ic2-powerconverters-support
+modname:mod_PowerConverters
 # Configuration file
 cfgfile:config/PowerConverters.cfg
 

@@ -119,4 +119,9 @@ public interface DynmapServerInterface {
      * Get current player count
      */
     public int getCurrentPlayers();
+    /**
+     * Test if given mod is loaded (Forge)
+     * @param name - mod name
+     */
+    public boolean isModLoaded(String name);
 }

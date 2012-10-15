@@ -1107,7 +1107,8 @@ public class TexturePack {
     /**
      * Load texture pack mappings
      */
-    public static void loadTextureMapping(File datadir, ConfigurationNode config) {
+    public static void loadTextureMapping(DynmapCore core, ConfigurationNode config) {
+        File datadir = core.getDataFolder();
         /* Start clean with texture packs - need to be loaded after mapping */
         packs.clear();
         /* Initialize map with blank map for all entries */
@@ -1115,7 +1116,7 @@ public class TexturePack {
         /* Load block models */
         InputStream in = TexturePack.class.getResourceAsStream("/texture.txt");
         if(in != null) {
-            loadTextureFile(in, "texture.txt", config);
+            loadTextureFile(in, "texture.txt", config, core);
             if(in != null) { try { in.close(); } catch (IOException x) {} in = null; }
         }
         else
@@ -1130,7 +1131,7 @@ public class TexturePack {
                     if(custom.canRead()) {
                         try {
                             in = new FileInputStream(custom);
-                            loadTextureFile(in, custom.getPath(), config);
+                            loadTextureFile(in, custom.getPath(), config, core);
                         } catch (IOException iox) {
                             Log.severe("Error loading " + custom.getPath() + " - " + iox);
                         } finally {
@@ -1157,7 +1158,7 @@ public class TexturePack {
     /**
      * Load texture pack mappings from texture.txt file
      */
-    private static void loadTextureFile(InputStream txtfile, String txtname, ConfigurationNode config) {
+    private static void loadTextureFile(InputStream txtfile, String txtname, ConfigurationNode config, DynmapCore core) {
         LineNumberReader rdr = null;
         int cnt = 0;
         HashMap<String,Integer> filetoidx = new HashMap<String,Integer>();
@@ -1376,6 +1377,13 @@ public class TexturePack {
                     else {
                         Log.severe("Error loading configuration file : " + cfgfile.getPath());
                     }
+                }
+                else if(line.startsWith("modname:")) {
+                    String n = line.substring(8).trim();
+                    if(core.getServer().isModLoaded(n) == false) {
+                        return;
+                    }
+                    Log.info(n + " textures enabled");
                 }
             }
             Log.verboseinfo("Loaded " + cnt + " texture mappings from " + txtname);

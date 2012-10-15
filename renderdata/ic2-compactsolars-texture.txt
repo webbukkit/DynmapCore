@@ -1,6 +1,5 @@
 # Industrial Craft 2 Compact Solars Block mapping
-# define ic2-compactsolars-support: true in configuration.txt to enable
-enabled:ic2-compactsolars-support
+modname:mod_CompactSolars
 # configuration file
 cfgfile:config/IC2CompactSolars.cfg
 

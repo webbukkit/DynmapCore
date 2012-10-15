@@ -1,6 +1,5 @@
 # Industrial Craft 2 Charging Bench Block mapping
-# define ic2-chargingbench-support: true in configuration.txt to enable
-enabled:ic2-chargingbench-support
+modname:mod_IC2_ChargingBench
 # Configuration file
 cfgfile:config/IC2ChargingBench.cfg
 

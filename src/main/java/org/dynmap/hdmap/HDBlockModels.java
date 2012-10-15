@@ -12,7 +12,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.dynmap.ConfigurationNode;
+import org.dynmap.DynmapCore;
 import org.dynmap.Log;
+import org.dynmap.MapManager;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.ForgeConfigFile;
 import org.dynmap.utils.Vector3D;
@@ -559,7 +561,8 @@ public class HDBlockModels {
     /**
      * Load models 
      */
-    public static void loadModels(File datadir, ConfigurationNode config) {
+    public static void loadModels(DynmapCore core, ConfigurationNode config) {
+        File datadir = core.getDataFolder();
         /* Reset models-by-ID-Data cache */
         models_by_id_data.clear();
         /* Reset scaled models by scale cache */
@@ -568,7 +571,7 @@ public class HDBlockModels {
         /* Load block models */
         InputStream in = TexturePack.class.getResourceAsStream("/models.txt");
         if(in != null) {
-            loadModelFile(in, "models.txt", config);
+            loadModelFile(in, "models.txt", config, core);
             try { in.close(); } catch (IOException iox) {} in = null;
         }
         File customdir = new File(datadir, "renderdata");
@@ -581,7 +584,7 @@ public class HDBlockModels {
                 if(custom.canRead()) {
                     try {
                         in = new FileInputStream(custom);
-                        loadModelFile(in, custom.getPath(), config);
+                        loadModelFile(in, custom.getPath(), config, core);
                     } catch (IOException iox) {
                         Log.severe("Error loading " + custom.getPath());
                     } finally {
@@ -607,8 +610,9 @@ public class HDBlockModels {
     }
     /**
      * Load models from file
+     * @param core 
      */
-    private static void loadModelFile(InputStream in, String fname, ConfigurationNode config) {
+    private static void loadModelFile(InputStream in, String fname, ConfigurationNode config, DynmapCore core) {
         LineNumberReader rdr = null;
         int cnt = 0;
         try {
@@ -995,6 +999,13 @@ public class HDBlockModels {
                     else {
                         Log.severe("Patch block model missing required parameters = line " + rdr.getLineNumber() + " of " + fname);
                     }
+                }
+                else if(line.startsWith("modname:")) {
+                    String n = line.substring(8).trim();
+                    if(core.getServer().isModLoaded(n) == false) {
+                        return;
+                    }
+                    Log.info(n + " models enabled");
                 }
                 else if(layerbits != 0) {   /* If we're working pattern lines */
                     /* Layerbits determine Y, rows count from North to South (X=0 to X=N-1), columns Z are West to East (N-1 to 0) */

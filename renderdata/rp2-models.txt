@@ -1,6 +1,5 @@
 # RedPower2 block mapping
-# define redpower2-support: true in configuration.txt to enable
-enabled:redpower2-support
+modname:mod_RedPowerCore
 # configuration file
 cfgfile:redpower/redpower.cfg
 

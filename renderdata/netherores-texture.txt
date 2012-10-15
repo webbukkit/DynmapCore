@@ -1,6 +1,5 @@
 # NetherOres Block mapping
-# define netherores-support: true in configuration.txt to enable
-enabled:netherores-support
+modname:mod_NetherOres
 # configuration file
 cfgfile:config/NetherOres.cfg
 

@@ -1,6 +1,5 @@
 # Railcraft Block mapping
-# define railcraft-support: true in configuration.txt to enable
-enabled:railcraft-support
+modname:mod_Railcraft
 # configuration file
 cfgfile:config/railcraft/railcraft.cfg
 

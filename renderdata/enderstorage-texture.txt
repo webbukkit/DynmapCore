@@ -1,6 +1,5 @@
 # Ender Storage Block mapping
-# define enderstorage-support: true in configuration.txt to enable
-enabled:enderstorage-support
+modname:mod_EnderStorage
 # Configuration file
 cfgfile:config/EnderStorage.cfg
 # Files

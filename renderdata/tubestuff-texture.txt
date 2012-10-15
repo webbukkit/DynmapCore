@@ -1,6 +1,5 @@
 # TubeStuff Block mapping
-# define tubestuff-support: true in configuration.txt to enable
-enabled:tubestuff-support
+modname:mod_TubeStuff
 # Configuration file
 cfgfile:config/immibis.cfg
 

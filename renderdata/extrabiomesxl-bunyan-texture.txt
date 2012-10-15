@@ -1,6 +1,5 @@
 # Bunyan for ExtraBiomesXL Block mapping
-# define extrabiomesxl-bunyan-support: true in configuration.txt to enable
-enabled:extrabiomesxl-bunyan-support
+modname:Bunyan
 # configuration file
 cfgfile:config/extrabiomes/bunyan.cfg
 

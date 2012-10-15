@@ -329,9 +329,9 @@ public class DynmapCore {
         fullrenderplayerlimit = configuration.getInteger("fullrenderplayerlimit", 0);
 
         /* Load block models */
-        HDBlockModels.loadModels(dataDirectory, configuration);
+        HDBlockModels.loadModels(this, configuration);
         /* Load texture mappings */
-        TexturePack.loadTextureMapping(dataDirectory, configuration);
+        TexturePack.loadTextureMapping(this, configuration);
         
         /* Now, process worlds.txt - merge it in as an override of existing values (since it is only user supplied values) */
         File f = new File(dataDirectory, "worlds.txt");

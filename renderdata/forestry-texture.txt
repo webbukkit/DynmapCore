@@ -1,6 +1,5 @@
 # Forestry Block mapping
-# define forestry-support: true in configuration.txt to enable
-enabled:forestry-support
+modname:mod_Forestry
 # configuration file
 cfgfile:config/forestry/base.conf
 

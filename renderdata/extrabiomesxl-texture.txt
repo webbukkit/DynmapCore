@@ -1,6 +1,5 @@
 # ExtraBiomesXL Block mapping
-# define extrabiomesxl-support: true in configuration.txt to enable
-enabled:extrabiomesxl-support
+modname:ExtraBiomes XL
 # configuration file
 cfgfile:config/extrabiomes/extrabiomes.cfg
 

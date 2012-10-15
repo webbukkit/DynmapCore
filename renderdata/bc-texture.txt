@@ -1,6 +1,5 @@
 # BuildCraft Block mapping
-# define buildcraft-support: true in configuration.txt to enable
-enabled:buildcraft-support
+modname:mod_BuildCraftCore
 # configuration file
 cfgfile:buildcraft/config/buildcraft.cfg
 # Files

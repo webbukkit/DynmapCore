@@ -1,6 +1,5 @@
 # ComputerCraft Block mapping
-# define computercraft-support: true in configuration.txt to enable
-enabled:computercraft-support
+modname:mod_ComputerCraft
 # configuration file
 cfgfile:config/mod_ComputerCraft.cfg
 # Files

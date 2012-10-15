@@ -1,6 +1,5 @@
 # Industrial Craft 2 Block mapping
-# define ic2-support: true in configuration.txt to enable
-enabled:ic2-support
+modname:mod_IC2
 # Configuration file
 cfgfile:config/IC2.cfg
 # Files
