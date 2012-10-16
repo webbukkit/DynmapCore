@@ -1,5 +1,5 @@
 # IC2 Nuclear Control Block mapping
-modname:mod_IC2NuclearControl
+modname:mod_IC2NuclearControl,IC2NuclearControl
 # configuration file
 cfgfile:config/IC2NuclearControl.cfg
 

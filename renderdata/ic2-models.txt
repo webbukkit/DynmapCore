@@ -1,5 +1,5 @@
 # Industrial Craft 2 Texture mapping
-modname:mod_IC2
+modname:mod_IC2,IC2
 # configuration file
 cfgfile:config/IC2.cfg
 # Wire - set render alg

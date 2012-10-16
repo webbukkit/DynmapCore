@@ -1,5 +1,5 @@
 # Iron Chest Block mapping
-modname:mod_IronChest
+modname:mod_IronChest,IronChest
 # configuration file
 cfgfile:config/IronChest.cfg
 

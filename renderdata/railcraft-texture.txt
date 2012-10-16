@@ -1,5 +1,7 @@
 # Railcraft Block mapping
-modname:mod_Railcraft
+modname:mod_Railcraft,Railcraft
+
+var:block.structure=0,block.utility=0,block.machine.alpha=0
 # configuration file
 cfgfile:config/railcraft/railcraft.cfg
 
@@ -61,33 +63,33 @@ block:id=block.track,data=8,patch0=23,transparency=TRANSPARENT,txtid=blk0
 # Adv Rails - northwest corner
 block:id=block.track,data=9,patch0=23,transparency=TRANSPARENT,txtid=blk0
 # (block.utility) Item loader (need entity data for others)
-block:id=block.utility,data=0,top=10,bottom=12,allsides=11,txtid=blk0
+block:id=block.utility,id=block.machine.alpha,data=0,top=10,bottom=12,allsides=11,txtid=blk0
 # (block.utility:1) Item unloader
-block:id=block.utility,data=1,top=156,bottom=154,allsides=155,txtid=blk0
+block:id=block.utility,id=block.machine.alpha,data=1,top=156,bottom=154,allsides=155,txtid=blk0
 # (block.utility:2) Item loader advanced
-block:id=block.utility,data=2,top=122,bottom=122,north=123,south=124,east=123,west=123,txtid=blk0
+block:id=block.utility,id=block.machine.alpha,data=2,top=122,bottom=122,north=123,south=124,east=123,west=123,txtid=blk0
 # (block.utility:3) Liquid loader
-block:id=block.utility,data=3,top=26,bottom=28,allsides=27,txtid=blk0
+block:id=block.utility,id=block.machine.alpha,data=3,top=26,bottom=28,allsides=27,txtid=blk0
 # (block.utility:4) Liquid unloader
-block:id=block.utility,data=4,top=28,bottom=26,allsides=27,txtid=blk0
+block:id=block.utility,id=block.machine.alpha,data=4,top=28,bottom=26,allsides=27,txtid=blk0
 # (block.utility:5) Item unloader advanced
-block:id=block.utility,data=5,top=138,bottom=138,north=139,south=140,east=139,west=139,txtid=blk0
+block:id=block.utility,id=block.machine.alpha,data=5,top=138,bottom=138,north=139,south=140,east=139,west=139,txtid=blk0
 # (block.utility:6) Minecraft dispenser
-block:id=block.utility,data=6,top=106,bottom=106,north=107,south=108,east=107,west=107,txtid=blk0
+block:id=block.utility,id=block.machine.alpha,data=6,top=106,bottom=106,north=107,south=108,east=107,west=107,txtid=blk0
 # (block.utility:7) Coke oven
-block:id=block.utility,data=7,allfaces=170,txtid=blk0
+block:id=block.utility,id=block.machine.alpha,data=7,allfaces=170,txtid=blk0
 # (block.utility:8) Rolling machnie
-block:id=block.utility,data=8,top=188,bottom=186,allsides=187,txtid=blk0
+block:id=block.utility,id=block.machine.alpha,data=8,top=188,bottom=186,allsides=187,txtid=blk0
 # (block.utility:9) Energy loader
-block:id=block.utility,data=9,top=202,bottom=202,north=203,south=204,east=203,west=203,txtid=blk0
+block:id=block.utility,id=block.machine.alpha,data=9,top=202,bottom=202,north=203,south=204,east=203,west=203,txtid=blk0
 # (block.utility:10) Energy unloader
-block:id=block.utility,data=10,top=218,bottom=218,north=219,south=220,east=219,west=219,txtid=blk0
+block:id=block.utility,id=block.machine.alpha,data=10,top=218,bottom=218,north=219,south=220,east=219,west=219,txtid=blk0
 # (block.utility:11) Feed Station
-block:id=block.utility,data=11,top=236,bottom=234,allsides=235,txtid=blk0
+block:id=block.utility,id=block.machine.alpha,data=11,top=236,bottom=234,allsides=235,txtid=blk0
 # (block.utility:12) Blast Furnace Brick
-block:id=block.utility,data=12,top=215,bottom=215,north=215,south=216,east=215,west=215,txtid=blk0
+block:id=block.utility,id=block.machine.alpha,data=12,top=215,bottom=215,north=215,south=216,east=215,west=215,txtid=blk0
 # (block.utility:13) Train Dispenserr
-block:id=block.utility,data=13,top=231,bottom=231,north=232,south=233,east=232,west=232,txtid=blk0
+block:id=block.utility,id=block.machine.alpha,data=13,top=231,bottom=231,north=232,south=233,east=232,west=232,txtid=blk0
 # (block.structure:0) iron post
 block:id=block.structure,data=0,allfaces=169,txtid=blk0,transparency=TRANSPARENT
 # (block.structure:1) dual head signal block

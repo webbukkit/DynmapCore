@@ -1,5 +1,5 @@
 # Industrial Craft 2 Block mapping
-modname:mod_IC2
+modname:mod_IC2,IC2
 # Configuration file
 cfgfile:config/IC2.cfg
 # Files

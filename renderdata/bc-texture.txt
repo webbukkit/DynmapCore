@@ -1,7 +1,10 @@
 # BuildCraft Block mapping
-modname:mod_BuildCraftCore
+modname:mod_BuildCraftCore,BuildCraft|Core
+# Defaults
+var:template.id=0,architect.id=0
 # configuration file
 cfgfile:buildcraft/config/buildcraft.cfg
+cfgfile:config/buildcraft/main.conf
 # Files
 texturefile:id=blk,filename=buildcraft/block_textures.png,xcount=16,ycount=16
 texturefile:id=wood,filename=buildcraft/base_wood.png,xcount=4,ycount=2
@@ -31,10 +34,10 @@ block:id=builder.id,data=3,west=55,top=4054,north=3,south=3,east=3,bottom=3,txti
 block:id=builder.id,data=4,north=55,top=4054,east=3,west=3,south=3,bottom=3,txtid=blk
 block:id=builder.id,data=5,south=55,top=4054,east=3,west=3,north=3,bottom=3,txtid=blk
 # TEMPLATE_ID         = 158
-block:id=template.id,data=2,east=52,top=4050,north=48,south=48,west=48,bottom=48,txtid=blk
-block:id=template.id,data=3,west=52,top=4050,north=48,south=48,east=48,bottom=48,txtid=blk
-block:id=template.id,data=4,north=52,top=4050,east=48,west=48,south=48,bottom=48,txtid=blk
-block:id=template.id,data=5,south=52,top=4050,east=48,west=48,north=48,bottom=48,txtid=blk
+block:id=architect.id,id=template.id,data=2,east=52,top=4050,north=48,south=48,west=48,bottom=48,txtid=blk
+block:id=architect.id,id=template.id,data=3,west=52,top=4050,north=48,south=48,east=48,bottom=48,txtid=blk
+block:id=architect.id,id=template.id,data=4,north=52,top=4050,east=48,west=48,south=48,bottom=48,txtid=blk
+block:id=architect.id,id=template.id,data=5,south=52,top=4050,east=48,west=48,north=48,bottom=48,txtid=blk
 # FRAME_ID            = 160
 block:id=frame.id,data=*,allfaces=34,txtid=blk,transparency=TRANSPARENT
 # ENGINE_ID           = 161

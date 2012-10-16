@@ -1,5 +1,5 @@
 # Forestry Block mapping
-modname:mod_Forestry
+modname:mod_Forestry,Forestry
 # configuration file
 cfgfile:config/forestry/base.conf
 

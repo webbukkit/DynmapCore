@@ -615,6 +615,8 @@ public class HDBlockModels {
     private static void loadModelFile(InputStream in, String fname, ConfigurationNode config, DynmapCore core) {
         LineNumberReader rdr = null;
         int cnt = 0;
+        boolean need_mod_cfg = false;
+        String modname = null;
         try {
             String line;
             ArrayList<HDBlockVolumetricModel> modlist = new ArrayList<HDBlockVolumetricModel>();
@@ -837,9 +839,7 @@ public class HDBlockModels {
                     ForgeConfigFile cfg = new ForgeConfigFile(cfgfile);
                     if(cfg.load()) {
                         cfg.addBlockIDs(varvals);
-                    }
-                    else {
-                        Log.severe("Error loading configuration file : " + cfgfile.getPath());
+                        need_mod_cfg = false;
                     }
                 }
                 else if(line.startsWith("patch:")) {
@@ -1007,6 +1007,8 @@ public class HDBlockModels {
                         if(core.getServer().isModLoaded(n.trim()) == true) {
                             found = true;
                             Log.info(n + " models enabled");
+                            need_mod_cfg = true;
+                            modname = n.trim();
                             break;
                         }
                     }
@@ -1033,6 +1035,10 @@ public class HDBlockModels {
                     }
                 }
             }
+            if(need_mod_cfg) {
+                Log.severe("Error loading configuration file for " + modname);
+            }
+
             Log.verboseinfo("Loaded " + cnt + " block models from " + fname);
         } catch (IOException iox) {
             Log.severe("Error reading models.txt - " + iox.toString());

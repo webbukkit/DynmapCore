@@ -1,5 +1,7 @@
 # Railcraft Block mapping
-modname:mod_Railcraft
+modname:mod_Railcraft,Railcraft
+
+var:block.structure=0,block.utility=0,block.machine.alpha=0
 # configuration file
 cfgfile:config/railcraft/railcraft.cfg
 

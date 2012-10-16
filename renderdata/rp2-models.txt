@@ -1,5 +1,5 @@
 # RedPower2 block mapping
-modname:mod_RedPowerCore
+modname:mod_RedPowerCore,RedPowerCore
 # configuration file
 cfgfile:redpower/redpower.cfg
 

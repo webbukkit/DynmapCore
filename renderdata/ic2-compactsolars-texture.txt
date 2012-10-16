@@ -1,7 +1,8 @@
 # Industrial Craft 2 Compact Solars Block mapping
-modname:mod_CompactSolars
+modname:mod_CompactSolars,CompactSolars
 # configuration file
 cfgfile:config/IC2CompactSolars.cfg
+cfgfile:config/CompactSolars.cfg
 
 # Files
 texturefile:id=blk0,filename=cpw/mods/compactsolars/sprites/block_textures.png,xcount=16,ycount=16

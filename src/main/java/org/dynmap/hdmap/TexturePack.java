@@ -1163,6 +1163,8 @@ public class TexturePack {
         int cnt = 0;
         HashMap<String,Integer> filetoidx = new HashMap<String,Integer>();
         HashMap<String,Integer> varvals = new HashMap<String,Integer>();
+        boolean mod_cfg_needed = false;
+        String modname = null;
 
         try {
             String line;
@@ -1373,9 +1375,7 @@ public class TexturePack {
                     ForgeConfigFile cfg = new ForgeConfigFile(cfgfile);
                     if(cfg.load()) {
                         cfg.addBlockIDs(varvals);
-                    }
-                    else {
-                        Log.severe("Error loading configuration file : " + cfgfile.getPath());
+                        mod_cfg_needed = false;
                     }
                 }
                 else if(line.startsWith("modname:")) {
@@ -1384,13 +1384,19 @@ public class TexturePack {
                     for(String n : names) {
                         if(core.getServer().isModLoaded(n.trim()) == true) {
                             found = true;
-                            Log.info(n + " models enabled");
+                            Log.info(n + " textures enabled");
+                            mod_cfg_needed = true;
+                            modname = n.trim();
                             break;
                         }
                     }
                     if(!found) return;
                 }
             }
+            if(mod_cfg_needed) {
+                Log.severe("Error loading configuration file for " + modname);
+            }
+
             Log.verboseinfo("Loaded " + cnt + " texture mappings from " + txtname);
         } catch (IOException iox) {
             Log.severe("Error reading " + txtname + " - " + iox.toString());

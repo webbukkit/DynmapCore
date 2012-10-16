@@ -1,7 +1,8 @@
 # LC Trees++ Block mapping
-modname:mod_LCTrees
+modname:mod_LCTrees,LCTrees
 # Configuration file
 cfgfile:config/Trees++.cfg
+cfgfile:config/LCTrees.cfg
 
 # Files
 texturefile:id=blk0,filename=LCTrees/trees.png,xcount=16,ycount=16

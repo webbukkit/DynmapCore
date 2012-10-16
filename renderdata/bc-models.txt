@@ -1,7 +1,10 @@
 # BuildCraft Block mapping
-modname:mod_BuildCraftCore
+modname:mod_BuildCraftCore,BuildCraft|Core
+# Defaults
+var:template.id=0,architect.id=0
 # configuration file
 cfgfile:buildcraft/config/buildcraft.cfg
+cfgfile:config/buildcraft/main.conf
 # Pipe - set render alg
 linkmap:id=pipe.id,linkalg=5,linkid=pipe.id
 # Frame
