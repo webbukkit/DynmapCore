@@ -290,10 +290,18 @@ public class MapManager {
             loc.x = (int)n.getDouble("locX", 0.0);
             loc.y = (int)n.getDouble("locY", 0.0);
             loc.z = (int)n.getDouble("locZ", 0.0);
-            String m = n.getString("map","");
             map_index = n.getInteger("mapindex", -1);
-            map = world.maps.get(map_index);
-            if((map == null) || (map.getName().equals(m) == false)) throw new Exception();
+            if(map_index >= 0) {
+                String m = n.getString("map","");
+                map = world.maps.get(map_index);
+                if((map == null) || (map.getName().equals(m) == false)) {
+                    throw new Exception();
+                }
+            }
+            else {
+                map_index = -1;
+                map = null;
+            }
             found = new TileFlags();
             List<String> sl = n.getStrings("found", null);
             if(sl != null)
@@ -353,8 +361,14 @@ public class MapManager {
             v.put("locX", loc.x);
             v.put("locY", loc.y);
             v.put("locZ", loc.z);
-            v.put("mapindex", map_index);
-            v.put("map", map.getName());
+            if(map != null) {
+                v.put("mapindex", map_index);
+                v.put("map", map.getName());
+            }
+            else {
+                v.put("mapindex", -1);
+                v.put("map", "");
+            }
             v.put("found", found.save());
             v.put("rendered", rendered.save());
             LinkedList<ConfigurationNode> queue = new LinkedList<ConfigurationNode>();
