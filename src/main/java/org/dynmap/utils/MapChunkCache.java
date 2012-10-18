@@ -40,34 +40,6 @@ public interface MapChunkCache {
      */
     void unloadChunks();
     /**
-     * Get block ID at coordinates
-     */
-    int getBlockTypeID(int x, int y, int z);
-    /**
-     * Get block data at coordiates
-     */
-    byte getBlockData(int x, int y, int z);
-    /**
-     *  Get sky light level
-     */
-    int getBlockSkyLight(int x, int y, int z);
-    /**
-     * Get emitted light level
-     */
-    int getBlockEmittedLight(int x, int y, int z);
-    /**
-     * Get biome at coordinates
-     */
-    public BiomeMap getBiome(int x, int z);
-    /**
-     * Get raw temperature data (0.0-1.0)
-     */
-    public double getRawBiomeTemperature(int x, int z);
-    /**
-     * Get raw rainfall data (0.0-1.0)
-     */
-    public double getRawBiomeRainfall(int x, int z);
-    /**
      * Test if section (16 x 16 x 16) at given coord is empty (all air)
      */
     boolean isEmptySection(int sx, int sy, int sz);
