@@ -14,7 +14,7 @@ block:id=SandstoneCorners,data=*,patch0-6=192,transparency=TRANSPARENT
 # Dirt slopes, corners
 block:id=DirtCorners,data=*,patch0-6=4=2,transparency=TRANSPARENT
 # Stone slopes, corners
-block:id=StoneCorners,data=*,patch0-6=,transparency=TRANSPARENT
+block:id=StoneCorners,data=*,patch0-6=1,transparency=TRANSPARENT
 # Sand slopes, corners
 block:id=SandCorners,data=*,patch0-6=18,transparency=TRANSPARENT
 # Snow slopes, corners

@@ -14,7 +14,7 @@ block:id=BlockKaevSandstoneSlopes,id=BlockKaevSandstoneCorners,id=BlockKaevSands
 # Dirt slopes, corners
 block:id=BlockKaevDirtSlopes,id=BlockKaevDirtCorners,id=BlockKaevDirtIntCorners,data=*,patch0-6=4=2,transparency=TRANSPARENT
 # Stone slopes, corners
-block:id=BlockKaevStoneSlopes,id=BlockKaevStoneCorners,id=BlockKaevStoneIntCorners,data=*,patch0-6=,transparency=TRANSPARENT
+block:id=BlockKaevStoneSlopes,id=BlockKaevStoneCorners,id=BlockKaevStoneIntCorners,data=*,patch0-6=1,transparency=TRANSPARENT
 # Sand slopes, corners
 block:id=BlockKaevSandSlopes,id=BlockKaevSandCorners,id=BlockKaevSandIntCorners,data=*,patch0-6=18,transparency=TRANSPARENT
 # Snow slopes, corners
