@@ -8,7 +8,6 @@
 		<BUILD_NUMBER>dev</BUILD_NUMBER>
 		<nbtVersion>1.0.5-SNAPSHOT</nbtVersion>
 	</properties>
-	<version>0.90</version>
 	<url>http://github.com/webbukkit/DynmapCore/</url>
 	<issueManagement>
 		<system>GitHub</system>
@@ -172,4 +171,5 @@
 			<version>${nbtVersion}</version>
 		</dependency>
 	</dependencies>
+	<version>1.0</version>
 </project>
