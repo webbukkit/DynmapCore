@@ -11,21 +11,21 @@ texturefile:id=bigchest,filename=item/largechest.png,format=BIGCHEST
 texturefile:id=sign,filename=item/sign.png,format=SIGN
 ######
 # Stone
-block:id=1,allfaces=1
+block:id=1,allsides=1,topbottom=6001
 # Grass
 block:id=2,allsides=11003,top=1000,bottom=2
 # Dirt
-block:id=3,allfaces=2
+block:id=3,allsides=2,topbottom=6002
 # Cobblestone
-block:id=4,allfaces=16
+block:id=4,allsides=16,topbottom=6016
 # Wooden Plank
-block:id=5,data=0,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,allsides=4,topbottom=4004
+block:id=5,data=0,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,allsides=4,topbottom=6004
 # Wooden Plank
-block:id=5,data=1,allsides=198,topbottom=4198
+block:id=5,data=1,allsides=198,topbottom=6198
 # Wooden Plank
-block:id=5,data=2,allsides=214,topbottom=4214
+block:id=5,data=2,allsides=214,topbottom=6214
 # Wooden Plank
-block:id=5,data=3,allsides=199,topbottom=4199
+block:id=5,data=3,allsides=199,topbottom=6199
 # Sapling
 block:id=6,data=0,data=4,data=8,data=12,patch0=15,patch1=15,transparency=TRANSPARENT
 # Sapling (Spruce)
@@ -35,7 +35,7 @@ block:id=6,data=2,data=6,data=10,data=14,patch0=79,patch1=79,transparency=TRANSP
 # Sapling (Jungle)
 block:id=6,data=3,data=7,data=11,data=15,patch0=30,patch1=30,transparency=TRANSPARENT
 # Bedrock
-block:id=7,allfaces=17
+block:id=7,allsides=17,topbottom=6017
 # Water
 #block:id=8,allfaces=12258,transparency=TRANSPARENT
 block:id=8,allfaces=12258,transparency=SEMITRANSPARENT
@@ -44,39 +44,39 @@ block:id=8,allfaces=12258,transparency=SEMITRANSPARENT
 block:id=9,data=0,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,topbottom=12257,allsides=12258,transparency=SEMITRANSPARENT
 block:id=9,data=1,data=2,data=3,data=4,data=5,data=6,data=7,allfaces=12258,transparency=SEMITRANSPARENT
 # Lava
-block:id=10,allfaces=260,transparency=TRANSPARENT
+block:id=10,allsides=260,topbottom=6260,transparency=TRANSPARENT
 # Stationary Lava
-block:id=11,topbottom=259,allsides=260,transparency=TRANSPARENT
+block:id=11,topbottom=6259,allsides=260,transparency=TRANSPARENT
 # Sand
-block:id=12,allfaces=18
+block:id=12,allsides=18,topbottom=6018
 # Gravel
-block:id=13,allfaces=19
+block:id=13,allsides=19,topbottom=6019
 # Gold Ore
-block:id=14,allfaces=32
+block:id=14,allsides=32,topbottom=6032
 # Iron Ore
-block:id=15,allfaces=33
+block:id=15,allsides=33,topbottom=6033
 # Coal Ore
-block:id=16,allfaces=34
+block:id=16,allsides=34,topbottom=6034
 # Wood (std)
-block:id=17,data=0,allsides=20,top=21,bottom=21
+block:id=17,data=0,allsides=20,topbottom=6021
 block:id=17,data=4,north=21,south=21,east=4020,west=4020,top=20,bottom=20
 block:id=17,data=8,north=4020,south=4020,east=21,west=21,top=4020,bottom=4020
-block:id=17,data=12,allfaces=20
+block:id=17,data=12,allsides=20,topbottom=6020
 # Wood (spruce/pine)
-block:id=17,data=1,allsides=116,top=21,bottom=21
+block:id=17,data=1,allsides=116,topbottom=6021
 block:id=17,data=5,north=21,south=21,east=4116,west=4116,top=116,bottom=116
 block:id=17,data=9,north=4116,south=4116,east=21,west=21,top=4116,bottom=4116
-block:id=17,data=13,allfaces=116
+block:id=17,data=13,allsides=116,topbottom=6116
 # Wood (birch)
-block:id=17,data=2,allsides=117,top=21,bottom=21
+block:id=17,data=2,allsides=117,topbottom=6021
 block:id=17,data=6,north=21,south=21,east=4117,west=4117,top=117,bottom=117
 block:id=17,data=10,north=4117,south=4117,east=21,west=21,top=4117,bottom=4117
-block:id=17,data=14,allfaces=117
+block:id=17,data=14,allsides=117,topbottom=6117
 # Wood (jungle)
-block:id=17,data=3,allsides=153,top=21,bottom=21
+block:id=17,data=3,allsides=153,topbottom=6021
 block:id=17,data=7,north=21,south=21,east=4153,west=4153,top=153,bottom=153
 block:id=17,data=11,north=4153,south=4153,east=21,west=21,top=4153,bottom=4153
-block:id=17,data=15,allfaces=153
+block:id=17,data=15,allsides=153,topbottom=6153
 # Leaves (std)
 block:id=18,data=0,data=4,data=8,data=12,allfaces=2052,transparency=TRANSPARENT
 # Leaves (spruce/pine)
@@ -90,9 +90,9 @@ block:id=19,allfaces=48
 # Glass
 block:id=20,allfaces=12049,transparency=TRANSPARENT
 # Lapis Lazuli Ore
-block:id=21,allfaces=160
+block:id=21,allsides=160,topbottom=6160
 # Lapis Lazuli Block
-block:id=22,allfaces=144
+block:id=22,allsides=144,topbottom=6144
 # Dispenser (facing east)
 block:id=23,data=2,top=62,east=46,south=45,north=45,west=45,bottom=62
 # Dispenser (facing west)
@@ -102,13 +102,13 @@ block:id=23,data=4,top=62,north=46,south=45,east=45,west=45,bottom=62
 # Dispenser (facing south)
 block:id=23,data=5,top=62,south=46,north=45,east=45,west=45,bottom=62
 # Sandstone
-block:id=24,data=0,bottom=176,top=208,allsides=192
+block:id=24,data=0,bottom=6176,top=6208,allsides=192
 # Smooth Sandstone
-block:id=24,data=2,allfaces=176
+block:id=24,data=2,allsides=176,topbottom=6176
 # Hieroglyphic Sandstone
-block:id=24,data=1,data=3,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,allsides=229,topbottom=176
+block:id=24,data=1,data=3,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,allsides=229,topbottom=6176
 # Note Block 
-block:id=25,allfaces=74
+block:id=25,allsides=74,topbottom=6074
 # Bed - head - pointing west
 block:id=26,data=8,top=5135,bottom=5135,south=7151,north=151,west=152,transparency=TRANSPARENT
 # Bed - foot - pointing west
@@ -238,37 +238,37 @@ block:id=34,data=12,north=106,south=107,top=261,bottom=5261,east=6261,west=4261
 # Sticky piston extension - facing south
 block:id=34,data=13,north=107,south=106,top=5261,bottom=261,east=4261,west=6261
 # Wool - white
-block:id=35,data=0,allfaces=64
+block:id=35,data=0,allsides=64,topbottom=6064
 # Wool - orange
-block:id=35,data=1,allfaces=210
+block:id=35,data=1,allsides=210,topbottom=6210
 # Wool - Magenta
-block:id=35,data=2,allfaces=194
+block:id=35,data=2,allsides=194,topbottom=6194
 # Wool - Light Blue
-block:id=35,data=3,allfaces=178
+block:id=35,data=3,allsides=178,topbottom=6178
 # Wool - Yellow
-block:id=35,data=4,allfaces=162
+block:id=35,data=4,allsides=162,topbottom=6162
 # Wool - Light Green
-block:id=35,data=5,allfaces=146
+block:id=35,data=5,allsides=146,topbottom=6146
 # Wool - Pink
-block:id=35,data=6,allfaces=130
+block:id=35,data=6,allsides=130,topbottom=6130
 # Wool - Gray
-block:id=35,data=7,allfaces=114
+block:id=35,data=7,allsides=114,topbottom=6114
 # Wool - Light Gray
-block:id=35,data=8,allfaces=225
+block:id=35,data=8,allsides=225,topbottom=6225
 # Wool - Cyan
-block:id=35,data=9,allfaces=209
+block:id=35,data=9,allsides=209,topbottom=6209
 # Wool - Purple
-block:id=35,data=10,allfaces=193
+block:id=35,data=10,allsides=193,topbottom=6193
 # Wool - Blue
-block:id=35,data=11,allfaces=177
+block:id=35,data=11,allsides=177,topbottom=6177
 # Wool - Brown
-block:id=35,data=12,allfaces=161
+block:id=35,data=12,allsides=161,topbottom=6161
 # Wool - Dark Green
-block:id=35,data=13,allfaces=145
+block:id=35,data=13,allsides=145,topbottom=6145
 # Wool - Red
-block:id=35,data=14,allfaces=129
+block:id=35,data=14,allsides=129,topbottom=6129
 # Wool - Black
-block:id=35,data=15,allfaces=113
+block:id=35,data=15,allsides=113,topbottom=6113
 # Block move by piston - don't render
 block:id=36
 # Dandelion
@@ -280,47 +280,47 @@ block:id=39,patch0=29,patch1=29,transparency=TRANSPARENT
 # Red mushroom
 block:id=40,patch0=28,patch1=28,transparency=TRANSPARENT
 # Gold block
-block:id=41,allfaces=23
+block:id=41,allsides=23,topbottom=6023
 # Iron block
-block:id=42,allfaces=22
+block:id=42,allsides=22,topbottom=6022
 # Double Slab - stone
-block:id=43,data=0,allsides=5,topbottom=6
+block:id=43,data=0,allsides=5,topbottom=6006
 # Double Slab - Sandstone
-block:id=43,data=1,top=176,bottom=208,allsides=192
+block:id=43,data=1,top=6176,bottom=6208,allsides=192
 # Double Slab - Wood
-block:id=43,data=2,allsides=4,topbottom=4004
+block:id=43,data=2,allsides=4,topbottom=6004
 # Double Slab - Cobblestone
-block:id=43,data=3,allfaces=16
+block:id=43,data=3,allsides=16,topbottom=6016
 # Double Slab - Brick
-block:id=43,data=4,allfaces=7
+block:id=43,data=4,allsides=7,topbottom=6007
 # Double Slab - Stone Brick
-block:id=43,data=5,allfaces=54
+block:id=43,data=5,allsides=54,topbottom=6054
 # Double Slab - Stone (all sides)
-block:id=43,data=6,allsides=6,topbottom=6
+block:id=43,data=6,allsides=6,topbottom=6006
 # Slab - stone
-block:id=44,data=0,data=8,allsides=5,topbottom=6,transparency=SEMITRANSPARENT
+block:id=44,data=0,data=8,allsides=5,topbottom=6006,transparency=SEMITRANSPARENT
 # Slab - Sandstone
-block:id=44,data=1,data=9,top=176,bottom=208,allsides=192,transparency=SEMITRANSPARENT
+block:id=44,data=1,data=9,top=6176,bottom=6208,allsides=192,transparency=SEMITRANSPARENT
 # Slab - Wood
-block:id=44,data=2,data=10,allsides=4,topbottom=4004,transparency=SEMITRANSPARENT
+block:id=44,data=2,data=10,allsides=4,topbottom=6004,transparency=SEMITRANSPARENT
 # Slab - Cobblestone
-block:id=44,data=3,data=11,allfaces=16,transparency=SEMITRANSPARENT
+block:id=44,data=3,data=11,allsides=16,topbottom=6016,transparency=SEMITRANSPARENT
 # Slab - Brick
-block:id=44,data=4,data=12,allfaces=7,transparency=SEMITRANSPARENT
+block:id=44,data=4,data=12,allsides=7,topbottom=6007,transparency=SEMITRANSPARENT
 # Slab - Stone Brick
-block:id=44,data=5,data=13,allfaces=54,transparency=SEMITRANSPARENT
+block:id=44,data=5,data=13,allsides=54,topbottom=6054,transparency=SEMITRANSPARENT
 # Slab - Stone (all sides)
-block:id=44,data=6,data=14,allsides=6,topbottom=6,transparency=SEMITRANSPARENT
+block:id=44,data=6,data=14,allsides=6,topbottom=6006,transparency=SEMITRANSPARENT
 # Brick Block
-block:id=45,allfaces=7
+block:id=45,allsides=7,topbottom=6007
 # TNT
-block:id=46,top=9,bottom=10,allsides=8
+block:id=46,top=6009,bottom=6010,allsides=8
 # Bookshelf
-block:id=47,topbottom=4,allsides=35
+block:id=47,topbottom=6004,allsides=35
 # Mossy Cobblestone
-block:id=48,allfaces=36
+block:id=48,allsides=36,topbottom=6036
 # Obsidian
-block:id=49,allfaces=37
+block:id=49,allsides=37,topbottom=6037
 # Torch - inclined
 block:id=50,data=1,data=2,data=3,data=4,patch0=80,patch1=80,patch2=80,patch3=80,patch4=80,transparency=TRANSPARENT
 # Torch - up
@@ -328,9 +328,9 @@ block:id=50,data=5,patch0=80,patch1=80,patch2=80,patch3=80,patch4=80,transparenc
 # Fire
 block:id=51,patch0=265,patch1=265,patch2=265,patch3=265,patch4=265,patch5=265,patch6=265,patch7=265,transparency=TRANSPARENT
 # Monster spawner
-block:id=52,allfaces=65,transparency=TRANSPARENT
+block:id=52,allsides=65,topbottom=6065,transparency=TRANSPARENT
 # Wooden stairs
-block:id=53,data=0,data=1,data=2,data=3,data=4,data=5,data=6,data=7,allsides=4,topbottom=4004,transparency=SEMITRANSPARENT
+block:id=53,data=0,data=1,data=2,data=3,data=4,data=5,data=6,data=7,allsides=4,topbottom=6004,transparency=SEMITRANSPARENT
 # Chest - single, facing west
 block:id=54,data=0,top=6000,bottom=6005,south=2,north=1,east=4,west=3,userenderdata=true,txtid=chest
 # Chest - single, facing south
@@ -361,11 +361,11 @@ block:id=55,data=0,data=3,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data
 # Redstone wire (EW)
 block:id=55,data=1,data=2,patch0=181,transparency=TRANSPARENT,userenderdata=true
 # Diamond ore
-block:id=56,allfaces=50
+block:id=56,allsides=50,topbottom=6050
 # Diamond block
-block:id=57,allfaces=24
+block:id=57,allsides=24,topbottom=6024
 # Crafting table
-block:id=58,topbottom=43,east=59,west=59,north=60,south=60
+block:id=58,topbottom=6043,east=59,west=59,north=60,south=60
 # Crops (size 1)
 block:id=59,data=0,patch0=88,patch1=88,patch2=88,patch3=88,transparency=TRANSPARENT
 # Crops (size 2)
@@ -383,25 +383,25 @@ block:id=59,data=6,patch0=94,patch1=94,patch2=94,patch3=94,transparency=TRANSPAR
 # Crops (size 8)
 block:id=59,data=7,patch0=95,patch1=95,patch2=95,patch3=95,transparency=TRANSPARENT
 # Farmland (dry)
-block:id=60,data=0,top=87,allsides=2,bottom=2
+block:id=60,data=0,top=6087,allsides=2,bottom=6002
 # Farmland (wet)
-block:id=60,data=1,data=2,data=3,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,top=86,allsides=2,bottom=2
+block:id=60,data=1,data=2,data=3,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,top=6086,allsides=2,bottom=6002
 # Furnace (facing east)
-block:id=61,data=2,top=62,east=44,south=45,north=45,west=45,bottom=62
+block:id=61,data=2,top=6062,east=44,south=45,north=45,west=45,bottom=6062
 # Furnace (facing west)
-block:id=61,data=3,top=62,west=44,south=45,north=45,east=45,bottom=62
+block:id=61,data=3,top=6062,west=44,south=45,north=45,east=45,bottom=6062
 # Furnace (facing north)
-block:id=61,data=4,top=62,north=44,south=45,east=45,west=45,bottom=62
+block:id=61,data=4,top=6062,north=44,south=45,east=45,west=45,bottom=6062
 # Furnace (facing south)
-block:id=61,data=5,top=62,south=44,north=45,east=45,west=45,bottom=62
+block:id=61,data=5,top=6062,south=44,north=45,east=45,west=45,bottom=6062
 # Burning Furnace (facing east)
-block:id=62,data=2,top=62,east=61,south=45,north=45,west=45,bottom=62
+block:id=62,data=2,top=6062,east=61,south=45,north=45,west=45,bottom=6062
 # Burning Furnace (facing west)
-block:id=62,data=3,top=62,west=61,south=45,north=45,east=45,bottom=62
+block:id=62,data=3,top=6062,west=61,south=45,north=45,east=45,bottom=6062
 # Burning Furnace (facing north)
-block:id=62,data=4,top=62,north=61,south=45,east=45,west=45,bottom=62
+block:id=62,data=4,top=6062,north=61,south=45,east=45,west=45,bottom=6062
 # Burning Furnace (facing south)
-block:id=62,data=5,top=62,south=61,north=45,east=45,west=45,bottom=62
+block:id=62,data=5,top=6062,south=61,north=45,east=45,west=45,bottom=6062
 # Signpost
 block:id=63,patch0=0,patch1=1,patch2=2,patch3=3,patch4=4,patch5=5,patch6=6,patch7=7,patch8=8,patch9=9,transparency=TRANSPARENT,txtid=sign
 # Wooden Door - bottom (left hinge)
@@ -434,13 +434,13 @@ block:id=66,data=2,data=3,patch0=128,transparency=TRANSPARENT
 # Rails - northwest corner
 block:id=66,data=6,data=7,data=8,data=9,patch0=112,transparency=TRANSPARENT
 # Cobblestone Stairs
-block:id=67,allfaces=16,transparency=SEMITRANSPARENT
+block:id=67,allsides=16,topbottom=6016,transparency=SEMITRANSPARENT
 # Wall sign
 block:id=68,patch0=288,patch1=289,patch2=290,patch3=291,patch4=292,patch5=293,transparency=TRANSPARENT
 # Lever
 block:id=69,patch0=16,patch1=16,patch2=16,patch3=16,patch4=16,patch5=96,patch6=96,patch7=96,patch8=96,transparency=TRANSPARENT
 # Stone pressure plate
-block:id=70,allfaces=1,transparency=TRANSPARENT
+block:id=70,allsides=1,topbottom=6001,transparency=TRANSPARENT
 # Iron Door - bottom (left hinge)
 block:id=71,data=0,data=1,patch0=98,patch1=7098,patch2=7098,patch3=98,patch4=4098,patch5=4098,transparency=TRANSPARENT,userenderdata=true
 block:id=71,data=2,data=3,patch0=7098,patch1=98,patch2=7098,patch3=98,patch4=4098,patch5=4098,transparency=TRANSPARENT,userenderdata=true
@@ -454,7 +454,7 @@ block:id=71,data=10,data=11,patch0=7082,patch1=82,patch2=7082,patch3=82,patch4=4
 block:id=71,data=12,data=13,patch0=7082,patch1=82,patch2=7082,patch3=82,patch4=4082,patch5=4082,transparency=TRANSPARENT,userenderdata=true
 block:id=71,data=14,data=15,patch0=82,patch1=7082,patch2=7082,patch3=82,patch4=4082,patch5=4082,transparency=TRANSPARENT,userenderdata=true
 # Wooden pressure plate
-block:id=72,allsides=4,topbottom=4004,transparency=TRANSPARENT
+block:id=72,allsides=4,topbottom=6004,transparency=TRANSPARENT
 # Redstone Ore
 block:id=73,id=74,allfaces=51
 # Redstone Torch - unlit - inclined
@@ -466,43 +466,43 @@ block:id=76,data=1,data=2,data=3,data=4,patch0=99,patch1=99,patch2=99,patch3=99,
 # Redstone Torch - lit - up
 block:id=76,data=5,patch0=99,patch1=99,patch2=99,patch3=99,patch4=99,transparency=TRANSPARENT
 # Stone button
-block:id=77,allfaces=1,transparency=TRANSPARENT
+block:id=77,allsides=1,topbottom=6001,transparency=TRANSPARENT
 # Snow
-block:id=78,allfaces=66,transparency=TRANSPARENT
+block:id=78,allsides=66,topbottom=6066,transparency=TRANSPARENT
 # Ice
 block:id=79,allfaces=12067,transparency=TRANSPARENT
 # Snow block
-block:id=80,allfaces=66
+block:id=80,allsides=66,topbottom=6066
 # Cactus
 block:id=81,patch0=70,patch1=70,patch2=70,patch3=70,patch4=69,patch5=71,transparency=SEMITRANSPARENT
 # Clay block
-block:id=82,allfaces=72
+block:id=82,allsides=72,topbottom=6072
 # Sugar Cane
 block:id=83,patch0=73,patch1=73,transparency=TRANSPARENT
 # Jukebox
-block:id=84,allsides=74,topbottom=75
+block:id=84,allsides=74,topbottom=6075
 # Fence
-block:id=85,allsides=4,topbottom=4004,transparency=TRANSPARENT
+block:id=85,allsides=4,topbottom=6004,transparency=TRANSPARENT
 # Pumpkin
-block:id=86,allsides=118,topbottom=102
+block:id=86,allsides=118,topbottom=6102
 # Netherrock
-block:id=87,allfaces=103
+block:id=87,allsides=103,topbottom=6103
 # SoulSand
-block:id=88,allfaces=104
+block:id=88,allsides=104,topbottom=6104
 # Glowstone Block
-block:id=89,allfaces=105
+block:id=89,allsides=105,topbottom=6105
 # Portal (no texture for this - using purple wool)
-block:id=90,allfaces=193,transparency=TRANSPARENT
+block:id=90,allsides=193,topbottom=6193,transparency=TRANSPARENT
 # Jack O Lantern (east)
-block:id=91,data=2,north=118,south=118,east=120,west=118,topbottom=102
+block:id=91,data=2,north=118,south=118,east=120,west=118,topbottom=6102
 # Jack O Lantern (south)
-block:id=91,data=3,north=118,south=120,east=118,west=118,topbottom=102
+block:id=91,data=3,north=118,south=120,east=118,west=118,topbottom=6102
 # Jack O Lantern (west)
-block:id=91,data=0,north=118,south=118,east=118,west=120,topbottom=102
+block:id=91,data=0,north=118,south=118,east=118,west=120,topbottom=6102
 # Jack O Lantern (north)
-block:id=91,data=1,north=120,south=118,east=118,west=118,topbottom=102
+block:id=91,data=1,north=120,south=118,east=118,west=118,topbottom=6102
 # Cake Block
-block:id=92,allsides=122,top=121,bottom=124,transparency=TRANSPARENT
+block:id=92,allsides=122,top=6121,bottom=6124,transparency=TRANSPARENT
 # Repeater (off) facing east
 block:id=93,data=0,data=4,data=8,data=12,top=6131,allsides=1,bottom=1,transparency=TRANSPARENT
 # Repeater (off) facing south
@@ -522,69 +522,69 @@ block:id=94,data=3,data=7,data=11,data=15,top=147,allsides=1,bottom=1,transparen
 # Locked Chest
 block:id=95,top=25,south=27,north=27,east=26,west=26
 # Trap door
-block:id=96,allfaces=84,transparency=TRANSPARENT
+block:id=96,allsides=84,topbottom=6084,transparency=TRANSPARENT
 # Stone w/ silverfish inside
-block:id=97,data=0,allfaces=1
+block:id=97,data=0,allsides=1,topbottom=6001
 # Cobblestone w/ silverfish inside
-block:id=97,data=1,allfaces=16
+block:id=97,data=1,allsides=16,topbottom=6016
 # Stone Bricks w/ silverfish inside
-block:id=97,data=2,allfaces=54
+block:id=97,data=2,allsides=54,topbottom=6054
 # Stone Bricks
-block:id=98,data=0,allfaces=54
+block:id=98,data=0,allsides=54,topbottom=6054
 # Mossy Stone Bricks
-block:id=98,data=1,allfaces=100
+block:id=98,data=1,allsides=100,topbottom=6100
 # Cracked Stone Bricks
-block:id=98,data=2,allfaces=101
+block:id=98,data=2,allsides=101,topbottom=6101
 # Patterned Stone Bricks
-block:id=98,data=3,allfaces=213
+block:id=98,data=3,allsides=213,topbottom=6213
 # Brown Mushroom Block - inside
 # Red Mushroom Block - inside
-block:id=99,id=100,data=0,allfaces=142
+block:id=99,id=100,data=0,allsides=142,topbottom=6142
 # Brown Mushroom Block - N-E-top cap color
-block:id=99,data=1,top=126,north=126,east=126,south=142,west=142,bottom=142
+block:id=99,data=1,top=6126,north=126,east=126,south=142,west=142,bottom=6142
 # Red Mushroom Block - N-E-top cap color
-block:id=100,data=1,top=125,north=125,east=125,south=142,west=142,bottom=142
+block:id=100,data=1,top=6125,north=125,east=125,south=142,west=142,bottom=6142
 # Brown Mushroom Block - E-top cap color
-block:id=99,data=2,top=126,east=126,north=142,south=142,west=142,bottom=142
+block:id=99,data=2,top=6126,east=126,north=142,south=142,west=142,bottom=6142
 # Red Mushroom Block - E-top cap color
-block:id=100,data=2,top=125,east=125,north=142,south=142,west=142,bottom=142
+block:id=100,data=2,top=6125,east=125,north=142,south=142,west=142,bottom=6142
 # Brown Mushroom Block - S-E-top cap color
-block:id=99,data=3,top=126,south=126,east=126,north=142,west=142,bottom=142
+block:id=99,data=3,top=6126,south=126,east=126,north=142,west=142,bottom=6142
 # Red Mushroom Block - S-E-top cap color
-block:id=100,data=3,top=125,south=125,east=125,north=142,west=142,bottom=142
+block:id=100,data=3,top=6125,south=125,east=125,north=142,west=142,bottom=6142
 # Brown Mushroom Block - N-top cap color
-block:id=99,data=4,top=126,north=126,east=142,south=142,west=142,bottom=142
+block:id=99,data=4,top=6126,north=126,east=142,south=142,west=142,bottom=6142
 # Red Mushroom Block - N-top cap color
-block:id=100,data=4,top=125,north=125,east=142,south=142,west=142,bottom=142
+block:id=100,data=4,top=6125,north=125,east=142,south=142,west=142,bottom=6142
 # Brown Mushroom Block - top cap color
-block:id=99,data=5,top=126,north=142,east=142,south=142,west=142,bottom=142
+block:id=99,data=5,top=6126,north=142,east=142,south=142,west=142,bottom=6142
 # Red Mushroom Block - top cap color
-block:id=100,data=5,top=125,north=142,east=142,south=142,west=142,bottom=142
+block:id=100,data=5,top=6125,north=142,east=142,south=142,west=142,bottom=6142
 # Brown Mushroom Block - top-S cap color
-block:id=99,data=6,top=126,south=126,north=142,east=142,west=142,bottom=142
+block:id=99,data=6,top=6126,south=126,north=142,east=142,west=142,bottom=6142
 # Red Mushroom Block - top-S cap color
-block:id=100,data=6,top=125,south=125,north=142,east=142,west=142,bottom=142
+block:id=100,data=6,top=6125,south=125,north=142,east=142,west=142,bottom=6142
 # Brown Mushroom Block - N-W cap color
-block:id=99,data=7,top=126,north=126,west=126,south=142,east=142,bottom=142
+block:id=99,data=7,top=6126,north=126,west=126,south=142,east=142,bottom=6142
 # Red Mushroom Block - N-W cap color
-block:id=100,data=7,top=125,north=125,west=125,south=142,east=142,bottom=142
+block:id=100,data=7,top=6125,north=125,west=125,south=142,east=142,bottom=6142
 # Brown Mushroom Block - top-W cap color
-block:id=99,data=8,top=126,west=126,north=142,east=142,south=142,bottom=142
+block:id=99,data=8,top=6126,west=126,north=142,east=142,south=142,bottom=6142
 # Red Mushroom Block - top-W cap color
-block:id=100,data=8,top=125,west=125,north=142,east=142,south=142,bottom=142
+block:id=100,data=8,top=6125,west=125,north=142,east=142,south=142,bottom=6142
 # Brown Mushroom Block - top-S-W cap color
-block:id=99,data=9,top=126,west=126,south=126,north=142,east=142,bottom=142
+block:id=99,data=9,top=6126,west=126,south=126,north=142,east=142,bottom=6142
 # Red Mushroom Block - top-S-W cap color
-block:id=100,data=9,top=125,west=125,south=125,north=142,east=142,bottom=142
+block:id=100,data=9,top=6125,west=125,south=125,north=142,east=142,bottom=6142
 # Brown Mushroom Block - stem
 # Red Mushroom Block - stem
-block:id=99,id=100,data=10,topbottom=142,allsides=141
+block:id=99,id=100,data=10,topbottom=6142,allsides=141
 # Iron fence
 block:id=101,patch0=85,patch1=85,patch2=85,patch3=85,transparency=TRANSPARENT
 # Glass pane
 block:id=102,patch0=12049,patch1=12049,patch2=12049,patch3=12049,transparency=TRANSPARENT
 # Watermellon
-block:id=103,allsides=136,topbottom=137
+block:id=103,allsides=136,topbottom=6137
 # Pumpkin stem 
 block:id=104,allsides=1111,transparency=TRANSPARENT
 # Melon stem
@@ -592,21 +592,21 @@ block:id=105,allsides=1111,transparency=TRANSPARENT
 # Vines
 block:id=106,patch0=2143,patch1=2143,patch2=2143,patch3=2143,patch4=2143,transparency=TRANSPARENT
 # Fence gate
-block:id=107,allsides=4,topbottom=4004,transparency=TRANSPARENT
+block:id=107,allsides=4,topbottom=6004,transparency=TRANSPARENT
 # Brick stair
-block:id=108,allfaces=7,transparency=SEMITRANSPARENT
+block:id=108,allsides=7,topbottom=6007,transparency=SEMITRANSPARENT
 # Stone brick stair
-block:id=109,allfaces=54,transparency=SEMITRANSPARENT
+block:id=109,allsides=54,topbottom=6054,transparency=SEMITRANSPARENT
 # Mycelium
-block:id=110,top=78,allsides=77,bottom=2
+block:id=110,top=6078,allsides=77,bottom=6002
 # Lily pad
 block:id=111,patch0=15076,transparency=TRANSPARENT
 # Nether brick
-block:id=112,allfaces=224
+block:id=112,allsides=224,topbottom=6224
 # Nether brick fence
-block:id=113,allfaces=224,transparency=TRANSPARENT
+block:id=113,allsides=224,topbottom=6224,transparency=TRANSPARENT
 # Nether brick stairs
-block:id=114,allfaces=224,transparency=SEMITRANSPARENT
+block:id=114,allsides=224,topbottom=6224,transparency=SEMITRANSPARENT
 # Nether Wart (small)
 block:id=115,data=0,patch0=226,patch1=226,transparency=TRANSPARENT
 # Nether Wart (medium)
@@ -614,47 +614,47 @@ block:id=115,data=1,data=2,patch0=227,patch1=227,transparency=TRANSPARENT
 # Nether Wart (large)
 block:id=115,data=3,data=4,data=5,data=6,data=7,patch0=228,patch1=228,transparency=TRANSPARENT
 # Enchantment table
-block:id=116,data=*,top=166,allsides=182,bottom=183,transparency=TRANSPARENT
+block:id=116,data=*,top=6166,allsides=182,bottom=6183,transparency=TRANSPARENT
 # Brewing stand
 block:id=117,data=*,patch0=156,patch1=157,patch2=157,patch3=157,patch4=157,patch5=157,patch6=157,patch7=157,transparency=TRANSPARENT
 # Cauldron
-block:id=118,data=*,top=139,bottom=155,allsides=154,transparency=TRANSPARENT
+block:id=118,data=*,top=6139,bottom=6155,allsides=154,transparency=TRANSPARENT
 # Air portal (need black-with-stars texture - using obsidian for now)
-block:id=119,data=*,topbottom=37
+block:id=119,data=*,topbottom=6037
 # Air portal frame (no eye)
-block:id=120,data=0,data=1,data=2,data=3,top=158,allsides=159,bottom=175
+block:id=120,data=0,data=1,data=2,data=3,top=6158,allsides=159,bottom=6175
 # Air portal fram (eye installed)
-block:id=120,data=4,data=5,data=6,data=7,top=264,allsides=159,bottom=175
+block:id=120,data=4,data=5,data=6,data=7,top=6264,allsides=159,bottom=6175
 # White stone
-block:id=121,data=*,allfaces=175
+block:id=121,data=*,allsides=175,topbottom=6175
 # Dragon Egg
-block:id=122,data=*,allfaces=167
+block:id=122,data=*,allsides=167,topbottom=6167
 # Redstone lamp (off)
-block:id=123,data=*,allfaces=211
+block:id=123,data=*,allsides=211,topbottom=6211
 # Redstone lamp (on)
-block:id=124,data=*,allfaces=212
+block:id=124,data=*,allsides=212,topbottom=6212
 # Wooden Double Slab (Oak)
-block:id=125,data=0,data=8,allsides=4,topbottom=4004
+block:id=125,data=0,data=8,allsides=4,topbottom=6004
 # Wooden Double Slab (Spruce)
-block:id=125,data=1,data=9,allsides=198,topbottom=4198
+block:id=125,data=1,data=9,allsides=198,topbottom=6198
 # Wooden Double Slab (Birch)
-block:id=125,data=2,data=10,allsides=214,topbottom=4214
+block:id=125,data=2,data=10,allsides=214,topbottom=6214
 # Wooden Double Slab (Jungle)
-block:id=125,data=3,data=11,allsides=199,topbottom=4199
+block:id=125,data=3,data=11,allsides=199,topbottom=6199
 # Wooden Slab (Oak)
-block:id=126,data=0,data=8,allsides=4,topbottom=4004
+block:id=126,data=0,data=8,allsides=4,topbottom=6004
 # Wooden Slab (Spruce)
-block:id=126,data=1,data=9,allsides=198,topbottom=4198
+block:id=126,data=1,data=9,allsides=198,topbottom=6198
 # Wooden Slab (Birch)
-block:id=126,data=2,data=10,allsides=214,topbottom=4214
+block:id=126,data=2,data=10,allsides=214,topbottom=6214
 # Wooden Slab (Jungle)
-block:id=126,data=3,data=11,allsides=199,topbottom=4199
+block:id=126,data=3,data=11,allsides=199,topbottom=6199
 # Cocoa Plant
-block:id=127,data=*,allsized=168
+block:id=127,data=*,allsides=168
 # Sandstone stairs
-block:id=128,data=*,bottom=176,top=208,allsides=192,transparency=SEMITRANSPARENT
+block:id=128,data=*,bottom=6176,top=6208,allsides=192,transparency=SEMITRANSPARENT
 # Emerald Ore
-block:id=129,data=*,allfaces=171
+block:id=129,data=*,allsides=171,topbottom=6171
 # Ender Chest (facing east)
 block:id=130,data=2,top=6000,east=3,south=1,north=2,west=4,bottom=6005,txtid=enderchest
 # Ender Chest (facing west)
@@ -664,15 +664,15 @@ block:id=130,data=4,top=5000,north=3,south=4,east=1,west=2,bottom=5005,txtid=end
 # Ender Chest (facing south)
 block:id=130,data=5,top=0,south=3,north=4,east=2,west=1,bottom=5,txtid=enderchest
 # Tripwire Hook
-#block:id=131,data=*,allsides=4,topbottom=172
+#block:id=131,data=*,allsides=4,topbottom=6172
 block:id=131,data=*,patch0-5=4,patch6-7=172,transparency=TRANSPARENT
 # Tripwire
 block:id=132,data=*
 # Block of Emerald
-block:id=133,data=*,allfaces=25
+block:id=133,data=*,allsides=25,topbottom=6025
 # Spruce Wooden stairs
-block:id=134,data=*,allsides=198,topbottom=4198,transparency=SEMITRANSPARENT
+block:id=134,data=*,allsides=198,topbottom=6198,transparency=SEMITRANSPARENT
 # Birch Wooden stairs
-block:id=135,data=*,allsides=214,topbottom=4214,transparency=SEMITRANSPARENT
+block:id=135,data=*,allsides=214,topbottom=6214,transparency=SEMITRANSPARENT
 # Jungle Wooden stairs
-block:id=136,data=*,allsides=199,topbottom=4199,transparency=SEMITRANSPARENT
+block:id=136,data=*,allsides=199,topbottom=6199,transparency=SEMITRANSPARENT
