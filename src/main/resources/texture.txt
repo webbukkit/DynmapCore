@@ -579,6 +579,14 @@ block:id=100,data=9,top=6125,west=125,south=125,north=142,east=142,bottom=6142
 # Brown Mushroom Block - stem
 # Red Mushroom Block - stem
 block:id=99,id=100,data=10,topbottom=6142,allsides=141
+# Brown Mushroom Block - all cap
+block:id=99,data=14,topbottom=6126,allsides=126
+# Red Mushroom Block - all cap
+block:id=100,data=14,topbottom=6125,allsides=125
+# Brown Mushroom Block - stem all sides
+# Red Mushroom Block - stem all sides
+block:id=99,id=100,data=15,topbottom=6141,allsides=141
+ 
 # Iron fence
 block:id=101,patch0=85,patch1=85,patch2=85,patch3=85,transparency=TRANSPARENT
 # Glass pane
