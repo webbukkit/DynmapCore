@@ -26,7 +26,7 @@ block:id=5,data=1,allsides=198,topbottom=6198
 block:id=5,data=2,allsides=214,topbottom=6214
 # Wooden Plank
 block:id=5,data=3,allsides=199,topbottom=6199
-# Sapling
+# Sapling (Oak)
 block:id=6,data=0,data=4,data=8,data=12,patch0=15,patch1=15,transparency=TRANSPARENT
 # Sapling (Spruce)
 block:id=6,data=1,data=5,data=9,data=13,patch0=63,patch1=63,transparency=TRANSPARENT
@@ -684,3 +684,47 @@ block:id=134,data=*,allsides=198,topbottom=6198,transparency=SEMITRANSPARENT
 block:id=135,data=*,allsides=214,topbottom=6214,transparency=SEMITRANSPARENT
 # Jungle Wooden stairs
 block:id=136,data=*,allsides=199,topbottom=6199,transparency=SEMITRANSPARENT
+# Command block
+block:id=137,data=*,allsides=184,topbottom=6184
+# Beacon
+block:id=138,data=*,patch0-5=12049,patch6-9=37,patch10=6037,patch11-14=41,patch15=6041,transparency=TRANSPARENT
+# Cobblestone wall
+block:id=139,data=0,patch0-13=16,transparency=TRANSPARENT
+# Mossy cobblestone wall
+block:id=139,data=1,patch0-13=36,transparency=TRANSPARENT
+# Flower pot
+block:id=140,data=0,patch0-5=186,patch6=2,transparency=TRANSPARENT
+# Flower pot with Rose
+block:id=140,data=1,patch0-5=186,patch6=2,patch7=12,patch8=12,transparency=TRANSPARENT
+# Flower pot with Dandelion
+block:id=140,data=2,patch0-5=186,patch6=2,patch7=13,patch8=13,transparency=TRANSPARENT
+# Flower pot with Oak Sapling
+block:id=140,data=3,patch0-5=186,patch6=2,patch7=15,patch8=15,transparency=TRANSPARENT
+# Flower pot with Spruce Sapling
+block:id=140,data=4,patch0-5=186,patch6=2,patch7=63,patch8=63,transparency=TRANSPARENT
+# Flower pot with Birch Sapling
+block:id=140,data=5,patch0-5=186,patch6=2,patch7=79,patch8=79,transparency=TRANSPARENT
+# Flower pot with Jungle Sapling
+block:id=140,data=6,patch0-5=186,patch6=2,patch7=30,patch8=30,transparency=TRANSPARENT
+# Flower pot with Red Mushroom
+block:id=140,data=7,patch0-5=186,patch6=2,patch7=28,patch8=28,transparency=TRANSPARENT
+# Flower pot with Brown Mushroom
+block:id=140,data=8,patch0-5=186,patch6=2,patch7=29,patch8=29,transparency=TRANSPARENT
+# Flower pot with cactus
+block:id=140,data=9,patch0-5=186,patch6=2,patch7-10=70,patch11=69,transparency=TRANSPARENT
+# Flower pot with dead bush
+block:id=140,data=10,patch0-5=186,patch6=2,patch7=55,patch8=55,transparency=TRANSPARENT
+# Flower pot with fern
+block:id=140,data=11,patch0-5=186,patch6=2,patch7=1056,patch8=1056,transparency=TRANSPARENT
+# Carrots
+block:id=141,data=0,data=1,patch0-3=200,transparency=TRANSPARENT
+block:id=141,data=2,data=3,patch0-3=201,transparency=TRANSPARENT
+block:id=141,data=4,data=5,data=6,patch0-3=202,transparency=TRANSPARENT
+block:id=141,data=7,patch0-3=203,transparency=TRANSPARENT
+# Potato
+block:id=142,data=0,data=1,patch0-3=200,transparency=TRANSPARENT
+block:id=142,data=2,data=3,patch0-3=201,transparency=TRANSPARENT
+block:id=142,data=4,data=5,data=6,patch0-3=202,transparency=TRANSPARENT
+block:id=142,data=7,patch0-3=204,transparency=TRANSPARENT
+# Wooden button
+block:id=143,allsides=4,topbottom=6004,transparency=TRANSPARENT

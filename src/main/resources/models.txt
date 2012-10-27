@@ -133,6 +133,37 @@ patch:id=VertZ01875,Ox=0.0,Oy=0.0,Oz=0.1875,Ux=1.0,Uy=0.0,Uz=0.1875,Vx=0.0,Vy=1.
 patch:id=StandSide,Ox=0.0,Oy=0.0,Oz=0.4375,Ux=1.0,Uy=0.0,Uz=0.4375,Vx=0.0,Vy=1.0,Vz=0.4375,Umin=0.4375,Umax=0.5625,visibility=bottom
 patch:id=StandArm,Ox=0.0,Oy=0.0,Oz=0.5,Ux=1.0,Uy=0.0,Uz=0.5,Vx=0.0,Vy=1.0,Vz=0.5,Umin=0.5625,Umax=1.0
 
+# Beacon patches
+patch:id=BeaconGlassSide,Ox=0.0,Oy=0.0,Oz=0.0,Ux=1.0,Uy=0.0,Uz=0.0,Vx=0.0,Vy=1.0,Vz=0.0,visibility=bottom
+patch:id=BeaconObsidianSide,Ox=0.0,Oy=0.0,Oz=0.125,Ux=1.0,Uy=0.0,Uz=0.125,Vx=0.0,Vy=1.0,Vz=0.125,Umin=0.125,Umax=0.875,Vmin=0.0,Vmax=0.1875,visibility=bottom
+patch:id=BeaconGlassBottom,Ox=0.0,Oy=0.0,Oz=0.0,Ux=1.0,Uy=0.0,Uz=0.0,Vx=0.0,Vy=0.0,Vz=1.0,visibility=top
+patch:id=BeaconGlassTop,Ox=0.0,Oy=1.0,Oz=0.0,Ux=1.0,Uy=1.0,Uz=0.0,Vx=0.0,Vy=1.0,Vz=1.0,visibility=bottom
+patch:id=BeaconObsidianTop,Ox=0.0,Oy=0.1875,Oz=0.0,Ux=1.0,Uy=0.1875,Uz=0.0,Vx=0.0,Vy=0.1875,Vz=1.0,Umin=0.125,Umax=0.875,Vmin=0.125,Vmax=0.875,visibility=bottom
+patch:id=BeaconLightSide,Ox=0.0,Oy=0.0,Oz=0.1875,Ux=1.0,Uy=0.0,Uz=0.1875,Vx=0.0,Vy=1.0,Vz=0.1875,Umin=0.1875,Umax=0.8125,Vmin=0.1875,Vmax=0.8125,visibility=bottom
+patch:id=BeaconLightTop,Ox=0.0,Oy=0.8125,Oz=0.0,Ux=1.0,Uy=0.8125,Uz=0.0,Vx=0.0,Vy=0.8125,Vz=1.0,Umin=0.1875,Umax=0.8125,Vmin=0.1875,Vmax=0.8125,visibility=bottom
+
+# Cobblestone wall patches
+patch:id=CobblePostSide,Ox=0.0,Oy=0.0,Oz=0.25,Ux=1.0,Uy=0.0,Uz=0.25,Vx=0.0,Vy=1.0,Vz=0.25,Umin=0.25,Umax=0.75,visibility=bottom
+patch:id=CobblePostTop,Ox=0.0,Oy=1.0,Oz=0.0,Ux=1.0,Uy=1.0,Uz=0.0,Vx=0.0,Vy=1.0,Vz=1.0,Umin=0.25,Umax=0.75,Vmin=0.25,Vmax=0.75,visibility=bottom
+patch:id=CobblePostBottom,Ox=0.0,Oy=0.0,Oz=0.0,Ux=1.0,Uy=0.0,Uz=0.0,Vx=0.0,Vy=0.0,Vz=1.0,Umin=0.25,Umax=0.75,Vmin=0.25,Vmax=0.75,visibility=top
+patch:id=CobbleWallSide,Ox=0.0,Oy=0.0,Oz=0.3125,Ux=1.0,Uy=0.0,Uz=0.3125,Vx=0.0,Vy=1.0,Vz=0.3125,Umin=0.0,Umax=0.25,Vmin=0.0,Vmax=0.8175,visibility=bottom
+patch:id=CobbleWallSide2,Ox=0.0,Oy=0.0,Oz=0.6825,Ux=1.0,Uy=0.0,Uz=0.6825,Vx=0.0,Vy=1.0,Vz=0.6825,Umin=0.0,Umax=0.25,Vmin=0.0,Vmax=0.8175,visibility=top
+patch:id=CobbleWallTop,Ox=0.0,Oy=0.8175,Oz=0.0,Ux=1.0,Uy=0.8175,Uz=0.0,Vx=0.0,Vy=0.8175,Vz=1.0,Umin=0.0,Umax=0.25,Vmin=0.3125,Vmax=0.6875,visibility=bottom
+patch:id=CobbleWallBottom,Ox=0.0,Oy=0.0,Oz=0.0,Ux=1.0,Uy=0.0,Uz=0.0,Vx=0.0,Vy=0.0,Vz=1.0,Umin=0.0,Umax=0.25,Vmin=0.3125,Vmax=0.6875,visibility=top
+patch:id=CobbleFWallSide,Ox=0.0,Oy=0.0,Oz=0.3125,Ux=1.0,Uy=0.0,Uz=0.3125,Vx=0.0,Vy=1.0,Vz=0.3125,Umin=0.0,Umax=1.0,Vmin=0.0,Vmax=0.8175,visibility=bottom
+patch:id=CobbleFWallSide2,Ox=0.0,Oy=0.0,Oz=0.6825,Ux=1.0,Uy=0.0,Uz=0.6825,Vx=0.0,Vy=1.0,Vz=0.6825,Umin=0.0,Umax=1.0,Vmin=0.0,Vmax=0.8175,visibility=top
+patch:id=CobbleFWallTop,Ox=0.0,Oy=0.8175,Oz=0.0,Ux=1.0,Uy=0.8175,Uz=0.0,Vx=0.0,Vy=0.8175,Vz=1.0,Umin=0.0,Umax=1.0,Vmin=0.3125,Vmax=0.6875,visibility=bottom
+patch:id=CobbleFWallBottom,Ox=0.0,Oy=0.0,Oz=0.0,Ux=1.0,Uy=0.0,Uz=0.0,Vx=0.0,Vy=0.0,Vz=1.0,Umin=0.0,Umax=1.0,Vmin=0.3125,Vmax=0.6875,visibility=top
+
+# Flower pot patches
+patch:id=FlowerPotSide,Ox=0.0,Oy=0.0,Oz=0.3125,Ux=1.0,Uy=0.0,Uz=0.3125,Vx=0.0,Vy=1.0,Vz=0.3125,Umin=0.3125,Umax=0.6875,Vmin=0.0,Vmax=0.375,visibility=both
+patch:id=FlowerPotTop,Ox=0.0,Oy=0.375,Oz=0.0,Ux=1.0,Uy=0.375,Uz=0.0,Vx=0.0,Vy=0.375,Vz=1.0,Umin=0.3125,Umax=0.6875,Vmin=0.3125,Vmax=0.6875,visibility=bottom
+patch:id=FlowerPotBottom,Ox=0.0,Oy=0.0,Oz=0.0,Ux=1.0,Uy=0.0,Uz=0.0,Vx=0.0,Vy=0.0,Vz=1.0,Umin=0.3125,Umax=0.6875,Vmin=0.3125,Vmax=0.6875,visibility=top
+patch:id=FlowerPotDirt,Ox=0.0,Oy=0.25,Oz=0.0,Ux=1.0,Uy=0.25,Uz=0.0,Vx=0.0,Vy=0.25,Vz=1.0,Umin=0.375,Umax=0.625,Vmin=0.375,Vmax=0.625,visibility=bottom
+patch:id=FlowerPotPlant,Ox=0.875,Oy=0.25,Oz=0.125,Ux=0.125,Uy=0.25,Uz=0.875,Vx=0.875,Vy=1.0,Vz=0.125
+patch:id=FlowerPotFlower,Ox=1.0,Oy=0.25,Oz=0.0,Ux=0.0,Uy=0.25,Uz=1.0,Vx=1.0,Vy=1.25,Vz=0.0,Vmin=0.0,Vmax=0.75
+patch:id=FlowerPotCactusSide,Ox=0.0,Oy=0.0,Oz=0.375,Ux=1.0,Uy=0.0,Uz=0.375,Vx=0.0,Vy=1.0,Vz=0.375,Umin=0.375,Umax=0.625,Vmin=0.0,Vmax=1.0,visibility=both
+patch:id=FlowerPotCactusTop,Ox=0.0,Oy=1.0,Oz=0.0,Ux=1.0,Uy=1.0,Uz=0.0,Vx=0.0,Vy=1.0,Vz=1.0,Umin=0.375,Umax=0.625,Vmin=0.375,Vmax=0.625,visibility=bottom
 
 # Wood Stair - up south
 # Cobblestone Stair - up south
@@ -674,9 +705,12 @@ rotate:id=96,data=4,rot=270
 block:id=96,data=7,scale=16
 rotate:id=96,data=4,rot=90
 # Crops
-patchblock:id=59,data=*,patch0=VertX075,patch1=VertX075@90,patch2=VertX025,patch3=VertX025@90
+# Carrot
+# Potatoes
+patchblock:id=59,id=141,id=142,data=*,patch0=VertX075,patch1=VertX075@90,patch2=VertX025,patch3=VertX025@90
 # Stone Button - facing south
-block:id=77,data=1,data=9,scale=8
+# Wooden Button - facing south
+block:id=77,id=143,data=1,data=9,scale=8
 layer:3,4
 ---**---
 ---**---
@@ -687,13 +721,16 @@ layer:3,4
 --------
 --------
 # Stone Button - facing north
-block:id=77,data=2,data=10,scale=8
+# Wooden Button - facing north
+block:id=77,id=143,data=2,data=10,scale=8
 rotate:id=77,data=1,rot=180
 # Stone Button - facing west
-block:id=77,data=3,data=11,scale=8
+# Wooden Button - facing west
+block:id=77,id=143,data=3,data=11,scale=8
 rotate:id=77,data=1,rot=90
 # Stone Button - facing east
-block:id=77,data=4,data=12,scale=8
+# Wooden Button - facing east
+block:id=77,id=143,data=4,data=12,scale=8
 rotate:id=77,data=1,rot=270
 # Rails - flat - east/west
 # Powered rails - flat - east/west
@@ -1865,3 +1902,58 @@ rotate:id=54,data=0,rot=90
 # Ender Chest - facing north
 block:id=130,data=5,scale=16
 rotate:id=54,data=0,rot=270
+# Beacon
+patchblock:id=138,data=*,patch0=BeaconGlassSide,patch1=BeaconGlassSide@90,patch2=BeaconGlassSide@180,patch3=BeaconGlassSide@270,patch4=BeaconGlassTop,patch5=BeaconGlassBottom,patch6=BeaconObsidianSide,patch7=BeaconObsidianSide@90,patch8=BeaconObsidianSide@180,patch9=BeaconObsidianSide@270,patch10=BeaconObsidianTop,patch11=BeaconLightSide,patch12=BeaconLightSide@90,patch13=BeaconLightSide@180,,patch14=BeaconLightSide@270,patch15=BeaconLightTop
+
+# Cobblestone wall - set render algorithm
+linkmap:id=139,linkalg=1
+# Cobblestone wall - (data is faked: 1=north,2=east,4=south,8=west)
+# Cobblestone wall - no neighbors
+patchblock:id=139,data=0,patch0=CobblePostTop,patch1=CobblePostBottom,patch2=CobblePostSide,patch3=CobblePostSide@90,patch4=CobblePostSide@180,patch5=CobblePostSide@270
+# Cobblestone wall - just north neighbor
+patchblock:id=139,data=1,patch0=CobblePostTop,patch1=CobblePostBottom,patch2=CobblePostSide,patch3=CobblePostSide@90,patch4=CobblePostSide@180,patch5=CobblePostSide@270,patch6=CobbleWallTop,patch7=CobbleWallBottom,patch8=CobbleWallSide,patch9=CobbleWallSide2
+# Cobblestone wall - just east neighbor
+patchblock:id=139,data=2,patch0=CobblePostTop,patch1=CobblePostBottom,patch2=CobblePostSide,patch3=CobblePostSide@90,patch4=CobblePostSide@180,patch5=CobblePostSide@270,patch6=CobbleWallTop@90,patch7=CobbleWallBottom@90,patch8=CobbleWallSide@90,patch9=CobbleWallSide2@90
+# Cobblestone wall - just south neighbor
+patchblock:id=139,data=4,patch0=CobblePostTop,patch1=CobblePostBottom,patch2=CobblePostSide,patch3=CobblePostSide@90,patch4=CobblePostSide@180,patch5=CobblePostSide@270,patch6=CobbleWallTop@180,patch7=CobbleWallBottom@180,patch8=CobbleWallSide@180,patch9=CobbleWallSide2@180
+# Cobblestone wall - just west neighbor
+patchblock:id=139,data=8,patch0=CobblePostTop,patch1=CobblePostBottom,patch2=CobblePostSide,patch3=CobblePostSide@90,patch4=CobblePostSide@180,patch5=CobblePostSide@270,patch6=CobbleWallTop@270,patch7=CobbleWallBottom@270,patch8=CobbleWallSide@270,patch9=CobbleWallSide2@270
+# Cobblestone wall - north+south neighbor
+patchblock:id=139,data=5,patch0=CobbleFWallTop,patch1=CobbleFWallBottom,patch2=CobbleFWallSide,patch3=CobbleFWallSide2
+# Cobblestone wall - east+west neighbor
+patchblock:id=139,data=10
+patchrotate:id=139,data=5,rot=90
+# Cobblestone wall - north+east neighbor
+patchblock:id=139,data=3,patch0=CobblePostTop,patch1=CobblePostBottom,patch2=CobblePostSide,patch3=CobblePostSide@90,patch4=CobblePostSide@180,patch5=CobblePostSide@270,patch6=CobbleWallTop,patch7=CobbleWallBottom,patch8=CobbleWallSide,patch9=CobbleWallSide2,patch10=CobbleWallTop@90,patch11=CobbleWallBottom@90,patch12=CobbleWallSide@90,patch13=CobbleWallSide2@90
+# Cobblestone wall - east+south neightbor
+patchblock:id=139,data=6
+patchrotate:id=139,data=3,rot=90
+# Cobblestone wall - south+west neightbor
+patchblock:id=139,data=12
+patchrotate:id=139,data=3,rot=180
+# Cobblestone wall - west+north neightbor
+patchblock:id=139,data=9
+patchrotate:id=139,data=3,rot=270
+# Cobblestone wall - north+east+south
+patchblock:id=139,data=7,patch0=CobblePostTop,patch1=CobblePostBottom,patch2=CobblePostSide,patch3=CobblePostSide@90,patch4=CobblePostSide@180,patch5=CobblePostSide@270,patch6=CobbleFWallTop,patch7=CobbleFWallBottom,patch8=CobbleFWallSide,patch9=CobbleFWallSide2,patch10=CobbleWallTop@90,patch11=CobbleWallBottom@90,patch12=CobbleWallSide@90,patch13=CobbleWallSide2@90
+# Cobblestone wall - east+south+west
+patchblock:id=139,data=14
+patchrotate:id=139,data=7,rot=90
+# Cobblestone wall - south+west+north
+patchblock:id=139,data=13
+patchrotate:id=139,data=7,rot=180
+# Cobblestone wall - west+north+east
+patchblock:id=139,data=11
+patchrotate:id=139,data=7,rot=270
+# Cobblestone wall - north+east+south+west
+patchblock:id=139,data=15,patch0=CobblePostTop,patch1=CobblePostBottom,patch2=CobblePostSide,patch3=CobblePostSide@90,patch4=CobblePostSide@180,patch5=CobblePostSide@270,patch6=CobbleFWallTop,patch7=CobbleFWallBottom,patch8=CobbleFWallSide,patch9=CobbleFWallSide2,patch10=CobbleFWallTop@90,patch11=CobbleFWallBottom@90,patch12=CobbleFWallSide@90,patch13=CobbleFWallSide2@90
+# Flower pot
+patchblock:id=140,data=0,patch0=FlowerPotTop,patch1=FlowerPotBottom,patch2=FlowerPotSide,patch3=FlowerPotSide@90,patch4=FlowerPotSide@180,patch5=FlowerPotSide@270,patch6=FlowerPotDirt
+# Flower pot with flower
+patchblock:id=140,data=1,data=2,data=7,data=8,patch0=FlowerPotTop,patch1=FlowerPotBottom,patch2=FlowerPotSide,patch3=FlowerPotSide@90,patch4=FlowerPotSide@180,patch5=FlowerPotSide@270,patch6=FlowerPotDirt,patch7=FlowerPotFlower,patch8=FlowerPotFlower@90
+# Flower pot with plant
+patchblock:id=140,data=3,data=4,data=5,data=6,data=10,data=11,patch0=FlowerPotTop,patch1=FlowerPotBottom,patch2=FlowerPotSide,patch3=FlowerPotSide@90,patch4=FlowerPotSide@180,patch5=FlowerPotSide@270,patch6=FlowerPotDirt,patch7=FlowerPotPlant,patch8=FlowerPotPlant@90
+# Flower pot with cactus
+patchblock:id=140,data=9,patch0=FlowerPotTop,patch1=FlowerPotBottom,patch2=FlowerPotSide,patch3=FlowerPotSide@90,patch4=FlowerPotSide@180,patch5=FlowerPotSide@270,patch6=FlowerPotDirt,patch7=FlowerPotCactusSide,patch8=FlowerPotCactusSide@90,,patch9=FlowerPotCactusSide@180,,patch10=FlowerPotCactusSide@270,,patch11=FlowerPotCactusTop
+
+
