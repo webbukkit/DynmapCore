@@ -1955,5 +1955,23 @@ patchblock:id=140,data=1,data=2,data=7,data=8,patch0=FlowerPotTop,patch1=FlowerP
 patchblock:id=140,data=3,data=4,data=5,data=6,data=10,data=11,patch0=FlowerPotTop,patch1=FlowerPotBottom,patch2=FlowerPotSide,patch3=FlowerPotSide@90,patch4=FlowerPotSide@180,patch5=FlowerPotSide@270,patch6=FlowerPotDirt,patch7=FlowerPotPlant,patch8=FlowerPotPlant@90
 # Flower pot with cactus
 patchblock:id=140,data=9,patch0=FlowerPotTop,patch1=FlowerPotBottom,patch2=FlowerPotSide,patch3=FlowerPotSide@90,patch4=FlowerPotSide@180,patch5=FlowerPotSide@270,patch6=FlowerPotDirt,patch7=FlowerPotCactusSide,patch8=FlowerPotCactusSide@90,,patch9=FlowerPotCactusSide@180,,patch10=FlowerPotCactusSide@270,,patch11=FlowerPotCactusTop
-
-
+# Anvil
+patch:id=AnvilBaseSide,Ox=0.0,Oy=0.0,Oz=0.125,Ux=1.0,Uy=0.0,Uz=0.125,Vx=0.0,Vy=1.0,Vz=0.125,Umin=0.125,Umax=0.875,Vmin=0.0,Vmax=0.25,visibility=both
+patch:id=AnvilBaseTop,Ox=0.0,Oy=0.25,Oz=0.0,Ux=1.0,Uy=0.25,Uz=0.0,Vx=0.0,Vy=0.25,Vz=1.0,Umin=0.125,Umax=0.875,Vmin=0.125,Vmax=0.875,visibility=bottom
+patch:id=AnvilBaseBottom,Ox=0.0,Oy=0.0,Oz=0.0,Ux=1.0,Uy=0.0,Uz=0.0,Vx=0.0,Vy=0.0,Vz=1.0,Umin=0.125,Umax=0.875,Vmin=0.125,Vmax=0.875,visibility=top
+patch:id=AnvilStepSide1,Ox=0.0,Oy=0.0,Oz=0.25,Ux=1.0,Uy=0.0,Uz=0.25,Vx=0.0,Vy=1.0,Vz=0.25,Umin=0.1875,Umax=0.8125,Vmin=0.25,Vmax=0.3125,visibility=both
+patch:id=AnvilStepSide2,Ox=0.0,Oy=0.0,Oz=0.1875,Ux=1.0,Uy=0.0,Uz=0.1875,Vx=0.0,Vy=1.0,Vz=0.1875,Umin=0.25,Umax=0.75,Vmin=0.25,Vmax=0.3125,visibility=both
+patch:id=AnvilStepTop,Ox=0.0,Oy=0.3125,Oz=0.0,Ux=1.0,Uy=0.3125,Uz=0.0,Vx=0.0,Vy=0.3125,Vz=1.0,Umin=0.1875,Umax=0.8125,Vmin=0.25,Vmax=0.75,visibility=bottom
+patch:id=AnvilStandSide1,Ox=0.0,Oy=0.0,Oz=0.375,Ux=1.0,Uy=0.0,Uz=0.375,Vx=0.0,Vy=1.0,Vz=0.375,Umin=0.25,Umax=0.75,Vmin=0.3125,Vmax=0.625,visibility=both
+patch:id=AnvilStandSide2,Ox=0.0,Oy=0.0,Oz=0.25,Ux=1.0,Uy=0.0,Uz=0.25,Vx=0.0,Vy=1.0,Vz=0.25,Umin=0.325,Umax=0.675,Vmin=0.3125,Vmax=0.625,visibility=both
+patch:id=AnvilTopSide1,Ox=0.0,Oy=0.0,Oz=0.1825,Ux=1.0,Uy=0.0,Uz=0.1825,Vx=0.0,Vy=1.0,Vz=0.1825,Umin=0.0,Umax=1.0,Vmin=0.625,Vmax=1.0,visibility=both
+patch:id=AnvilTopSide2,Ox=0.0,Oy=0.0,Oz=0.0,Ux=1.0,Uy=0.0,Uz=0.0,Vx=0.0,Vy=1.0,Vz=0.0,Umin=0.1825,Umax=0.8175,Vmin=0.625,Vmax=1.0,visibility=both
+patch:id=AnvilTopTop,Ox=0.0,Oy=1.0,Oz=0.0,Ux=1.0,Uy=1.0,Uz=0.0,Vx=0.0,Vy=1.0,Vz=1.0,Umin=0.0,Umax=1.0,Vmin=0.1825,Vmax=0.8175,visibility=bottom
+patch:id=AnvilTopBottom,Ox=0.0,Oy=0.625,Oz=0.0,Ux=1.0,Uy=0.625,Uz=0.0,Vx=0.0,Vy=0.625,Vz=1.0,Umin=0.0,Umax=1.0,Vmin=0.1825,Vmax=0.8175,visibility=top
+patchblock:id=145,data=1,data=5,data=9,data=13,patch0=AnvilBaseTop,patch1=AnvilBaseBottom,patch2=AnvilBaseSide,patch3=AnvilBaseSide@90,patch4=AnvilBaseSide@180,patch5=AnvilBaseSide@270,patch6=AnvilStepTop,patch7=AnvilStepSide1,patch8=AnvilStepSide2@90,patch9=AnvilStepSide1@180,patch10=AnvilStepSide2@270,patch11=AnvilStandSide1,patch12=AnvilStandSide2@90,patch13=AnvilStandSide1@180,patch14=AnvilStandSide2@270,patch15=AnvilTopBottom,patch16=AnvilTopSide1,patch17=AnvilTopSide2@90,patch18=AnvilTopSide1@180,patch19=AnvilTopSide2@270,patch20=AnvilTopTop
+patchblock:id=145,data=0,data=4,data=8,data=12
+patchrotate:id=145,data=1,rot=270
+patchblock:id=145,data=2,data=6,data=10,data=14
+patchrotate:id=145,data=1,rot=90
+patchblock:id=145,data=3,data=7,data=11,data=15
+patchrotate:id=145,data=1,rot=180

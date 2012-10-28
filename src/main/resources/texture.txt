@@ -728,3 +728,9 @@ block:id=142,data=4,data=5,data=6,patch0-3=202,transparency=TRANSPARENT
 block:id=142,data=7,patch0-3=204,transparency=TRANSPARENT
 # Wooden button
 block:id=143,allsides=4,topbottom=6004,transparency=TRANSPARENT
+# Anvil (normal)
+block:id=145,data=0,data=1,data=2,data=3,patch0-19=215,patch20=6231,transparency=TRANSPARENT
+# Anvil (slight damage)
+block:id=145,data=4,data=5,data=6,data=7,patch0-19=215,patch20=6216,transparency=TRANSPARENT
+# Anvil (heavy damage)
+block:id=145,data=8,data=9,data=10,data=11,patch0-19=215,patch20=6232,transparency=TRANSPARENT
