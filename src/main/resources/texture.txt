@@ -730,7 +730,7 @@ block:id=142,data=7,patch0-3=204,transparency=TRANSPARENT
 # Wooden button
 block:id=143,allsides=4,topbottom=6004,transparency=TRANSPARENT
 # Head (skeleton)
-block:id=144,data=*,patch0=4,patch1=5,patch2=3,patch3=0,patch4=1,patch5=2,txtid=skeleton,transparency=TRANSPARENT
+block:id=144,data=*,patch0=5004,patch1=5005,patch2=1,patch3=0,patch4=2,patch5=3,txtid=skeleton,transparency=TRANSPARENT
 # Anvil (normal)
 block:id=145,data=0,data=1,data=2,data=3,patch0-19=215,patch20=6231,transparency=TRANSPARENT
 # Anvil (slight damage)
