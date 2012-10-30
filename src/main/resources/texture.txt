@@ -9,6 +9,7 @@ texturefile:id=chest,filename=item/chest.png,format=CHEST
 texturefile:id=enderchest,filename=item/enderchest.png,format=CHEST
 texturefile:id=bigchest,filename=item/largechest.png,format=BIGCHEST
 texturefile:id=sign,filename=item/sign.png,format=SIGN
+texturefile:id=skeleton,filename=mob/skeleton.png,format=SKIN
 ######
 # Stone
 block:id=1,allsides=1,topbottom=6001
@@ -728,6 +729,8 @@ block:id=142,data=4,data=5,data=6,patch0-3=202,transparency=TRANSPARENT
 block:id=142,data=7,patch0-3=204,transparency=TRANSPARENT
 # Wooden button
 block:id=143,allsides=4,topbottom=6004,transparency=TRANSPARENT
+# Head (skeleton)
+block:id=144,data=*,patch0=4,patch1=5,patch2=3,patch3=0,patch4=1,patch5=2,txtid=skeleton,transparency=TRANSPARENT
 # Anvil (normal)
 block:id=145,data=0,data=1,data=2,data=3,patch0-19=215,patch20=6231,transparency=TRANSPARENT
 # Anvil (slight damage)

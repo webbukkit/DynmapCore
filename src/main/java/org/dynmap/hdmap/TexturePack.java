@@ -143,6 +143,13 @@ public class TexturePack {
     private static final int TILEINDEX_SIGN_POSTRIGHT = 9;
     private static final int TILEINDEX_SIGN_COUNT = 10;
 
+    /* Indexes of faces in the SKIN format tile file */
+    private static final int TILEINDEX_SKIN_FACEFRONT = 0;
+    private static final int TILEINDEX_SKIN_FACELEFT = 1;
+    private static final int TILEINDEX_SKIN_FACERIGHT = 2;
+    private static final int TILEINDEX_SKIN_FACEBACK = 3;
+    private static final int TILEINDEX_SKIN_FACETOP = 4;
+    private static final int TILEINDEX_SKIN_FACEBOTTOM = 5;
 
     private static final int BLOCKTABLELEN = 256;  /* Enough for normal block IDs */
 
@@ -150,7 +157,8 @@ public class TexturePack {
         GRID,
         CHEST,
         BIGCHEST,
-        SIGN
+        SIGN,
+        SKIN
     };
     
     private static int next_dynamic_tile = MAX_TILEINDEX+1;
@@ -753,6 +761,33 @@ public class TexturePack {
         makeSignImage(img, post_back, 4, 16, 2, 14);
         makeSignImage(img, post_left, 6, 16, 2, 14);
     }
+
+    /**
+     * Make face image (based on skin layouts)
+     * @param img_id - source image ID
+     * @param dest_idx - destination tile index
+     * @param src_x - starting X of source (scaled based on 32 high)
+     * @param src_y - starting Y of source (scaled based on 32 high)
+     */
+    private void makeFaceImage(int img_id, int dest_idx, int src_x, int src_y) {
+        int mult = imgs[img_id].height / 32; /* Nominal height for skin images is 32 */
+        int[] tile = new int[8 * 8 * mult * mult];    /* Make image (all are 8x8) */
+        copySubimageFromImage(img_id, src_x * mult, src_y * mult, 0, 0, 8 * mult, 8 * mult, tile, 8 * mult);
+        /* Put scaled result into tile buffer */
+        int new_argb[] = new int[native_scale*native_scale];
+        scaleTerrainPNGSubImage(8 * mult, native_scale, tile, new_argb);
+        terrain_argb[dest_idx] = new_argb;
+    }
+    
+    private void patchSkinImages(int img, int face_front, int face_left, int face_right, int face_back, int face_top, int face_bottom)
+    {
+        makeFaceImage(img, face_front, 8, 8);
+        makeFaceImage(img, face_left, 16, 8);
+        makeFaceImage(img, face_right, 0, 8);
+        makeFaceImage(img, face_back, 24, 8);
+        makeFaceImage(img, face_top, 8, 0);
+        makeFaceImage(img, face_bottom, 16, 0);
+    }
     
     /* Copy texture pack */
     private TexturePack(TexturePack tp) {
@@ -892,6 +927,9 @@ public class TexturePack {
                 break;
             case SIGN:
                 patchSignImages(idx+IMG_CNT, dtf.tile_to_dyntile[TILEINDEX_SIGN_FRONT], dtf.tile_to_dyntile[TILEINDEX_SIGN_BACK], dtf.tile_to_dyntile[TILEINDEX_SIGN_TOP], dtf.tile_to_dyntile[TILEINDEX_SIGN_BOTTOM], dtf.tile_to_dyntile[TILEINDEX_SIGN_LEFTSIDE], dtf.tile_to_dyntile[TILEINDEX_SIGN_RIGHTSIDE], dtf.tile_to_dyntile[TILEINDEX_SIGN_POSTFRONT], dtf.tile_to_dyntile[TILEINDEX_SIGN_POSTBACK], dtf.tile_to_dyntile[TILEINDEX_SIGN_POSTLEFT], dtf.tile_to_dyntile[TILEINDEX_SIGN_POSTRIGHT]);
+                break;
+            case SKIN:
+                patchSkinImages(idx+IMG_CNT, dtf.tile_to_dyntile[TILEINDEX_SKIN_FACEFRONT], dtf.tile_to_dyntile[TILEINDEX_SKIN_FACELEFT], dtf.tile_to_dyntile[TILEINDEX_SKIN_FACERIGHT], dtf.tile_to_dyntile[TILEINDEX_SKIN_FACEBACK], dtf.tile_to_dyntile[TILEINDEX_SKIN_FACETOP], dtf.tile_to_dyntile[TILEINDEX_SKIN_FACEBOTTOM]);
                 break;
         }
     }

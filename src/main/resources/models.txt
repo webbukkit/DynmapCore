@@ -1955,6 +1955,11 @@ patchblock:id=140,data=1,data=2,data=7,data=8,patch0=FlowerPotTop,patch1=FlowerP
 patchblock:id=140,data=3,data=4,data=5,data=6,data=10,data=11,patch0=FlowerPotTop,patch1=FlowerPotBottom,patch2=FlowerPotSide,patch3=FlowerPotSide@90,patch4=FlowerPotSide@180,patch5=FlowerPotSide@270,patch6=FlowerPotDirt,patch7=FlowerPotPlant,patch8=FlowerPotPlant@90
 # Flower pot with cactus
 patchblock:id=140,data=9,patch0=FlowerPotTop,patch1=FlowerPotBottom,patch2=FlowerPotSide,patch3=FlowerPotSide@90,patch4=FlowerPotSide@180,patch5=FlowerPotSide@270,patch6=FlowerPotDirt,patch7=FlowerPotCactusSide,patch8=FlowerPotCactusSide@90,,patch9=FlowerPotCactusSide@180,,patch10=FlowerPotCactusSide@270,,patch11=FlowerPotCactusTop
+# Head
+patch:id=HeadTop,Ox=0.25,Oy=0.5,Oz=0.25,Ux=0.75,Uy=0.5,Uz=0.25,Vx=0.25,Vy=0.5,Vz=0.75,visibility=bottom
+patch:id=HeadBottom,Ox=0.25,Oy=0.0,Oz=0.25,Ux=0.75,Uy=0.0,Uz=0.25,Vx=0.25,Vy=0.0,Vz=0.75,visibility=top
+patch:id=HeadSide,Ox=0.25,Oy=0.0,Oz=0.25,Ux=0.75,Uy=0.0,Uz=0.25,Vx=0.25,Vy=0.5,Vz=0.25,visibility=both
+patchblock:id=144,data=*,patch0=HeadTop,patch1=HeadBottom,patch2=HeadSide,patch3=HeadSide@90,patch4=HeadSide@180,patch5=HeadSide@270
 # Anvil
 patch:id=AnvilBaseSide,Ox=0.0,Oy=0.0,Oz=0.125,Ux=1.0,Uy=0.0,Uz=0.125,Vx=0.0,Vy=1.0,Vz=0.125,Umin=0.125,Umax=0.875,Vmin=0.0,Vmax=0.25,visibility=both
 patch:id=AnvilBaseTop,Ox=0.0,Oy=0.25,Oz=0.0,Ux=1.0,Uy=0.25,Uz=0.0,Vx=0.0,Vy=0.25,Vz=1.0,Umin=0.125,Umax=0.875,Vmin=0.125,Vmax=0.875,visibility=bottom
