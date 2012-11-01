@@ -816,8 +816,14 @@ public class IsoHDPerspective implements HDPerspective {
                     boolean done = true;
                     subalpha = -1;
                     for(int i = 0; i < shaderstate.length; i++) {
-                        if(!shaderdone[i])
-                            shaderdone[i] = shaderstate[i].processBlock(this);
+                        if(!shaderdone[i]) {
+                            try {
+                                shaderdone[i] = shaderstate[i].processBlock(this);
+                            } catch (Exception ex) {
+                                Log.severe("Error while shading tile: perspective=" + IsoHDPerspective.this.name + ", shader=" + shaderstate[i].getShader().getName() + ", coord=" + mapiter.getX() + "," + mapiter.getY() + "," + mapiter.getZ() + ", blockid=" + mapiter.getBlockTypeID() + ":" + mapiter.getBlockData() + ", lighting=" + mapiter.getBlockSkyLight() + ":" + mapiter.getBlockEmittedLight() + ", biome=" + mapiter.getBiome().name(), ex);
+                                shaderdone[i] = true;
+                            }
+                        }
                         done = done && shaderdone[i];
                     }
                     /* If all are done, we're out */
@@ -1425,7 +1431,11 @@ public class IsoHDPerspective implements HDPerspective {
                 for(int i = 0; i < numshaders; i++) {
                     shaderstate[i].reset(ps);
                 }
-                ps.raytrace(cache, mapiter, shaderstate, shaderdone);
+                try {
+                    ps.raytrace(cache, mapiter, shaderstate, shaderdone);
+                } catch (Exception ex) {
+                    Log.severe("Error while raytracing tile: perspective=" + this.name + ", coord=" + mapiter.getX() + "," + mapiter.getY() + "," + mapiter.getZ() + ", blockid=" + mapiter.getBlockTypeID() + ":" + mapiter.getBlockData() + ", lighting=" + mapiter.getBlockSkyLight() + ":" + mapiter.getBlockEmittedLight() + ", biome=" + mapiter.getBiome().name(), ex);
+                }
                 for(int i = 0; i < numshaders; i++) {
                     if(shaderdone[i] == false) {
                         shaderstate[i].rayFinished(ps);
