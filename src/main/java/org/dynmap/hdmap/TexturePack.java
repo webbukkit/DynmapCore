@@ -213,6 +213,7 @@ public class TexturePack {
         private int databits;
         private BlockTransparency bt;
         private boolean userender;
+        private String blockset;
         private static HDTextureMap[] texmaps;
         private static BlockTransparency transp[];
         private static boolean userenderdata[];
@@ -252,15 +253,17 @@ public class TexturePack {
             blockids = Collections.singletonList(Integer.valueOf(0));
             databits = 0xFFFF;
             userender = false;
+            blockset = null;
             faces = new int[] { TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK };
         }
         
-        public HDTextureMap(List<Integer> blockids, int databits, int[] faces, BlockTransparency trans, boolean userender) {
+        public HDTextureMap(List<Integer> blockids, int databits, int[] faces, BlockTransparency trans, boolean userender, String blockset) {
             this.faces = faces;
             this.blockids = blockids;
             this.databits = databits;
             this.bt = trans;
             this.userender = userender;
+            this.blockset = blockset;
         }
         
         public void addToTable() {
@@ -268,13 +271,20 @@ public class TexturePack {
             for(Integer blkid : blockids) {
                 if(blkid >= transp.length)
                     resizeTable(blkid);
-                for(int i = 0; i < 16; i++) {
-                    if((databits & (1 << i)) != 0) {
-                        texmaps[16*blkid + i] = this;
+                if(blkid > 0) {
+                    for(int i = 0; i < 16; i++) {
+                        if((databits & (1 << i)) != 0) {
+                            int idx = 16*blkid + i;
+                            if((texmaps[idx] != null) && (texmaps[idx].blockset != null)) {
+                                //Log.info("Replacing texture for block " + blkid + ":" + i + " from " + texmaps[idx].blockset + " with one from " + this.blockset);
+                                HDBlockModels.resetIfNotBlockSet(blkid, i, this.blockset);
+                            }
+                            texmaps[idx] = this;
+                        }
                     }
+                    transp[blkid] = bt; /* Transparency is only blocktype based right now */
+                    userenderdata[blkid] = userender;	/* Ditto for using render data */
                 }
-                transp[blkid] = bt; /* Transparency is only blocktype based right now */
-                userenderdata[blkid] = userender;	/* Ditto for using render data */
             }
         }
         
@@ -1154,7 +1164,7 @@ public class TexturePack {
         /* Load block models */
         InputStream in = TexturePack.class.getResourceAsStream("/texture.txt");
         if(in != null) {
-            loadTextureFile(in, "texture.txt", config, core);
+            loadTextureFile(in, "texture.txt", config, core, "core");
             if(in != null) { try { in.close(); } catch (IOException x) {} in = null; }
         }
         else
@@ -1169,7 +1179,7 @@ public class TexturePack {
                     if(custom.canRead()) {
                         try {
                             in = new FileInputStream(custom);
-                            loadTextureFile(in, custom.getPath(), config, core);
+                            loadTextureFile(in, custom.getPath(), config, core, fname.substring(0,  fname.indexOf("-texture.txt")));
                         } catch (IOException iox) {
                             Log.severe("Error loading " + custom.getPath() + " - " + iox);
                         } finally {
@@ -1196,7 +1206,7 @@ public class TexturePack {
     /**
      * Load texture pack mappings from texture.txt file
      */
-    private static void loadTextureFile(InputStream txtfile, String txtname, ConfigurationNode config, DynmapCore core) {
+    private static void loadTextureFile(InputStream txtfile, String txtname, ConfigurationNode config, DynmapCore core, String blockset) {
         LineNumberReader rdr = null;
         int cnt = 0;
         HashMap<String,Integer> filetoidx = new HashMap<String,Integer>();
@@ -1326,7 +1336,7 @@ public class TexturePack {
                     if(databits < 0) databits = 0xFFFF;
                     /* If we have everything, build block */
                     if(blkids.size() > 0) {
-                        HDTextureMap map = new HDTextureMap(blkids, databits, faces, trans, userenderdata);
+                        HDTextureMap map = new HDTextureMap(blkids, databits, faces, trans, userenderdata, blockset);
                         map.addToTable();
                         cnt++;
                     }

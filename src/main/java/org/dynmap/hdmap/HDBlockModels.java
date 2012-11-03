@@ -29,6 +29,16 @@ public class HDBlockModels {
     
     private static HashMap<Integer, HDBlockModel> models_by_id_data = new HashMap<Integer, HDBlockModel>();
     
+    /* Reset model if defined by different block set */
+    public static boolean resetIfNotBlockSet(int blkid, int blkdata, String blockset) {
+        HDBlockModel bm = models_by_id_data.get((blkid << 4) | blkdata);
+        if((bm != null) && (bm.getBlockSet().equals(blockset) == false)) {
+            //Log.info("Reset block model for " + blkid + ":" + blkdata + " from " + bm.getBlockSet() + " due to new def from " + blockset);
+            models_by_id_data.remove((blkid << 4) | blkdata);
+            return true;
+        }
+        return false;
+    }
     
     private static void resizeTable(int idx) {
         int cnt = idx+1;
@@ -257,19 +267,27 @@ public class HDBlockModels {
     public static abstract class HDBlockModel {
         private int blockid;
         private int databits;
+        private String blockset;
         /**
          * Block definition - positions correspond to Bukkit coordinates (+X is south, +Y is up, +Z is west)
          * @param blockid - block ID
          * @param databits - bitmap of block data bits matching this model (bit N is set if data=N would match)
+         * @param blockset - ID of block definition set
          */
-        protected HDBlockModel(int blockid, int databits) {
+        protected HDBlockModel(int blockid, int databits, String blockset) {
             this.blockid = blockid;
             this.databits = databits;
-            for(int i = 0; i < 16; i++) {
-                if((databits & (1<<i)) != 0) {
-                    models_by_id_data.put((blockid<<4)+i, this);
+            this.blockset = blockset;
+            if(blockid > 0) {
+                for(int i = 0; i < 16; i++) {
+                    if((databits & (1<<i)) != 0) {
+                        models_by_id_data.put((blockid<<4)+i, this);
+                    }
                 }
             }
+        }
+        public String getBlockSet() {
+            return blockset;
         }
     }
     
@@ -286,9 +304,10 @@ public class HDBlockModels {
          * @param nativeres - native subblocks per edge of cube (up to 64)
          * @param blockflags - array of native^2 long integers representing volume of block (bit X of element (nativeres*Y+Z) is set if that subblock is filled)
          *    if array is short, other elements area are assumed to be zero (fills from bottom of block up)
+         * @param blockset - ID of set of blocks defining model
          */
-        public HDBlockVolumetricModel(int blockid, int databits, int nativeres, long[] blockflags) {
-            super(blockid, databits);
+        public HDBlockVolumetricModel(int blockid, int databits, int nativeres, long[] blockflags, String blockset) {
+            super(blockid, databits, blockset);
             
             this.nativeres = nativeres;
             this.blockflags = new long[nativeres * nativeres];
@@ -451,9 +470,10 @@ public class HDBlockModels {
          * @param blockid - block ID
          * @param databits - bitmap of block data bits matching this model (bit N is set if data=N would match)
          * @param patches - list of patches (surfaces composing model)
+         * @param blockset - ID of set of blocks defining model
          */
-        public HDBlockPatchModel(int blockid, int databits, HDPatchDefinition[] patches) {
-            super(blockid, databits);
+        public HDBlockPatchModel(int blockid, int databits, HDPatchDefinition[] patches, String blockset) {
+            super(blockid, databits, blockset);
             this.patches = patches;
         }
         /**
@@ -571,7 +591,7 @@ public class HDBlockModels {
         /* Load block models */
         InputStream in = TexturePack.class.getResourceAsStream("/models.txt");
         if(in != null) {
-            loadModelFile(in, "models.txt", config, core);
+            loadModelFile(in, "models.txt", config, core, "core");
             try { in.close(); } catch (IOException iox) {} in = null;
         }
         File customdir = new File(datadir, "renderdata");
@@ -584,7 +604,7 @@ public class HDBlockModels {
                 if(custom.canRead()) {
                     try {
                         in = new FileInputStream(custom);
-                        loadModelFile(in, custom.getPath(), config, core);
+                        loadModelFile(in, custom.getPath(), config, core, fn.substring(0, fn.indexOf("-models.txt")));
                     } catch (IOException iox) {
                         Log.severe("Error loading " + custom.getPath());
                     } finally {
@@ -612,7 +632,7 @@ public class HDBlockModels {
      * Load models from file
      * @param core 
      */
-    private static void loadModelFile(InputStream in, String fname, ConfigurationNode config, DynmapCore core) {
+    private static void loadModelFile(InputStream in, String fname, ConfigurationNode config, DynmapCore core, String blockset) {
         LineNumberReader rdr = null;
         int cnt = 0;
         boolean need_mod_cfg = false;
@@ -655,7 +675,7 @@ public class HDBlockModels {
                         modlist.clear();
                         for(Integer id : blkids) {
                             if(id > 0) {
-                                modlist.add(new HDBlockVolumetricModel(id.intValue(), databits, scale, new long[0]));
+                                modlist.add(new HDBlockVolumetricModel(id.intValue(), databits, scale, new long[0], blockset));
                                 cnt++;
                             }
                         }
@@ -991,7 +1011,7 @@ public class HDBlockModels {
                         HDPatchDefinition[] patcharray = patches.toArray(new HDPatchDefinition[patches.size()]);
                         for(Integer id : blkids) {
                             if(id > 0) {
-                                pmodlist.add(new HDBlockPatchModel(id.intValue(), databits, patcharray));
+                                pmodlist.add(new HDBlockPatchModel(id.intValue(), databits, patcharray, blockset));
                                 cnt++;
                             }
                         }
