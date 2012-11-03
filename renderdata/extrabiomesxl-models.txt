@@ -21,3 +21,12 @@ patchblock:id=flower.id,id=grass.id,id=sapling.id,data=*,patch0=VertX1Z0ToX0Z1,p
 patchblock:id=leafpile.id,data=*,patch0=HorizY001ZTop
 # Cattailes
 patchblock:id=cattail.id,data=*,patch0=VertX075,patch1=VertX075@90,patch2=VertX025,patch3=VertX025@90
+
+# Cracked Sand (crackedsandID:*)
+# Red Rock (redrockID:*)
+# Quicksand (quicksandID:*)
+# Autumn Leaves (autumnleavesID:*)
+# Green leaves (greenleavesID:*)
+block:id=crackedsand.id,id=redrock.id,id=quicksand.id,id=autumnleaves.id,id=greenleaves.id,data=*,scale=1
+layer:0
+*
