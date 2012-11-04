@@ -39,6 +39,14 @@ public class HDBlockModels {
         }
         return false;
     }
+    /* Get texture count needed for model */
+    public static int getNeededTextureCount(int blkid, int blkdata) {
+        HDBlockModel bm = models_by_id_data.get((blkid << 4) | blkdata);
+        if(bm != null) {
+            return bm.getTextureCount();
+        }
+        return 0;
+    }
     
     private static void resizeTable(int idx) {
         int cnt = idx+1;
@@ -289,6 +297,7 @@ public class HDBlockModels {
         public String getBlockSet() {
             return blockset;
         }
+        public abstract int getTextureCount();
     }
     
     public static class HDBlockVolumetricModel extends HDBlockModel {
@@ -459,6 +468,10 @@ public class HDBlockModels {
             }
             return map;
         }
+        @Override
+        public int getTextureCount() {
+            return 6;
+        }
     }
 
     public static class HDBlockPatchModel extends HDBlockModel {
@@ -481,6 +494,10 @@ public class HDBlockModels {
          */
         public final HDPatchDefinition[] getPatches() {
             return patches;
+        }
+        @Override
+        public int getTextureCount() {
+            return patches.length;
         }
     }
     

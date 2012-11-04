@@ -1189,6 +1189,21 @@ public class TexturePack {
                 }
             }
         }
+        /* Check integrity of texture mappings versus models */
+        for(int blkiddata = 0; blkiddata < HDTextureMap.texmaps.length; blkiddata++) {
+            int blkid = (blkiddata >> 4);
+            int blkdata = blkiddata & 0xF;
+            HDTextureMap tm = HDTextureMap.texmaps[blkiddata];
+            int cnt = HDBlockModels.getNeededTextureCount(blkid, blkdata);
+            if(cnt > tm.faces.length){
+                Log.severe("Block ID " + blkid + ":" + blkdata + " - not enough textures for faces (" + cnt + " > " + tm.faces.length + ")");
+                int[] newfaces = new int[cnt];
+                System.arraycopy(tm.faces, 0, newfaces, 0, tm.faces.length);
+                for(int i = tm.faces.length; i < cnt; i++) {
+                    newfaces[i] = TILEINDEX_BLANK;
+                }
+            }
+        }
     }
 
     private static Integer getIntValue(Map<String,Integer> vars, String val) throws NumberFormatException {

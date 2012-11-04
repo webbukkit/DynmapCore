@@ -690,7 +690,7 @@ block:id=137,data=*,allsides=184,topbottom=6184
 # Beacon
 block:id=138,data=*,patch0-5=12049,patch6-9=37,patch10=6037,patch11-14=41,patch15=6041,transparency=TRANSPARENT
 # Cobblestone wall
-block:id=139,data=0,patch0-13=16,transparency=TRANSPARENT
+block:id=139,data=0,data=2,data=3,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,patch0-13=16,transparency=TRANSPARENT
 # Mossy cobblestone wall
 block:id=139,data=1,patch0-13=36,transparency=TRANSPARENT
 # Flower pot
@@ -732,7 +732,7 @@ block:id=143,allsides=4,topbottom=6004,transparency=TRANSPARENT
 # Head (skeleton)
 block:id=144,data=*,patch0=5004,patch1=5005,patch2=1,patch3=0,patch4=2,patch5=3,txtid=skeleton,transparency=TRANSPARENT
 # Anvil (normal)
-block:id=145,data=0,data=1,data=2,data=3,patch0-19=215,patch20=6231,transparency=TRANSPARENT
+block:id=145,data=0,data=1,data=2,data=3,data=12,data=13,data=14,data=15,patch0-19=215,patch20=6231,transparency=TRANSPARENT
 # Anvil (slight damage)
 block:id=145,data=4,data=5,data=6,data=7,patch0-19=215,patch20=6216,transparency=TRANSPARENT
 # Anvil (heavy damage)

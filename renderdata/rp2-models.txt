@@ -32,18 +32,3 @@ layer:0
 ****
 ****
 ****
-# Ores (ores.id,*)
-# Leaves (leaves.id,*)
-# Storage blocks (storage.id,*)
-# Logs (log.id,*)
-# Stone (stone.id,*)
-# Microblocks (microblock.id,*)
-# Appliance (appliance.id,*)
-# Lamp on (lampOn.id,*)
-# Lamp off (lampOff.id,*)
-# Machine (machine.id,*)
-# Machine panel (machinePanel.id,*)
-block:id=world/ores.id,id=world/leaves.id,id=world/storage.id,id=world/log.id,id=world/stone.id,id=base/microblock.id,id=base/appliance.id,id=lighting/lampOn.id,id=lighting/lampOff.id,id=machine/machine.id,id=machine/machinePanel.id,data=*,scale=1
-layer:0
-*
-
