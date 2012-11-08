@@ -36,6 +36,7 @@ public class HDBlockModels {
         if((bm != null) && (bm.getBlockSet().equals(blockset) == false)) {
             Debug.debug("Reset block model for " + blkid + ":" + blkdata + " from " + bm.getBlockSet() + " due to new def from " + blockset);
             models_by_id_data.remove((blkid << 4) | blkdata);
+            bm.databits ^= (1 << blkdata);  /* Clear data bit for this model, in case used elsewhere */
             return true;
         }
         return false;
@@ -46,7 +47,7 @@ public class HDBlockModels {
         if(bm != null) {
             return bm.getTextureCount();
         }
-        return 0;
+        return 6;
     }
     
     private static void resizeTable(int idx) {
