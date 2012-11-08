@@ -275,10 +275,11 @@ public class TexturePack {
                     for(int i = 0; i < 16; i++) {
                         if((databits & (1 << i)) != 0) {
                             int idx = 16*blkid + i;
-                            if((texmaps[idx] != null) && (this.blockset != null)) {
-                                //Log.info("Replacing texture for block " + blkid + ":" + i + " from " + texmaps[idx].blockset + " with one from " + this.blockset);
+                            
+                            if((this.blockset != null) && (this.blockset.equals("core") == false)) {
                                 HDBlockModels.resetIfNotBlockSet(blkid, i, this.blockset);
                             }
+                            
                             texmaps[idx] = this;
                         }
                     }

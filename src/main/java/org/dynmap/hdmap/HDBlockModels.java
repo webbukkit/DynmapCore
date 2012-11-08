@@ -15,6 +15,7 @@ import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapCore;
 import org.dynmap.Log;
 import org.dynmap.MapManager;
+import org.dynmap.debug.Debug;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.ForgeConfigFile;
 import org.dynmap.utils.Vector3D;
@@ -33,7 +34,7 @@ public class HDBlockModels {
     public static boolean resetIfNotBlockSet(int blkid, int blkdata, String blockset) {
         HDBlockModel bm = models_by_id_data.get((blkid << 4) | blkdata);
         if((bm != null) && (bm.getBlockSet().equals(blockset) == false)) {
-            //Log.info("Reset block model for " + blkid + ":" + blkdata + " from " + bm.getBlockSet() + " due to new def from " + blockset);
+            Debug.debug("Reset block model for " + blkid + ":" + blkdata + " from " + bm.getBlockSet() + " due to new def from " + blockset);
             models_by_id_data.remove((blkid << 4) | blkdata);
             return true;
         }
