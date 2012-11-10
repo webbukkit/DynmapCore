@@ -820,7 +820,7 @@ public class IsoHDPerspective implements HDPerspective {
                             try {
                                 shaderdone[i] = shaderstate[i].processBlock(this);
                             } catch (Exception ex) {
-                                Log.severe("Error while shading tile: perspective=" + IsoHDPerspective.this.name + ", shader=" + shaderstate[i].getShader().getName() + ", coord=" + mapiter.getX() + "," + mapiter.getY() + "," + mapiter.getZ() + ", blockid=" + mapiter.getBlockTypeID() + ":" + mapiter.getBlockData() + ", lighting=" + mapiter.getBlockSkyLight() + ":" + mapiter.getBlockEmittedLight() + ", biome=" + mapiter.getBiome().name(), ex);
+                                Log.severe("Error while shading tile: perspective=" + IsoHDPerspective.this.name + ", shader=" + shaderstate[i].getShader().getName() + ", coord=" + mapiter.getX() + "," + mapiter.getY() + "," + mapiter.getZ() + ", blockid=" + mapiter.getBlockTypeID() + ":" + mapiter.getBlockData() + ", lighting=" + mapiter.getBlockSkyLight() + ":" + mapiter.getBlockEmittedLight() + ", biome=" + mapiter.getBiome().toString(), ex);
                                 shaderdone[i] = true;
                             }
                         }
@@ -1434,7 +1434,7 @@ public class IsoHDPerspective implements HDPerspective {
                 try {
                     ps.raytrace(cache, mapiter, shaderstate, shaderdone);
                 } catch (Exception ex) {
-                    Log.severe("Error while raytracing tile: perspective=" + this.name + ", coord=" + mapiter.getX() + "," + mapiter.getY() + "," + mapiter.getZ() + ", blockid=" + mapiter.getBlockTypeID() + ":" + mapiter.getBlockData() + ", lighting=" + mapiter.getBlockSkyLight() + ":" + mapiter.getBlockEmittedLight() + ", biome=" + mapiter.getBiome().name(), ex);
+                    Log.severe("Error while raytracing tile: perspective=" + this.name + ", coord=" + mapiter.getX() + "," + mapiter.getY() + "," + mapiter.getZ() + ", blockid=" + mapiter.getBlockTypeID() + ":" + mapiter.getBlockData() + ", lighting=" + mapiter.getBlockSkyLight() + ":" + mapiter.getBlockEmittedLight() + ", biome=" + mapiter.getBiome().toString(), ex);
                 }
                 for(int i = 0; i < numshaders; i++) {
                     if(shaderdone[i] == false) {

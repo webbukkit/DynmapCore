@@ -62,6 +62,21 @@ public class ColorScheme {
         Color[][] raincolors = new Color[64][];
         Color[][] tempcolors = new Color[64][];
         
+        /* Default the biome color */
+        for(int i = 0; i < biomecolors.length; i++) {
+            Color[] c = new Color[5];
+            int red = 0x80 | (0x40 * ((i >> 0) & 1)) | (0x20 * ((i >> 3) & 1)) | (0x10 * ((i >> 6) & 1));
+            int green = 0x80 | (0x40 * ((i >> 1) & 1)) | (0x20 * ((i >> 4) & 1)) | (0x10 * ((i >> 7) & 1));
+            int blue = 0x80 | (0x40 * ((i >> 2) & 1)) | (0x20 * ((i >> 5) & 1));
+            c[0] = new Color(red, green, blue);
+            c[3] = new Color(red*4/5, green*4/5, blue*4/5);
+            c[1] = new Color(red/2, green/2, blue/2);
+            c[2] = new Color(red*2/5, green*2/5, blue*2/5);
+            c[4] = new Color((c[1].getRed()+c[3].getRed())/2, (c[1].getGreen()+c[3].getGreen())/2, (c[1].getBlue()+c[3].getBlue())/2, (c[1].getAlpha()+c[3].getAlpha())/2);
+            
+            biomecolors[i] = c;
+        }
+        
         InputStream stream;
         try {
             Debug.debug("Loading colors from '" + colorSchemeFile + "'...");
@@ -101,9 +116,14 @@ public class ColorScheme {
                     if(idx >= 0) bio = bio.substring(0, idx);
                     isbiome = true;
                     id = -1;
-                    for(BiomeMap b : BiomeMap.values()) {
-                        if(b.toString().equalsIgnoreCase(bio)) {
-                            id = b.ordinal();
+                    BiomeMap[] bm = BiomeMap.values();
+                    for(int i = 0; i < bm.length; i++) {
+                        if(bm[i].toString().equalsIgnoreCase(bio)) {
+                            id = i;
+                            break;
+                        }
+                        else if(bio.equalsIgnoreCase("BIOME_" + i)) {
+                            id = i;
                             break;
                         }
                     }
