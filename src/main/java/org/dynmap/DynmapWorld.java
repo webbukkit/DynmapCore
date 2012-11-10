@@ -577,6 +577,7 @@ public abstract class DynmapWorld {
             center = new DynmapLocation(wname, ctr.getDouble("x", 0.0), ctr.getDouble("y", mid_y), ctr.getDouble("z", 0));
         else
             center = null;
+        maps.clear();
         Log.verboseinfo("Loading maps of world '" + wname + "'...");
         for(MapType map : worldconfig.<MapType>createInstances("maps", new Class<?>[] { DynmapCore.class }, new Object[] { core })) {
             if(map.getName() != null)
