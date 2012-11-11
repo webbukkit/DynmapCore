@@ -57,7 +57,7 @@ public class ClientUpdateServlet extends HttpServlet {
             if(core.mapManager != null) {
                 dynmapWorld = core.mapManager.getWorld(worldName);
             }
-            if (dynmapWorld == null || !dynmapWorld.isLoaded()) {
+            if (dynmapWorld == null) {
                 resp.sendError(404, "World not found");
                 return;
             }

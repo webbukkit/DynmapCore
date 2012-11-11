@@ -531,6 +531,8 @@ public abstract class DynmapWorld {
     public abstract boolean isThundering();
     /* World is loaded */
     public abstract boolean isLoaded();
+    /* Set world unloaded */
+    public abstract void setWorldUnloaded();
     /* Get light level of block */
     public abstract int getLightLevel(int x, int y, int z);
     /* Get highest Y coord of given location */

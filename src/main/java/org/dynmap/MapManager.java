@@ -230,6 +230,7 @@ public class MapManager {
         int cxmin, cxmax, czmin, czmax;
         String rendertype;
         boolean cancelled;
+        boolean pausedforworld = false;
         boolean updaterender = false;
         String mapname;
         AtomicLong total_render_ns = new AtomicLong(0L);
@@ -425,6 +426,18 @@ public class MapManager {
                 if(pausefullrenders) {    /* Update renders are paused? */
                     scheduleDelayedJob(this, 20*5); /* Delay 5 seconds and retry */
                     return;
+                }
+                else if(world.isLoaded() == false) {    /* Update renders are paused? */
+                    if(!pausedforworld) {
+                        pausedforworld = true;
+                        Log.info("Paused " + rendertype + " for world '" + world.getName() + "' - world unloaded");
+                    }
+                    scheduleDelayedJob(this, 20*5); /* Delay 5 seconds and retry */
+                    return;
+                }
+                else if(pausedforworld) {
+                    pausedforworld = false;
+                    Log.info("Unpaused " + rendertype + " for world '" + world.getName() + "' - world reloaded");
                 }
                 /* If render queue is empty, start next map */
                 if(renderQueue.isEmpty()) {
@@ -623,6 +636,10 @@ public class MapManager {
             total_chunk_cache_loadtime_ns.addAndGet(System.nanoTime() - clt0);
             chunk_caches_attempted.incrementAndGet();
             if(cache == null) {
+                /* If world unloaded, don't cancel */
+                if(world.isLoaded() == false) {
+                    return true;
+                }
                 return false; /* Cancelled/aborted */
             }
             /* Update stats */
@@ -913,9 +930,10 @@ public class MapManager {
         }
         worldsLookup.put(worldname, dynmapWorld);
         core.events.trigger("worldactivated", dynmapWorld);
-        /* Now, restore any pending renders for this world */
-        if(saverestorepending)
-            loadPending(dynmapWorld);
+        /* If world is loaded, also handle this */
+        if(dynmapWorld.isLoaded()) {
+            loadWorld(dynmapWorld);
+        }
 
         return true;
     }
@@ -928,6 +946,17 @@ public class MapManager {
             worlds.remove(w);
         }
         disabled_worlds.remove(wname);
+    }
+    
+    public void loadWorld(DynmapWorld dynmapWorld) {
+        /* Now, restore any pending renders for this world */
+        if(saverestorepending)
+            loadPending(dynmapWorld);
+    }
+
+    public void unloadWorld(DynmapWorld dynmapWorld) {
+        if(saverestorepending)
+            savePending(dynmapWorld);
     }
 
     private void loadPending(DynmapWorld w) {
@@ -971,36 +1000,37 @@ public class MapManager {
     public boolean isRenderJobActive(String wname) {
         return active_renders.containsKey(wname);
     }
-    
-    private void savePending() {
+
+    private void savePending(DynmapWorld w) {
         List<MapTile> mt = tileQueue.popAll();
-        for(DynmapWorld w : worlds) {
-            boolean dosave = false;
-            File f = new File(core.getDataFolder(), w.getName() + ".pending");
-            ConfigurationNode saved = new ConfigurationNode();
-            ArrayList<ConfigurationNode> savedtiles = new ArrayList<ConfigurationNode>();
-            for(MapTile tile : mt) {
-                if(tile.getDynmapWorld() != w) continue;
-                ConfigurationNode tilenode = tile.saveTile();
-                if(tilenode != null) {
-                    savedtiles.add(tilenode);
-                }
+        boolean dosave = false;
+        File f = new File(core.getDataFolder(), w.getName() + ".pending");
+        ConfigurationNode saved = new ConfigurationNode();
+        ArrayList<ConfigurationNode> savedtiles = new ArrayList<ConfigurationNode>();
+        for(MapTile tile : mt) {
+            if(tile.getDynmapWorld() != w) {
+                tileQueue.push(tile);
+                continue;
             }
-            if(savedtiles.size() > 0) { /* Something to save? */
-                saved.put("tiles", savedtiles);
-                dosave = true;
-                Log.info("Saved " + savedtiles.size() + " pending tile renders in world '" + w.getName());
+            ConfigurationNode tilenode = tile.saveTile();
+            if(tilenode != null) {
+                savedtiles.add(tilenode);
             }
-            FullWorldRenderState job = active_renders.get(w.getName());
-            if(job != null) {
-                saved.put("job", job.saveState());
-                dosave = true;
-                Log.info("Saved active render job in world '" + w.getName());
-            }
-            if(dosave) {
-                saved.save(f);
-                Log.info("Saved " + savedtiles.size() + " pending tile renders in world '" + w.getName());
-            }
+        }
+        if(savedtiles.size() > 0) { /* Something to save? */
+            saved.put("tiles", savedtiles);
+            dosave = true;
+            Log.info("Saved " + savedtiles.size() + " pending tile renders in world '" + w.getName());
+        }
+        FullWorldRenderState job = active_renders.remove(w.getName());
+        if(job != null) {
+            saved.put("job", job.saveState());
+            job.cancelRender();
+            dosave = true;
+            Log.info("Saved active render job in world '" + w.getName());
+        }
+        if(dosave) {
+            saved.save(f);
         }
     }
 
@@ -1071,9 +1101,15 @@ public class MapManager {
         tileQueue.stop();
         mapman = null;
         hdmapman = null;
-        
-        if(saverestorepending)
-            savePending();
+        /* Unload all worlds, and save any pending */
+        for(DynmapWorld w : worlds) {
+            if(w.isLoaded()) {
+                w.setWorldUnloaded();
+                if(saverestorepending) {
+                    savePending(w);
+                }
+            }
+        }
         did_start = false;
     }
 

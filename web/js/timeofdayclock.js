@@ -44,13 +44,20 @@ componentconstructors['timeofdayclock'] = function(dynmap, configuration) {
 				window.clearTimeout(timeout);
 				timeout = null;
 			}
-			var time = getMinecraftTime(servertime);
-			clock
-				.addClass(time.day ? 'day' : 'night')
-				.removeClass(time.night ? 'day' : 'night')
-				.text(formatTime(time));
-			
-			if (timeout == null) {
+			var time = null;
+			if(servertime >= 0) {
+				time = getMinecraftTime(servertime);
+				clock
+					.addClass(time.day ? 'day' : 'night')
+					.removeClass(time.night ? 'day' : 'night')
+					.text(formatTime(time));
+			}
+			else {
+				clock
+					.removeClass('day night')
+					.text('');
+			}			
+			if ((timeout == null) && (time != null)) {
 				timeout = window.setTimeout(function() {
 					timeout = null;
 					setTime(time.servertime+(1000/60));
@@ -105,8 +112,14 @@ componentconstructors['timeofdayclock'] = function(dynmap, configuration) {
 		}
 		
 		var moonangle = sunangle + Math.PI;
-		
-		sun.css('background-position', (-50 * Math.cos(sunangle)) + 'px ' + (-50 * Math.sin(sunangle)) + 'px');
-		moon.css('background-position', (-50 * Math.cos(moonangle)) + 'px ' + (-50 * Math.sin(moonangle)) + 'px');
+
+		if(time >= 0) {		
+			sun.css('background-position', (-50 * Math.cos(sunangle)) + 'px ' + (-50 * Math.sin(sunangle)) + 'px');
+			moon.css('background-position', (-50 * Math.cos(moonangle)) + 'px ' + (-50 * Math.sin(moonangle)) + 'px');
+		}
+		else {
+			sun.css('background-position', '-150px -150px');
+			moon.css('background-position', '-150px -150px');
+		}
 	});
 };

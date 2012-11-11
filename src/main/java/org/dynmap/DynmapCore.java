@@ -1359,8 +1359,27 @@ public class DynmapCore {
     
     /* Called by plugin when world loaded */
     public boolean processWorldLoad(DynmapWorld w) {
-        return mapManager.activateWorld(w);
+        boolean activated = true;
+        if(mapManager.getWorld(w.getName()) == null) {
+            updateConfigHashcode();
+            activated = mapManager.activateWorld(w);
+        }
+        else {
+            mapManager.loadWorld(w);
+        }
+        return activated;
     }
+    
+    /* Called by plugin when world unloaded */
+    public boolean processWorldUnload(DynmapWorld w) {
+        boolean done = false;
+        if(mapManager.getWorld(w.getName()) != null) {
+           mapManager.unloadWorld(w);
+           done = true;
+        }
+        return done;
+    }
+    
     /* Enable/disable world */
     public boolean setWorldEnable(String wname, boolean isenab) {
         wname = DynmapWorld.normalizeWorldName(wname);

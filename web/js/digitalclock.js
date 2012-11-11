@@ -22,13 +22,20 @@ componentconstructors['digitalclock'] = function(dynmap, configuration) {
 			window.clearTimeout(timeout);
 			timeout = null;
 		}
-		var time = getMinecraftTime(servertime);
-		element
-			.addClass(time.day ? 'day' : 'night')
-			.removeClass(time.night ? 'day' : 'night')
-			.text(formatTime(time));
-		
-		if (timeout == null) {
+		var time = null;
+		if(servertime >= 0) {
+			time = getMinecraftTime(servertime);
+			element
+				.addClass(time.day ? 'day' : 'night')
+				.removeClass(time.night ? 'day' : 'night')
+				.text(formatTime(time));
+		}
+		else {
+			element
+				.removeClass('day night')
+				.text('');
+		}
+		if ((timeout == null) && (time != null)) {
 			timeout = window.setTimeout(function() {
 				timeout = null;
 				setTime(time.servertime+(1000/60));
