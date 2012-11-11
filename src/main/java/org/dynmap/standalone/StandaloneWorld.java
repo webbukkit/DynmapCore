@@ -41,7 +41,6 @@ public class StandaloneWorld extends DynmapWorld {
     private boolean is_raining;
     private boolean is_thunder;
     private long world_time;
-    private boolean loaded;
     private RegionMap regions;
     private Object regionsem = new Object();
     
@@ -191,8 +190,6 @@ public class StandaloneWorld extends DynmapWorld {
                 this.is_thunder = (((ByteTag)level_dat.get("thundering")).getValue() != 0);
                 /* Get world time */
                 this.world_time = ((LongTag)level_dat.get("Time")).getValue();
-                /* Got valid data */
-                loaded = true;
             }
             nis.close();
         } catch (IOException iox) {
@@ -251,7 +248,7 @@ public class StandaloneWorld extends DynmapWorld {
 
     @Override
     public boolean isLoaded() {
-        return loaded;
+        return false;
     }
 
     @Override
@@ -302,5 +299,9 @@ public class StandaloneWorld extends DynmapWorld {
             }
         }
         return rf.readChunk(x & 0x1F, z & 0x1F);
+    }
+
+    @Override
+    public void setWorldUnloaded() {
     }
 }
