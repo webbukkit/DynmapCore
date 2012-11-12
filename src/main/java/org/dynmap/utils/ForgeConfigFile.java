@@ -56,6 +56,7 @@ public class ForgeConfigFile {
                                 break;
                             case '=':
                                 String propertyName = line.substring(nameStart, nameEnd + 1);
+                                propertyName = propertyName.replace(' ', '_');
                                 for(int j = section.size()-1; j >= 0; j--) {
                                     propertyName = section.get(j) + "/" + propertyName;
                                 }
