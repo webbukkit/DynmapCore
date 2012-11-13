@@ -1,5 +1,5 @@
-# ExtraBiomesXL 2.x Block mapping
-modname:ExtraBiomes XL
+# ExtraBiomesXL 3+ Block mapping
+modname:ExtrabiomesXL
 # configuration file
 cfgfile:config/extrabiomes/extrabiomes.cfg
 

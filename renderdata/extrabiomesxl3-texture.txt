@@ -1,5 +1,5 @@
-# ExtraBiomesXL Block mapping
-modname:ExtraBiomes XL
+# ExtraBiomesXL 3+ Block mapping
+modname:ExtrabiomesXL
 # configuration file
 cfgfile:config/extrabiomes/extrabiomes.cfg
 
@@ -74,3 +74,41 @@ block:id=sapling.id,data=6,data=14,patch0=22,patch1=22,txtid=blk0,transparency=T
 block:id=cattail.id,data=*,patch0-3=79,txtid=blk0,transparency=TRANSPARENT
 # Leaf piles (leafpileID:*)
 block:id=leafpile.id,data=*,patch0=2064,txtid=blk0,transparency=TRANSPARENT
+
+# acaciastairs.id
+
+# customlog.id
+# Fir Log (customlog.id:0,4,8,12)
+block:id=customlog.id,data=0,allsides=97,topbottom=6113,txtid=blk0
+block:id=customlog.id,data=4,north=113,south=113,east=4097,west=4097,top=97,bottom=97,txtid=blk0
+block:id=customlog.id,data=8,north=4097,south=4097,east=113,west=113,top=4097,bottom=4097,txtid=blk0
+block:id=customlog.id,data=12,allsides=97,topbottom=6097,txtid=blk0
+# Acacia Log (customlog.id:1,5,9,13)
+block:id=customlog.id,data=1,allsides=98,topbottom=6114,txtid=blk0
+block:id=customlog.id,data=5,north=114,south=114,east=4098,west=4098,top=98,bottom=98,txtid=blk0
+block:id=customlog.id,data=9,north=4098,south=4098,east=114,west=114,top=4098,bottom=4098,txtid=blk0
+block:id=customlog.id,data=13,allsides=98,topbottom=6098,txtid=blk0
+
+# doubleredrockslab.id
+
+# doublewoodslab.id
+
+# firstairs.id
+
+# planks.id
+
+# quarterlog0.id
+# quarterlog1.id
+# quarterlog2.id
+# quarterlog3.id
+
+# redcobblestairs.id
+
+# redrockbrickstairs.id
+
+# redwoodstairs.id
+
+# wall.id
+
+# woodslab.id
+
