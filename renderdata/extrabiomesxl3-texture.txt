@@ -76,6 +76,7 @@ block:id=cattail.id,data=*,patch0-3=79,txtid=blk0,transparency=TRANSPARENT
 block:id=leafpile.id,data=*,patch0=2064,txtid=blk0,transparency=TRANSPARENT
 
 # acaciastairs.id
+block:id=acaciastairs.id,data=0,data=1,data=2,data=3,data=4,data=5,data=6,data=7,allsides=130,topbottom=6130,txtid=blk0,transparency=SEMITRANSPARENT
 
 # customlog.id
 # Fir Log (customlog.id:0,4,8,12)
@@ -90,25 +91,98 @@ block:id=customlog.id,data=9,north=4098,south=4098,east=114,west=114,top=4098,bo
 block:id=customlog.id,data=13,allsides=98,topbottom=6098,txtid=blk0
 
 # doubleredrockslab.id
+block:id=doubleredrockslab.id,data=0,data=8,allsides=12,topbottom=6012,txtid=blk0
+block:id=doubleredrockslab.id,data=1,data=9,allsides=13,topbottom=6014,txtid=blk0
+block:id=doubleredrockslab.id,data=2,data=10,allsides=11,topbottom=6011,txtid=blk0
 
 # doublewoodslab.id
+block:id=doublewoodslab.id,data=0,allsides=128,topbottom=6128,txtid=blk0
+block:id=doublewoodslab.id,data=1,allsides=129,topbottom=6129,txtid=blk0
+block:id=doublewoodslab.id,data=2,allsides=130,topbottom=6130,txtid=blk0
 
 # firstairs.id
+block:id=firstairs.id,data=0,data=1,data=2,data=3,data=4,data=5,data=6,data=7,allsides=129,topbottom=6129,txtid=blk0,transparency=SEMITRANSPARENT
 
 # planks.id
+block:id=planks.id,data=0,allsides=128,topbottom=6128,txtid=blk0
+block:id=planks.id,data=1,allsides=129,topbottom=6129,txtid=blk0
+block:id=planks.id,data=2,allsides=130,topbottom=6130,txtid=blk0
 
-# quarterlog0.id
-# quarterlog1.id
-# quarterlog2.id
-# quarterlog3.id
+# quarterlog0.id (NW)
+# Redwood corner
+block:id=quarterlog0.id,data=0,face0=6160,face1=6160,face2=145,face3=192,face4=144,face5=193,txtid=blk0
+block:id=quarterlog0.id,data=4,face0=192,face1=145,face2=6193,face3=6144,face4=161,face5=160,txtid=blk0
+block:id=quarterlog0.id,data=8,face0=6192,face1=6144,face2=161,face3=160,face4=6145,face5=6193,txtid=blk0
+# Fir corner
+block:id=quarterlog0.id,data=1,face0=6162,face1=6162,face2=147,face3=194,face4=146,face5=195,txtid=blk0
+block:id=quarterlog0.id,data=5,face0=194,face1=147,face2=6195,face3=6146,face4=163,face5=162,txtid=blk0
+block:id=quarterlog0.id,data=9,face0=6194,face1=6146,face2=163,face3=162,face4=6147,face5=6195,txtid=blk0
+# Oak corner
+block:id=quarterlog0.id,data=2,face0=6164,face1=6164,face2=149,face3=196,face4=148,face5=197,txtid=blk0
+block:id=quarterlog0.id,data=6,face0=196,face1=149,face2=6197,face3=6148,face4=165,face5=164,txtid=blk0
+block:id=quarterlog0.id,data=10,face0=6196,face1=6148,face2=165,face3=164,face4=6149,face5=6197,txtid=blk0
+
+# quarterlog1.id (NE)
+# Redwood corner
+block:id=quarterlog1.id,data=0,face0=6161,face1=6161,face2=144,face3=193,face4=192,face5=145,txtid=blk0
+block:id=quarterlog1.id,data=4,face0=193,face1=144,face2=6145,face3=6192,face4=160,face5=161,txtid=blk0
+block:id=quarterlog1.id,data=8,face0=6193,face1=6145,face2=160,face3=161,face4=6193,face5=6145,txtid=blk0
+# Fir corner
+block:id=quarterlog1.id,data=1,face0=6163,face1=6163,face2=146,face3=195,face4=194,face5=147,txtid=blk0
+block:id=quarterlog1.id,data=5,face0=195,face1=146,face2=6147,face3=6194,face4=162,face5=163,txtid=blk0
+block:id=quarterlog1.id,data=9,face0=6195,face1=6147,face2=162,face3=163,face4=6195,face5=6147,txtid=blk0
+# Oak corner
+block:id=quarterlog1.id,data=2,face0=6165,face1=6165,face2=148,face3=197,face4=196,face5=149,txtid=blk0
+block:id=quarterlog1.id,data=6,face0=197,face1=148,face2=6149,face3=6196,face4=164,face5=165,txtid=blk0
+block:id=quarterlog1.id,data=10,face0=6197,face1=6149,face2=164,face3=165,face4=6197,face5=6149,txtid=blk0
+
+# quarterlog2.id (SW)
+# Redwood corner
+block:id=quarterlog2.id,data=0,face0=6176,face1=6176,face2=193,face3=144,face4=145,face5=192,txtid=blk0
+block:id=quarterlog2.id,data=4,face0=145,face1=192,face2=6144,face3=6193,face4=176,face5=177,txtid=blk0
+block:id=quarterlog2.id,data=8,face0=6144,face1=6192,face2=177,face3=176,face4=6144,face5=6192,txtid=blk0
+# Fir corner
+block:id=quarterlog2.id,data=1,face0=6178,face1=6178,face2=195,face3=146,face4=147,face5=194,txtid=blk0
+block:id=quarterlog2.id,data=5,face0=147,face1=194,face2=6146,face3=6195,face4=178,face5=179,txtid=blk0
+block:id=quarterlog2.id,data=9,face0=6146,face1=6194,face2=179,face3=178,face4=6146,face5=6194,txtid=blk0
+# Oak corner
+block:id=quarterlog2.id,data=2,face0=6180,face1=6180,face2=197,face3=148,face4=149,face5=196,txtid=blk0
+block:id=quarterlog2.id,data=6,face0=149,face1=196,face2=6148,face3=6197,face4=180,face5=181,txtid=blk0
+block:id=quarterlog2.id,data=10,face0=6148,face1=6196,face2=181,face3=180,face4=6148,face5=6196,txtid=blk0
+
+# quarterlog3.id (SE)
+# Redwood corner
+block:id=quarterlog3.id,data=0,face0=6177,face1=6177,face2=192,face3=145,face4=193,face5=144,txtid=blk0
+block:id=quarterlog3.id,data=4,face0=144,face1=193,face2=6192,face3=6145,face4=177,face5=176,txtid=blk0
+block:id=quarterlog3.id,data=8,face0=6145,face1=6193,face2=176,face3=177,face4=6192,face5=6144,txtid=blk0
+# Redwood corner
+block:id=quarterlog3.id,data=1,face0=6179,face1=6179,face2=194,face3=147,face4=195,face5=146,txtid=blk0
+block:id=quarterlog3.id,data=5,face0=146,face1=195,face2=6194,face3=6147,face4=179,face5=178,txtid=blk0
+block:id=quarterlog3.id,data=9,face0=6147,face1=6195,face2=178,face3=179,face4=6194,face5=6146,txtid=blk0
+# Oak corner
+block:id=quarterlog3.id,data=2,face0=6181,face1=6181,face2=196,face3=149,face4=197,face5=148,txtid=blk0
+block:id=quarterlog3.id,data=6,face0=148,face1=197,face2=6196,face3=6149,face4=181,face5=180,txtid=blk0
+block:id=quarterlog3.id,data=10,face0=6149,face1=6197,face2=180,face3=181,face4=6196,face5=6148,txtid=blk0
 
 # redcobblestairs.id
+block:id=redcobblestairs.id,data=0,data=1,data=2,data=3,data=4,data=5,data=6,data=7,allsides=12,topbottom=6012,txtid=blk0,transparency=SEMITRANSPARENT
+
+# redrockslab.id
+block:id=redrockslab.id,data=0,data=8,allsides=12,topbottom=6012,txtid=blk0,transparency=SEMITRANSPARENT
+block:id=redrockslab.id,data=1,data=9,allsides=13,topbottom=6014,txtid=blk0,transparency=SEMITRANSPARENT
+block:id=redrockslab.id,data=2,data=10,allsides=11,topbottom=6011,txtid=blk0,transparency=SEMITRANSPARENT
 
 # redrockbrickstairs.id
+block:id=redrockbrickstairs.id,data=0,data=1,data=2,data=3,data=4,data=5,data=6,data=7,allsides=11,topbottom=6011,txtid=blk0,transparency=SEMITRANSPARENT
 
 # redwoodstairs.id
+block:id=redwoodstairs.id,data=0,data=1,data=2,data=3,data=4,data=5,data=6,data=7,allsides=128,topbottom=6128,txtid=blk0,transparency=SEMITRANSPARENT
 
 # wall.id
+block:id=wall.id,data=*,patch0-13=2,txtid=blk0,transparency=TRANSPARENT
 
 # woodslab.id
+block:id=woodslab.id,data=0,allsides=128,topbottom=6128,txtid=blk0,transparency=SEMITRANSPARENT
+block:id=woodslab.id,data=1,allsides=129,topbottom=6129,txtid=blk0,transparency=SEMITRANSPARENT
+block:id=woodslab.id,data=2,allsides=130,topbottom=6130,txtid=blk0,transparency=SEMITRANSPARENT
 

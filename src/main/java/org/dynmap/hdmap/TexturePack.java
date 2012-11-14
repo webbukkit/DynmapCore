@@ -1256,22 +1256,23 @@ public class TexturePack {
                             else
                                 databits |= (1 << getIntValue(varvals,av[1]));
                         }
-                        else if(av[0].equals("top") || av[0].equals("y-")) {
+
+                        else if(av[0].equals("top") || av[0].equals("y-") || av[0].equals("face1")) {
                             faces[BlockStep.Y_MINUS.ordinal()] = Integer.parseInt(av[1]);
                         }
-                        else if(av[0].equals("bottom") || av[0].equals("y+")) {
+                        else if(av[0].equals("bottom") || av[0].equals("y+") || av[0].equals("face0")) {
                             faces[BlockStep.Y_PLUS.ordinal()] = Integer.parseInt(av[1]);
                         }
-                        else if(av[0].equals("north") || av[0].equals("x+")) {
+                        else if(av[0].equals("north") || av[0].equals("x+") || av[0].equals("face4")) {
                             faces[BlockStep.X_PLUS.ordinal()] = Integer.parseInt(av[1]);
                         }
-                        else if(av[0].equals("south") || av[0].equals("x-")) {
+                        else if(av[0].equals("south") || av[0].equals("x-") || av[0].equals("face5")) {
                             faces[BlockStep.X_MINUS.ordinal()] = Integer.parseInt(av[1]);
                         }
-                        else if(av[0].equals("west") || av[0].equals("z-")) {
+                        else if(av[0].equals("west") || av[0].equals("z-") || av[0].equals("face3")) {
                             faces[BlockStep.Z_MINUS.ordinal()] = Integer.parseInt(av[1]);
                         }
-                        else if(av[0].equals("east") || av[0].equals("z+")) {
+                        else if(av[0].equals("east") || av[0].equals("z+") || av[0].equals("face2")) {
                             faces[BlockStep.Z_PLUS.ordinal()] = Integer.parseInt(av[1]);
                         }
                         else if(av[0].equals("allfaces")) {

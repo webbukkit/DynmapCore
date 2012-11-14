@@ -22,11 +22,103 @@ patchblock:id=leafpile.id,data=*,patch0=HorizY001ZTop
 # Cattailes
 patchblock:id=cattail.id,data=*,patch0=VertX075,patch1=VertX075@90,patch2=VertX025,patch3=VertX025@90
 
-# Cracked Sand (crackedsandID:*)
-# Red Rock (redrockID:*)
-# Quicksand (quicksandID:*)
-# Autumn Leaves (autumnleavesID:*)
-# Green leaves (greenleavesID:*)
-block:id=crackedsand.id,id=redrock.id,id=quicksand.id,id=autumnleaves.id,id=greenleaves.id,data=*,scale=1
-layer:0
-*
+# Wood Stair - up south
+block:id=redcobblestairs.id,id=redrockbrickstairs.id,id=acaciastairs.id,id=firstairs.id,id=redwoodstairs.id,data=0,scale=2
+rotate:id=53,data=0,rot=0
+# Wood Stair - up north
+block:id=redcobblestairs.id,id=redrockbrickstairs.id,id=acaciastairs.id,id=firstairs.id,id=redwoodstairs.id,data=1,scale=2
+rotate:id=53,data=0,rot=180
+# Wood Stair - up west
+block:id=redcobblestairs.id,id=redrockbrickstairs.id,id=acaciastairs.id,id=firstairs.id,id=redwoodstairs.id,data=2,scale=2
+rotate:id=53,data=0,rot=90
+# Wood Stair - up east
+block:id=redcobblestairs.id,id=redrockbrickstairs.id,id=acaciastairs.id,id=firstairs.id,id=redwoodstairs.id,data=3,scale=2
+rotate:id=53,data=0,rot=270
+# Wood Stair - inverted up south
+block:id=redcobblestairs.id,id=redrockbrickstairs.id,id=acaciastairs.id,id=firstairs.id,id=redwoodstairs.id,data=4,scale=2
+rotate:id=53,data=4,rot=0
+# Wood Stair - inverted up north
+block:id=redcobblestairs.id,id=redrockbrickstairs.id,id=acaciastairs.id,id=firstairs.id,id=redwoodstairs.id,data=5,scale=2
+rotate:id=53,data=4,rot=180
+# Wood Stair - inverted up west
+block:id=redcobblestairs.id,id=redrockbrickstairs.id,id=acaciastairs.id,id=firstairs.id,id=redwoodstairs.id,data=6,scale=2
+rotate:id=53,data=4,rot=90
+# Wood Stair - inverted up east
+block:id=redcobblestairs.id,id=redrockbrickstairs.id,id=acaciastairs.id,id=firstairs.id,id=redwoodstairs.id,data=7,scale=2
+rotate:id=53,data=4,rot=270
+
+# Slab
+block:id=redrockslab.id,id=woodslab.id,data=0,data=1,data=2,data=3,data=4,data=5,data=6,data=7,scale=4
+layer:0,1
+****
+****
+****
+****
+layer:2,3
+----
+----
+----
+----
+# Top Slab
+block:id=redrockslab.id,id=woodslab.id,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,scale=4
+layer:0,1
+----
+----
+----
+----
+layer:2,3
+****
+****
+****
+****
+
+# Red rock wall - set render algorithm
+linkmap:id=wall.id,linkalg=1
+
+patchblock:id=wall.id,data=0
+patchrotate:id=139,data=0,rot=0
+
+patchblock:id=wall.id,data=1
+patchrotate:id=139,data=1,rot=0
+
+patchblock:id=wall.id,data=2
+patchrotate:id=139,data=2,rot=0
+
+patchblock:id=wall.id,data=3
+patchrotate:id=139,data=3,rot=0
+
+patchblock:id=wall.id,data=4
+patchrotate:id=139,data=4,rot=0
+
+patchblock:id=wall.id,data=5
+patchrotate:id=139,data=5,rot=0
+
+patchblock:id=wall.id,data=6
+patchrotate:id=139,data=6,rot=0
+
+patchblock:id=wall.id,data=7
+patchrotate:id=139,data=7,rot=0
+
+patchblock:id=wall.id,data=8
+patchrotate:id=139,data=8,rot=0
+
+patchblock:id=wall.id,data=9
+patchrotate:id=139,data=9,rot=0
+
+patchblock:id=wall.id,data=10
+patchrotate:id=139,data=10,rot=0
+
+patchblock:id=wall.id,data=11
+patchrotate:id=139,data=11,rot=0
+
+patchblock:id=wall.id,data=12
+patchrotate:id=139,data=12,rot=0
+
+patchblock:id=wall.id,data=13
+patchrotate:id=139,data=13,rot=0
+
+patchblock:id=wall.id,data=14
+patchrotate:id=139,data=14,rot=0
+
+patchblock:id=wall.id,data=15
+patchrotate:id=139,data=15,rot=0
