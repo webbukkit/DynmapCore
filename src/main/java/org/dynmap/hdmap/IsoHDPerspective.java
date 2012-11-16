@@ -416,15 +416,15 @@ public class IsoHDPerspective implements HDPerspective {
          * @param mapiter
          * @return
          */
-        private int generateChestBlockData(MapIterator mapiter) {
+        private int generateChestBlockData(MapIterator mapiter, int blktype) {
             int blkdata = mapiter.getBlockData();   /* Get block data */
             ChestData cd = ChestData.SINGLE_WEST;   /* Default to single facing west */
             switch(blkdata) {   /* First, use orientation data */
                 case 2: /* East (now north) */
-                    if(mapiter.getBlockTypeIDAt(BlockStep.X_MINUS) == CHEST_BLKTYPEID) { /* Check north */
+                    if(mapiter.getBlockTypeIDAt(BlockStep.X_MINUS) == blktype) { /* Check north */
                         cd = ChestData.LEFT_EAST;
                     }
-                    else if(mapiter.getBlockTypeIDAt(BlockStep.X_PLUS) == CHEST_BLKTYPEID) {    /* Check south */
+                    else if(mapiter.getBlockTypeIDAt(BlockStep.X_PLUS) == blktype) {    /* Check south */
                         cd = ChestData.RIGHT_EAST;
                     }
                     else {
@@ -432,10 +432,10 @@ public class IsoHDPerspective implements HDPerspective {
                     }
                     break;
                 case 4: /* North */
-                    if(mapiter.getBlockTypeIDAt(BlockStep.Z_MINUS) == CHEST_BLKTYPEID) { /* Check east */
+                    if(mapiter.getBlockTypeIDAt(BlockStep.Z_MINUS) == blktype) { /* Check east */
                         cd = ChestData.RIGHT_NORTH;
                     }
-                    else if(mapiter.getBlockTypeIDAt(BlockStep.Z_PLUS) == CHEST_BLKTYPEID) {    /* Check west */
+                    else if(mapiter.getBlockTypeIDAt(BlockStep.Z_PLUS) == blktype) {    /* Check west */
                         cd = ChestData.LEFT_NORTH;
                     }
                     else {
@@ -443,10 +443,10 @@ public class IsoHDPerspective implements HDPerspective {
                     }
                     break;
                 case 5: /* South */
-                    if(mapiter.getBlockTypeIDAt(BlockStep.Z_MINUS) == CHEST_BLKTYPEID) { /* Check east */
+                    if(mapiter.getBlockTypeIDAt(BlockStep.Z_MINUS) == blktype) { /* Check east */
                         cd = ChestData.LEFT_SOUTH;
                     }
-                    else if(mapiter.getBlockTypeIDAt(BlockStep.Z_PLUS) == CHEST_BLKTYPEID) {    /* Check west */
+                    else if(mapiter.getBlockTypeIDAt(BlockStep.Z_PLUS) == blktype) {    /* Check west */
                         cd = ChestData.RIGHT_SOUTH;
                     }
                     else {
@@ -455,10 +455,10 @@ public class IsoHDPerspective implements HDPerspective {
                     break;
                 case 3: /* West */
                 default:
-                    if(mapiter.getBlockTypeIDAt(BlockStep.X_MINUS) == CHEST_BLKTYPEID) { /* Check north */
+                    if(mapiter.getBlockTypeIDAt(BlockStep.X_MINUS) == blktype) { /* Check north */
                         cd = ChestData.RIGHT_WEST;
                     }
-                    else if(mapiter.getBlockTypeIDAt(BlockStep.X_PLUS) == CHEST_BLKTYPEID) {    /* Check south */
+                    else if(mapiter.getBlockTypeIDAt(BlockStep.X_PLUS) == blktype) {    /* Check south */
                         cd = ChestData.LEFT_WEST;
                     }
                     else {
@@ -784,7 +784,7 @@ public class IsoHDPerspective implements HDPerspective {
                         blockrenderdata = generateFenceBlockData(mapiter, blocktypeid);
                         break;
                     case CHEST_ALGORITHM:
-                        blockrenderdata = generateChestBlockData(mapiter);
+                        blockrenderdata = generateChestBlockData(mapiter, blocktypeid);
                         break;
                     case REDSTONE_ALGORITHM:
                         blockrenderdata = generateRedstoneWireBlockData(mapiter);

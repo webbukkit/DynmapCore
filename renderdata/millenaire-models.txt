@@ -1,0 +1,186 @@
+# Millenaire block models
+modname:Millenaire
+# configuration file
+cfgfile:mods/millenaire/config-server.txt
+
+# block_crops_id
+patchblock:id=block_crops_id,data=*
+patchrotate:id=59,data=0,rot=0
+
+# block_building_id
+# Chest - set render alg
+linkmap:id=block_building_id,linkalg=2
+# Chest - single, facing west
+block:id=block_building_id,data=0,scale=16
+layer:0,1,2,3,4,5,6,7,12,13
+----------------
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+----------------
+layer:8,9,10,11
+----------------
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+***************-
+***************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+----------------
+# Chest - single, facing south
+block:id=block_building_id,data=1,scale=16
+rotate:id=block_building_id,data=0,rot=270
+# Chest - single, facing east
+block:id=block_building_id,data=2,scale=16
+rotate:id=block_building_id,data=0,rot=180
+# Chest - single, facing north
+block:id=block_building_id,data=3,scale=16
+rotate:id=block_building_id,data=0,rot=90
+
+# Chest - left side of double, facing west
+block:id=block_building_id,data=4,scale=16
+layer:0,1,2,3,4,5,6,7,12,13
+----------------
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+layer:8,9,10,11
+----------------
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+***************-
+# Chest - left side of double, facing south
+block:id=block_building_id,data=5,scale=16
+rotate:id=block_building_id,data=4,rot=270
+# Chest - left side of double, facing east
+block:id=block_building_id,data=6,scale=16
+rotate:id=block_building_id,data=4,rot=180
+# Chest - left side of double, facing north
+block:id=block_building_id,data=7,scale=16
+rotate:id=block_building_id,data=4,rot=90
+# Chest - right side of double, facing west
+block:id=block_building_id,data=8,scale=16
+layer:0,1,2,3,4,5,6,7,12,13
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+----------------
+layer:8,9,10,11
+***************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+----------------
+# Chest - right side of double, facing south
+block:id=block_building_id,data=9,scale=16
+rotate:id=block_building_id,data=8,rot=270
+# Chest - right side of double, facing east
+block:id=block_building_id,data=10,scale=16
+rotate:id=block_building_id,data=8,rot=180
+# Chest - right side of double, facing north
+block:id=block_building_id,data=11,scale=16
+rotate:id=block_building_id,data=8,rot=90
+
+# block_panes_id
+# Glass pane - render alg
+linkmap:id=block_panes_id,linkalg=4
+patchblock:id=block_panes_id,data=0
+patchrotate:id=101,data=0,rot=0
+patchblock:id=block_panes_id,data=1
+patchrotate:id=101,data=1,rot=0
+patchblock:id=block_panes_id,data=2
+patchrotate:id=101,data=2,rot=0
+patchblock:id=block_panes_id,data=3
+patchrotate:id=101,data=3,rot=0
+patchblock:id=block_panes_id,data=4
+patchrotate:id=101,data=4,rot=0
+patchblock:id=block_panes_id,data=5
+patchrotate:id=101,data=5,rot=0
+patchblock:id=block_panes_id,data=6
+patchrotate:id=101,data=6,rot=0
+patchblock:id=block_panes_id,data=7
+patchrotate:id=101,data=7,rot=0
+patchblock:id=block_panes_id,data=8
+patchrotate:id=101,data=8,rot=0
+patchblock:id=block_panes_id,data=9
+patchrotate:id=101,data=9,rot=0
+patchblock:id=block_panes_id,data=10
+patchrotate:id=101,data=10,rot=0
+patchblock:id=block_panes_id,data=11
+patchrotate:id=101,data=11,rot=0
+patchblock:id=block_panes_id,data=12
+patchrotate:id=101,data=12,rot=0
+patchblock:id=block_panes_id,data=13
+patchrotate:id=101,data=13,rot=0
+patchblock:id=block_panes_id,data=14
+patchrotate:id=101,data=14,rot=0
+patchblock:id=block_panes_id,data=15
+patchrotate:id=101,data=15,rot=0
+
+# block_panel_id (TODO)

@@ -1,0 +1,75 @@
+# Millenaire block textures
+modname:Millenaire
+# configuration file
+cfgfile:mods/millenaire/config-server.txt
+
+texturefile:id=blk0,filename=graphics/ML_sprites.png
+texturefile:id=chest,filename=graphics/item/ML_lockedchest.png,format=CHEST
+texturefile:id=bigchest,filename=graphics/item/ML_lockedlargechest.png,format=BIGCHEST
+
+# block_building_id
+# Chest - single, facing west
+block:id=block_building_id,data=0,top=6000,bottom=6005,south=2,north=1,east=4,west=3,userenderdata=true,txtid=chest
+# Chest - single, facing south
+block:id=block_building_id,data=1,top=0,bottom=5,south=3,north=4,east=2,west=1,userenderdata=true,txtid=chest
+# Chest - single, facing east
+block:id=block_building_id,data=2,top=4000,bottom=4005,south=1,north=2,east=3,west=4,userenderdata=true,txtid=chest
+# Chest - single, facing north
+block:id=block_building_id,data=3,top=5000,bottom=5005,south=4,north=3,east=1,west=2,userenderdata=true,txtid=chest
+# Chest - left side of double, facing west
+block:id=block_building_id,data=4,top=6000,bottom=6008,south=5,north=4,east=6,west=2,userenderdata=true,txtid=bigchest
+# Chest - left side of double, facing south
+block:id=block_building_id,data=5,top=0,bottom=8,south=2,north=6,east=5,west=4,userenderdata=true,txtid=bigchest
+# Chest - left side of double, facing east
+block:id=block_building_id,data=6,top=4000,bottom=4008,south=4,north=5,east=2,west=6,userenderdata=true,txtid=bigchest
+# Chest - left side of double, facing north
+block:id=block_building_id,data=7,top=5000,bottom=5008,south=6,north=2,east=4,west=5,userenderdata=true,txtid=bigchest
+# Chest - right side of double, facing west
+block:id=block_building_id,data=8,top=6001,bottom=6009,south=5,north=4,east=7,west=3,userenderdata=true,txtid=bigchest
+# Chest - right side of double, facing south
+block:id=block_building_id,data=9,top=1,bottom=9,south=3,north=7,east=5,west=4,userenderdata=true,txtid=bigchest
+# Chest - right side of double, facing east
+block:id=block_building_id,data=10,top=4001,bottom=4009,south=4,north=5,east=3,west=7,userenderdata=true,txtid=bigchest
+# Chest - right side of double, facing north
+block:id=block_building_id,data=11,top=5001,bottom=5009,south=7,north=3,east=4,west=5,userenderdata=true,txtid=bigchest
+
+# block_panel_id (TODO)
+
+# block_wood_id
+block:id=block_wood_id,data=0,allsides=0,topbottom=6000,txtid=blk0
+block:id=block_wood_id,data=1,allsides=1,topbottom=6001,txtid=blk0
+block:id=block_wood_id,data=2,allsides=2,topbottom=6002,txtid=blk0
+block:id=block_wood_id,data=3,allsides=48,topbottom=6048,txtid=blk0
+block:id=block_wood_id,data=4,allsides=49,topbottom=6049,txtid=blk0
+
+# block_earth_id
+block:id=block_earth_id,data=0,allsides=3,topbottom=6003,txtid=blk0
+block:id=block_earth_id,data=1,allsides=8,topbottom=6008,txtid=blk0
+
+# block_stone_id
+block:id=block_stone_id,data=0,allsides=4,topbottom=6004,txtid=blk0
+block:id=block_stone_id,data=1,allsides=5,topbottom=6005,txtid=blk0
+block:id=block_stone_id,data=2,allsides=6,topbottom=6006,txtid=blk0
+block:id=block_stone_id,data=3,allsides=7,topbottom=6007,txtid=blk0
+block:id=block_stone_id,data=4,allsides=9,topbottom=6009,txtid=blk0
+block:id=block_stone_id,data=5,allsides=10,topbottom=6010,txtid=blk0
+block:id=block_stone_id,data=6,allsides=11,topbottom=6011,txtid=blk0
+
+# block_crops_id
+# Rice
+block:id=block_crops_id,data=0,data=8,dta=9,data=10,data=11,data=12,data=13,data=14,data=15,patch0-3=16,transparency=TRANSPARENT,txtid=blk0
+block:id=block_crops_id,data=1,patch0-3=17,transparency=TRANSPARENT,txtid=blk0
+# Turmeric
+block:id=block_crops_id,data=2,patch0-3=18,transparency=TRANSPARENT,txtid=blk0
+block:id=block_crops_id,data=3,patch0-3=19,transparency=TRANSPARENT,txtid=blk0
+# Maize
+block:id=block_crops_id,data=4,patch0-3=20,transparency=TRANSPARENT,txtid=blk0
+block:id=block_crops_id,data=5,patch0-3=21,transparency=TRANSPARENT,txtid=blk0
+# Vine
+block:id=block_crops_id,data=6,patch0-3=22,transparency=TRANSPARENT,txtid=blk0
+block:id=block_crops_id,data=7,patch0-3=23,transparency=TRANSPARENT,txtid=blk0
+
+# block_panes_id
+# Glass pane
+block:id=block_panes_id,patch0-3=12032,transparency=TRANSPARENT,txtid=blk0
+
