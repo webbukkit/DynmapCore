@@ -1,5 +1,7 @@
 # ExtraBiomesXL 3+ Block mapping
 modname:ExtrabiomesXL
+# Defaults
+var:wall.id=0
 # configuration file
 cfgfile:config/extrabiomes/extrabiomes.cfg
 
