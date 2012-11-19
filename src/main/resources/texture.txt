@@ -356,11 +356,8 @@ block:id=54,data=9,top=1,bottom=9,south=3,north=7,east=5,west=4,userenderdata=tr
 block:id=54,data=10,top=4001,bottom=4009,south=4,north=5,east=3,west=7,userenderdata=true,txtid=bigchest
 # Chest - right side of double, facing north
 block:id=54,data=11,top=5001,bottom=5009,south=7,north=3,east=4,west=5,userenderdata=true,txtid=bigchest
-# Redstone wire (all but NS and EW)
-block:id=55,data=0,data=3,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,patch0=180,transparency=TRANSPARENT,userenderdata=true
-# Redstone wire (NS)
-# Redstone wire (EW)
-block:id=55,data=1,data=2,patch0=181,transparency=TRANSPARENT,userenderdata=true
+# Redstone wire
+block:id=55,data=*,patch0=181,patch1=180,transparency=TRANSPARENT
 # Diamond ore
 block:id=56,allsides=50,topbottom=6050
 # Diamond block
