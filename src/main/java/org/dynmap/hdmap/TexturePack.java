@@ -1502,7 +1502,7 @@ public class TexturePack {
         int blkdata = ps.getBlockData();
         HDTextureMap map = HDTextureMap.getMap(blkid, blkdata, ps.getBlockRenderData());
         BlockStep laststep = ps.getLastBlockStep();
-        int patchid = ps.getPatchIndex();   /* See if patch index */
+        int patchid = ps.getTextureIndex();   /* See if patch index */
         int textid;
         if(patchid >= 0) {
             textid = map.faces[patchid];    /* Get index of patch */

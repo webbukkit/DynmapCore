@@ -371,23 +371,23 @@ layer:0,1,2,3,4,5,6
 # Torch - up
 # Redstone torch on - up
 # Redstone torch off - up
-patchblock:id=50,id=75,id=76,data=5,data=0,patch0=VertX04375,patch1=VertX04375@90,patch2=VertX04375@180,patch3=VertX04375@270,patch4=TorchTop
+patchblock:id=50,id=75,id=76,data=5,data=0,patch0=VertX04375#0,patch1=VertX04375@90#0,patch2=VertX04375@180#0,patch3=VertX04375@270#0,patch4=TorchTop#0
 # Torch - pointing south
 # Redstone torch on - pointing south
 # Redstone torch off - pointing south
-patchblock:id=50,id=75,id=76,data=1,patch0=TorchSide1,patch1=TorchSide2,patch2=TorchSide3,patch3=TorchSide4,patch4=TorchTopSlope@270
+patchblock:id=50,id=75,id=76,data=1,patch0=TorchSide1#0,patch1=TorchSide2#0,patch2=TorchSide3#0,patch3=TorchSide4#0,patch4=TorchTopSlope@270#0
 # Torch - pointing north
 # Redstone torch on - pointing north
 # Redstone torch off - pointing north
-patchblock:id=50,id=75,id=76,data=2,patch0=TorchSide1@180,patch1=TorchSide2@180,patch2=TorchSide3@180,patch3=TorchSide4@180,patch4=TorchTopSlope@90
+patchblock:id=50,id=75,id=76,data=2,patch0=TorchSide1@180#0,patch1=TorchSide2@180#0,patch2=TorchSide3@180#0,patch3=TorchSide4@180#0,patch4=TorchTopSlope@90#0
 # Torch - pointing west
 # Redstone torch on - pointing west
 # Redstone torch off - pointing west
-patchblock:id=50,id=75,id=76,data=3,patch0=TorchSide1@90,patch1=TorchSide2@90,patch2=TorchSide3@90,patch3=TorchSide4@90,patch4=TorchTopSlope
+patchblock:id=50,id=75,id=76,data=3,patch0=TorchSide1@90#0,patch1=TorchSide2@90#0,patch2=TorchSide3@90#0,patch3=TorchSide4@90#0,patch4=TorchTopSlope#0
 # Torch - pointing east
 # Redstone torch on - pointing east
 # Redstone torch off - pointing east
-patchblock:id=50,id=75,id=76,data=4,patch0=TorchSide1@270,patch1=TorchSide2@270,patch2=TorchSide3@270,patch3=TorchSide4@270,patch4=TorchTopSlope@180
+patchblock:id=50,id=75,id=76,data=4,patch0=TorchSide1@270#0,patch1=TorchSide2@270#0,patch2=TorchSide3@270#0,patch3=TorchSide4@270#0,patch4=TorchTopSlope@180#0
 # Fence - set render algorithm
 # Nether brick fence - set render alg
 linkmap:id=85,id=113,linkalg=1

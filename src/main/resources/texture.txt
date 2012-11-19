@@ -323,9 +323,9 @@ block:id=48,allsides=36,topbottom=6036
 # Obsidian
 block:id=49,allsides=37,topbottom=6037
 # Torch - inclined
-block:id=50,data=1,data=2,data=3,data=4,patch0=80,patch1=80,patch2=80,patch3=80,patch4=80,transparency=TRANSPARENT
+block:id=50,data=1,data=2,data=3,data=4,patch0=80,transparency=TRANSPARENT
 # Torch - up
-block:id=50,data=5,patch0=80,patch1=80,patch2=80,patch3=80,patch4=80,transparency=TRANSPARENT
+block:id=50,data=5,patch0=80,transparency=TRANSPARENT
 # Fire
 block:id=51,patch0=265,patch1=265,patch2=265,patch3=265,patch4=265,patch5=265,patch6=265,patch7=265,transparency=TRANSPARENT
 # Monster spawner
@@ -459,13 +459,13 @@ block:id=72,allsides=4,topbottom=6004,transparency=TRANSPARENT
 # Redstone Ore
 block:id=73,id=74,allfaces=51
 # Redstone Torch - unlit - inclined
-block:id=75,data=1,data=2,data=3,data=4,patch0=115,patch1=115,patch2=115,patch3=115,patch4=115,transparency=TRANSPARENT
+block:id=75,data=1,data=2,data=3,data=4,patch0=115,transparency=TRANSPARENT
 # Redstone Torch - unlit - up
-block:id=75,data=5,patch0=115,patch1=115,patch2=115,patch3=115,patch4=115,transparency=TRANSPARENT
+block:id=75,data=5,patch0=115,transparency=TRANSPARENT
 # Redstone Torch - lit - inclined
-block:id=76,data=1,data=2,data=3,data=4,patch0=99,patch1=99,patch2=99,patch3=99,patch4=99,transparency=TRANSPARENT
+block:id=76,data=1,data=2,data=3,data=4,patch0=99,transparency=TRANSPARENT
 # Redstone Torch - lit - up
-block:id=76,data=5,patch0=99,patch1=99,patch2=99,patch3=99,patch4=99,transparency=TRANSPARENT
+block:id=76,data=5,patch0=99,transparency=TRANSPARENT
 # Stone button
 block:id=77,allsides=1,topbottom=6001,transparency=TRANSPARENT
 # Snow

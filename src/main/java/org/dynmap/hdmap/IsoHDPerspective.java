@@ -23,16 +23,19 @@ import org.dynmap.MapType;
 import org.dynmap.MapType.ImageFormat;
 import org.dynmap.TileHashManager;
 import org.dynmap.debug.Debug;
+import org.dynmap.renderer.RenderPatch;
 import org.dynmap.utils.BlockStep;
-import org.dynmap.hdmap.HDBlockModels.HDPatchDefinition;
+import org.dynmap.hdmap.HDBlockModels.CustomBlockModel;
 import org.dynmap.hdmap.TexturePack.BlockTransparency;
 import org.dynmap.hdmap.TexturePack.HDTextureMap;
 import org.dynmap.utils.DynmapBufferedImage;
 import org.dynmap.utils.FileLockManager;
 import org.dynmap.utils.LightLevels;
+import org.dynmap.utils.LongHashMap;
 import org.dynmap.utils.MapChunkCache;
 import org.dynmap.utils.MapIterator;
 import org.dynmap.utils.Matrix3D;
+import org.dynmap.utils.PatchDefinition;
 import org.dynmap.utils.Vector3D;
 import org.json.simple.JSONObject;
 
@@ -74,7 +77,6 @@ public class IsoHDPerspective implements HDPerspective {
     private boolean need_biomedata = false;
     private boolean need_rawbiomedata = false;
 
-    private static final int CHEST_BLKTYPEID = 54;
     private static final int REDSTONE_BLKTYPEID = 55;
     private static final int FENCEGATE_BLKTYPEID = 107;
     
@@ -122,11 +124,11 @@ public class IsoHDPerspective implements HDPerspective {
         Vector3D v0 = new Vector3D();
         Vector3D vS = new Vector3D();
         Vector3D d_cross_uv = new Vector3D();
-        double patch_t[] = new double[HDPatchDefinition.MAX_PATCHES];
-        double patch_u[] = new double[HDPatchDefinition.MAX_PATCHES];
-        double patch_v[] = new double[HDPatchDefinition.MAX_PATCHES];
-        BlockStep patch_step[] = new BlockStep[HDPatchDefinition.MAX_PATCHES];
-        int patch_id[] = new int[HDPatchDefinition.MAX_PATCHES];
+        double patch_t[] = new double[HDBlockModels.getMaxPatchCount()];
+        double patch_u[] = new double[HDBlockModels.getMaxPatchCount()];
+        double patch_v[] = new double[HDBlockModels.getMaxPatchCount()];
+        BlockStep patch_step[] = new BlockStep[HDBlockModels.getMaxPatchCount()];
+        int patch_id[] = new int[HDBlockModels.getMaxPatchCount()];
         int cur_patch = -1;
         double cur_patch_u;
         double cur_patch_v;
@@ -138,6 +140,9 @@ public class IsoHDPerspective implements HDPerspective {
         int worldheight;
         int heightmask;
         LightLevels llcache[];
+        
+        /* Cache for custom model patch lists */
+        private LongHashMap custom_meshes;
 
         public OurPerspectiveState(MapIterator mi, boolean isnether) {
             mapiter = mi;
@@ -149,6 +154,7 @@ public class IsoHDPerspective implements HDPerspective {
             llcache = new LightLevels[4];
             for(int i = 0; i < llcache.length; i++)
                 llcache[i] = new LightLevels();
+            custom_meshes = new LongHashMap();
         }
         private final void updateSemitransparentLight(LightLevels ll) {
         	int emitted = 0, sky = 0;
@@ -657,11 +663,11 @@ public class IsoHDPerspective implements HDPerspective {
             return false;
         }
         
-        private final boolean handlePatches(HDPatchDefinition[] patches, HDShaderState[] shaderstate, boolean[] shaderdone) {
+        private final boolean handlePatches(RenderPatch[] patches, HDShaderState[] shaderstate, boolean[] shaderdone) {
             int hitcnt = 0;
             /* Loop through patches : compute intercept values for each */
             for(int i = 0; i < patches.length; i++) {
-                HDPatchDefinition pd = patches[i];
+                PatchDefinition pd = (PatchDefinition)patches[i];
                 /* Compute origin of patch */
                 v0.x = (double)x + pd.x0;
                 v0.y = (double)y + pd.y0;
@@ -711,7 +717,7 @@ public class IsoHDPerspective implements HDPerspective {
                     patch_t[hitcnt] = t;
                     patch_u[hitcnt] = u;
                     patch_v[hitcnt] = v;
-                    patch_id[hitcnt] = i;
+                    patch_id[hitcnt] = pd.textureindex;
                     if(det > 0)
                         patch_step[hitcnt] = pd.step;
                     else
@@ -803,7 +809,18 @@ public class IsoHDPerspective implements HDPerspective {
                     	blockrenderdata = -1;
                     	break;
                 }
-                HDPatchDefinition[] patches = scalemodels.getPatchModel(blocktypeid,  blockdata,  blockrenderdata);
+                RenderPatch[] patches = scalemodels.getPatchModel(blocktypeid,  blockdata,  blockrenderdata);
+                /* If no patches, see if custom model */
+                if(patches == null) {
+                    CustomBlockModel cbm = scalemodels.getCustomBlockModel(blocktypeid,  blockdata);
+                    if(cbm != null) {   /* If found, see if cached already */
+                        patches = this.getCustomMesh();
+                        if(patches == null) {
+                            patches = cbm.getMeshForBlock(mapiter);
+                            this.setCustomMesh(patches);
+                        }
+                    }
+                }
                 /* Look up to see if block is modelled */
                 if(patches != null) {
                     return handlePatches(patches, shaderstate, shaderdone);
@@ -1060,9 +1077,9 @@ public class IsoHDPerspective implements HDPerspective {
             return subblock_xyz;
         }
         /**
-         * Get current patch index
+         * Get current texture index
          */
-        public int getPatchIndex() {
+        public int getTextureIndex() {
             return cur_patch;
         }
         /**
@@ -1083,6 +1100,20 @@ public class IsoHDPerspective implements HDPerspective {
          */
         public final LightLevels getCachedLightLevels(int idx) {
             return llcache[idx];
+        }
+        /**
+         * Get custom mesh for block, if defined (null if not)
+         */
+        public final RenderPatch[] getCustomMesh() {
+            long key = this.mapiter.getBlockKey();  /* Get key for current block */
+            return (RenderPatch[])custom_meshes.get(key);
+        }
+        /**
+         * Save custom mesh for block
+         */
+        public final void setCustomMesh(RenderPatch[] mesh) {
+            long key = this.mapiter.getBlockKey();  /* Get key for current block */
+            custom_meshes.put(key,  mesh);
         }
     }
     

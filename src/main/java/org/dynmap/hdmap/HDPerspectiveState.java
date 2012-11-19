@@ -63,9 +63,9 @@ public interface HDPerspectiveState {
      */
     MapIterator getMapIterator();
     /**
-     * Get current patch index
+     * Get current texture index
      */
-    int getPatchIndex();
+    int getTextureIndex();
     /**
      * Get current U of patch intercept
      */

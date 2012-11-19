@@ -14,11 +14,14 @@ import java.util.Map;
 import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapCore;
 import org.dynmap.Log;
-import org.dynmap.MapManager;
 import org.dynmap.debug.Debug;
-import org.dynmap.utils.BlockStep;
+import org.dynmap.renderer.CustomRenderer;
+import org.dynmap.renderer.MapDataContext;
+import org.dynmap.renderer.RenderPatch;
+import org.dynmap.renderer.RenderPatchFactory.SideVisible;
 import org.dynmap.utils.ForgeConfigFile;
-import org.dynmap.utils.Vector3D;
+import org.dynmap.utils.PatchDefinition;
+import org.dynmap.utils.PatchDefinitionFactory;
 
 /**
  * Custom block models - used for non-cube blocks to represent the physical volume associated with the block
@@ -27,8 +30,12 @@ import org.dynmap.utils.Vector3D;
 public class HDBlockModels {
     private static int linkalg[] = new int[256];
     private static int linkmap[][] = new int[256][];
-    
+    private static int max_patches;
     private static HashMap<Integer, HDBlockModel> models_by_id_data = new HashMap<Integer, HDBlockModel>();
+    private static PatchDefinitionFactory pdf = new PatchDefinitionFactory();
+
+    public static final int getMaxPatchCount() { return max_patches; }
+    public static final PatchDefinitionFactory getPatchDefinitionFactory() { return pdf; }
     
     /* Reset model if defined by different block set */
     public static boolean resetIfNotBlockSet(int blkid, int blkdata, String blockset) {
@@ -62,7 +69,8 @@ public class HDBlockModels {
     
     public static class HDScaledBlockModels {
         private short[][][] modelvectors;
-        private HDPatchDefinition[][][] patches;
+        private PatchDefinition[][][] patches;
+        private CustomBlockModel[][] custom;
 
         public final short[] getScaledModel(int blocktype, int blockdata, int blockrenderdata) {
             short[][] m;
@@ -79,198 +87,34 @@ public class HDBlockModels {
             }
             return m[(blockrenderdata>=0)?blockrenderdata:blockdata];
         }
-        public HDPatchDefinition[] getPatchModel(int blocktype, int blockdata, int blockrenderdata) {
+        public PatchDefinition[] getPatchModel(int blocktype, int blockdata, int blockrenderdata) {
             try {
                 if(patches[blocktype] == null) {
                     return null;
                 }
                 return patches[blocktype][(blockrenderdata>=0)?blockrenderdata:blockdata];
             } catch (ArrayIndexOutOfBoundsException aioobx) {
-                HDPatchDefinition[][][] newpatches = new HDPatchDefinition[blocktype+1][][];
+                PatchDefinition[][][] newpatches = new PatchDefinition[blocktype+1][][];
                 System.arraycopy(patches, 0, newpatches, 0, patches.length);
                 patches = newpatches;
                 return null;
             }
         }
-    }
-    
-    public enum SideVisibility { TOP, BOTTOM, BOTH };
-    
-    /* Define patch in surface-based models - origin (xyz), u-vector (xyz) v-vector (xyz), u limits and v limits */
-    public static class HDPatchDefinition {
-        public double x0, y0, z0;   /* Origin of patch (lower left corner of texture) */
-        public double xu, yu, zu;   /* Coordinates of end of U vector (relative to origin) - corresponds to u=1.0 (lower right corner) */
-        public double xv, yv, zv;   /* Coordinates of end of V vector (relative to origin) - corresponds to v=1.0 (upper left corner) */
-        public double umin, umax;   /* Limits of patch - minimum and maximum u value */
-        public double vmin, vmax;   /* Limits of patch - minimum and maximum v value */
-        public double uplusvmax;    /* Limits of patch - max of u+v (triangle) */
-        public Vector3D u, v;       /* U and V vector, relative to origin */
-        public static final int MAX_PATCHES = 32;   /* Max patches per model */
-        public BlockStep step;      /* Best approximation of orientation of surface, from top (positive determinent) */
-        public SideVisibility sidevis;  /* Which side is visible */
-        /* Offset vector of middle of block */
-        private static final Vector3D offsetCenter = new Vector3D(0.5,0.5,0.5);
-        
-        public HDPatchDefinition() {
-            x0 = y0 = z0 = 0.0;
-            xu = zu = 0.0; yu = 1.0;
-            yv = zv = 0.0; xv = 1.0;
-            umin = vmin = 0.0;
-            umax = vmax = 1.0;
-            uplusvmax = Double.MAX_VALUE;
-            u = new Vector3D();
-            v = new Vector3D();
-            sidevis = SideVisibility.BOTH;
-        }
-        /**
-         * Construct patch, based on rotation of existing patch clockwise by N
-         * 90 degree steps
-         * @param orig
-         * @param rotate_cnt
-         */
-        public HDPatchDefinition(HDPatchDefinition orig, int rotatex, int rotatey, int rotatez) {
-            Vector3D vec = new Vector3D(orig.x0, orig.y0, orig.z0);
-            rotate(vec, rotatex, rotatey, rotatez); /* Rotate origin */
-            x0 = vec.x; y0 = vec.y; z0 = vec.z;
-            /* Rotate U */
-            vec.x = orig.xu; vec.y = orig.yu; vec.z = orig.zu;
-            rotate(vec, rotatex, rotatey, rotatez); /* Rotate origin */
-            xu = vec.x; yu = vec.y; zu = vec.z;
-            /* Rotate V */
-            vec.x = orig.xv; vec.y = orig.yv; vec.z = orig.zv;
-            rotate(vec, rotatex, rotatey, rotatez); /* Rotate origin */
-            xv = vec.x; yv = vec.y; zv = vec.z;
-            umin = orig.umin; vmin = orig.vmin;
-            umax = orig.umax; vmax = orig.vmax;
-            uplusvmax = orig.uplusvmax;
-            sidevis = orig.sidevis;
-            u = new Vector3D();
-            v = new Vector3D();
-            update();
-        }
-        
-        private void rotate(Vector3D vec, int xcnt, int ycnt, int zcnt) {
-            vec.subtract(offsetCenter); /* Shoft to center of block */
-            /* Do X rotation */
-            double rot = Math.toRadians(xcnt);
-            double nval = vec.z * Math.sin(rot) + vec.y * Math.cos(rot);
-            vec.z = vec.z * Math.cos(rot) - vec.y * Math.sin(rot);
-            vec.y = nval;
-            /* Do Y rotation */
-            rot = Math.toRadians(ycnt);
-            nval = vec.x * Math.cos(rot) - vec.z * Math.sin(rot);
-            vec.z = vec.x * Math.sin(rot) + vec.z * Math.cos(rot);
-            vec.x = nval;
-            /* Do Z rotation */
-            rot = Math.toRadians(zcnt);
-            nval = vec.y * Math.sin(rot) + vec.x * Math.cos(rot);
-            vec.y = vec.y * Math.cos(rot) - vec.x * Math.sin(rot);
-            vec.x = nval;
-            vec.add(offsetCenter); /* Shoft back to corner */
-        }
-        
-        public void update() {
-            u.x = xu - x0; u.y = yu - y0; u.z = zu - z0;
-            v.x = xv - x0; v.y = yv - y0; v.z = zv - z0;
-            /* Now compute normal of surface - U cross V */
-            Vector3D d = new Vector3D(u);
-            d.crossProduct(v);
-            /* Now, find the largest component of the normal (dominant direction) */
-            if(Math.abs(d.x) > (Math.abs(d.y)*0.9)) { /* If X > 0.9Y */
-                if(Math.abs(d.x) > Math.abs(d.z)) { /* If X > Z */
-                    if(d.x > 0) {
-                        step = BlockStep.X_PLUS;
-                    }
-                    else {
-                        step = BlockStep.X_MINUS;
-                    }
+        public CustomBlockModel getCustomBlockModel(int blocktype, int blockdata) {
+            try {
+                if(custom[blocktype] == null) {
+                    return null;
                 }
-                else {  /* Else Z >= X */
-                    if(d.z > 0) {
-                        step = BlockStep.Z_PLUS;
-                    }
-                    else {
-                        step = BlockStep.Z_MINUS;
-                    }
-                }
+                return custom[blocktype][blockdata];
+            } catch (ArrayIndexOutOfBoundsException aioobx) {
+                CustomBlockModel[][] newcustom = new CustomBlockModel[blocktype+1][];
+                System.arraycopy(custom, 0, newcustom, 0, custom.length);
+                custom = newcustom;
+                return null;
             }
-            else {  /* Else Y >= X */
-                if((Math.abs(d.y)*0.9) > Math.abs(d.z)) { /* If 0.9Y > Z */
-                    if(d.y > 0) {
-                        step = BlockStep.Y_PLUS;
-                    }
-                    else {
-                        step = BlockStep.Y_MINUS;
-                    }
-                }
-                else {  /* Else Z >= Y */
-                    if(d.z > 0) {
-                        step = BlockStep.Z_PLUS;
-                    }
-                    else {
-                        step = BlockStep.Z_MINUS;
-                    }
-                }
-            }
-        }
-        public boolean validate() {
-            boolean good = true;
-            if((x0 < -1.0) || (x0 > 2.0)) {
-                Log.severe("Invalid x0=" + x0);
-                good = false;
-            }
-            if((y0 < -1.0) || (y0 > 2.0)) {
-                Log.severe("Invalid y0=" + y0);
-                good = false;
-            }
-            if((z0 < -1.0) || (z0 > 2.0)) {
-                Log.severe("Invalid z0=" + z0);
-                good = false;
-            }
-            if((xu < -1.0) || (xu > 2.0)) {
-                Log.severe("Invalid xu=" + xu);
-                good = false;
-            }
-            if((yu < -1.0) || (yu > 2.0)) {
-                Log.severe("Invalid yu=" + yu);
-                good = false;
-            }
-            if((zu < -1.0) || (zu > 2.0)) {
-                Log.severe("Invalid zu=" + zu);
-                good = false;
-            }
-            if((xv < -1.0) || (xv > 2.0)) {
-                Log.severe("Invalid xv=" + xv);
-                good = false;
-            }
-            if((yv < -1.0) || (yv > 2.0)) {
-                Log.severe("Invalid yv=" + yv);
-                good = false;
-            }
-            if((zv < -1.0) || (zv > 2.0)) {
-                Log.severe("Invalid zv=" + zv);
-                good = false;
-            }
-            if((umin < 0.0) || (umin >= umax)) {
-                Log.severe("Invalid umin=" + umin);
-                good = false;
-            }
-            if((vmin < 0.0) || (vmin >= vmax)) {
-                Log.severe("Invalid vmin=" + vmin);
-                good = false;
-            }
-            if(umax > 1.0) {
-                Log.severe("Invalid umax=" + umax);
-                good = false;
-            }
-            if(vmax > 1.0) {
-                Log.severe("Invalid vmax=" + vmax);
-                good = false;
-            }
-            
-            return good;
         }
     }
+        
     
     private static HashMap<Integer, HDScaledBlockModels> scaled_models_by_scale = new HashMap<Integer, HDScaledBlockModels>();
     
@@ -300,6 +144,39 @@ public class HDBlockModels {
             return blockset;
         }
         public abstract int getTextureCount();
+    }
+    
+    public static class CustomBlockModel extends HDBlockModel {
+        public CustomRenderer render;
+        
+        public CustomBlockModel(int blockid, int databits, String classname, String classparm, String blockset) {
+            super(blockid, databits, blockset);
+            try {
+                Class<?> cls = Class.forName(classname);   /* Get class */
+                render = (CustomRenderer) cls.newInstance();
+                if(render.initializeRenderer(pdf, blockid, databits, classparm) == false) {
+                    Log.severe("Error loading custom renderer - " + classname);
+                    render = null;
+                }
+            } catch (Exception x) {
+                Log.severe("Error loading custom renderer - " + classname, x);
+                render = null;
+            }
+        }
+
+        @Override
+        public int getTextureCount() {
+            return render.getMaximumTextureCount();
+        }
+
+        private static final RenderPatch[] empty_list = new RenderPatch[0];
+        
+        public RenderPatch[] getMeshForBlock(MapDataContext ctx) {
+            if(render != null)
+                return render.getRenderPatchList(ctx);
+            else
+                return empty_list;
+        }
     }
     
     public static class HDBlockVolumetricModel extends HDBlockModel {
@@ -478,7 +355,8 @@ public class HDBlockModels {
 
     public static class HDBlockPatchModel extends HDBlockModel {
         /* Patch model specific attributes */
-        private HDPatchDefinition[] patches;
+        private PatchDefinition[] patches;
+        private final int max_texture;
         /**
          * Block definition - positions correspond to Bukkit coordinates (+X is south, +Y is up, +Z is west)
          * (for patch models)
@@ -487,19 +365,25 @@ public class HDBlockModels {
          * @param patches - list of patches (surfaces composing model)
          * @param blockset - ID of set of blocks defining model
          */
-        public HDBlockPatchModel(int blockid, int databits, HDPatchDefinition[] patches, String blockset) {
+        public HDBlockPatchModel(int blockid, int databits, PatchDefinition[] patches, String blockset) {
             super(blockid, databits, blockset);
             this.patches = patches;
+            int max = 0;
+            for(int i = 0; i < patches.length; i++) {
+                if(patches[i].textureindex > max)
+                    max = patches[i].textureindex;
+            }
+            this.max_texture = max + 1;
         }
         /**
          * Get patches for block model (if patch model)
          */
-        public final HDPatchDefinition[] getPatches() {
+        public final PatchDefinition[] getPatches() {
             return patches;
         }
         @Override
         public int getTextureCount() {
-            return patches.length;
+            return max_texture;
         }
     }
     
@@ -540,16 +424,20 @@ public class HDBlockModels {
         if(model == null) {
             model = new HDScaledBlockModels();
             short[][][] blockmodels = new short[256][][];
-            HDPatchDefinition[][][] patches = new HDPatchDefinition[256][][];
+            PatchDefinition[][][] patches = new PatchDefinition[256][][];
+            CustomBlockModel[][] custom = new CustomBlockModel[256][];
             
             for(HDBlockModel m : models_by_id_data.values()) {
                 if(m.blockid >= blockmodels.length){
                     short[][][] newmodels = new short[m.blockid+1][][];
                     System.arraycopy(blockmodels,  0, newmodels, 0, blockmodels.length);
                     blockmodels = newmodels;
-                    HDPatchDefinition[][][] newpatches = new HDPatchDefinition[m.blockid+1][][];
+                    PatchDefinition[][][] newpatches = new PatchDefinition[m.blockid+1][][];
                     System.arraycopy(patches,  0, newpatches, 0, patches.length);
                     patches = newpatches;
+                    CustomBlockModel[][] newcustom = new CustomBlockModel[m.blockid+1][];
+                    System.arraycopy(custom,  0, newcustom, 0, custom.length);
+                    custom = newcustom;
                 }
                 if(m instanceof HDBlockVolumetricModel) {
                     short[][] row = blockmodels[m.blockid];
@@ -576,10 +464,10 @@ public class HDBlockModels {
                 }
                 else if(m instanceof HDBlockPatchModel) {
                     HDBlockPatchModel pm = (HDBlockPatchModel)m;
-                    HDPatchDefinition[] patch = pm.getPatches();
-                    HDPatchDefinition[][] row = patches[m.blockid];
+                    PatchDefinition[] patch = pm.getPatches();
+                    PatchDefinition[][] row = patches[m.blockid];
                     if(row == null) {
-                        row = new HDPatchDefinition[16][];
+                        row = new PatchDefinition[16][];
                         patches[m.blockid] = row; 
                     }
                     if(patch != null) {
@@ -590,9 +478,23 @@ public class HDBlockModels {
                         }
                     }
                 }
+                else if(m instanceof CustomBlockModel) {
+                    CustomBlockModel cbm = (CustomBlockModel)m;
+                    CustomBlockModel[] row = custom[m.blockid];
+                    if(row == null) {
+                        row = new CustomBlockModel[16];
+                        custom[m.blockid] = row; 
+                    }
+                    for(int i = 0; i < 16; i++) {
+                        if((m.databits & (1 << i)) != 0) {
+                            row[i] = cbm;
+                        }
+                    }
+                }
             }
             model.modelvectors = blockmodels;
             model.patches = patches;
+            model.custom = custom;
             scaled_models_by_scale.put(scale, model);
         }
         return model;
@@ -602,6 +504,7 @@ public class HDBlockModels {
      */
     public static void loadModels(DynmapCore core, ConfigurationNode config) {
         File datadir = core.getDataFolder();
+        max_patches = 6;    /* Reset to default */
         /* Reset models-by-ID-Data cache */
         models_by_id_data.clear();
         /* Reset scaled models by scale cache */
@@ -661,7 +564,7 @@ public class HDBlockModels {
             ArrayList<HDBlockVolumetricModel> modlist = new ArrayList<HDBlockVolumetricModel>();
             ArrayList<HDBlockPatchModel> pmodlist = new ArrayList<HDBlockPatchModel>();
             HashMap<String,Integer> varvals = new HashMap<String,Integer>();
-            HashMap<String, HDPatchDefinition> patchdefs = new HashMap<String, HDPatchDefinition>();
+            HashMap<String, PatchDefinition> patchdefs = new HashMap<String, PatchDefinition>();
             int layerbits = 0;
             int rownum = 0;
             int scale = 0;
@@ -787,11 +690,13 @@ public class HDBlockModels {
                     HDBlockModel mod = models_by_id_data.get((id<<4)+data);
                     if((mod != null) && (mod instanceof HDBlockPatchModel)) {
                         HDBlockPatchModel pmod = (HDBlockPatchModel)mod;
-                        HDPatchDefinition patches[] = pmod.getPatches();
-                        HDPatchDefinition newpatches[] = new HDPatchDefinition[patches.length];
+                        PatchDefinition patches[] = pmod.getPatches();
+                        PatchDefinition newpatches[] = new PatchDefinition[patches.length];
                         for(int i = 0; i < patches.length; i++) {
-                            newpatches[i] = new HDPatchDefinition(patches[i], rotx, roty, rotz);
+                            newpatches[i] = (PatchDefinition)pdf.getRotatedPatch(patches[i], rotx, roty, rotz, patches[i].textureindex);
                         }
+                        if(patches.length > max_patches)
+                            max_patches = patches.length;
                         for(HDBlockPatchModel patchmod : pmodlist) {
                             patchmod.patches = newpatches;
                         }
@@ -884,8 +789,15 @@ public class HDBlockModels {
                 else if(line.startsWith("patch:")) {
                     String patchid = null;
                     line = line.substring(6);
-                    HDPatchDefinition pd = new HDPatchDefinition();
                     String[] args = line.split(",");
+                    double p_x0 = 0.0, p_y0 = 0.0, p_z0 = 0.0;
+                    double p_xu = 0.0, p_yu = 1.0, p_zu = 0.0;
+                    double p_xv = 1.0, p_yv = 0.0, p_zv = 0.0;
+                    double p_umin = 0.0, p_umax = 1.0;
+                    double p_vmin = 0.0, p_vmax = 1.0;
+                    double p_uplusvmax = 100.0;
+                    SideVisible p_sidevis = SideVisible.BOTH;
+                    
                     for(String a : args) {
                         String[] av = a.split("=");
                         if(av.length < 2) continue;
@@ -893,60 +805,60 @@ public class HDBlockModels {
                             patchid = av[1];
                         }
                         else if(av[0].equals("Ox")) {
-                            pd.x0 = Double.parseDouble(av[1]);
+                            p_x0 = Double.parseDouble(av[1]);
                         }
                         else if(av[0].equals("Oy")) {
-                            pd.y0 = Double.parseDouble(av[1]);
+                            p_y0 = Double.parseDouble(av[1]);
                         }
                         else if(av[0].equals("Oz")) {
-                            pd.z0 = Double.parseDouble(av[1]);
+                            p_z0 = Double.parseDouble(av[1]);
                         }
                         else if(av[0].equals("Ux")) {
-                            pd.xu = Double.parseDouble(av[1]);
+                            p_xu = Double.parseDouble(av[1]);
                         }
                         else if(av[0].equals("Uy")) {
-                            pd.yu = Double.parseDouble(av[1]);
+                            p_yu = Double.parseDouble(av[1]);
                         }
                         else if(av[0].equals("Uz")) {
-                            pd.zu = Double.parseDouble(av[1]);
+                            p_zu = Double.parseDouble(av[1]);
                         }
                         else if(av[0].equals("Vx")) {
-                            pd.xv = Double.parseDouble(av[1]);
+                            p_xv = Double.parseDouble(av[1]);
                         }
                         else if(av[0].equals("Vy")) {
-                            pd.yv = Double.parseDouble(av[1]);
+                            p_yv = Double.parseDouble(av[1]);
                         }
                         else if(av[0].equals("Vz")) {
-                            pd.zv = Double.parseDouble(av[1]);
+                            p_zv = Double.parseDouble(av[1]);
                         }
                         else if(av[0].equals("Umin")) {
-                            pd.umin = Double.parseDouble(av[1]);
+                            p_umin = Double.parseDouble(av[1]);
                         }
                         else if(av[0].equals("Umax")) {
-                            pd.umax = Double.parseDouble(av[1]);
+                            p_umax = Double.parseDouble(av[1]);
                         }
                         else if(av[0].equals("Vmin")) {
-                            pd.vmin = Double.parseDouble(av[1]);
+                            p_vmin = Double.parseDouble(av[1]);
                         }
                         else if(av[0].equals("Vmax")) {
-                            pd.vmax = Double.parseDouble(av[1]);
+                            p_vmax = Double.parseDouble(av[1]);
                         }
                         else if(av[0].equals("UplusVmax")) {
-                            pd.uplusvmax = Double.parseDouble(av[1]);
+                            p_uplusvmax = Double.parseDouble(av[1]);
                         }
                         else if(av[0].equals("visibility")) {
                             if(av[1].equals("top"))
-                                pd.sidevis = SideVisibility.TOP;
+                                p_sidevis = SideVisible.TOP;
                             else if(av[1].equals("bottom"))
-                                pd.sidevis = SideVisibility.BOTTOM;
+                                p_sidevis = SideVisible.BOTTOM;
                             else
-                                pd.sidevis = SideVisibility.BOTH;
+                                p_sidevis = SideVisible.BOTH;
                         }
                     }
                     /* If completed, add to map */
                     if(patchid != null) {
-                        pd.update();    /* Finish cooking it */
-                        if(pd.validate()) {
+                        PatchDefinition pd = pdf.getPatch(p_x0, p_y0, p_z0, p_xu, p_yu, p_zu, p_xv, p_yv, p_zv, p_umin, p_umax, p_vmin, p_vmax, p_uplusvmax, p_sidevis, 0);
+                        if(pd != null) {
                             patchdefs.put(patchid,  pd);
                         }
                     }
@@ -956,7 +868,7 @@ public class HDBlockModels {
                     int databits = 0;
                     line = line.substring(11);
                     String[] args = line.split(",");
-                    ArrayList<HDPatchDefinition> patches = new ArrayList<HDPatchDefinition>();
+                    ArrayList<PatchDefinition> patches = new ArrayList<PatchDefinition>();
                     for(String a : args) {
                         String[] av = a.split("=");
                         if(av.length < 2) continue;
@@ -980,46 +892,62 @@ public class HDBlockModels {
                                 patchnum0 = Integer.parseInt(ids2[0]);
                                 patchnum1 = Integer.parseInt(ids2[1]);
                             }
-                            if((patchnum0 < 0) || (patchnum0 >= HDPatchDefinition.MAX_PATCHES)) {
+                            if(patchnum0 < 0) {
                                 Log.severe("Invalid patch index " + patchnum0 + " - line " + rdr.getLineNumber() + " of " + fname);
                                 return;
                             }
-                            if((patchnum1 < 0) || (patchnum1 >= HDPatchDefinition.MAX_PATCHES)) {
+                            if(patchnum1 < patchnum0) {
                                 Log.severe("Invalid patch index " + patchnum1 + " - line " + rdr.getLineNumber() + " of " + fname);
                                 return;
                             }
-                            HDPatchDefinition pd = patchdefs.get(av[1]);
-                            if(pd == null) {
-                                /* See if ID@rotation */
-                                int atidx = av[1].indexOf('@');
-                                if(atidx > 0) {
-                                    HDPatchDefinition pdorig = patchdefs.get(av[1].substring(0, atidx));
-                                    int rotx = 0, roty = 0, rotz = 0;
-                                    String[] rv = av[1].substring(atidx+1).split("/");
-                                    if(rv.length == 1) {
-                                        roty = Integer.parseInt(rv[0]);
-                                    }
-                                    else if(rv.length == 2) {
-                                        rotx = Integer.parseInt(rv[0]);
-                                        roty = Integer.parseInt(rv[1]);
-                                    }
-                                    else if(rv.length == 3) {
-                                        rotx = Integer.parseInt(rv[0]);
-                                        roty = Integer.parseInt(rv[1]);
-                                        rotz = Integer.parseInt(rv[2]);
-                                    }
-                                    if(pdorig != null) {
-                                        pd = new HDPatchDefinition(pdorig, rotx, roty, rotz);
-                                        patchdefs.put(av[1],  pd);  /* Add to map so we reuse it */
-                                    }
+                            String patchid = av[1];
+                            int txt_idx = -1;
+                            int off = patchid.lastIndexOf('#');
+                            if(off > 0) {
+                                try {
+                                    txt_idx = Integer.valueOf(patchid.substring(off+1));
+                                } catch (NumberFormatException nfx) {
+                                    Log.severe("Invalid patch ID " + patchid + " - line " + rdr.getLineNumber() + " of " + fname);
                                 }
+                                patchid = patchid.substring(0,  off);
                             }
+                            int rotx = 0, roty = 0, rotz = 0;
+                            /* See if ID@rotation */
+                            off = patchid.indexOf('@');
+                            if(off > 0) {
+                                String[] rv = patchid.substring(off+1).split("/");
+                                if(rv.length == 1) {
+                                    roty = Integer.parseInt(rv[0]);
+                                }
+                                else if(rv.length == 2) {
+                                    rotx = Integer.parseInt(rv[0]);
+                                    roty = Integer.parseInt(rv[1]);
+                                }
+                                else if(rv.length == 3) {
+                                    rotx = Integer.parseInt(rv[0]);
+                                    roty = Integer.parseInt(rv[1]);
+                                    rotz = Integer.parseInt(rv[2]);
+                                }
+                                patchid = patchid.substring(0, off);
+                            }
+                            PatchDefinition pd = patchdefs.get(patchid);
                             if(pd == null) {
                                 Log.severe("Invalid patch ID " + av[1] + " - line " + rdr.getLineNumber() + " of " + fname);
                             }
+                            else if(txt_idx >= 0) { /* If set texture index */
+                                PatchDefinition pd2 = pdf.getPatch(pd, rotx,  roty,  rotz, txt_idx);
+                                if(pd2 != null) {
+                                    for(int i = patchnum0; i <= patchnum1; i++) {
+                                        patches.add(i,  pd2);
+                                    }
+                                }
+                            }
                             else {
                                 for(int i = patchnum0; i <= patchnum1; i++) {
-                                    patches.add(i,  pd);
+                                    PatchDefinition pd2 = pdf.getPatch(pd, rotx,  roty,  rotz, i);
+                                    if(pd2 != null) {
+                                        patches.add(i,  pd2);
+                                    }
                                 }
                             }
                         }
@@ -1027,7 +955,10 @@ public class HDBlockModels {
                     /* If we have everything, build block */
                     pmodlist.clear();
                     if((blkids.size() > 0) && (databits != 0)) {
-                        HDPatchDefinition[] patcharray = patches.toArray(new HDPatchDefinition[patches.size()]);
+                        PatchDefinition[] patcharray = patches.toArray(new PatchDefinition[patches.size()]);
+                        if(patcharray.length > max_patches)
+                            max_patches = patcharray.length;
+
                         for(Integer id : blkids) {
                             if(id > 0) {
                                 pmodlist.add(new HDBlockPatchModel(id.intValue(), databits, patcharray, blockset));
@@ -1037,6 +968,55 @@ public class HDBlockModels {
                     }
                     else {
                         Log.severe("Patch block model missing required parameters = line " + rdr.getLineNumber() + " of " + fname);
+                    }
+                }
+                else if(line.startsWith("customblock:")) {
+                    ArrayList<Integer> blkids = new ArrayList<Integer>();
+                    int databits = 0;
+                    line = line.substring(12);
+                    String[] args = line.split(",");
+                    String cls = null;
+                    String clsarg = "";
+                    for(String a : args) {
+                        String[] av = a.split("=");
+                        if(av.length < 2) continue;
+                        if(av[0].equals("id")) {
+                            blkids.add(getIntValue(varvals,av[1]));
+                        }
+                        else if(av[0].equals("data")) {
+                            if(av[1].equals("*"))
+                                databits = 0xFFFF;
+                            else
+                                databits |= (1 << getIntValue(varvals,av[1]));
+                        }
+                        else if(av[0].equals("class")) {
+                            cls = av[1];
+                        }
+                        else if(av[0].equals("arg")) {
+                            clsarg = av[1];
+                        }
+                    }
+                    /* If we have everything, build block */
+                    if((blkids.size() > 0) && (databits != 0) && (cls != null)) {
+                        for(Integer id : blkids) {
+                            if(id > 0) {
+                                CustomBlockModel cbm = new CustomBlockModel(id.intValue(), databits, cls, clsarg, blockset);
+                                if(cbm.render == null) {
+                                    Log.severe("Custom block model failed to initialize = line " + rdr.getLineNumber() + " of " + fname);
+                                }
+                                else {
+                                    /* Update maximum texture count */
+                                    int texturecnt = cbm.getTextureCount();
+                                    if(texturecnt > max_patches) {
+                                        max_patches = texturecnt;
+                                    }
+                                }
+                                cnt++;
+                            }
+                        }
+                    }
+                    else {
+                        Log.severe("Custom block model missing required parameters = line " + rdr.getLineNumber() + " of " + fname);
                     }
                 }
                 else if(line.startsWith("modname:")) {

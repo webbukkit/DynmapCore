@@ -1,11 +1,12 @@
 package org.dynmap.utils;
 
 import org.dynmap.common.BiomeMap;
+import org.dynmap.renderer.MapDataContext;
 
 /**
  * Iterator for traversing map chunk cache (base is for non-snapshot)
  */
-public interface MapIterator {
+public interface MapIterator extends MapDataContext {
     /**
      * Initialize iterator at given coordinates
      * 
@@ -14,17 +15,6 @@ public interface MapIterator {
      * @param z0
      */
     void initialize(int x0, int y0, int z0);
-    /**
-     * Get block ID at current coordinates
-     * 
-     * @return block id
-     */
-    int getBlockTypeID();
-    /**
-     * Get block data at current coordinates
-     * @return block data
-     */
-    int getBlockData();
     /**
      * Get block sky light level at current coordinate
      * @return sky light level
@@ -84,18 +74,6 @@ public interface MapIterator {
      * @param y
      */
     void setY(int y);
-    /**
-     * Get X coordinate
-     */
-    int getX();
-    /**
-     * Get Y coordinate
-     */
-    int getY();
-    /**
-     * Get Z coordinate
-     */
-    int getZ();
     /**
      * Get block ID at 1 step in given direction
      * 
