@@ -103,9 +103,9 @@ block:id=23,data=4,top=62,north=46,south=45,east=45,west=45,bottom=62
 # Dispenser (facing south)
 block:id=23,data=5,top=62,south=46,north=45,east=45,west=45,bottom=62
 # Sandstone
-block:id=24,data=0,bottom=6176,top=6208,allsides=192
+block:id=24,data=0,bottom=6208,top=6176,allsides=192
 # Smooth Sandstone
-block:id=24,data=2,allsides=176,topbottom=6176
+block:id=24,data=2,allsides=230,topbottom=6176
 # Hieroglyphic Sandstone
 block:id=24,data=1,data=3,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,allsides=229,topbottom=6176
 # Note Block 
@@ -658,7 +658,7 @@ block:id=126,data=3,data=11,allsides=199,topbottom=6199
 # Cocoa Plant
 block:id=127,data=*,allsides=168
 # Sandstone stairs
-block:id=128,data=*,patch0=192,patch1=208,patch2=176,transparency=SEMITRANSPARENT
+block:id=128,data=*,patch0=192,patch1=176,patch2=208,transparency=SEMITRANSPARENT
 # Emerald Ore
 block:id=129,data=*,allsides=171,topbottom=6171
 # Ender Chest (facing east)
