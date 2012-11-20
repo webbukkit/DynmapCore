@@ -1,6 +1,7 @@
 package org.dynmap.hdmap.renderer;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.dynmap.renderer.CustomRenderer;
 import org.dynmap.renderer.MapDataContext;
@@ -23,7 +24,7 @@ public class RedstoneWireRenderer extends CustomRenderer {
     private RenderPatch[][] meshes = new RenderPatch[256][];
     
     @Override
-    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, String custparm) {
+    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
         if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
             return false;
         this.blkid = blkid; /* Remember our block ID */

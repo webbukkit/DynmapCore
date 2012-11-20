@@ -149,7 +149,7 @@ public class HDBlockModels {
     public static class CustomBlockModel extends HDBlockModel {
         public CustomRenderer render;
         
-        public CustomBlockModel(int blockid, int databits, String classname, String classparm, String blockset) {
+        public CustomBlockModel(int blockid, int databits, String classname, Map<String,String> classparm, String blockset) {
             super(blockid, databits, blockset);
             try {
                 Class<?> cls = Class.forName(classname);   /* Get class */
@@ -972,6 +972,7 @@ public class HDBlockModels {
                 }
                 else if(line.startsWith("customblock:")) {
                     ArrayList<Integer> blkids = new ArrayList<Integer>();
+                    HashMap<String,String> custargs = new HashMap<String,String>();
                     int databits = 0;
                     line = line.substring(12);
                     String[] args = line.split(",");
@@ -992,15 +993,15 @@ public class HDBlockModels {
                         else if(av[0].equals("class")) {
                             cls = av[1];
                         }
-                        else if(av[0].equals("arg")) {
-                            clsarg = av[1];
+                        else {
+                            custargs.put(av[0], av[1]);
                         }
                     }
                     /* If we have everything, build block */
                     if((blkids.size() > 0) && (databits != 0) && (cls != null)) {
                         for(Integer id : blkids) {
                             if(id > 0) {
-                                CustomBlockModel cbm = new CustomBlockModel(id.intValue(), databits, cls, clsarg, blockset);
+                                CustomBlockModel cbm = new CustomBlockModel(id.intValue(), databits, cls, custargs, blockset);
                                 if(cbm.render == null) {
                                     Log.severe("Custom block model failed to initialize = line " + rdr.getLineNumber() + " of " + fname);
                                 }

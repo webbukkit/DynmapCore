@@ -3,6 +3,7 @@ package org.dynmap.hdmap.renderer;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
+import java.util.Map;
 
 import org.dynmap.renderer.CustomRenderer;
 import org.dynmap.renderer.MapDataContext;
@@ -27,7 +28,7 @@ public class StairBlockRenderer extends CustomRenderer {
     private RenderPatch[][] step_1_4_meshes = new RenderPatch[8][];
     
     @Override
-    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, String custparm) {
+    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
         if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
             return false;
         this.blkid = blkid; /* Remember our block ID */
