@@ -994,7 +994,12 @@ public class HDBlockModels {
                             cls = av[1];
                         }
                         else {
-                            custargs.put(av[0], av[1]);
+                            /* See if substitution value available */
+                            Integer vv = varvals.get(av[1]);
+                            if(vv == null)
+                                custargs.put(av[0], av[1]);
+                            else
+                                custargs.put(av[0], vv.toString());
                         }
                     }
                     /* If we have everything, build block */

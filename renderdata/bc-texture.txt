@@ -39,7 +39,7 @@ block:id=architect.id,id=template.id,data=3,west=52,top=4050,north=48,south=48,e
 block:id=architect.id,id=template.id,data=4,north=52,top=4050,east=48,west=48,south=48,bottom=48,txtid=blk
 block:id=architect.id,id=template.id,data=5,south=52,top=4050,east=48,west=48,north=48,bottom=48,txtid=blk
 # FRAME_ID            = 160
-block:id=frame.id,data=*,allfaces=34,txtid=blk,transparency=TRANSPARENT
+block:id=frame.id,data=*,patch0=34,txtid=blk,transparency=TRANSPARENT
 # ENGINE_ID           = 161
 block:id=engine.id,data=0,north=8004,east=8005,south=8006,west=8007,top=1,bottom=2,txtid=wood
 block:id=engine.id,data=1,north=8004,east=8005,south=8006,west=8007,top=1,bottom=2,txtid=stone
@@ -53,7 +53,7 @@ block:id=pump.id,data=*,allsides=99,top=4064,bottom=100,txtid=blk
 # TANK_ID             = 165
 block:id=tank.id,data=*,allsides=96,topbottom=98,txtid=blk,transparency=TRANSPARENT
 # GENERIC_PIPE_ID     = 166 : entity data based, so we can't handle it yet: just map to one type (iron)
-block:id=pipe.id,data=*,allfaces=18,txtid=blk,transparency=TRANSPARENT
+block:id=pipe.id,data=*,patch0=18,txtid=blk,transparency=TRANSPARENT
 # REFINERY_ID         = 167 - funky texture mapping - just do tank for now
 block:id=refinery.id,data=*,allsides=96,topbottom=98,txtid=blk,transparency=TRANSPARENT
 # DOCKING_STATION_ID  = 168

@@ -45,9 +45,15 @@ public class StairBlockRenderer extends CustomRenderer {
 
     @Override
     public int getMaximumTextureCount() {
-        return 2;
+        return 3;
     }
-
+    
+    private static final int[] patchlist = { TEXTURE_BOTTOM, TEXTURE_TOP, TEXTURE_SIDES, TEXTURE_SIDES, TEXTURE_SIDES, TEXTURE_SIDES };
+    
+    private void addBox(RenderPatchFactory rpf, List<RenderPatch> list, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax)  {
+        addBox(rpf, list, xmin, xmax, ymin, ymax, zmin, zmax, patchlist);
+    }
+    
     private RenderPatch[] buildStepMeshes(RenderPatchFactory rpf, int dat) {
         ArrayList<RenderPatch> list = new ArrayList<RenderPatch>();
         /* If inverted, add half top */
@@ -130,20 +136,6 @@ public class StairBlockRenderer extends CustomRenderer {
         return list.toArray(new RenderPatch[list.size()]);
     }
 
-    private void addBox(RenderPatchFactory rpf, List<RenderPatch> list, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax)  {
-        /* Add top */
-        list.add(rpf.getPatch(0, ymax, 1, 1, ymax, 1, 0, ymax, 0, xmin, xmax, 1-zmax, 1-zmin, SideVisible.TOP, TEXTURE_TOP));
-        /* Add bottom */
-        list.add(rpf.getPatch(0, ymin, 1, 1, ymin, 1, 0, ymin, 0, xmin, xmax, 1-zmax, 1-zmin, SideVisible.TOP, TEXTURE_BOTTOM));
-        /* Add minX side */
-        list.add(rpf.getPatch(xmin, 0, 0, xmin, 0, 1, xmin, 1, 0, zmin, zmax, ymin, ymax, SideVisible.TOP, TEXTURE_SIDES));
-        /* Add maxX side */
-        list.add(rpf.getPatch(xmax, 0, 1, xmax, 0, 0, xmax, 1, 1, 1-zmax, 1-zmin, ymin, ymax, SideVisible.TOP, TEXTURE_SIDES));
-        /* Add minZ side */
-        list.add(rpf.getPatch(1, 0, zmin, 0, 0, zmin, 1, 1, zmin, 1-xmax, 1-xmin, ymin, ymax, SideVisible.TOP, TEXTURE_SIDES));
-        /* Add maxZ side */
-        list.add(rpf.getPatch(0, 0, zmax, 1, 0, zmax, 0, 1, zmax, xmin, xmax, ymin, ymax, SideVisible.TOP, TEXTURE_SIDES));
-    }
     //  Steps
     // 0 = up to east
     // 1 = up to west
