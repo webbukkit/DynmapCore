@@ -165,104 +165,17 @@ patch:id=FlowerPotFlower,Ox=1.0,Oy=0.25,Oz=0.0,Ux=0.0,Uy=0.25,Uz=1.0,Vx=1.0,Vy=1
 patch:id=FlowerPotCactusSide,Ox=0.0,Oy=0.0,Oz=0.375,Ux=1.0,Uy=0.0,Uz=0.375,Vx=0.0,Vy=1.0,Vz=0.375,Umin=0.375,Umax=0.625,Vmin=0.0,Vmax=1.0,visibility=both
 patch:id=FlowerPotCactusTop,Ox=0.0,Oy=1.0,Oz=0.0,Ux=1.0,Uy=1.0,Uz=0.0,Vx=0.0,Vy=1.0,Vz=1.0,Umin=0.375,Umax=0.625,Vmin=0.375,Vmax=0.625,visibility=bottom
 
-# Wood Stair - up south
-# Cobblestone Stair - up south
-# Brick Stair - up south
-# Stone Brick Stair - up south
-# Nether brick stair - up south
-# Sandstone stair - up south
-# Spruce Wood stair - up south
-# Birch Wood stair - up south
-# Jungle Wood stair - up south
-block:id=53,id=67,id=108,id=109,id=114,id=128,id=134,id=135,id=136,data=0,scale=2
-layer:0
-**
-**
-layer:1
---
-**  
-# Wood Stair - up north
-# Cobblestone Stair - up north
-# Brick Stair - up north
-# Stone Brick Stair - up north
-# Nether brick stair - up north
-# Sandstone stair - up north
-# Spruce Wood stair - up north
-# Birch Wood stair - up north
-# Jungle Wood stair - up north
-block:id=53,id=67,id=108,id=109,id=114,id=128,id=134,id=135,id=136,data=1,scale=2
-rotate:id=53,data=0,rot=180
-# Wood Stair - up west
-# Cobblestone Stair - up west
-# Brick Stair - up west
-# Stone Brick Stair - up west
-# Nether brick stair - up west
-# Sandstone stair - up west
-# Spruce Wood stair - up west
-# Birch Wood stair - up west
-# Jungle Wood stair - up west
-block:id=53,id=67,id=108,id=109,id=114,id=128,id=134,id=135,id=136,data=2,scale=2
-rotate:id=53,data=0,rot=90
-# Wood Stair - up east
-# Cobblestone Stair - up east
-# Brick Stair - up east
-# Stone Brick Stair - up east
-# Nether brick stair - up east
-# Sandstone stair - up east
-# Spruce Wood stair - up east
-# Birch Wood stair - up east
-# Jungle Wood stair - up east
-block:id=53,id=67,id=108,id=109,id=114,id=128,id=134,id=135,id=136,data=3,scale=2
-rotate:id=53,data=0,rot=270
-# Wood Stair - inverted up south
-# Cobblestone Stair - inverted up south
-# Brick Stair - inverted up south
-# Stone Brick Stair - inverted up south
-# Nether brick stair - inverted up south
-# Sandstone stair - inverted up south
-# Spruce Wood stair - inverted up south
-# Birch Wood stair - inverted up south
-# Jungle Wood stair - inverted up south
-block:id=53,id=67,id=108,id=109,id=114,id=128,id=134,id=135,id=136,data=4,scale=2
-layer:1
-**
-**
-layer:0
---
-**  
-# Wood Stair - inverted up north
-# Cobblestone Stair - inverted up north
-# Brick Stair - inverted up north
-# Stone Brick Stair - inverted up north
-# Nether brick stair - inverted up north
-# Sandstone stair - inverted up north
-# Spruce Wood stair - inverted up north
-# Birch Wood stair - inverted up north
-# Jungle Wood stair - inverted up north
-block:id=53,id=67,id=108,id=109,id=114,id=128,id=134,id=135,id=136,data=5,scale=2
-rotate:id=53,data=4,rot=180
-# Wood Stair - inverted up west
-# Cobblestone Stair - inverted up west
-# Brick Stair - inverted up west
-# Stone Brick Stair - inverted up west
-# Nether brick stair - inverted up west
-# Sandstone stair - inverted up west
-# Spruce Wood stair - inverted up west
-# Birch Wood stair - inverted up west
-# Jungle Wood stair - inverted up west
-block:id=53,id=67,id=108,id=109,id=114,id=128,id=134,id=135,id=136,data=6,scale=2
-rotate:id=53,data=4,rot=90
-# Wood Stair - inverted up east
-# Cobblestone Stair - inverted up east
-# Brick Stair - inverted up east
-# Stone Brick Stair - inverted up east
-# Nether brick stair - inverted up east
-# Sandstone stair - inverted up east
-# Spruce Wood stair - inverted up east
-# Birch Wood stair - inverted up east
-# Jungle Wood stair - inverted up east
-block:id=53,id=67,id=108,id=109,id=114,id=128,id=134,id=135,id=136,data=7,scale=2
-rotate:id=53,data=4,rot=270
+# Wood Stair
+# Cobblestone Stair
+# Brick Stair
+# Stone Brick Stair
+# Nether brick stair
+# Sandstone stair
+# Spruce Wood stair
+# Birch Wood stair
+# Jungle Wood stair
+customblock:id=53,id=67,id=108,id=109,id=114,id=128,id=134,id=135,id=136,data=*,class=org.dynmap.hdmap.renderer.StairBlockRenderer
+
 # Chest - set render alg
 linkmap:id=54,linkalg=2
 # Slab (stone, sandstone, wood, cobblestone)

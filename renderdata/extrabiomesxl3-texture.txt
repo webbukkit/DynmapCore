@@ -78,7 +78,7 @@ block:id=cattail.id,data=*,patch0-3=79,txtid=blk0,transparency=TRANSPARENT
 block:id=leafpile.id,data=*,patch0=2064,txtid=blk0,transparency=TRANSPARENT
 
 # acaciastairs.id
-block:id=acaciastairs.id,data=0,data=1,data=2,data=3,data=4,data=5,data=6,data=7,allsides=130,topbottom=6130,txtid=blk0,transparency=SEMITRANSPARENT
+block:id=acaciastairs.id,data=*,patch0-2=130,txtid=blk0,transparency=SEMITRANSPARENT
 
 # customlog.id
 # Fir Log (customlog.id:0,4,8,12)
@@ -103,7 +103,7 @@ block:id=doublewoodslab.id,data=1,allsides=129,topbottom=6129,txtid=blk0
 block:id=doublewoodslab.id,data=2,allsides=130,topbottom=6130,txtid=blk0
 
 # firstairs.id
-block:id=firstairs.id,data=0,data=1,data=2,data=3,data=4,data=5,data=6,data=7,allsides=129,topbottom=6129,txtid=blk0,transparency=SEMITRANSPARENT
+block:id=firstairs.id,data=*,patch0-2=129,txtid=blk0,transparency=SEMITRANSPARENT
 
 # planks.id
 block:id=planks.id,data=0,allsides=128,topbottom=6128,txtid=blk0
@@ -167,7 +167,7 @@ block:id=quarterlog3.id,data=6,face0=148,face1=197,face2=6196,face3=6149,face4=1
 block:id=quarterlog3.id,data=10,face0=6149,face1=6197,face2=180,face3=181,face4=6196,face5=6148,txtid=blk0
 
 # redcobblestairs.id
-block:id=redcobblestairs.id,data=0,data=1,data=2,data=3,data=4,data=5,data=6,data=7,allsides=12,topbottom=6012,txtid=blk0,transparency=SEMITRANSPARENT
+block:id=redcobblestairs.id,data=*,patch0-2=12,txtid=blk0,transparency=SEMITRANSPARENT
 
 # redrockslab.id
 block:id=redrockslab.id,data=0,data=8,allsides=12,topbottom=6012,txtid=blk0,transparency=SEMITRANSPARENT
@@ -175,10 +175,10 @@ block:id=redrockslab.id,data=1,data=9,allsides=13,topbottom=6014,txtid=blk0,tran
 block:id=redrockslab.id,data=2,data=10,allsides=11,topbottom=6011,txtid=blk0,transparency=SEMITRANSPARENT
 
 # redrockbrickstairs.id
-block:id=redrockbrickstairs.id,data=0,data=1,data=2,data=3,data=4,data=5,data=6,data=7,allsides=11,topbottom=6011,txtid=blk0,transparency=SEMITRANSPARENT
+block:id=redrockbrickstairs.id,data=*,patch0-2=11,txtid=blk0,transparency=SEMITRANSPARENT
 
 # redwoodstairs.id
-block:id=redwoodstairs.id,data=0,data=1,data=2,data=3,data=4,data=5,data=6,data=7,allsides=128,topbottom=6128,txtid=blk0,transparency=SEMITRANSPARENT
+block:id=redwoodstairs.id,data=*,patch0-2=128,txtid=blk0,transparency=SEMITRANSPARENT
 
 # wall.id
 block:id=wall.id,data=*,patch0-13=2,txtid=blk0,transparency=TRANSPARENT

@@ -24,30 +24,8 @@ patchblock:id=leafpile.id,data=*,patch0=HorizY001ZTop
 # Cattailes
 patchblock:id=cattail.id,data=*,patch0=VertX075,patch1=VertX075@90,patch2=VertX025,patch3=VertX025@90
 
-# Wood Stair - up south
-block:id=redcobblestairs.id,id=redrockbrickstairs.id,id=acaciastairs.id,id=firstairs.id,id=redwoodstairs.id,data=0,scale=2
-rotate:id=53,data=0,rot=0
-# Wood Stair - up north
-block:id=redcobblestairs.id,id=redrockbrickstairs.id,id=acaciastairs.id,id=firstairs.id,id=redwoodstairs.id,data=1,scale=2
-rotate:id=53,data=0,rot=180
-# Wood Stair - up west
-block:id=redcobblestairs.id,id=redrockbrickstairs.id,id=acaciastairs.id,id=firstairs.id,id=redwoodstairs.id,data=2,scale=2
-rotate:id=53,data=0,rot=90
-# Wood Stair - up east
-block:id=redcobblestairs.id,id=redrockbrickstairs.id,id=acaciastairs.id,id=firstairs.id,id=redwoodstairs.id,data=3,scale=2
-rotate:id=53,data=0,rot=270
-# Wood Stair - inverted up south
-block:id=redcobblestairs.id,id=redrockbrickstairs.id,id=acaciastairs.id,id=firstairs.id,id=redwoodstairs.id,data=4,scale=2
-rotate:id=53,data=4,rot=0
-# Wood Stair - inverted up north
-block:id=redcobblestairs.id,id=redrockbrickstairs.id,id=acaciastairs.id,id=firstairs.id,id=redwoodstairs.id,data=5,scale=2
-rotate:id=53,data=4,rot=180
-# Wood Stair - inverted up west
-block:id=redcobblestairs.id,id=redrockbrickstairs.id,id=acaciastairs.id,id=firstairs.id,id=redwoodstairs.id,data=6,scale=2
-rotate:id=53,data=4,rot=90
-# Wood Stair - inverted up east
-block:id=redcobblestairs.id,id=redrockbrickstairs.id,id=acaciastairs.id,id=firstairs.id,id=redwoodstairs.id,data=7,scale=2
-rotate:id=53,data=4,rot=270
+# Wood Stair
+customblock:id=redcobblestairs.id,id=redrockbrickstairs.id,id=acaciastairs.id,id=firstairs.id,id=redwoodstairs.id,data=*,class=org.dynmap.hdmap.renderer.StairBlockRenderer
 
 # Slab
 block:id=redrockslab.id,id=woodslab.id,data=0,data=1,data=2,data=3,data=4,data=5,data=6,data=7,scale=4

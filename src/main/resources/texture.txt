@@ -331,7 +331,7 @@ block:id=51,patch0=265,patch1=265,patch2=265,patch3=265,patch4=265,patch5=265,pa
 # Monster spawner
 block:id=52,allsides=65,topbottom=6065,transparency=TRANSPARENT
 # Wooden stairs
-block:id=53,data=0,data=1,data=2,data=3,data=4,data=5,data=6,data=7,allsides=4,topbottom=6004,transparency=SEMITRANSPARENT
+block:id=53,data=*,patch0-2=4,transparency=SEMITRANSPARENT
 # Chest - single, facing west
 block:id=54,data=0,top=6000,bottom=6005,south=2,north=1,east=4,west=3,userenderdata=true,txtid=chest
 # Chest - single, facing south
@@ -432,7 +432,7 @@ block:id=66,data=2,data=3,patch0=128,transparency=TRANSPARENT
 # Rails - northwest corner
 block:id=66,data=6,data=7,data=8,data=9,patch0=112,transparency=TRANSPARENT
 # Cobblestone Stairs
-block:id=67,allsides=16,topbottom=6016,transparency=SEMITRANSPARENT
+block:id=67,data=*,patch0-2=16,transparency=SEMITRANSPARENT
 # Wall sign
 block:id=68,patch0=288,patch1=289,patch2=290,patch3=291,patch4=292,patch5=293,transparency=TRANSPARENT
 # Lever
@@ -600,9 +600,9 @@ block:id=106,patch0=2143,patch1=2143,patch2=2143,patch3=2143,patch4=2143,transpa
 # Fence gate
 block:id=107,allsides=4,topbottom=6004,transparency=TRANSPARENT
 # Brick stair
-block:id=108,allsides=7,topbottom=6007,transparency=SEMITRANSPARENT
+block:id=108,data=*,patch0-2=7,transparency=SEMITRANSPARENT
 # Stone brick stair
-block:id=109,allsides=54,topbottom=6054,transparency=SEMITRANSPARENT
+block:id=109,data=*,patch0-2=54,transparency=SEMITRANSPARENT
 # Mycelium
 block:id=110,top=6078,allsides=77,bottom=6002
 # Lily pad
@@ -612,7 +612,7 @@ block:id=112,allsides=224,topbottom=6224
 # Nether brick fence
 block:id=113,allsides=224,topbottom=6224,transparency=TRANSPARENT
 # Nether brick stairs
-block:id=114,allsides=224,topbottom=6224,transparency=SEMITRANSPARENT
+block:id=114,data=*,patch0-2=224,transparency=SEMITRANSPARENT
 # Nether Wart (small)
 block:id=115,data=0,patch0=226,patch1=226,transparency=TRANSPARENT
 # Nether Wart (medium)
@@ -658,7 +658,7 @@ block:id=126,data=3,data=11,allsides=199,topbottom=6199
 # Cocoa Plant
 block:id=127,data=*,allsides=168
 # Sandstone stairs
-block:id=128,data=*,bottom=6176,top=6208,allsides=192,transparency=SEMITRANSPARENT
+block:id=128,data=*,patch0=192,patch1=208,patch2=176,transparency=SEMITRANSPARENT
 # Emerald Ore
 block:id=129,data=*,allsides=171,topbottom=6171
 # Ender Chest (facing east)
@@ -677,11 +677,11 @@ block:id=132,data=*
 # Block of Emerald
 block:id=133,data=*,allsides=25,topbottom=6025
 # Spruce Wooden stairs
-block:id=134,data=*,allsides=198,topbottom=6198,transparency=SEMITRANSPARENT
+block:id=134,data=*,patch0-2=198,transparency=SEMITRANSPARENT
 # Birch Wooden stairs
-block:id=135,data=*,allsides=214,topbottom=6214,transparency=SEMITRANSPARENT
+block:id=135,data=*,patch0-2=214,transparency=SEMITRANSPARENT
 # Jungle Wooden stairs
-block:id=136,data=*,allsides=199,topbottom=6199,transparency=SEMITRANSPARENT
+block:id=136,data=*,patch0-2=199,transparency=SEMITRANSPARENT
 # Command block
 block:id=137,data=*,allsides=184,topbottom=6184
 # Beacon
