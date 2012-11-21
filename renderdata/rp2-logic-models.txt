@@ -1,0 +1,16 @@
+# RedPower2 Logic block mapping
+modname:mod_RedPowerLogic,RedPowerLogic
+# configuration file
+cfgfile:redpower/redpower.cfg
+
+# Logic
+block:id=logic.logic.id,data=*,scale=8
+layer:0
+********
+********
+********
+********
+********
+********
+********
+********

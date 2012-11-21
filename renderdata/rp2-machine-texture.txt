@@ -1,0 +1,33 @@
+# RedPower2 Machine block mapping
+modname:mod_RedPowerMachine,RedPowerMachine
+# configuration file
+cfgfile:redpower/redpower.cfg
+
+# Files
+texturefile:id=machine,filename=eloraam/machine/machine1.png,xcount=16,ycount=16
+
+############
+# Blocks from RedPowerMachine-2
+############
+# Deployer (machine.machine.id,0) - no orientation data yet - just face east
+block:id=machine/machine.id,data=0,east=53,west=48,top=6055,bottom=4055,north=4056,south=6056,txtid=machine
+# Breaker (machine.machine.id,1) - no orientation data yet - just face east
+block:id=machine/machine.id,data=1,east=49,west=58,top=6051,bottom=4051,north=4051,south=6051,txtid=machine
+# Transposer (machine.machine.id,2) - no orientation data yet - just face east
+block:id=machine/machine.id,data=2,east=57,west=58,top=6059,bottom=4059,north=4059,south=6059,txtid=machine
+# Filter (machine.machine.id,3) - no orientation data yet - just face east
+block:id=machine/machine.id,data=3,east=57,west=58,top=6061,bottom=4061,north=4061,south=6061,txtid=machine
+# Item Detector (machine.machine.id,4) - no orientation data yet - just face east
+block:id=machine/machine.id,data=4,east=103,west=102,top=6100,bottom=4101,north=4096,south=6097,txtid=machine
+# Sorter (machine.machine.id,5) - no orientation data yet - just face east
+block:id=machine/machine.id,data=5,east=112,west=113,top=6116,bottom=4116,north=4116,south=6116,txtid=machine
+# BatBox (machine.machine.id,6)
+block:id=machine/machine.id,data=6,allsides=134,topbottom=128,txtid=machine
+# Retriever (machine.machine.id,8) - no orientation data yet - just face east
+block:id=machine/machine.id,data=8,east=125,west=124,top=6123,bottom=4123,north=4123,south=6123,txtid=machine
+# Solar Panel (machine.machinePanel.id,0)
+block:id=machine/machinePanel.id,data=0,top=85,bottom=84,allsides=86,txtid=machine
+# Blue Furnace (base.appliance.id, 1) - no orientation data yet - just face east
+block:id=base/appliance.id,data=1,east=82,west=80,top=83,bottom=83,north=80,south=80,txtid=machine
+# Buffer (base.appliance.id, 2) - no orientation data yet - just face east
+block:id=base/appliance.id,data=2,east=89,west=88,top=6088,bottom=4088,north=4088,south=6088,txtid=machine

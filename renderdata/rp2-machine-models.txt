@@ -1,0 +1,12 @@
+# RedPower2 Machine block mapping
+modname:mod_RedPowerMachine,RedPowerMachine
+# configuration file
+cfgfile:redpower/redpower.cfg
+
+# Solar panel (machine.machinePanel.id,0)
+block:id=machine/machinePanel.id,data=0,scale=4
+layer:0
+****
+****
+****
+****
