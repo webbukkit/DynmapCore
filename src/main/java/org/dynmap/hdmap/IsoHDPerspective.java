@@ -31,7 +31,7 @@ import org.dynmap.hdmap.TexturePack.HDTextureMap;
 import org.dynmap.utils.DynmapBufferedImage;
 import org.dynmap.utils.FileLockManager;
 import org.dynmap.utils.LightLevels;
-import org.dynmap.utils.LongHashMap;
+import org.dynmap.utils.DynLongHashMap;
 import org.dynmap.utils.MapChunkCache;
 import org.dynmap.utils.MapIterator;
 import org.dynmap.utils.Matrix3D;
@@ -142,7 +142,7 @@ public class IsoHDPerspective implements HDPerspective {
         LightLevels llcache[];
         
         /* Cache for custom model patch lists */
-        private LongHashMap custom_meshes;
+        private DynLongHashMap custom_meshes;
 
         public OurPerspectiveState(MapIterator mi, boolean isnether) {
             mapiter = mi;
@@ -154,7 +154,7 @@ public class IsoHDPerspective implements HDPerspective {
             llcache = new LightLevels[4];
             for(int i = 0; i < llcache.length; i++)
                 llcache[i] = new LightLevels();
-            custom_meshes = new LongHashMap();
+            custom_meshes = new DynLongHashMap();
         }
         private final void updateSemitransparentLight(LightLevels ll) {
         	int emitted = 0, sky = 0;

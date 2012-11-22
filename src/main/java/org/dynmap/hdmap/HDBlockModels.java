@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ public class HDBlockModels {
     private static int max_patches;
     private static HashMap<Integer, HDBlockModel> models_by_id_data = new HashMap<Integer, HDBlockModel>();
     private static PatchDefinitionFactory pdf = new PatchDefinitionFactory();
+    private static BitSet customModelsRequestingTileData = new BitSet(); // Index by 16*id + data
 
     public static final int getMaxPatchCount() { return max_patches; }
     public static final PatchDefinitionFactory getPatchDefinitionFactory() { return pdf; }
@@ -157,6 +159,15 @@ public class HDBlockModels {
                 if(render.initializeRenderer(pdf, blockid, databits, classparm) == false) {
                     Log.severe("Error loading custom renderer - " + classname);
                     render = null;
+                }
+                else {
+                    if(render.getTileEntityFieldsNeeded() != null) {
+                        for(int i = 0; i < 16; i++) {
+                            if ((databits & (1 << i)) != 0) {
+                                customModelsRequestingTileData.set((blockid<<4) | i);
+                            }
+                        }
+                    }
                 }
             } catch (Exception x) {
                 Log.severe("Error loading custom renderer - " + classname, x);
@@ -414,6 +425,22 @@ public class HDBlockModels {
         }
     }
     
+    /**
+     * Get list of tile entity fields needed for custom renderer at given ID and data value, if any
+     * @param blkid - block ID
+     * @param blkdat - block data
+     * @return null if none needed, else list of fields needed
+     */
+    public static final String[] getTileEntityFieldsNeeded(int blkid, int blkdat) {
+        int idx = (blkid << 4) | blkdat;
+        if(customModelsRequestingTileData.get(idx)) {
+            HDBlockModel mod = models_by_id_data.get(idx);
+            if(mod instanceof CustomBlockModel) {
+                return ((CustomBlockModel)mod).render.getTileEntityFieldsNeeded();
+            }
+        }
+        return null;
+    }
     /**
      * Get scaled set of models for all modelled blocks 
      * @param scale

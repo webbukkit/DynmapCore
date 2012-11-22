@@ -11,16 +11,14 @@ import java.util.ConcurrentModificationException;
  * @author Arthur van Hoff
  */
 
-public class LongHashMap
+public class DynIntHashMap
 {
     static class Entry {
-        private int    hash;
-        private long   key;
+        private int   key;
         private Object value;
         private Entry  next;
 
-        Entry(int hash, long key, Object value, Entry next) {
-            this.hash  = hash;
+        Entry(int key, Object value, Entry next) {
             this.key   = key;
             this.value = value;
             this.next  = next;
@@ -31,7 +29,7 @@ public class LongHashMap
          *
          * @return the key corresponding to this entry.
          */
-        long getKey() { return key; }
+        int getKey() { return key; }
 
         /**
          * Returns the value corresponding to this entry.  If the mapping
@@ -109,7 +107,7 @@ public class LongHashMap
          * @see #equals(Object)
          */
         public int hashCode() {
-            return hash ^ (value==null ? 0 : value.hashCode());
+            return key ^ (value==null ? 0 : value.hashCode());
         }
     }
 
@@ -156,7 +154,7 @@ public class LongHashMap
      * @throws     IllegalArgumentException  if the initial capacity is less
      *               than zero, or if the load factor is nonpositive.
      */
-    public LongHashMap(int initialCapacity, float loadFactor) {
+    public DynIntHashMap(int initialCapacity, float loadFactor) {
         if (initialCapacity < 0)
             throw new IllegalArgumentException("Illegal Initial Capacity: "+
                                                initialCapacity);
@@ -178,7 +176,7 @@ public class LongHashMap
      * @throws    IllegalArgumentException if the initial capacity is less
      *              than zero.
      */
-    public LongHashMap(int initialCapacity) {
+    public DynIntHashMap(int initialCapacity) {
         this(initialCapacity, 0.75f);
     }
 
@@ -186,7 +184,7 @@ public class LongHashMap
      * Constructs a new, empty map with a default capacity and load
      * factor, which is <tt>0.75</tt>.
      */
-    public LongHashMap() {
+    public DynIntHashMap() {
         this(11, 0.75f);
     }
 
@@ -219,7 +217,7 @@ public class LongHashMap
      * @return the value to which this map maps the specified key.
      * @param key key whose associated value is to be returned.
      */
-    public Object get(long key) {
+    public Object get(int key) {
         Entry e = getEntry(key);
         return (e == null ? null : e.value);
     }
@@ -232,7 +230,7 @@ public class LongHashMap
      * key.
      * @param key key whose presence in this Map is to be tested.
      */
-    public boolean containsKey(long key) {
+    public boolean containsKey(int key) {
         return getEntry(key) != null;
     }
 
@@ -241,13 +239,12 @@ public class LongHashMap
      * HashMap.  Returns null if the HashMap contains no mapping
      * for this key.
      */
-    Entry getEntry(long key) {
+    Entry getEntry(int key) {
         Entry tab[] = table;
-        int hash = (int) key;
-        int index = (hash & 0x7FFFFFFF) % tab.length;
+        int index = (key & 0x7FFFFFFF) % tab.length;
 
         for (Entry e = tab[index]; e != null; e = e.next)
-            if (e.hash == hash && e.key ==key)
+            if (e.key == key)
                 return e;
 
         return null;
@@ -291,14 +288,13 @@ public class LongHashMap
      *         also indicate that the HashMap previously associated
      *         <tt>null</tt> with the specified key.
      */
-    public Object put(long key, Object value) {
+    public Object put(int key, Object value) {
         Entry tab[] = table;
-        int hash = (int) key;
-        int index = (hash & 0x7FFFFFFF) % tab.length;
+        int index = (key & 0x7FFFFFFF) % tab.length;
 
         // Look for entry in hash table
         for (Entry e = tab[index] ; e != null ; e = e.next) {
-            if (e.hash == hash && e.key == key) {
+            if (e.key == key) {
                 Object oldValue = e.value;
                 e.value = value;
                 return oldValue;
@@ -310,12 +306,12 @@ public class LongHashMap
         if (size >= threshold) {
             rehash();
             tab = table;
-            index = (hash & 0x7FFFFFFF) % tab.length;
+            index = (key & 0x7FFFFFFF) % tab.length;
         }
 
         // ...and add the entry
         size++;
-        tab[index] = newEntry(hash, key, value, tab[index]);
+        tab[index] = newEntry(key, value, tab[index]);
         return null;
     }
 
@@ -328,7 +324,7 @@ public class LongHashMap
      *         also indicate that the map previously associated <tt>null</tt>
      *         with the specified key.
      */
-    public Object remove(long key) {
+    public Object remove(int key) {
         Entry e = removeEntryForKey(key);
         return (e == null ? null : e.value);
     }
@@ -338,14 +334,13 @@ public class LongHashMap
      * in the HashMap.  Returns null if the HashMap contains no mapping
      * for this key.
      */
-    Entry removeEntryForKey(long key) {
+    Entry removeEntryForKey(int key) {
         Entry tab[] = table;
-        int hash = (int) key;
-        int index = (hash & 0x7FFFFFFF) % tab.length;
+        int index = (key & 0x7FFFFFFF) % tab.length;
 
         for (Entry e = tab[index], prev = null; e != null;
              prev = e, e = e.next) {
-            if (e.hash == hash && e.key == key) {
+            if (e.key == key) {
                 modCount++;
                 if (prev != null)
                     prev.next = e.next;
@@ -367,7 +362,7 @@ public class LongHashMap
      */
     void removeEntry(Entry doomed) {
         Entry[] tab = table;
-        int index = (doomed.hash & 0x7FFFFFFF) % tab.length;
+        int index = (doomed.key & 0x7FFFFFFF) % tab.length;
 
         for (Entry e = tab[index], prev = null; e != null;
              prev = e, e = e.next) {
@@ -415,7 +410,7 @@ public class LongHashMap
                 Entry e = old;
                 old = old.next;
 
-                int index = (e.hash & 0x7FFFFFFF) % newCapacity;
+                int index = (e.key & 0x7FFFFFFF) % newCapacity;
                 e.next = newTable[index];
                 newTable[index] = e;
             }
@@ -426,8 +421,8 @@ public class LongHashMap
         return (o1==null ? o2==null : o1.equals(o2));
     }
 
-    Entry newEntry(int hash, long key, Object value, Entry next) {
-        return new Entry(hash, key, value, next);
+    Entry newEntry(int key, Object value, Entry next) {
+        return new Entry(key, value, next);
     }
 
     int capacity() {

@@ -781,7 +781,7 @@ public class TexturePack {
      * @param src_y - starting Y of source (scaled based on 32 high)
      */
     private void makeFaceImage(int img_id, int dest_idx, int src_x, int src_y) {
-        int mult = imgs[img_id].height / 32; /* Nominal height for skin images is 32 */
+        int mult = imgs[img_id].width / 64; /* Nominal height for skin images is 32 */
         int[] tile = new int[8 * 8 * mult * mult];    /* Make image (all are 8x8) */
         copySubimageFromImage(img_id, src_x * mult, src_y * mult, 0, 0, 8 * mult, 8 * mult, tile, 8 * mult);
         /* Put scaled result into tile buffer */
@@ -1219,6 +1219,30 @@ public class TexturePack {
         }
     }
 
+    private static int parseTextureIndex(HashMap<String,Integer> filetoidx, int srctxtid, String val) throws NumberFormatException {
+        int off = val.indexOf(':');
+        int txtid = -1;
+        if(off > 0) {
+            String txt = val.substring(off+1);
+            if(filetoidx.containsKey(txt)) {
+                srctxtid = filetoidx.get(txt);
+            }
+            else {
+                throw new NumberFormatException();
+            }
+            txtid = Integer.valueOf(val.substring(0, off));
+        }
+        else {
+            txtid = Integer.valueOf(val);
+        }
+        /* If we have source texture, need to map values to dynamic ids */
+        if((srctxtid >= 0) && (txtid >= 0)) {
+            int relid = txtid % 1000;   /* Get relative ID */
+            /* Map to assigned ID in global tile table: preserve modifier */
+            txtid = (txtid - relid) + findOrAddDynamicTile(srctxtid, relid); 
+        }
+        return txtid;
+    }
     /**
      * Load texture pack mappings from texture.txt file
      */
@@ -1239,9 +1263,20 @@ public class TexturePack {
                     int databits = -1;
                     int srctxtid = -1;
                     int faces[] = new int[] { TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK };
+                    int txtidx[] = new int[] { -1, -1, -1, -1, -1, -1 };
                     line = line.substring(6);
                     BlockTransparency trans = BlockTransparency.OPAQUE;
                     String[] args = line.split(",");
+                    for(String a : args) {
+                        String[] av = a.split("=");
+                        if(av.length < 2) continue;
+                        else if(av[0].equals("txtid")) {
+                            if(filetoidx.containsKey(av[1]))
+                                srctxtid = filetoidx.get(av[1]);
+                            else
+                                Log.severe("Format error - line " + rdr.getLineNumber() + " of " + txtname);
+                        }
+                    }
                     boolean userenderdata = false;
                     for(String a : args) {
                         String[] av = a.split("=");
@@ -1258,31 +1293,31 @@ public class TexturePack {
                         }
 
                         else if(av[0].equals("top") || av[0].equals("y-") || av[0].equals("face1")) {
-                            faces[BlockStep.Y_MINUS.ordinal()] = Integer.parseInt(av[1]);
+                            faces[BlockStep.Y_MINUS.ordinal()] = parseTextureIndex(filetoidx, srctxtid, av[1]);
                         }
                         else if(av[0].equals("bottom") || av[0].equals("y+") || av[0].equals("face0")) {
-                            faces[BlockStep.Y_PLUS.ordinal()] = Integer.parseInt(av[1]);
+                            faces[BlockStep.Y_PLUS.ordinal()] = parseTextureIndex(filetoidx, srctxtid, av[1]);
                         }
                         else if(av[0].equals("north") || av[0].equals("x+") || av[0].equals("face4")) {
-                            faces[BlockStep.X_PLUS.ordinal()] = Integer.parseInt(av[1]);
+                            faces[BlockStep.X_PLUS.ordinal()] = parseTextureIndex(filetoidx, srctxtid, av[1]);
                         }
                         else if(av[0].equals("south") || av[0].equals("x-") || av[0].equals("face5")) {
-                            faces[BlockStep.X_MINUS.ordinal()] = Integer.parseInt(av[1]);
+                            faces[BlockStep.X_MINUS.ordinal()] = parseTextureIndex(filetoidx, srctxtid, av[1]);
                         }
                         else if(av[0].equals("west") || av[0].equals("z-") || av[0].equals("face3")) {
-                            faces[BlockStep.Z_MINUS.ordinal()] = Integer.parseInt(av[1]);
+                            faces[BlockStep.Z_MINUS.ordinal()] = parseTextureIndex(filetoidx, srctxtid, av[1]);
                         }
                         else if(av[0].equals("east") || av[0].equals("z+") || av[0].equals("face2")) {
-                            faces[BlockStep.Z_PLUS.ordinal()] = Integer.parseInt(av[1]);
+                            faces[BlockStep.Z_PLUS.ordinal()] = parseTextureIndex(filetoidx, srctxtid, av[1]);
                         }
                         else if(av[0].equals("allfaces")) {
-                            int id = Integer.parseInt(av[1]);
+                            int id = parseTextureIndex(filetoidx, srctxtid, av[1]);
                             for(int i = 0; i < 6; i++) {
                                 faces[i] = id;
                             }
                         }
                         else if(av[0].equals("allsides")) {
-                            short id = Short.parseShort(av[1]);
+                            int id = parseTextureIndex(filetoidx, srctxtid, av[1]);
                             faces[BlockStep.X_PLUS.ordinal()] = id;
                             faces[BlockStep.X_MINUS.ordinal()] = id;
                             faces[BlockStep.Z_PLUS.ordinal()] = id;
@@ -1290,7 +1325,7 @@ public class TexturePack {
                         }
                         else if(av[0].equals("topbottom")) {
                             faces[BlockStep.Y_MINUS.ordinal()] = 
-                                faces[BlockStep.Y_PLUS.ordinal()] = Integer.parseInt(av[1]);
+                                faces[BlockStep.Y_PLUS.ordinal()] = parseTextureIndex(filetoidx, srctxtid, av[1]);
                         }
                         else if(av[0].startsWith("patch")) {
                             int patchid0, patchid1;
@@ -1312,8 +1347,12 @@ public class TexturePack {
                                 Arrays.fill(newfaces, TILEINDEX_BLANK);
                                 System.arraycopy(faces, 0, newfaces, 0, faces.length);
                                 faces = newfaces;
+                                int[] newtxtidx = new int[patchid1+1];
+                                Arrays.fill(newtxtidx, -1);
+                                System.arraycopy(txtidx, 0, newtxtidx, 0, txtidx.length);
+                                txtidx = newtxtidx;
                             }
-                            int txtid = Integer.parseInt(av[1]);
+                            int txtid = parseTextureIndex(filetoidx, srctxtid, av[1]);
                             for(int i = patchid0; i <= patchid1; i++) {
                                 faces[i] = txtid;
                             }
@@ -1331,22 +1370,6 @@ public class TexturePack {
                         }
                         else if(av[0].equals("userenderdata")) {
                     		userenderdata = av[1].equals("true");
-                        }
-                        else if(av[0].equals("txtid")) {
-                            if(filetoidx.containsKey(av[1]))
-                                srctxtid = filetoidx.get(av[1]);
-                            else
-                                Log.severe("Format error - line " + rdr.getLineNumber() + " of " + txtname);
-                        }
-                    }
-                    /* If we have source texture, need to map values to dynamic ids */
-                    if(srctxtid >= 0) {
-                        for(int i = 0; i < faces.length; i++) {
-                            if(faces[i] < 0) continue;  /* Leave invalid IDs alone */
-                            
-                            int relid = faces[i] % 1000;   /* Get relative ID */
-                            /* Map to assigned ID in global tile table: preserve modifier */
-                            faces[i] = (faces[i] - relid) + findOrAddDynamicTile(srctxtid, relid); 
                         }
                     }
                     /* If no data bits, assume all */
