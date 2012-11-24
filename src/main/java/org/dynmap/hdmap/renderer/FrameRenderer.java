@@ -101,7 +101,6 @@ public class FrameRenderer extends CustomRenderer {
             txtIndex = new int[map.size()];
             for(int id = 0; id < txtIndex.length; id++) {
                 txtIndex[id] = map.get(id).intValue() + txtoff;
-                Log.info("txtIndex[" + id + "]=" + txtIndex[id]);
             }
             tileEntityAttribs = new String[1];
             tileEntityAttribs[0] = idx_attrib;
@@ -183,7 +182,6 @@ public class FrameRenderer extends CustomRenderer {
                         break;
                     }
                 }
-                Log.info("[" + ctx.getX() + "," + ctx.getY() + "," + ctx.getZ() + "]: " + idx_attrib + "=" + idxv + "(" + textureIdx + ")");
             }
         }
         

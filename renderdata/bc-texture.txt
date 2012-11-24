@@ -2,6 +2,7 @@
 modname:mod_BuildCraftCore,BuildCraft|Core
 # Defaults
 var:template.id=0,architect.id=0
+
 # configuration file
 cfgfile:buildcraft/config/buildcraft.cfg
 cfgfile:config/buildcraft/main.conf
@@ -52,9 +53,8 @@ block:id=oilStill.id,data=*,allfaces=223,txtid=blk
 block:id=pump.id,data=*,allsides=99,top=4064,bottom=100,txtid=blk
 # TANK_ID             = 165
 block:id=tank.id,data=*,allsides=96,topbottom=98,txtid=blk,transparency=TRANSPARENT
-# GENERIC_PIPE_ID     = 166 : entity data based, so we can't handle it yet: just map to one type (iron)
+# GENERIC_PIPE_ID     = 166
 block:id=pipe.id,data=*,patch0=16,patch1=17,patch2=29,patch3=19,patch4=20,patch5=21,patch6=28,patch7=143,patch8=142,patch9=112,patch10=113,patch11=114,patch12=115,patch13=116,patch14=159,patch15=158,patch16=118,patch17=119,patch18=122,patch19=125,txtid=blk,transparency=TRANSPARENT
-
 # REFINERY_ID         = 167 - funky texture mapping - just do tank for now
 block:id=refinery.id,data=*,allsides=96,topbottom=98,txtid=blk,transparency=TRANSPARENT
 # DOCKING_STATION_ID  = 168
