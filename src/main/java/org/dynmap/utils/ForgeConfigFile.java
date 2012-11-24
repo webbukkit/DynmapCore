@@ -98,6 +98,9 @@ public class ForgeConfigFile {
             else if(k.startsWith("blocks/")) { /* RP2 */
                 map.put(k.substring("blocks/".length()), getBlockID(k));
             }
+            else if(k.startsWith("item/")) {    /* Item codes? */
+                map.put("item_" + k.substring("item/".length()), getBlockID(k));
+            }
             else if(k.indexOf("/") < 0) {
                 map.put(k, getBlockID(k));
             }
