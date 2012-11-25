@@ -137,7 +137,10 @@ public class HDBlockModels {
             if(blockid > 0) {
                 for(int i = 0; i < 16; i++) {
                     if((databits & (1<<i)) != 0) {
-                        models_by_id_data.put((blockid<<4)+i, this);
+                        HDBlockModel prev = models_by_id_data.put((blockid<<4)+i, this);
+                        if((prev != null) && (prev != this)) {
+                            prev.removed(blockid, i);
+                        }
                     }
                 }
             }
@@ -146,6 +149,10 @@ public class HDBlockModels {
             return blockset;
         }
         public abstract int getTextureCount();
+        
+        public void removed(int blkid, int blkdat) {
+            this.databits &= (~(1 << blkdat));
+        }
     }
     
     public static class CustomBlockModel extends HDBlockModel {
@@ -187,6 +194,11 @@ public class HDBlockModels {
                 return render.getRenderPatchList(ctx);
             else
                 return empty_list;
+        }
+        @Override
+        public void removed(int blkid, int blkdat) {
+            super.removed(blkid, blkdat);
+            customModelsRequestingTileData.clear((blkid<<4) | blkdat);
         }
     }
     
