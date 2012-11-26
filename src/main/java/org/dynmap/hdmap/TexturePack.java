@@ -1209,9 +1209,17 @@ public class TexturePack {
 
     private static Integer getIntValue(Map<String,Integer> vars, String val) throws NumberFormatException {
         if(Character.isLetter(val.charAt(0))) {
+            int off = val.indexOf('+');
+            int offset = 0;
+            if (off > 0) {
+                offset = Integer.valueOf(val.substring(off+1));
+                val = val.substring(0,  off);
+            }
             Integer v = vars.get(val);
             if(v == null)
                 throw new NumberFormatException("invalid ID - " + val);
+            if((offset != 0) && (v.intValue() > 0))
+                v = v.intValue() + offset;
             return v;
         }
         else {
