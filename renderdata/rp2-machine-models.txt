@@ -10,3 +10,7 @@ layer:0
 ****
 ****
 ****
+
+# Support frame (machine/frame.id, 0)
+customblock:id=machine/frame.id,data=0,class=org.dynmap.hdmap.renderer.RPSupportFrameRenderer
+

@@ -719,9 +719,9 @@ public class IsoHDPerspective implements HDPerspective {
                     patch_v[hitcnt] = v;
                     patch_id[hitcnt] = pd.textureindex;
                     if(det > 0)
-                        patch_step[hitcnt] = pd.step;
-                    else
                         patch_step[hitcnt] = pd.step.opposite();
+                    else
+                        patch_step[hitcnt] = pd.step;
                     hitcnt++;
                 }
             }
