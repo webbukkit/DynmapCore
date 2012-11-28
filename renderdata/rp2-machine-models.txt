@@ -14,3 +14,5 @@ layer:0
 # Support frame (machine/frame.id, 0)
 customblock:id=machine/frame.id,data=0,class=org.dynmap.hdmap.renderer.RPSupportFrameRenderer
 
+# Machine blocks
+customblock:id=machine/machine.id,data=*,class=org.dynmap.hdmap.renderer.RotatedBoxRenderer,textureIndex=rot,index0=0,map0=90,index1=1,map1=180/90/0,index2=2,map2=90/180/0,index3=3,map3=90/0/0,index4=4,map4=90/90/0,index5=5,map5=90/270/0,index6=16,map6=0/270/90,index7=8,map7=270/0/0,index8=20,map8=0/90/270,index9=12,map9=90/0/180

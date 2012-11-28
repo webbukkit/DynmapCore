@@ -63,7 +63,7 @@ public class TexturePack {
     private static final String SIGN_PNG = "item/sign.png";
 
 	private static final String STANDARDTP = "standard";
-    /* Color modifier codes (x1000 for value in mapping code) */
+    /* Color modifier codes (x1000 for value in definition file, x1000000 for internal value) */
     private static final int COLORMOD_NONE = 0;
     private static final int COLORMOD_GRASSTONED = 1;
     private static final int COLORMOD_FOLIAGETONED = 2;
@@ -82,6 +82,8 @@ public class TexturePack {
     private static final int COLORMOD_LILYTONED = 15;
     private static final int COLORMOD_OLD_WATERSHADED = 16;
     
+    private static final int COLORMOD_MULT_FILE = 1000;
+    private static final int COLORMOD_MULT_INTERNAL = 1000000;
     /* Special tile index values */
     private static final int TILEINDEX_BLANK = -1;
     private static final int TILEINDEX_GRASS = 0;
@@ -106,7 +108,7 @@ public class TexturePack {
     private static final int TILEINDEX_AIRFRAME_EYE = 264;
     private static final int TILEINDEX_FIRE = 265;
     private static final int MAX_TILEINDEX = 265;  /* Index of last static tile definition */
-    private static final int TILETABLE_LEN = 2000;  /* Leave room for dynmaic tiles */
+    private static final int TILETABLE_LEN = 5000;  /* Leave room for dynmaic tiles */
 
     /* Indexes of faces in a CHEST format tile file */
     private static final int TILEINDEX_CHEST_TOP = 0;
@@ -1243,13 +1245,15 @@ public class TexturePack {
         else {
             txtid = Integer.valueOf(val);
         }
+        /* Shift function code from x1000 to x1000000 for internal processing */
+        int funcid = (txtid / COLORMOD_MULT_FILE);
+        txtid = txtid - (COLORMOD_MULT_FILE * funcid);
         /* If we have source texture, need to map values to dynamic ids */
         if((srctxtid >= 0) && (txtid >= 0)) {
-            int relid = txtid % 1000;   /* Get relative ID */
             /* Map to assigned ID in global tile table: preserve modifier */
-            txtid = (txtid - relid) + findOrAddDynamicTile(srctxtid, relid); 
+            txtid =findOrAddDynamicTile(srctxtid, txtid); 
         }
-        return txtid;
+        return txtid + (COLORMOD_MULT_INTERNAL * funcid);
     }
     /**
      * Load texture pack mappings from texture.txt file
@@ -1545,7 +1549,7 @@ public class TexturePack {
             rslt.setTransparent();
             return;
         }
-        else if(textid < 1000) {    /* If simple mapping */
+        else if(textid < COLORMOD_MULT_INTERNAL) {    /* If simple mapping */
             int[] texture = terrain_argb[textid];
             /* Get texture coordinates (U=horizontal(left=0),V=vertical(top=0)) */
             int u = 0, v = 0;
@@ -1591,8 +1595,8 @@ public class TexturePack {
         }
         
         /* See if not basic block texture */
-        int textop = textid / 1000;
-        textid = textid % 1000;
+        int textop = textid / COLORMOD_MULT_INTERNAL;
+        textid = textid % COLORMOD_MULT_INTERNAL;
         
         /* If clear-inside op, get out early */
         if(textop == COLORMOD_CLEARINSIDE) {

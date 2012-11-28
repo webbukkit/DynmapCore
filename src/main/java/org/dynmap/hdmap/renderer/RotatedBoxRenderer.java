@@ -20,10 +20,6 @@ public class RotatedBoxRenderer extends CustomRenderer {
     private RenderPatch[][] models;
     private Integer[] rotValues;
 
-    private static final String defRotMap[] = { "012345", "014532", "013254", "015423", "102354", 
-        "104523","103245", "105432", "450123", "320145","540132","230154","451032", "321054",
-        "541023", "231045", "453201", "325401", "542301", "234501", "452310", "324510", "543210", "235410" };
- 
     // Indexing attribute
     private String idx_attrib = null;
     
@@ -42,36 +38,43 @@ public class RotatedBoxRenderer extends CustomRenderer {
             if(v == null) break;
             map.add(Integer.valueOf(v));
         }
-        if(map.size() == 0) {   /* None? use default mapping */
-            for(int i = 0; i < defRotMap.length; i++) {
-                map.add(i);
-            }
-        }
         rotValues = map.toArray(new Integer[map.size()]);
         models = new RenderPatch[rotValues.length][];
-        int[] sides = new int[6];
+        /* Build unrotated base model */
+        ArrayList<RenderPatch> list = new ArrayList<RenderPatch>();
+        addBox(rpf, list, 0, 1, 0, 1, 0, 1, null);
+        
         for(int id = 0; id < rotValues.length; id++) {
             String v = custparm.get("map" + id);
-            if(v == null) {
-                if(id < defRotMap.length)
-                    v = defRotMap[id];
-                else
-                    v = defRotMap[0];
+            if(v == null) v = Integer.toString(90*id);
+            String sv[] = v.split("/");
+            int x = 0, y = 0, z = 0;
+            if(sv.length == 1) {    /* Only 1 = Y axis */
+                try {
+                    y = Integer.parseInt(v);
+                } catch (NumberFormatException nfx) {
+                    Log.severe("Invalid map format:" + v);
+                    return false;
+                }
             }
-            int vmap = 0;
-            try {
-                vmap = Integer.parseInt(v);
-            } catch (NumberFormatException nfx) {
-                Log.severe("Invalid map" + id + " : " + v);
+            else if(sv.length == 3) { 
+                try {
+                    x = Integer.parseInt(sv[0]);
+                    y = Integer.parseInt(sv[1]);
+                    z = Integer.parseInt(sv[2]);
+                } catch (NumberFormatException nfx) {
+                    Log.severe("Invalid map format:" + v);
+                    return false;
+                }
+            }
+            else {
+                Log.severe("Invalid map format:" + v);
                 return false;
             }
-            for (int i = 5; i >= 0; i--) {
-                sides[i] = vmap % 10;
-                vmap = vmap / 10;
+            models[id] = new RenderPatch[6];
+            for(int i = 0; i < 6; i++) {
+                models[id][i] = rpf.getRotatedPatch(list.get(i), x, y, z, i);
             }
-            ArrayList<RenderPatch> list = new ArrayList<RenderPatch>();
-            addBox(rpf, list, 0, 1, 0, 1, 0, 1, sides);
-            models[id] = list.toArray(new RenderPatch[list.size()]);
         }
         if(idx_attrib != null) {
             tileEntityAttribs = new String[1];
@@ -108,13 +111,14 @@ public class RotatedBoxRenderer extends CustomRenderer {
         else {  /* Else, use data if no index attribute */
             textureIdx = ctx.getBlockData();
         }
-        Log.info("index=" + textureIdx);
+        //Log.info("index=" + textureIdx);
         for(int i = 0; i < rotValues.length; i++) {
             if(rotValues[i] == textureIdx) {
-                Log.info("match: " + i + ":" + defRotMap[i]);
+                //Log.info("match: " + i);
                 return models[i];
             }
         }
+        Log.info("Unmatched rotation index: " + textureIdx + " for " + ctx.getBlockTypeID() + ":" + ctx.getBlockData());
         return models[0];
     }
 }
