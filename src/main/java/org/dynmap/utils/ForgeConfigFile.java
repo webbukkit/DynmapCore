@@ -13,7 +13,7 @@ import java.util.Map;
 public class ForgeConfigFile {
     private File cfg;
     private HashMap<String, String> settings = new HashMap<String, String>();
-    public static final String ALLOWED_CHARS = "._-";
+    public static final String ALLOWED_CHARS = "._-:";
 
     public ForgeConfigFile(File cfgfile) {
         cfg = cfgfile;
@@ -56,6 +56,10 @@ public class ForgeConfigFile {
                                 break;
                             case '=':
                                 String propertyName = line.substring(nameStart, nameEnd + 1);
+                                int off = propertyName.indexOf(':');
+                                if(off >= 0) {  /* Trim off the Forge 6.4.1+ type prefix */
+                                    propertyName = propertyName.substring(off+1);
+                                }
                                 propertyName = propertyName.replace(' ', '_');
                                 for(int j = section.size()-1; j >= 0; j--) {
                                     propertyName = section.get(j) + "/" + propertyName;
