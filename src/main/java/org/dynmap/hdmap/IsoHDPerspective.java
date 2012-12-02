@@ -780,8 +780,9 @@ public class IsoHDPerspective implements HDPerspective {
             lastblocktypeid = blocktypeid;
             blocktypeid = mapiter.getBlockTypeID();
             if(skiptoair) {	/* If skipping until we see air */
-                if(blocktypeid == 0)	/* If air, we're done */
+                if(blocktypeid == 0) {	/* If air, we're done */
                 	skiptoair = false;
+                }
             }
             else if(nonairhit || (blocktypeid != 0)) {
                 blockdata = mapiter.getBlockData();            	
@@ -1443,9 +1444,6 @@ public class IsoHDPerspective implements HDPerspective {
         double height = maxheight;
         if(height < 0) {    /* Not set - assume world height - 1 */
             height = tile.getDynmapWorld().worldheight - 1;
-        }
-        if(isnether && (height > 128)) {
-            height = 127;
         }
         
         for(int x = 0; x < tileWidth; x++) {
