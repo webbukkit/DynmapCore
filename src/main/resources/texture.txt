@@ -650,13 +650,13 @@ block:id=125,data=2,data=10,allsides=214,topbottom=6214
 # Wooden Double Slab (Jungle)
 block:id=125,data=3,data=11,allsides=199,topbottom=6199
 # Wooden Slab (Oak)
-block:id=126,data=0,data=8,allsides=4,topbottom=6004
+block:id=126,data=0,data=8,allsides=4,topbottom=6004,transparency=SEMITRANSPARENT
 # Wooden Slab (Spruce)
-block:id=126,data=1,data=9,allsides=198,topbottom=6198
+block:id=126,data=1,data=9,allsides=198,topbottom=6198,transparency=SEMITRANSPARENT
 # Wooden Slab (Birch)
-block:id=126,data=2,data=10,allsides=214,topbottom=6214
+block:id=126,data=2,data=10,allsides=214,topbottom=6214,transparency=SEMITRANSPARENT
 # Wooden Slab (Jungle)
-block:id=126,data=3,data=11,allsides=199,topbottom=6199
+block:id=126,data=3,data=11,allsides=199,topbottom=6199,transparency=SEMITRANSPARENT
 # Cocoa Plant
 block:id=127,data=*,allsides=168
 # Sandstone stairs
