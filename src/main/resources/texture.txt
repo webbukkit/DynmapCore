@@ -326,10 +326,8 @@ block:id=47,topbottom=6004,allsides=35
 block:id=48,allsides=36,topbottom=6036
 # Obsidian
 block:id=49,allsides=37,topbottom=6037
-# Torch - inclined
-block:id=50,data=1,data=2,data=3,data=4,patch0=80,transparency=TRANSPARENT
-# Torch - up
-block:id=50,data=5,patch0=80,transparency=TRANSPARENT
+# Torch
+block:id=50,data=*,patch0=80,transparency=TRANSPARENT
 # Fire
 block:id=51,patch0=265,patch1=265,patch2=265,patch3=265,patch4=265,patch5=265,patch6=265,patch7=265,transparency=TRANSPARENT
 # Monster spawner

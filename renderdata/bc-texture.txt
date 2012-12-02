@@ -1,7 +1,7 @@
 # BuildCraft Block mapping
 modname:mod_BuildCraftCore,BuildCraft|Core
 # Defaults
-var:template.id=0,architect.id=0
+var:template.id=0,architect.id=0,pathMarker.id=0
 
 # configuration file
 cfgfile:buildcraft/config/buildcraft.cfg
@@ -20,25 +20,36 @@ block:id=miningWell.id,data=5,south=35,top=4036,east=37,west=37,north=38,bottom=
 block:id=drill.id,data=*,allfaces=32,txtid=blk,transparency=TRANSPARENT
 # AUTO_WORKBENCH_ID   = 152
 block:id=autoWorkbench.id,data=*,allsides=44,topbottom=4043
-# QUARRY_ID           = 153
+# quarry.id
 block:id=quarry.id,data=2,east=39,top=4040,north=38,south=38,west=38,bottom=38,txtid=blk
 block:id=quarry.id,data=3,west=39,top=4040,north=38,south=38,east=38,bottom=38,txtid=blk
 block:id=quarry.id,data=4,north=39,top=4040,east=38,west=38,south=38,bottom=38,txtid=blk
 block:id=quarry.id,data=5,south=39,top=4040,east=38,west=38,north=38,bottom=38,txtid=blk
-# MARKER_ID           = 154
-block:id=marker.id,data=*,allsides=57,txtid=blk,transparency=TRANSPARENT
-# FILLER_ID           = 155
-block:id=filler.id,data=*,allsides=66,topbottom=4065,txtid=blk
-# BUILDER_ID          = 157
-block:id=builder.id,data=2,east=55,top=4054,north=3,south=3,west=3,bottom=3,txtid=blk
-block:id=builder.id,data=3,west=55,top=4054,north=3,south=3,east=3,bottom=3,txtid=blk
-block:id=builder.id,data=4,north=55,top=4054,east=3,west=3,south=3,bottom=3,txtid=blk
-block:id=builder.id,data=5,south=55,top=4054,east=3,west=3,north=3,bottom=3,txtid=blk
-# TEMPLATE_ID         = 158
-block:id=architect.id,id=template.id,data=2,east=52,top=4050,north=48,south=48,west=48,bottom=48,txtid=blk
-block:id=architect.id,id=template.id,data=3,west=52,top=4050,north=48,south=48,east=48,bottom=48,txtid=blk
-block:id=architect.id,id=template.id,data=4,north=52,top=4050,east=48,west=48,south=48,bottom=48,txtid=blk
-block:id=architect.id,id=template.id,data=5,south=52,top=4050,east=48,west=48,north=48,bottom=48,txtid=blk
+# marker.id
+block:id=marker.id,data=*,patch0=57,txtid=blk,transparency=TRANSPARENT
+# pathMarker.id
+block:id=pathMarker.id,data=*,patch0=58,txtid=blk,transparency=TRANSPARENT
+# filler.id
+block:id=filler.id,data=*,allsides=66,topbottom=6065,txtid=blk
+# builder.id
+block:id=builder.id,data=0,patch0=55,patch1=6054,patch2=53,patch3=55,patch4-5=53,txtid=blk
+block:id=builder.id,data=1,patch0=53,patch1=55,patch2-5=53,txtid=blk
+block:id=builder.id,data=2,patch0=53,patch1=6054,patch2=55,patch3-5=53,txtid=blk
+block:id=builder.id,data=3,patch0=53,patch1=6054,patch2=53,patch3=55,patch4-5=53,txtid=blk
+block:id=builder.id,data=4,patch0=53,patch1=6054,patch2-3=53,patch4=55,patch5=53,txtid=blk
+block:id=builder.id,data=5,patch0=53,patch1=6054,patch2-4=53,patch5=55,txtid=blk
+# template.id
+block:id=template.id,data=2,east=52,top=4050,north=48,south=48,west=48,bottom=48,txtid=blk
+block:id=template.id,data=3,west=52,top=4050,north=48,south=48,east=48,bottom=48,txtid=blk
+block:id=template.id,data=4,north=52,top=4050,east=48,west=48,south=48,bottom=48,txtid=blk
+block:id=template.id,data=5,south=52,top=4050,east=48,west=48,north=48,bottom=48,txtid=blk
+# architect.id
+block:id=architect.id,data=0,patch0=52,patch1=6051,patch2=48,patch3=52,patch4-5=48,txtid=blk
+block:id=architect.id,data=1,patch0=48,patch1=52,patch2-5=48,txtid=blk
+block:id=architect.id,data=2,patch0=48,patch1=6051,patch2=52,patch3-5=48,txtid=blk
+block:id=architect.id,data=3,patch0=48,patch1=6051,patch2=48,patch3=52,patch4-5=48,txtid=blk
+block:id=architect.id,data=4,patch0=48,patch1=6051,patch2-3=48,patch4=52,patch5=48,txtid=blk
+block:id=architect.id,data=5,patch0=48,patch1=6051,patch2-4=48,patch5=52,txtid=blk
 # FRAME_ID            = 160
 block:id=frame.id,data=*,patch0=34,txtid=blk,transparency=TRANSPARENT
 # ENGINE_ID           = 161

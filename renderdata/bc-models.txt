@@ -1,7 +1,8 @@
 # BuildCraft Block mapping
 modname:mod_BuildCraftCore,BuildCraft|Core
 # Defaults
-var:template.id=0,architect.id=0
+var:template.id=0,architect.id=0,pathMarker.id=0
+
 var:item_pipeItemsVoid.id=0,item_pipeItemsSandstone.id=0,item_pipeLiquidsVoid.id=0,item_pipeLiquidsSandstone.id=0,item_pipeStructureCobblestone.id=0
 # configuration file
 cfgfile:buildcraft/config/buildcraft.cfg
@@ -13,16 +14,17 @@ customblock:id=frame.id,data=*,class=org.dynmap.hdmap.renderer.FrameRenderer,lin
 # Drill
 customblock:id=drill.id,data=*,class=org.dynmap.hdmap.renderer.FrameRenderer,linkset=pipes,linkid_0=drill.id,force=Yy
 # Marker
-block:id=marker.id,data=*,scale=8
-layer:0,1,2,3,4,5,6,7
---------
---------
----**---
---****--
---****--
----**---
---------
---------
+# Path Marker
+patchblock:id=marker.id,id=pathMarker.id,data=5,data=0
+patchrotate:id=50,data=5,rot=0
+patchblock:id=marker.id,id=pathMarker.id,data=1
+patchrotate:id=50,data=1,rot=0
+patchblock:id=marker.id,id=pathMarker.id,data=2
+patchrotate:id=50,data=2,rot=0
+patchblock:id=marker.id,id=pathMarker.id,data=3
+patchrotate:id=50,data=3,rot=0
+patchblock:id=marker.id,id=pathMarker.id,data=4
+patchrotate:id=50,data=4,rot=0
 # Engine
 block:id=engine.id,data=*,scale=8
 layer:2,3
