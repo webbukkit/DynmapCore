@@ -47,33 +47,49 @@ public class RotatedBoxRenderer extends CustomRenderer {
         for(int id = 0; id < rotValues.length; id++) {
             String v = custparm.get("map" + id);
             if(v == null) v = Integer.toString(90*id);
-            String sv[] = v.split("/");
-            int x = 0, y = 0, z = 0;
-            if(sv.length == 1) {    /* Only 1 = Y axis */
-                try {
-                    y = Integer.parseInt(v);
-                } catch (NumberFormatException nfx) {
-                    Log.severe("Invalid map format:" + v);
-                    return false;
-                }
-            }
-            else if(sv.length == 3) { 
-                try {
-                    x = Integer.parseInt(sv[0]);
-                    y = Integer.parseInt(sv[1]);
-                    z = Integer.parseInt(sv[2]);
-                } catch (NumberFormatException nfx) {
-                    Log.severe("Invalid map format:" + v);
-                    return false;
+            /* Check if side swap mapping */
+            if(v.startsWith("S")) {
+                models[id] = new RenderPatch[6];
+                for(int i = 0; i < 6; i++) {
+                    int idx = 0;
+                    try {
+                        idx = v.charAt(i+1) - '0';
+                        models[id][i] = rpf.getRotatedPatch(list.get(i), 0, 0, 0, idx);
+                    } catch (Exception x) {
+                        Log.severe("Invalid map format:" + v);
+                        return false;
+                    }
                 }
             }
             else {
-                Log.severe("Invalid map format:" + v);
-                return false;
-            }
-            models[id] = new RenderPatch[6];
-            for(int i = 0; i < 6; i++) {
-                models[id][i] = rpf.getRotatedPatch(list.get(i), x, y, z, i);
+                String sv[] = v.split("/");
+                int x = 0, y = 0, z = 0;
+                if(sv.length == 1) {    /* Only 1 = Y axis */
+                    try {
+                        y = Integer.parseInt(v);
+                    } catch (NumberFormatException nfx) {
+                        Log.severe("Invalid map format:" + v);
+                        return false;
+                    }
+                }
+                else if(sv.length == 3) { 
+                    try {
+                        x = Integer.parseInt(sv[0]);
+                        y = Integer.parseInt(sv[1]);
+                        z = Integer.parseInt(sv[2]);
+                    } catch (NumberFormatException nfx) {
+                        Log.severe("Invalid map format:" + v);
+                        return false;
+                    }
+                }
+                else {
+                    Log.severe("Invalid map format:" + v);
+                    return false;
+                }
+                models[id] = new RenderPatch[6];
+                for(int i = 0; i < 6; i++) {
+                    models[id][i] = rpf.getRotatedPatch(list.get(i), x, y, z, i);
+                }
             }
         }
         if(idx_attrib != null) {
