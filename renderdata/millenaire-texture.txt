@@ -2,6 +2,7 @@
 modname:Millenaire
 # configuration file
 cfgfile:mods/millenaire/config-server.txt
+cfgfile:mods/millenaire/config.txt
 
 texturefile:id=blk0,filename=graphics/ML_sprites.png
 texturefile:id=chest,filename=graphics/item/ML_lockedchest.png,format=CHEST

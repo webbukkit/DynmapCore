@@ -2,6 +2,7 @@
 modname:Millenaire
 # configuration file
 cfgfile:mods/millenaire/config-server.txt
+cfgfile:mods/millenaire/config.txt
 
 # block_crops_id
 patchblock:id=block_crops_id,data=*
