@@ -207,7 +207,8 @@ public class TexturePack {
     public enum BlockTransparency {
         OPAQUE, /* Block is opaque - blocks light - lit by light from adjacent blocks */
         TRANSPARENT,    /* Block is transparent - passes light - lit by light level in own block */ 
-        SEMITRANSPARENT /* Opaque block that doesn't block all rays (steps, slabs) - use light above for face lighting on opaque blocks */
+        SEMITRANSPARENT, /* Opaque block that doesn't block all rays (steps, slabs) - use light above for face lighting on opaque blocks */
+        LEAVES /* Special case of transparent, to work around lighting errors in SpoutPlugin */
     }
     public static class HDTextureMap {
         private int faces[];  /* index in terrain.png of image for each face (indexed by BlockStep.ordinal() OR patch index) */
@@ -1374,6 +1375,13 @@ public class TexturePack {
                             if(trans == null) {
                                 trans = BlockTransparency.OPAQUE;
                                 Log.severe("Texture mapping has invalid transparency setting - " + av[1] + " - line " + rdr.getLineNumber() + " of " + txtname);
+                            }
+                            /* For leaves, base on leaf transparency setting */
+                            if(trans == BlockTransparency.LEAVES) {
+                                if(core.getLeafTransparency())
+                                    trans = BlockTransparency.TRANSPARENT;
+                                else
+                                    trans = BlockTransparency.OPAQUE;
                             }
                             /* If no water lighting fix */
                             if((blkids.contains(8) || blkids.contains(9)) && (HDMapManager.waterlightingfix == false)) {

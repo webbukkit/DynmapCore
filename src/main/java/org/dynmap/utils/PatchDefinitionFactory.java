@@ -1,7 +1,9 @@
 package org.dynmap.utils;
 
 import java.util.HashMap;
+import java.util.Map;
 
+import org.dynmap.Log;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
 
@@ -9,11 +11,16 @@ public class PatchDefinitionFactory implements RenderPatchFactory {
     private HashMap<PatchDefinition,PatchDefinition> patches = new HashMap<PatchDefinition,PatchDefinition>();
     private Object lock = new Object();
     private PatchDefinition lookup = new PatchDefinition();
-    
+    private Map<String, PatchDefinition> namemap = null;
+
     public PatchDefinitionFactory() {
         
     }
 
+    public void setPatchNameMape(Map<String, PatchDefinition> nmap) {
+        namemap = nmap;
+    }
+    
     @Override
     public RenderPatch getPatch(double x0, double y0, double z0, double xu,
             double yu, double zu, double xv, double yv, double zv, double umin,
@@ -67,5 +74,72 @@ public class PatchDefinitionFactory implements RenderPatchFactory {
             }
             return pd2;
         }
+    }
+    /**
+     * Get named patch with given attributes.  Name can encode rotation and patch index info
+     * "name" - simple name
+     * "name@rot" - name with rotation around Y
+     * "name@x/y/z" - name with rotation around x, then y, then z axis
+     * "name#patch" - name with explicit patch index
+     * 
+     * @param name - name of patch (must be defined in same config file as custom renderer): supports name@yrot, name@xrot/yrot/zrot
+     * @param textureidx - texture index to be used for patch, if not provided in name encoding (#patchid suffix)
+     * @return patch requested
+     */
+    @Override
+    public RenderPatch getNamedPatch(final String name, int textureidx) {
+        return getPatchByName(name, textureidx);
+    }
+    public PatchDefinition getPatchByName(final String name, int textureidx) {
+        PatchDefinition pd = null;
+        if(namemap != null) {
+            pd = namemap.get(name);
+            if(pd == null) {
+                String patchid = name;
+                int txt_idx = -1;
+                int off = patchid.lastIndexOf('#');
+                if(off > 0) {
+                    try {
+                        txt_idx = Integer.valueOf(patchid.substring(off+1));
+                    } catch (NumberFormatException nfx) {
+                        return null;
+                    }
+                    patchid = patchid.substring(0,  off);
+                }
+                int rotx = 0, roty = 0, rotz = 0;
+                /* See if ID@rotation */
+                off = patchid.indexOf('@');
+                if(off > 0) {
+                    String[] rv = patchid.substring(off+1).split("/");
+                    if(rv.length == 1) {
+                        roty = Integer.parseInt(rv[0]);
+                    }
+                    else if(rv.length == 2) {
+                        rotx = Integer.parseInt(rv[0]);
+                        roty = Integer.parseInt(rv[1]);
+                    }
+                    else if(rv.length == 3) {
+                        rotx = Integer.parseInt(rv[0]);
+                        roty = Integer.parseInt(rv[1]);
+                        rotz = Integer.parseInt(rv[2]);
+                    }
+                    patchid = patchid.substring(0, off);
+                }
+                pd = namemap.get(patchid);
+                if(pd == null) {
+                    return null;
+                }
+                else if(txt_idx >= 0) { /* If set texture index */
+                    pd = getPatch(pd, rotx,  roty,  rotz, txt_idx);
+                }
+                else {
+                    pd = getPatch(pd, rotx,  roty,  rotz, textureidx);
+                }
+                if(pd != null) {
+                    namemap.put(name, pd);
+                }
+            }
+        }
+        return pd;
     }
 }

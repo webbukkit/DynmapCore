@@ -83,13 +83,13 @@ block:id=17,data=7,north=21,south=21,east=4153,west=4153,top=153,bottom=153
 block:id=17,data=11,north=4153,south=4153,east=21,west=21,top=4153,bottom=4153
 block:id=17,data=15,allsides=153,topbottom=6153
 # Leaves (std)
-block:id=18,data=0,data=4,data=8,data=12,allfaces=2052,transparency=TRANSPARENT
+block:id=18,data=0,data=4,data=8,data=12,allfaces=2052,transparency=LEAVES
 # Leaves (spruce/pine)
-block:id=18,data=1,data=5,data=9,data=13,allfaces=13132,transparency=TRANSPARENT
+block:id=18,data=1,data=5,data=9,data=13,allfaces=13132,transparency=LEAVES
 # Leaves (birch)
-block:id=18,data=2,data=6,data=10,data=14,allfaces=14052,transparency=TRANSPARENT
+block:id=18,data=2,data=6,data=10,data=14,allfaces=14052,transparency=LEAVES
 # Leaves (jungle)
-block:id=18,data=3,data=7,data=11,data=15,allfaces=2197,transparency=TRANSPARENT
+block:id=18,data=3,data=7,data=11,data=15,allfaces=2197,transparency=LEAVES
 # Sponge
 block:id=19,allfaces=48
 # Glass

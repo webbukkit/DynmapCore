@@ -90,6 +90,7 @@ public class DynmapCore {
     public boolean disable_chat_to_web = false;
     private WebAuthManager authmgr;
     public boolean player_info_protected;
+    private boolean transparentLeaves = true;
         
     public CompassMode compassmode = CompassMode.PRE19;
     private int     config_hashcode;    /* Used to signal need to reload web configuration (world changes, config update, etc) */
@@ -149,6 +150,13 @@ public class DynmapCore {
     
     public final MapManager getMapManager() {
         return mapManager;
+    }
+    
+    public final void setLeafTransparency(boolean trans) {
+        transparentLeaves = trans;
+    }
+    public final boolean getLeafTransparency() {
+        return transparentLeaves;
     }
 
     /* Add/Replace branches in configuration tree with contribution from a separate file */
@@ -302,6 +310,8 @@ public class DynmapCore {
         HDMapManager.usegeneratedtextures = configuration.getBoolean("use-generated-textures", false);
         HDMapManager.waterlightingfix = configuration.getBoolean("correct-water-lighting", false);
         HDMapManager.biomeshadingfix = configuration.getBoolean("correct-biome-shading", false);
+        /* Load control for leaf transparency (spout lighting bug workaround) */
+        transparentLeaves = configuration.getBoolean("transparent-leaves", true);
         /* Get default image format */
         def_image_format = configuration.getString("image-format", "png");
         MapType.ImageFormat fmt = MapType.ImageFormat.fromID(def_image_format);

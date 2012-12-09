@@ -612,6 +612,7 @@ public class HDBlockModels {
             ArrayList<HDBlockPatchModel> pmodlist = new ArrayList<HDBlockPatchModel>();
             HashMap<String,Integer> varvals = new HashMap<String,Integer>();
             HashMap<String, PatchDefinition> patchdefs = new HashMap<String, PatchDefinition>();
+            pdf.setPatchNameMape(patchdefs);
             int layerbits = 0;
             int rownum = 0;
             int scale = 0;
@@ -948,54 +949,14 @@ public class HDBlockModels {
                                 return;
                             }
                             String patchid = av[1];
-                            int txt_idx = -1;
-                            int off = patchid.lastIndexOf('#');
-                            if(off > 0) {
-                                try {
-                                    txt_idx = Integer.valueOf(patchid.substring(off+1));
-                                } catch (NumberFormatException nfx) {
+                            /* Look up patch by name */
+                            for(int i = patchnum0; i <= patchnum1; i++) {
+                                PatchDefinition pd = pdf.getPatchByName(patchid, i);
+                                if(pd == null) {
                                     Log.severe("Invalid patch ID " + patchid + " - line " + rdr.getLineNumber() + " of " + fname);
+                                    return;
                                 }
-                                patchid = patchid.substring(0,  off);
-                            }
-                            int rotx = 0, roty = 0, rotz = 0;
-                            /* See if ID@rotation */
-                            off = patchid.indexOf('@');
-                            if(off > 0) {
-                                String[] rv = patchid.substring(off+1).split("/");
-                                if(rv.length == 1) {
-                                    roty = Integer.parseInt(rv[0]);
-                                }
-                                else if(rv.length == 2) {
-                                    rotx = Integer.parseInt(rv[0]);
-                                    roty = Integer.parseInt(rv[1]);
-                                }
-                                else if(rv.length == 3) {
-                                    rotx = Integer.parseInt(rv[0]);
-                                    roty = Integer.parseInt(rv[1]);
-                                    rotz = Integer.parseInt(rv[2]);
-                                }
-                                patchid = patchid.substring(0, off);
-                            }
-                            PatchDefinition pd = patchdefs.get(patchid);
-                            if(pd == null) {
-                                Log.severe("Invalid patch ID " + av[1] + " - line " + rdr.getLineNumber() + " of " + fname);
-                            }
-                            else if(txt_idx >= 0) { /* If set texture index */
-                                PatchDefinition pd2 = pdf.getPatch(pd, rotx,  roty,  rotz, txt_idx);
-                                if(pd2 != null) {
-                                    for(int i = patchnum0; i <= patchnum1; i++) {
-                                        patches.add(i,  pd2);
-                                    }
-                                }
-                            }
-                            else {
-                                for(int i = patchnum0; i <= patchnum1; i++) {
-                                    PatchDefinition pd2 = pdf.getPatch(pd, rotx,  roty,  rotz, i);
-                                    if(pd2 != null) {
-                                        patches.add(i,  pd2);
-                                    }
-                                }
+                                patches.add(i,  pd);
                             }
                         }
                     }
@@ -1124,6 +1085,7 @@ public class HDBlockModels {
                 } catch (IOException e) {
                 }
             }
+            pdf.setPatchNameMape(null);
         }
     }
 }
