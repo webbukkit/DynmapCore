@@ -934,7 +934,7 @@ public class MapManager {
         if(dynmapWorld.isLoaded()) {
             loadWorld(dynmapWorld);
         }
-
+        dynmapWorld.activateZoomOutFreshen();
         return true;
     }
 

@@ -168,6 +168,10 @@ public abstract class DynmapWorld {
         cancelled = true;
     }
     
+    public void activateZoomOutFreshen() {
+        cancelled = false;
+    }
+    
     private static class PrefixData {
     	int stepsize;
     	int[] stepseq;
