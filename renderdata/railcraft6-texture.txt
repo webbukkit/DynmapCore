@@ -43,9 +43,9 @@ block:id=block.elevator,data=12,patch0=84,transparency=TRANSPARENT,txtid=tracks
 block:id=block.elevator,data=13,patch0=84,transparency=TRANSPARENT,txtid=tracks
 
 # Adv Rail - straights
-block:id=block.track,data=0,data=1,data=2,data=3,data=4,data=5,patch0=23,transparency=TRANSPARENT,txtid=tracks
-# Adv Rails - corners
-block:id=block.track,data=6,data=7,data=8,data=9,patch0=7,transparency=TRANSPARENT,txtid=tracks
+block:id=block.track,data=0,data=1,data=2,data=3,data=4,data=5,patch0=1,patch1=5,patch2=17,patch3=101,patch4=37,patch5=69,patch6=39,patch7=49,patch8=117,patch9=253,patch10=133,patch11=254,patch12=22,patch13=53,patch14=38,patch15=65,patch16=23,patch17=21,patch18=33,patch19=81,patch20=97,patch21=149,patch22=113,patch23=115,patch24=24,patch25=165,patch26=40,patch27=129,patch28=181,patch29=252,patch30=145,patch31=197,patch32=161,patch33=163,patch34=177,patch35=179,transparency=TRANSPARENT,txtid=tracks
+# Adv Rail - corners, powered straights
+block:id=block.track,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,patch0=0,patch1=4,patch2=16,patch3=100,patch4=36,patch5=68,patch6=39,patch7=48,patch8=116,patch9=253,patch10=132,patch11=254,patch12=6,patch13=52,patch14=38,patch15=64,patch16=7,patch17=20,patch18=32,patch19=80,patch20=96,patch21=148,patch22=112,patch23=114,patch24=8,patch25=164,patch26=40,patch27=128,patch28=180,patch29=252,patch30=144,patch31=196,patch32=160,patch33=162,patch34=176,patch35=178,transparency=TRANSPARENT,txtid=tracks
 
 # block.machine.alpha:0 - World Anchor
 block:id=block.machine.alpha,data=0,face0=185,face1=185,face2=201,face3=201,face4=201,face5=201,txtid=mach
@@ -125,7 +125,7 @@ block:id=block.machine.gamma,data=8,patch0=106,patch1=106,patch2=107,patch3=108,
 block:id=block.machine.gamma,data=9,patch0=231,patch1=231,patch2=232,patch3=233,patch4=232,patch5=232,txtid=mach
 
 # block.cube:0 - World Anchor
-block:id=block.cube,data=0,face0=185,face1=185,face2=201,face3=201,face4=201,face5=201,txtid=mech
+block:id=block.cube,data=0,face0=185,face1=185,face2=201,face3=201,face4=201,face5=201,txtid=mach
 # block.cube:1 - Concrete Block
 block:id=block.cube,data=1,allfaces=103,txtid=blk0
 # block.cube:2 - Steel Block
