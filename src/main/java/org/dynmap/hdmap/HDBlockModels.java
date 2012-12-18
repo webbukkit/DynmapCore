@@ -1076,7 +1076,7 @@ public class HDBlockModels {
         } catch (IOException iox) {
             Log.severe("Error reading models.txt - " + iox.toString());
         } catch (NumberFormatException nfx) {
-            Log.severe("Format error - line " + rdr.getLineNumber() + " of " + fname);
+            Log.severe("Format error - line " + rdr.getLineNumber() + " of " + fname + ": " + nfx.getMessage());
         } finally {
             if(rdr != null) {
                 try {

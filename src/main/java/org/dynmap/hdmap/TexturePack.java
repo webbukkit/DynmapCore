@@ -1239,7 +1239,7 @@ public class TexturePack {
                 srctxtid = filetoidx.get(txt);
             }
             else {
-                throw new NumberFormatException();
+                throw new NumberFormatException("Unknown attribute: " + txt);
             }
             txtid = Integer.valueOf(val.substring(0, off));
         }
@@ -1473,7 +1473,7 @@ public class TexturePack {
                             int parmval = config.getInteger(v[0], val); /* Read value, with applied default */
                             varvals.put(v[0], parmval); /* And save value */
                         } catch (NumberFormatException nfx) {
-                            Log.severe("Format error - line " + rdr.getLineNumber() + " of " + txtname);
+                            Log.severe("Format error - line " + rdr.getLineNumber() + " of " + txtname + ": " + nfx.getMessage());
                             return;
                         }
                     }
@@ -1509,7 +1509,7 @@ public class TexturePack {
         } catch (IOException iox) {
             Log.severe("Error reading " + txtname + " - " + iox.toString());
         } catch (NumberFormatException nfx) {
-            Log.severe("Format error - line " + rdr.getLineNumber() + " of " + txtname);
+            Log.severe("Format error - line " + rdr.getLineNumber() + " of " + txtname + ": " + nfx.getMessage());
         } finally {
             if(rdr != null) {
                 try {
