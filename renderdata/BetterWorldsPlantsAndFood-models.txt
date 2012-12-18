@@ -10,9 +10,6 @@ patch:id=VertX025,Ox=0.25,Oy=0.0,Oz=1.0,Ux=0.25,Uy=0.0,Uz=0.0,Vx=0.25,Vy=1.0,Vz=
 # Vertical patch, X+ facing side from xz=0.75,1.0 to 0.75/0.0
 patch:id=VertX075,Ox=0.75,Oy=0.0,Oz=1.0,Ux=0.75,Uy=0.0,Uz=0.0,Vx=0.75,Vy=1.0,Vz=1.0
 
-# world/plants.id,*
-patchblock:id=world/plants.id,data=*,patch0=VertX1Z0ToX0Z1,patch1=VertX1Z0ToX0Z1@90
-
 # Barrel_Beer
 
 # BeerInProgress
@@ -33,7 +30,7 @@ patchblock:id=world/plants.id,data=*,patch0=VertX1Z0ToX0Z1,patch1=VertX1Z0ToX0Z1
 # Pineapple_Plant
 # Tea_Plant
 # Tomato_Plant
-patchblock:id=Coffee_Plant,id=Natural_Crops,id=egg_Plant,id=Grape_Ext_Plant,id=Grape_Plant,id=GreenPepper_Plant,id=Hops_Plant,id=Hops_Ext_Plantid=Olive_Plant,id=Olive_Ext_Plant,id=Pineapple_Plant,id=Pineapple_Ext_Plant,id=Tea_Plant,id=Tomato_Plant,data=*,patch0=VertX1Z0ToX0Z1,patch1=VertX1Z0ToX0Z1@90
+patchblock:id=Coffee_Plant,id=Natural_Crops,id=egg_Plant,id=Grape_Ext_Plant,id=Grape_Plant,id=GreenPepper_Plant,id=Hops_Plant,id=Hops_Ext_Plant,id=Olive_Plant,id=Olive_Ext_Plant,id=Pineapple_Plant,id=Pineapple_Ext_Plant,id=Tea_Plant,id=Tomato_Plant,data=*,patch0=VertX1Z0ToX0Z1,patch1=VertX1Z0ToX0Z1@90
 
 # Corn_Ext_Plant
 # Corn_Plant
