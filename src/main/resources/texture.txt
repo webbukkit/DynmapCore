@@ -300,8 +300,10 @@ block:id=43,data=3,allsides=16,topbottom=6016
 block:id=43,data=4,allsides=7,topbottom=6007
 # Double Slab - Stone Brick
 block:id=43,data=5,allsides=54,topbottom=6054
-# Double Slab - Stone (all sides)
-block:id=43,data=6,allsides=6,topbottom=6006
+# Double Slab - Nether Brick
+block:id=43,data=6,allsides=224,topbottom=6224
+# Double Slab - Stone, all sides
+block:id=43,data=7,allsides=6,topbottom=6006
 # Slab - stone
 block:id=44,data=0,data=8,allsides=5,topbottom=6006,transparency=SEMITRANSPARENT
 # Slab - Sandstone
@@ -314,8 +316,10 @@ block:id=44,data=3,data=11,allsides=16,topbottom=6016,transparency=SEMITRANSPARE
 block:id=44,data=4,data=12,allsides=7,topbottom=6007,transparency=SEMITRANSPARENT
 # Slab - Stone Brick
 block:id=44,data=5,data=13,allsides=54,topbottom=6054,transparency=SEMITRANSPARENT
-# Slab - Stone (all sides)
-block:id=44,data=6,data=14,allsides=6,topbottom=6006,transparency=SEMITRANSPARENT
+# Slab - Nether brick
+block:id=44,data=6,data=14,allsides=224,topbottom=6224,transparency=SEMITRANSPARENT
+# Slap - Stone, all sides
+block:id=44,data=7,data=15,allsides=6,topbottom=6006,transparency=SEMITRANSPARENT
 # Brick Block
 block:id=45,allsides=7,topbottom=6007
 # TNT
