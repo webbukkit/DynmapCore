@@ -1,0 +1,81 @@
+# Thaumcraft 3 Block mapping
+modname:Thaumcraft
+
+# configuration file
+cfgfile:config/Thaumcraft.cfg
+
+# Files
+texturefile:id=world,filename=thaumcraft/resources/ss_world.png
+texturefile:id=core,filename=thaumcraft/resources/ss_core.png
+texturefile:id=hungry,filename=thaumcraft/resources/chesthungry.png,format=CHEST
+
+# Blocks
+# BlockArcaneDoor
+#  Bottom (left hinge)
+block:id=BlockArcaneDoor,data=0,data=1,patch0=41,patch1=7041,patch2=7041,patch3=41,patch4=4041,patch5=4041,transparency=TRANSPARENT,userenderdata=true,txtid=core
+block:id=BlockArcaneDoor,data=2,data=3,patch0=7041,patch1=41,patch2=7041,patch3=41,patch4=4041,patch5=4041,transparency=TRANSPARENT,userenderdata=true,txtid=core
+#  Bottom (right hinge)
+block:id=BlockArcaneDoor,data=4,data=5,patch0=7041,patch1=41,patch2=7041,patch3=41,patch4=4041,patch5=4041,transparency=TRANSPARENT,userenderdata=true,txtid=core
+block:id=BlockArcaneDoor,data=6,data=7,patch0=41,patch1=7041,patch2=7041,patch3=41,patch4=4041,patch5=4041,transparency=TRANSPARENT,userenderdata=true,txtid=core
+#  Top (left hinge)
+block:id=BlockArcaneDoor,data=8,data=9,patch0=25,patch1=7025,patch2=7025,patch3=25,patch4=4025,patch5=4025,transparency=TRANSPARENT,userenderdata=true,txtid=core
+block:id=BlockArcaneDoor,data=10,data=11,patch0=7025,patch1=25,patch2=7025,patch3=25,patch4=4025,patch5=4025,transparency=TRANSPARENT,userenderdata=true,txtid=core
+#  Top (right hinge)
+block:id=BlockArcaneDoor,data=12,data=13,patch0=7025,patch1=25,patch2=7025,patch3=25,patch4=4025,patch5=4025,transparency=TRANSPARENT,userenderdata=true,txtid=core
+block:id=BlockArcaneDoor,data=14,data=15,patch0=25,patch1=7025,patch2=7025,patch3=25,patch4=4025,patch5=4025,transparency=TRANSPARENT,userenderdata=true,txtid=core
+
+# BlockArcaneFurnace
+block:id=BlockArcaneFurnace,data=*,patch0=0:core,patch1=1:core,patch2=2:core,patch3=16:core,patch4=17:core,patch5=18:core,patch6=32:core,patch7=33:core,patch8=34:core,patch9=3:core,patch10=4:core,patch11=5:core,patch12=19:core,patch13=20:core,patch14=21:core,patch15=35:core,patch16=36:core,patch17=37:core,patch18=23:core,patch19=24:core,patch20=39:core,patch21=40:core,patch22=6:core,patch23=7:core,patch24=260
+# BlockCandle
+block:id=BlockCandle,data=0,allsides=64,topbottom=6064
+block:id=BlockCandle,data=1,allsides=210,topbottom=6210
+block:id=BlockCandle,data=2,allsides=194,topbottom=6194
+block:id=BlockCandle,data=3,allsides=178,topbottom=6178
+block:id=BlockCandle,data=4,allsides=162,topbottom=6162
+block:id=BlockCandle,data=5,allsides=146,topbottom=6146
+block:id=BlockCandle,data=6,allsides=130,topbottom=6130
+block:id=BlockCandle,data=7,allsides=114,topbottom=6114
+block:id=BlockCandle,data=8,allsides=225,topbottom=6225
+block:id=BlockCandle,data=9,allsides=209,topbottom=6209
+block:id=BlockCandle,data=10,allsides=193,topbottom=6193
+block:id=BlockCandle,data=11,allsides=177,topbottom=6177
+block:id=BlockCandle,data=12,allsides=161,topbottom=6161
+block:id=BlockCandle,data=13,allsides=145,topbottom=6145
+block:id=BlockCandle,data=14,allsides=129,topbottom=6129
+block:id=BlockCandle,data=15,allsides=113,topbottom=6113
+# BlockChestHungry
+block:id=BlockChestHungry,data=2,top=6000,east=3,south=1,north=2,west=4,bottom=6005,txtid=hungry
+block:id=BlockChestHungry,data=3,top=4000,west=3,south=2,north=1,east=4,bottom=4005,txtid=hungry
+block:id=BlockChestHungry,data=4,top=5000,north=3,south=4,east=1,west=2,bottom=5005,txtid=hungry
+block:id=BlockChestHungry,data=5,top=0,south=3,north=4,east=2,west=1,bottom=5,txtid=hungry
+
+# BlockCrucible
+block:id=BlockCrucible,data=*,top=6009,bottom=6010,allsides=11,transparency=TRANSPARENT,txtid=core
+
+# BlockCrystal
+# BlockCustomOre
+block:id=BlockCustomOre,data=0,allsides=16,topbottom=6016,txtid=world
+block:id=BlockCustomOre,data=7,allsides=19,topbottom=6019,txtid=world
+block:id=BlockCustomOre,data=1,data=2,data=3,data=4,data=5,data=6,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,allsides=17,topbottom=6017,txtid=world
+
+# BlockCustomPlant
+block:id=BlockCustomPlant,data=0,patch0-1=64,transparency=TRANSPARENT,txtid=world
+block:id=BlockCustomPlant,data=1,patch0-1=65,transparency=TRANSPARENT,txtid=world
+block:id=BlockCustomPlant,data=2,patch0-1=66,transparency=TRANSPARENT,txtid=world
+block:id=BlockCustomPlant,data=3,patch0-1=67,transparency=TRANSPARENT,txtid=world
+block:id=BlockCustomPlant,data=4,patch0-1=68,transparency=TRANSPARENT,txtid=world
+block:id=BlockCustomPlant,data=5,patch0-1=69,transparency=TRANSPARENT,txtid=world
+
+# BlockFluxGoo
+# BlockHole
+# BlockInfusionWorkbench
+# BlockJar
+# BlockLifter
+# BlockMagicalLeaves
+# BlockMagicalLog
+# BlockMarker
+# BlockNitor
+# BlockSecure
+# BlockTable
+# BlockWooden
+# BlockWoodenDevice
