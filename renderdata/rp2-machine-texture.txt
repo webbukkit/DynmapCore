@@ -2,6 +2,7 @@
 modname:mod_RedPowerMachine,RedPowerMachine
 # configuration file
 cfgfile:redpower/redpower.cfg
+cfgfile:config/redpower/redpower.cfg
 
 # Files
 texturefile:id=machine,filename=eloraam/machine/machine1.png,xcount=16,ycount=16

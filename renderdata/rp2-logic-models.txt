@@ -2,6 +2,7 @@
 modname:mod_RedPowerLogic,RedPowerLogic
 # configuration file
 cfgfile:redpower/redpower.cfg
+cfgfile:config/redpower/redpower.cfg
 
 # Logic
 block:id=logic.logic.id,data=*,scale=8

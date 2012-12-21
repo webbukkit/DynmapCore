@@ -2,6 +2,7 @@
 modname:mod_RedPowerCore,RedPowerCore
 # configuration file
 cfgfile:redpower/redpower.cfg
+cfgfile:config/redpower/redpower.cfg
 
 # Microblocks (base.microblock.id, 0)
 # Microblocks (base.microblock.id, 1) - Redwire

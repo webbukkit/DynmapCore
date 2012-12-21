@@ -2,6 +2,7 @@
 modname:mod_RedPowerCore,RedPowerCore
 # configuration file
 cfgfile:redpower/redpower.cfg
+cfgfile:config/redpower/redpower.cfg
 
 # Files
 texturefile:id=base,filename=eloraam/base/base1.png,xcount=16,ycount=16

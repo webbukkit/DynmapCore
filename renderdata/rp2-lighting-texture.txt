@@ -2,6 +2,7 @@
 modname:mod_RedPowerLighting,RedPowerLighting
 # configuration file
 cfgfile:redpower/redpower.cfg
+cfgfile:config/redpower/redpower.cfg
 
 # Files
 texturefile:id=lighting,filename=eloraam/lighting/lighting1.png,xcount=16,ycount=16

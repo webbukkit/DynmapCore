@@ -2,6 +2,7 @@
 modname:mod_RedPowerWorld,RedPowerWorld
 # configuration file
 cfgfile:redpower/redpower.cfg
+cfgfile:config/redpower/redpower.cfg
 
 # Files
 texturefile:id=world,filename=eloraam/world/world1.png,xcount=16,ycount=16
