@@ -1,5 +1,5 @@
 # NetherOres Block mapping
-modname:mod_NetherOres
+modname:mod_NetherOres,NetherOres
 # configuration file
 cfgfile:config/NetherOres.cfg
 

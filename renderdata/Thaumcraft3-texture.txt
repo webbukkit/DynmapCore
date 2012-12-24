@@ -72,8 +72,23 @@ block:id=BlockCustomPlant,data=5,patch0-1=69,transparency=TRANSPARENT,txtid=worl
 # BlockJar
 # BlockLifter
 # BlockMagicalLeaves
+block:id=BlockMagicalLeaves,data=0,data=2,data=4,data=6,data=8,data=10,data=12,data=14,allsides=2080,topbottom=2080,txtid=world
+block:id=BlockMagicalLeaves,data=1,data=3,data=5,data=7,data=9,data=11,data=13,data=15,allsides=82,topbottom=6082,txtid=world
+
 # BlockMagicalLog
+block:id=BlockMagicalLog,data=0,allsides=96,topbottom=6097,txtid=world
+block:id=BlockMagicalLog,data=4,north=97,south=97,east=4096,west=4096,top=96,bottom=96,txtid=world
+block:id=BlockMagicalLog,data=8,north=4096,south=4096,east=97,west=97,top=4096,bottom=4096,txtid=world
+block:id=BlockMagicalLog,data=12,allsides=96,topbottom=6096,txtid=world
+
+block:id=BlockMagicalLog,data=1,allsides=98,topbottom=6099,txtid=world
+block:id=BlockMagicalLog,data=5,north=99,south=99,east=4098,west=4098,top=98,bottom=98,txtid=world
+block:id=BlockMagicalLog,data=9,north=4098,south=4098,east=99,west=99,top=4098,bottom=4098,txtid=world
+block:id=BlockMagicalLog,data=13,allsides=98,topbottom=6098,txtid=world
+
 # BlockMarker
+block:id=BlockMarker,data=*,allsides=64,topbottom=6064,txtid=core
+
 # BlockNitor
 # BlockSecure
 # BlockTable

@@ -1,5 +1,5 @@
 # Industrial Craft 2 Power Converters Block mapping
-modname:mod_PowerConverters
+modname:mod_PowerConverters,PowerConverters
 # Configuration file
 cfgfile:config/PowerConverters.cfg
 
