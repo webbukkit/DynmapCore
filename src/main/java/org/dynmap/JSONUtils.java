@@ -56,7 +56,8 @@ public class JSONUtils {
         } else {
             array = (JSONArray)oo;
         }
-        array.add(value);
+        if(value != null)
+            array.add(value);
     }
     
     // Simply creates a JSONArray.

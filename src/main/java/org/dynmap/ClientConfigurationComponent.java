@@ -46,6 +46,7 @@ public class ClientConfigurationComponent extends Component {
                 }
                 DynmapWorld defaultWorld = null;
                 String defmap = null;
+                a(t, "worlds", null);
                 for(DynmapWorld world : core.mapManager.getWorlds()) {
                     if(check_protected && world.isProtected() && ((player == null) || (!core.getServer().checkPlayerPermission(player, "world." + world.getName()))))
                         continue;
