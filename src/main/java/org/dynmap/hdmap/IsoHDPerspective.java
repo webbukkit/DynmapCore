@@ -1443,7 +1443,10 @@ public class IsoHDPerspective implements HDPerspective {
         boolean rendered[] = new boolean[numshaders];
         double height = maxheight;
         if(height < 0) {    /* Not set - assume world height - 1 */
-            height = tile.getDynmapWorld().worldheight - 1;
+            if (isnether)
+                height = 127;
+            else
+                height = tile.getDynmapWorld().worldheight - 1;
         }
         
         for(int x = 0; x < tileWidth; x++) {
