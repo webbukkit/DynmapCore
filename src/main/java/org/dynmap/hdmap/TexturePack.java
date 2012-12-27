@@ -45,6 +45,7 @@ import org.dynmap.utils.MapIterator;
  *    misc/swampgrasscolor.png - tone for grass color in swamps (optional)
  *    misc/swampfoliagecolor.png - tone for leaf color in swamps (optional)
  */
+
 public class TexturePack {
     /* Loaded texture packs */
     private static HashMap<String, TexturePack> packs = new HashMap<String, TexturePack>();
@@ -81,6 +82,13 @@ public class TexturePack {
     private static final int COLORMOD_BIRCHTONED = 14;
     private static final int COLORMOD_LILYTONED = 15;
     private static final int COLORMOD_OLD_WATERSHADED = 16;
+    private static final int COLORMOD_MULTTONED = 17;   /* Toned with colorMult - not biome-style */
+    private static final int COLORMOD_GRASSTONED270 = 18; // GRASSTONED + ROT270
+    private static final int COLORMOD_FOLIAGETONED270 = 19; // FOLIAGETONED + ROT270
+    private static final int COLORMOD_WATERTONED270 = 20; // WATERTONED + ROT270 
+    private static final int COLORMOD_TWIFORESTTONED = 21; // Special twilight forest leave tone
+    private static final int COLORMOD_TWIFORESTMAGICTONED = 22; // Special twilight forest leave tone
+    private static final int COLORMOD_TWIFORESTBANDEDTONED = 23; // Special twilight forest leave tone
     
     private static final int COLORMOD_MULT_FILE = 1000;
     private static final int COLORMOD_MULT_INTERNAL = 1000000;
@@ -107,7 +115,8 @@ public class TexturePack {
     private static final int TILEINDEX_PANETOP_X = 263;
     private static final int TILEINDEX_AIRFRAME_EYE = 264;
     private static final int TILEINDEX_FIRE = 265;
-    private static final int MAX_TILEINDEX = 265;  /* Index of last static tile definition */
+    private static final int TILEINDEX_PORTAL = 266;
+    private static final int MAX_TILEINDEX = 266;  /* Index of last static tile definition */
     private static final int TILETABLE_LEN = 5000;  /* Leave room for dynmaic tiles */
 
     /* Indexes of faces in a CHEST format tile file */
@@ -198,7 +207,8 @@ public class TexturePack {
     private static final int IMG_FIRE = 11;
     private static final int IMG_SWAMPGRASSCOLOR = 12;
     private static final int IMG_SWAMPFOLIAGECOLOR = 13;
-    private static final int IMG_CNT = 14;
+    private static final int IMG_PORTAL = 14;
+    private static final int IMG_CNT = 15;
     /* 0-(IMG_CNT-1) are fixed, IMG_CNT+x is dynamic file x */
     private LoadedImage[] imgs;
 
@@ -217,6 +227,7 @@ public class TexturePack {
         private BlockTransparency bt;
         private boolean userender;
         private String blockset;
+        private int colorMult;
         private static HDTextureMap[] texmaps;
         private static BlockTransparency transp[];
         private static boolean userenderdata[];
@@ -257,14 +268,16 @@ public class TexturePack {
             databits = 0xFFFF;
             userender = false;
             blockset = null;
+            colorMult = 0;
             faces = new int[] { TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK };
         }
         
-        public HDTextureMap(List<Integer> blockids, int databits, int[] faces, BlockTransparency trans, boolean userender, String blockset) {
+        public HDTextureMap(List<Integer> blockids, int databits, int[] faces, BlockTransparency trans, boolean userender, int colorMult, String blockset) {
             this.faces = faces;
             this.blockids = blockids;
             this.databits = databits;
             this.bt = trans;
+            this.colorMult = colorMult;
             this.userender = userender;
             this.blockset = blockset;
         }
@@ -353,6 +366,7 @@ public class TexturePack {
             generateLavaFlow();
         }
         generateFire();
+        generatePortal();
         
         File f = new File(texturedir, tpname);
         try {
@@ -393,6 +407,7 @@ public class TexturePack {
                 patchTextureWithImage(IMG_LAVAMOVING, TILEINDEX_MOVINGLAVA);
             }
             patchTextureWithImage(IMG_FIRE, TILEINDEX_FIRE);
+            patchTextureWithImage(IMG_PORTAL, TILEINDEX_PORTAL);
 
             /* Try to find and load misc/grasscolor.png */
             ze = zf.getEntry(GRASSCOLOR_PNG);
@@ -531,6 +546,7 @@ public class TexturePack {
             }
             /* Patch in generated value */
             patchTextureWithImage(IMG_FIRE, TILEINDEX_FIRE);
+            patchTextureWithImage(IMG_PORTAL, TILEINDEX_PORTAL);
 
             /* Check for misc/grasscolor.png */
             f = new File(texturedir, tpname + "/" + GRASSCOLOR_PNG);
@@ -1279,6 +1295,7 @@ public class TexturePack {
                     int txtidx[] = new int[] { -1, -1, -1, -1, -1, -1 };
                     line = line.substring(6);
                     BlockTransparency trans = BlockTransparency.OPAQUE;
+                    int colorMult = 0;
                     String[] args = line.split(",");
                     for(String a : args) {
                         String[] av = a.split("=");
@@ -1391,12 +1408,15 @@ public class TexturePack {
                         else if(av[0].equals("userenderdata")) {
                     		userenderdata = av[1].equals("true");
                         }
+                        else if(av[0].equals("colorMult")) {
+                            colorMult = Integer.valueOf(av[1], 16);
+                        }
                     }
                     /* If no data bits, assume all */
                     if(databits < 0) databits = 0xFFFF;
                     /* If we have everything, build block */
                     if(blkids.size() > 0) {
-                        HDTextureMap map = new HDTextureMap(blkids, databits, faces, trans, userenderdata, blockset);
+                        HDTextureMap map = new HDTextureMap(blkids, databits, faces, trans, userenderdata, colorMult, blockset);
                         map.addToTable();
                         cnt++;
                     }
@@ -1651,11 +1671,6 @@ public class TexturePack {
         }
         /* Handle U-V transorms before fetching color */
         switch(textop) {
-            case COLORMOD_NONE:
-            case COLORMOD_GRASSTONED:
-            case COLORMOD_FOLIAGETONED:
-            case COLORMOD_WATERTONED:
-                break;
             case COLORMOD_ROT90:
                 tmp = u; u = native_scale - v - 1; v = tmp;
                 break;
@@ -1663,6 +1678,9 @@ public class TexturePack {
                 u = native_scale - u - 1; v = native_scale - v - 1;
                 break;
             case COLORMOD_ROT270:
+            case COLORMOD_GRASSTONED270:
+            case COLORMOD_FOLIAGETONED270:
+            case COLORMOD_WATERTONED270:
                 tmp = u; u = v; v = native_scale - tmp - 1;
                 break;
             case COLORMOD_FLIPHORIZ:
@@ -1731,8 +1749,6 @@ public class TexturePack {
                     }
                 }
                 break;
-            case COLORMOD_CLEARINSIDE:
-                break;
             case COLORMOD_LILYTONED:
                 /* Rotate texture based on lily orientation function (from renderBlockLilyPad in RenderBlocks.jara in MCP) */
                 long l1 = (long)(mapiter.getX() * 0x2fc20f) ^ (long)mapiter.getZ() * 0x6ebfff5L ^ (long)mapiter.getY();
@@ -1752,8 +1768,6 @@ public class TexturePack {
                         break;
                 }
                 break;
-            case COLORMOD_OLD_WATERSHADED:
-                break;
         }
         /* Read color from texture */
         try {
@@ -1766,6 +1780,7 @@ public class TexturePack {
         /* Switch based on texture modifier */
         switch(textop) {
             case COLORMOD_GRASSTONED:
+            case COLORMOD_GRASSTONED270:
                 if(ss.do_biome_shading) {
                     if(imgs[IMG_SWAMPGRASSCOLOR] != null)
                         clrmult = mapiter.getSmoothColorMultiplier(imgs[IMG_GRASSCOLOR].argb, imgs[IMG_GRASSCOLOR].width, imgs[IMG_SWAMPGRASSCOLOR].argb, imgs[IMG_SWAMPGRASSCOLOR].width);
@@ -1777,6 +1792,7 @@ public class TexturePack {
                 }
                 break;
             case COLORMOD_FOLIAGETONED:
+            case COLORMOD_FOLIAGETONED270:
                 if(ss.do_biome_shading) {
                     if(imgs[IMG_SWAMPFOLIAGECOLOR] != null)
                         clrmult = mapiter.getSmoothColorMultiplier(imgs[IMG_FOLIAGECOLOR].argb, imgs[IMG_FOLIAGECOLOR].width, imgs[IMG_SWAMPFOLIAGECOLOR].argb, imgs[IMG_SWAMPFOLIAGECOLOR].width);
@@ -1788,6 +1804,7 @@ public class TexturePack {
                 }
                 break;
             case COLORMOD_WATERTONED:
+            case COLORMOD_WATERTONED270:
                 if(imgs[IMG_WATERCOLORX] != null) {
                     if(ss.do_biome_shading) {
                         clrmult = mapiter.getSmoothWaterColorMultiplier(imgs[IMG_WATERCOLORX].argb, imgs[IMG_WATERCOLORX].width);
@@ -1812,6 +1829,69 @@ public class TexturePack {
                 break;
             case COLORMOD_OLD_WATERSHADED:  /* Legacy water shading (wrong, but folks used it */
                 break;
+            case COLORMOD_MULTTONED:    /* Use color multiplier */
+                clrmult = map.colorMult;
+                break;
+            case COLORMOD_TWIFORESTTONED: /* Special twilight forest tone */
+            {
+                int x = mapiter.getX();
+                int y = mapiter.getY();
+                int z = mapiter.getZ();
+                
+                int r = (x * 32) + (y * 16);
+                if((r & 0x100) != 0) {
+                    r = 0xFF - (r & 0xFF);
+                }
+                r &= 0xFF;
+                
+                int g = (y * 32) + (z * 16);
+                if((g & 0x100) != 0) {
+                    g = 0xFF - (g & 0xFF);
+                }
+                g ^= 0xFF; // Probably bug in TwilightForest - needed to match
+                
+                int b = (x * 16) + (z * 32);
+                if((b & 0x100) != 0) {
+                    b = 0xFF - (b & 0xFF);
+                }
+                b &= 0xFF;
+                
+                clrmult = (r << 16) | (g << 8) | b;
+            }
+            break;
+            case COLORMOD_TWIFORESTMAGICTONED:
+            {
+                int x = mapiter.getX();
+                int y = mapiter.getY();
+                int z = mapiter.getZ();
+                int fade = x * 16 + y * 16 + z * 16;
+                if ((fade & 0x100) != 0) {
+                    fade = 255 - (fade & 0xFF);
+                }
+                fade &= 255;
+                float spring = (255 - fade) / 255.0F;
+                float fall = fade / 255.0F;
+                int red = (int)(spring * 106.0F + fall * 251.0F);
+                int green = (int)(spring * 156.0F + fall * 108.0F);
+                int blue = (int)(spring * 23.0F + fall * 27.0F);
+                clrmult = (red << 16) | (green << 8) | blue;
+            }
+            break;
+            case COLORMOD_TWIFORESTBANDEDTONED:
+            {
+                int x = mapiter.getX();
+                int y = mapiter.getY();
+                int z = mapiter.getZ();
+                int value = x * 31 + y * 15 + z * 33;
+                if ((value & 0x100) != 0) {
+                    value = 255 - (value & 0xFF);
+                }
+                value &= 255;
+                value >>= 1;
+                value |= 128;
+                clrmult = (value << 16) | (value << 8) | value;
+            }
+            break;
         }
         if((clrmult != -1) && (clrmult != 0)) {
             rslt.blendColor(clrmult | 0xFF000000);
@@ -2263,6 +2343,88 @@ public class TexturePack {
             cc.setRGBA(j1, l1, j2, c);
             imgs[IMG_FIRE].argb[k] = cc.getARGB();
 
+        }
+    }
+    /* Adapted from TexturePortalFX.java in MCP */
+    private void generatePortal() {
+        imgs[IMG_PORTAL] = new LoadedImage();
+        imgs[IMG_PORTAL].width = 16;
+        imgs[IMG_PORTAL].height = 16;
+        imgs[IMG_PORTAL].argb = new int[256];
+
+        byte[][] portalTextureData = new byte[32][256 << 4];
+        Random var1 = new Random(100L);
+        int tileSizeBase = 16;
+
+        for (int var2 = 0; var2 < 32; ++var2)
+        {
+            for (int var3 = 0; var3 < tileSizeBase; ++var3)
+            {
+                for (int var4 = 0; var4 < tileSizeBase; ++var4)
+                {
+                    float var5 = 0.0F;
+                    int var6;
+
+                    for (var6 = 0; var6 < 2; ++var6)
+                    {
+                        float var7 = (float)(var6 * tileSizeBase) * 0.5F;
+                        float var8 = (float)(var6 * tileSizeBase) * 0.5F;
+                        float var9 = ((float)var3 - var7) / (float)tileSizeBase * 2.0F;
+                        float var10 = ((float)var4 - var8) / (float)tileSizeBase * 2.0F;
+
+                        if (var9 < -1.0F)
+                        {
+                            var9 += 2.0F;
+                        }
+
+                        if (var9 >= 1.0F)
+                        {
+                            var9 -= 2.0F;
+                        }
+
+                        if (var10 < -1.0F)
+                        {
+                            var10 += 2.0F;
+                        }
+
+                        if (var10 >= 1.0F)
+                        {
+                            var10 -= 2.0F;
+                        }
+
+                        float var11 = var9 * var9 + var10 * var10;
+                        float var12 = (float)Math.atan2((double)var10, (double)var9) + ((float)var2 / 32.0F * (float)Math.PI * 2.0F - var11 * 10.0F + (float)(var6 * 2)) * (float)(var6 * 2 - 1);
+                        var12 = ((float)Math.sin(var12) + 1.0F) / 2.0F;
+                        var12 /= var11 + 1.0F;
+                        var5 += var12 * 0.5F;
+                    }
+
+                    var5 += var1.nextFloat() * 0.1F;
+                    var6 = (int)(var5 * 100.0F + 155.0F);
+                    int var13 = (int)(var5 * var5 * 200.0F + 55.0F);
+                    int var14 = (int)(var5 * var5 * var5 * var5 * 255.0F);
+                    int var15 = (int)(var5 * 100.0F + 155.0F);
+                    int var16 = var4 * tileSizeBase + var3;
+                    portalTextureData[var2][var16 * 4 + 0] = (byte)var13;
+                    portalTextureData[var2][var16 * 4 + 1] = (byte)var14;
+                    portalTextureData[var2][var16 * 4 + 2] = (byte)var6;
+                    portalTextureData[var2][var16 * 4 + 3] = (byte)var15;
+                }
+            }
+        }
+        byte[] txt = portalTextureData[0];
+        Color cc = new Color();
+        
+        for (int var2 = 0; var2 < 256; ++var2)
+        {
+            int var3 = txt[var2 * 4 + 0] & 255;
+            int var4 = txt[var2 * 4 + 1] & 255;
+            int var5 = txt[var2 * 4 + 2] & 255;
+            int var6 = txt[var2 * 4 + 3] & 255;
+
+            cc.setRGBA(var3, var4, var5, var6);
+
+            imgs[IMG_PORTAL].argb[var2] = cc.getARGB();
         }
     }
     private static final int[] smooth_water_mult = new int[10];

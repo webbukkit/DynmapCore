@@ -2,7 +2,7 @@
 # Patches - define surfaces to be used in patch models
 #
 # Vertical patch, 45 degrees from xz=1.0/0.0 to xz=0.0/1.0
-patch:id=VertX1Z0ToX0Z1,Ox=1.0,Oy=0.0,Oz=0.0,Ux=0.0,Uy=0.0,Uz=1.0,Vx=1.0,Vy=1.0,Vz=0.0
+patch:id=VertX1Z0ToX0Z1,Ox=1.0,Oy=0.0,Oz=0.0,Ux=0.0,Uy=0.0,Uz=1.0,Vx=1.0,Vy=1.0,Vz=0.0,visibility=flip
 # Vertical patch, X- facing side from xz=0.4375/0.0 to 0.4375/1.0
 patch:id=VertX04375,Ox=0.4375,Oy=0.0,Oz=0.0,Ux=0.4375,Uy=0.0,Uz=1.0,Vx=0.4375,Vy=1.0,Vz=0.0,visibility=top
 # Vertical patch, X- facing side from xz=0.0625/0.0 to 0.0625/1.0

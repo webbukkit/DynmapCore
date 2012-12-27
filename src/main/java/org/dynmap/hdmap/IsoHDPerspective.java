@@ -24,6 +24,7 @@ import org.dynmap.MapType.ImageFormat;
 import org.dynmap.TileHashManager;
 import org.dynmap.debug.Debug;
 import org.dynmap.renderer.RenderPatch;
+import org.dynmap.renderer.RenderPatchFactory.SideVisible;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.hdmap.HDBlockModels.CustomBlockModel;
 import org.dynmap.hdmap.TexturePack.BlockTransparency;
@@ -690,6 +691,7 @@ public class IsoHDPerspective implements HDPerspective {
                         }
                         break;
                     case BOTH:
+                    case FLIP:
                         if((det > -0.000001) && (det < 0.000001)) {
                             continue;
                         }
@@ -718,10 +720,15 @@ public class IsoHDPerspective implements HDPerspective {
                     patch_u[hitcnt] = u;
                     patch_v[hitcnt] = v;
                     patch_id[hitcnt] = pd.textureindex;
-                    if(det > 0)
+                    if(det > 0) {
                         patch_step[hitcnt] = pd.step.opposite();
-                    else
+                    }
+                    else {
+                        if (pd.sidevis == SideVisible.FLIP) {
+                            patch_u[hitcnt] = 1 - u;
+                        }
                         patch_step[hitcnt] = pd.step;
+                    }
                     hitcnt++;
                 }
             }
