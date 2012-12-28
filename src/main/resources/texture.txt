@@ -42,16 +42,14 @@ block:id=6,data=3,data=7,data=11,data=15,patch0=30,patch1=30,transparency=TRANSP
 # Bedrock
 block:id=7,allsides=17,topbottom=6017
 # Water
-#block:id=8,allfaces=12258,transparency=TRANSPARENT
 block:id=8,allfaces=12258,transparency=SEMITRANSPARENT
 # Stationary water
-#block:id=9,allfaces=12257,transparency=TRANSPARENT
 block:id=9,data=0,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,topbottom=12257,allsides=12258,transparency=SEMITRANSPARENT
 block:id=9,data=1,data=2,data=3,data=4,data=5,data=6,data=7,allfaces=12258,transparency=SEMITRANSPARENT
 # Lava
-block:id=10,allsides=260,topbottom=6260,transparency=TRANSPARENT
+block:id=10,allsides=260,topbottom=6260,transparency=SEMITRANSPARENT
 # Stationary Lava
-block:id=11,topbottom=6259,allsides=260,transparency=TRANSPARENT
+block:id=11,topbottom=6259,allsides=260,transparency=SEMITRANSPARENT
 # Sand
 block:id=12,allsides=18,topbottom=6018
 # Gravel

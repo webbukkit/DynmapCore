@@ -25,6 +25,7 @@ import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapCore;
 import org.dynmap.Log;
 import org.dynmap.MapManager;
+import org.dynmap.renderer.CustomColorMultiplier;
 import org.dynmap.utils.DynmapBufferedImage;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.ForgeConfigFile;
@@ -82,13 +83,10 @@ public class TexturePack {
     private static final int COLORMOD_BIRCHTONED = 14;
     private static final int COLORMOD_LILYTONED = 15;
     private static final int COLORMOD_OLD_WATERSHADED = 16;
-    private static final int COLORMOD_MULTTONED = 17;   /* Toned with colorMult - not biome-style */
+    private static final int COLORMOD_MULTTONED = 17;   /* Toned with colorMult or custColorMult - not biome-style */
     private static final int COLORMOD_GRASSTONED270 = 18; // GRASSTONED + ROT270
     private static final int COLORMOD_FOLIAGETONED270 = 19; // FOLIAGETONED + ROT270
     private static final int COLORMOD_WATERTONED270 = 20; // WATERTONED + ROT270 
-    private static final int COLORMOD_TWIFORESTTONED = 21; // Special twilight forest leave tone
-    private static final int COLORMOD_TWIFORESTMAGICTONED = 22; // Special twilight forest leave tone
-    private static final int COLORMOD_TWIFORESTBANDEDTONED = 23; // Special twilight forest leave tone
     
     private static final int COLORMOD_MULT_FILE = 1000;
     private static final int COLORMOD_MULT_INTERNAL = 1000000;
@@ -228,6 +226,7 @@ public class TexturePack {
         private boolean userender;
         private String blockset;
         private int colorMult;
+        private CustomColorMultiplier custColorMult;
         private static HDTextureMap[] texmaps;
         private static BlockTransparency transp[];
         private static boolean userenderdata[];
@@ -269,15 +268,17 @@ public class TexturePack {
             userender = false;
             blockset = null;
             colorMult = 0;
+            custColorMult = null;
             faces = new int[] { TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK };
         }
         
-        public HDTextureMap(List<Integer> blockids, int databits, int[] faces, BlockTransparency trans, boolean userender, int colorMult, String blockset) {
+        public HDTextureMap(List<Integer> blockids, int databits, int[] faces, BlockTransparency trans, boolean userender, int colorMult, CustomColorMultiplier custColorMult, String blockset) {
             this.faces = faces;
             this.blockids = blockids;
             this.databits = databits;
             this.bt = trans;
             this.colorMult = colorMult;
+            this.custColorMult = custColorMult;
             this.userender = userender;
             this.blockset = blockset;
         }
@@ -1296,6 +1297,7 @@ public class TexturePack {
                     line = line.substring(6);
                     BlockTransparency trans = BlockTransparency.OPAQUE;
                     int colorMult = 0;
+                    CustomColorMultiplier custColorMult = null;
                     String[] args = line.split(",");
                     for(String a : args) {
                         String[] av = a.split("=");
@@ -1411,12 +1413,20 @@ public class TexturePack {
                         else if(av[0].equals("colorMult")) {
                             colorMult = Integer.valueOf(av[1], 16);
                         }
+                        else if(av[0].equals("custColorMult")) {
+                            try {
+                                Class<?> cls = Class.forName(av[1]);
+                                custColorMult = (CustomColorMultiplier)cls.newInstance();
+                            } catch (Exception x) {
+                                Log.severe("Error loading custom color multiplier - " + av[1] + ": " + x.getMessage());
+                            }
+                        }
                     }
                     /* If no data bits, assume all */
                     if(databits < 0) databits = 0xFFFF;
                     /* If we have everything, build block */
                     if(blkids.size() > 0) {
-                        HDTextureMap map = new HDTextureMap(blkids, databits, faces, trans, userenderdata, colorMult, blockset);
+                        HDTextureMap map = new HDTextureMap(blkids, databits, faces, trans, userenderdata, colorMult, custColorMult, blockset);
                         map.addToTable();
                         cnt++;
                     }
@@ -1827,72 +1837,16 @@ public class TexturePack {
             case COLORMOD_LILYTONED:
                 clrmult =  0x208030; /* from BlockLilyPad.java in MCP */
                 break;
-            case COLORMOD_OLD_WATERSHADED:  /* Legacy water shading (wrong, but folks used it */
-                break;
             case COLORMOD_MULTTONED:    /* Use color multiplier */
-                clrmult = map.colorMult;
+                if(map.custColorMult != null) {
+                    clrmult = map.custColorMult.getColorMultiplier(mapiter);
+                }
+                else {
+                    clrmult = map.colorMult;
+                }
                 break;
-            case COLORMOD_TWIFORESTTONED: /* Special twilight forest tone */
-            {
-                int x = mapiter.getX();
-                int y = mapiter.getY();
-                int z = mapiter.getZ();
-                
-                int r = (x * 32) + (y * 16);
-                if((r & 0x100) != 0) {
-                    r = 0xFF - (r & 0xFF);
-                }
-                r &= 0xFF;
-                
-                int g = (y * 32) + (z * 16);
-                if((g & 0x100) != 0) {
-                    g = 0xFF - (g & 0xFF);
-                }
-                g ^= 0xFF; // Probably bug in TwilightForest - needed to match
-                
-                int b = (x * 16) + (z * 32);
-                if((b & 0x100) != 0) {
-                    b = 0xFF - (b & 0xFF);
-                }
-                b &= 0xFF;
-                
-                clrmult = (r << 16) | (g << 8) | b;
-            }
-            break;
-            case COLORMOD_TWIFORESTMAGICTONED:
-            {
-                int x = mapiter.getX();
-                int y = mapiter.getY();
-                int z = mapiter.getZ();
-                int fade = x * 16 + y * 16 + z * 16;
-                if ((fade & 0x100) != 0) {
-                    fade = 255 - (fade & 0xFF);
-                }
-                fade &= 255;
-                float spring = (255 - fade) / 255.0F;
-                float fall = fade / 255.0F;
-                int red = (int)(spring * 106.0F + fall * 251.0F);
-                int green = (int)(spring * 156.0F + fall * 108.0F);
-                int blue = (int)(spring * 23.0F + fall * 27.0F);
-                clrmult = (red << 16) | (green << 8) | blue;
-            }
-            break;
-            case COLORMOD_TWIFORESTBANDEDTONED:
-            {
-                int x = mapiter.getX();
-                int y = mapiter.getY();
-                int z = mapiter.getZ();
-                int value = x * 31 + y * 15 + z * 33;
-                if ((value & 0x100) != 0) {
-                    value = 255 - (value & 0xFF);
-                }
-                value &= 255;
-                value >>= 1;
-                value |= 128;
-                clrmult = (value << 16) | (value << 8) | value;
-            }
-            break;
         }
+        
         if((clrmult != -1) && (clrmult != 0)) {
             rslt.blendColor(clrmult | 0xFF000000);
         }
