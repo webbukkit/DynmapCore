@@ -46,6 +46,14 @@ public class RPRotatedBoxRenderer extends CustomRenderer {
         return tileEntityAttribs;
     }
     
+    private static final int rotgrid[][] = { 
+        { 270, 180, 0, 90 }, // Bottom
+        { 270, 180, 0, 90 }, // Top
+        { 0, 270, 90, 180 }, // Z-
+        { 0, 270, 90, 180 }, // Z+
+        { 0, 270, 90, 180 }, // X-
+        { 0, 270, 90, 180 } }; // X+
+    
     @Override
     public RenderPatch[] getRenderPatchList(MapDataContext ctx) {
         Object rot = ctx.getBlockTileEntityField("rot");
@@ -57,16 +65,11 @@ public class RPRotatedBoxRenderer extends CustomRenderer {
             idx = 0;
         }
         if(models[idx] == null) {
-            ArrayList<RenderPatch> list = new ArrayList<RenderPatch>();
-            int[] txt = new int[6];
-            txt[0] = rotTable[idx][0];
-            txt[1] = rotTable[idx][1];
-            txt[2] = rotTable[idx][4];
-            txt[3] = rotTable[idx][5];
-            txt[4] = rotTable[idx][2];
-            txt[5] = rotTable[idx][3];
-            this.addBox(ctx.getPatchFactory(), list, 0, 1, 0, 1, 0, 1, txt);
-            models[idx] = list.toArray(new RenderPatch[6]);
+            models[idx] = new RenderPatch[6];
+            int v = rotTable[idx][6];
+            for (int side = 0; side < 6; side++) {
+                models[idx][side] = this.getSidePatch(ctx.getPatchFactory(), side, rotgrid[side][(v >> (3*side)) & 0x3], rotTable[idx][side]);
+            }
         }
         return models[idx];
     }

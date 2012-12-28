@@ -53,6 +53,7 @@ block:id=BlockChestHungry,data=5,top=0,south=3,north=4,east=2,west=1,bottom=5,tx
 block:id=BlockCrucible,data=*,top=6009,bottom=6010,allsides=11,transparency=TRANSPARENT,txtid=core
 
 # BlockCrystal
+
 # BlockCustomOre
 block:id=BlockCustomOre,data=0,allsides=16,topbottom=6016,txtid=world
 block:id=BlockCustomOre,data=7,allsides=19,topbottom=6019,txtid=world
@@ -67,10 +68,15 @@ block:id=BlockCustomPlant,data=4,patch0-1=68,transparency=TRANSPARENT,txtid=worl
 block:id=BlockCustomPlant,data=5,patch0-1=69,transparency=TRANSPARENT,txtid=world
 
 # BlockFluxGoo
+
 # BlockHole
+
 # BlockInfusionWorkbench
+
 # BlockJar
+
 # BlockLifter
+
 # BlockMagicalLeaves
 block:id=BlockMagicalLeaves,data=0,data=2,data=4,data=6,data=8,data=10,data=12,data=14,allsides=2080,topbottom=2080,txtid=world
 block:id=BlockMagicalLeaves,data=1,data=3,data=5,data=7,data=9,data=11,data=13,data=15,allsides=82,topbottom=6082,txtid=world
@@ -90,7 +96,11 @@ block:id=BlockMagicalLog,data=13,allsides=98,topbottom=6098,txtid=world
 block:id=BlockMarker,data=*,allsides=64,topbottom=6064,txtid=core
 
 # BlockNitor
+
 # BlockSecure
+
 # BlockTable
+
 # BlockWooden
+
 # BlockWoodenDevice

@@ -1,6 +1,9 @@
 # Twilight Forest Block mapping
 modname:TwilightForest
 
+# Defaults
+var:MagicLog=0,MagicLeaves=0,MagicLogSpecial=0,TowerDevice=0,TowerAntenna=0,TowerWood=0
+
 # configuration file
 cfgfile:config/TwilightForest.cfg
 
@@ -60,6 +63,3 @@ patchblock:id=Plant,id=Sapling,data=*,patch0=VertX1Z0ToX0Z1,patch1=VertX1Z0ToX0Z
 # Portal
 patchblock:id=Portal,data=*,patch0=HorizY050
 
-# TowerAntenna
-# TowerDevice
-# TowerWood

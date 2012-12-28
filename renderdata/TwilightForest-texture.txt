@@ -1,6 +1,9 @@
 # Twilight Forest Block mapping
 modname:TwilightForest
 
+# Defaults
+var:MagicLog=0,MagicLeaves=0,MagicLogSpecial=0,TowerDevice=0,TowerAntenna=0,TowerWood=0
+
 # configuration file
 cfgfile:config/TwilightForest.cfg
 
@@ -82,7 +85,7 @@ block:id=Mazestone,data=6,allsides=81,topbottom=6086,txtid=blk0
 block:id=Mazestone,data=7,allsides=81,topbottom=6087,txtid=blk0
 
 # Moonworm
-block:id=Moonworm,data=*,patch0=52,txtid=blk0
+block:id=Moonworm,data=*,patch0=52,txtid=blk0,transparency=TRANSPARENT
 
 # Nagastone
 block:id=Nagastone,data=0,face0=6070,face1=6068,face2=67,face3=66,face4=64,face5=65,txtid=blk0
