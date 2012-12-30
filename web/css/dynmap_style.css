@@ -350,15 +350,7 @@
 .weather.stormy_day {
     background-image: url(../images/weather_stormy_day.png);
 }
-.weather .thunder_day {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 32px;
-    height: 32px;
-    display: none;
-    background-repeat: no-repeat;
+.weather.thunder_day {
     background-image: url(../images/weather_thunder_day.png);
 }
 
@@ -369,15 +361,7 @@
 .weather.stormy_night {
     background-image: url(../images/weather_stormy_night.png);
 }
-.weather .thunder_night {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 32px;
-    height: 32px;
-    display: none;
-    background-repeat: no-repeat;
+.weather.thunder_night {
     background-image: url(../images/weather_thunder_night.png);
 }
 
