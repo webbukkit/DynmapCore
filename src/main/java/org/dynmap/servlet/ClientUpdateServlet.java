@@ -1,10 +1,12 @@
 package org.dynmap.servlet;
 
 import static org.dynmap.JSONUtils.s;
+import static org.dynmap.JSONUtils.g;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Date;
+import java.util.ListIterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,10 +16,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.dynmap.ClientUpdateEvent;
+import org.dynmap.Client;
 import org.dynmap.DynmapCore;
 import org.dynmap.DynmapWorld;
+import org.dynmap.InternalClientUpdateComponent;
+import org.dynmap.Log;
 import org.dynmap.web.HttpField;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 @SuppressWarnings("serial")
@@ -36,7 +41,8 @@ public class ClientUpdateServlet extends HttpServlet {
         HttpSession sess = req.getSession(true);
         String user = (String) sess.getAttribute(LoginServlet.USERID_ATTRIB);
         if(user == null) user = LoginServlet.USERID_GUEST;
-        if(core.getLoginRequired() && user.equals(LoginServlet.USERID_GUEST)) {
+        boolean guest = user.equals(LoginServlet.USERID_GUEST);
+        if(core.getLoginRequired() && guest) {
             JSONObject json = new JSONObject();
             s(json, "error", "login-required");
             bytes = json.toJSONString().getBytes(cs_utf8);
@@ -70,13 +76,59 @@ public class ClientUpdateServlet extends HttpServlet {
             }
 
             JSONObject u = new JSONObject();
-            s(u, "timestamp", current);
-            ClientUpdateEvent evt = new ClientUpdateEvent(since, dynmapWorld, u);
-            if(!user.equals(LoginServlet.USERID_GUEST)) {
-                evt.user = user;
+            //s(u, "timestamp", current);
+            JSONObject upd = InternalClientUpdateComponent.getWorldUpdate(dynmapWorld.getName());
+            if(upd != null)
+                u.putAll(upd);
+            //TODO: prune based on security
+            boolean see_all = true;
+            if(core.player_info_protected) {
+                if(guest) {
+                    see_all = false;
+                }
+                else {
+                    see_all = core.getServer().checkPlayerPermission(user, "playermarkers.seeall");
+                }
             }
-            core.events.triggerSync(core, "buildclientupdate", evt);
-
+            if(!see_all) {
+                JSONArray players = (JSONArray)g(u, "players");
+                JSONArray newplayers = new JSONArray();
+                u.put("players",  newplayers);
+                if(players != null) {
+                    for(ListIterator<JSONObject> iter = players.listIterator(); iter.hasNext();) {
+                        JSONObject p = iter.next();
+                        JSONObject newp = new JSONObject();
+                        newp.putAll(p);
+                        newplayers.add(newp);
+                        boolean hide;
+                        if(!guest) {
+                            hide = !core.testIfPlayerVisibleToPlayer(user, (String)newp.get("name"));
+                        }
+                        else {
+                            hide = true;
+                        }
+                        if(hide) {
+                            s(newp, "world", "-some-other-bogus-world-");
+                            s(newp, "x", 0.0);
+                            s(newp, "y", 64.0);
+                            s(newp, "z", 0.0);
+                            s(newp, "health", 0);
+                            s(newp, "armor", 0);
+                        }
+                    }
+                }
+            }
+            JSONArray updates = (JSONArray)u.get("updates");
+            JSONArray newupdates = new JSONArray();
+            u.put("updates", newupdates);
+            if(updates != null) {
+                for(ListIterator<Client.Update> iter = updates.listIterator(); iter.hasNext();) {
+                    Client.Update update = iter.next();
+                    if(update.timestamp >= since) {
+                        newupdates.add(update);
+                    }
+                }
+            }
             bytes = u.toJSONString().getBytes(cs_utf8);
         }
         

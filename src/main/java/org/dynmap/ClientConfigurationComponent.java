@@ -38,18 +38,10 @@ public class ClientConfigurationComponent extends Component {
                 s(t, "msg-chatnotallowed", c.getString("msg/chatnotallowed", "You are not permitted to send chat messages"));
                 s(t, "maxcount", core.getMaxPlayers());
                 
-                String player = null;
-                boolean check_protected = false;
-                if(core.isLoginSupportEnabled() && (g(t, "loggedin") != null)) {
-                    check_protected = true;
-                    player = (String) g(t, "player");
-                }
                 DynmapWorld defaultWorld = null;
                 String defmap = null;
                 a(t, "worlds", null);
                 for(DynmapWorld world : core.mapManager.getWorlds()) {
-                    if(check_protected && world.isProtected() && ((player == null) || (!core.getServer().checkPlayerPermission(player, "world." + world.getName()))))
-                        continue;
                     if (world.maps.size() == 0) continue;
                     if (defaultWorld == null) defaultWorld = world;
                     JSONObject wo = new JSONObject();
@@ -69,24 +61,6 @@ public class ClientConfigurationComponent extends Component {
                     for(MapType mt : world.maps) {
                         mt.buildClientConfiguration(wo, world);
                         if(defmap == null) defmap = mt.getName();
-                    }
-                    if(check_protected) {
-                        JSONArray maps = (JSONArray) g(wo, "maps");
-                        if(maps != null) {
-                            int cnt = maps.size();
-                            for(int i = 0; i < cnt; i++) {
-                                JSONObject obj = (JSONObject)maps.get(i);
-                                Boolean prot = (Boolean) g(obj, "protected");
-                                if((prot == null) || (prot.booleanValue() == false))
-                                    continue;
-                                String mname = (String) g(obj, "name");
-                                if ((player == null) || (!core.getServer().checkPlayerPermission(player, "map." + world.getName() + "." + mname))) {
-                                    maps.remove(i); /* Remove it */
-                                    i--;
-                                    cnt--;
-                                }
-                            }
-                        }
                     }
                 }
                 s(t, "defaultworld", c.getString("defaultworld", defaultWorld == null ? "world" : defaultWorld.getName()));

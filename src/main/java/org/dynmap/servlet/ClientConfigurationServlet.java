@@ -3,6 +3,7 @@ package org.dynmap.servlet;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Date;
+import java.util.ListIterator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -12,26 +13,20 @@ import javax.servlet.http.HttpSession;
 
 import org.dynmap.DynmapCore;
 import org.dynmap.DynmapWorld;
-import org.dynmap.Event;
+import org.dynmap.InternalClientUpdateComponent;
+import org.dynmap.Log;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONArray;
 import static org.dynmap.JSONUtils.s;
+import static org.dynmap.JSONUtils.g;
 
 public class ClientConfigurationServlet extends HttpServlet {
     private static final long serialVersionUID = 9106801553080522469L;
     private DynmapCore core;
-    private byte[] cachedConfiguration = null;
-    private byte[] cachedConfigurationGuest = null;
-    private int cached_config_hashcode = 0;
     private Charset cs_utf8 = Charset.forName("UTF-8");
 
     public ClientConfigurationServlet(DynmapCore plugin) {
         this.core = plugin;
-        plugin.events.addListener("worldactivated", new Event.Listener<DynmapWorld>() {
-            @Override
-            public void triggered(DynmapWorld t) {
-                cachedConfiguration = cachedConfigurationGuest = null;
-            }
-        });
     }
     
     @Override
@@ -42,13 +37,11 @@ public class ClientConfigurationServlet extends HttpServlet {
         String user = (String) sess.getAttribute(LoginServlet.USERID_ATTRIB);
         if(user == null) user = LoginServlet.USERID_GUEST;
         boolean guest = user.equals(LoginServlet.USERID_GUEST);
+        JSONObject json = new JSONObject();
         if(core.getLoginRequired() && guest) {
-            JSONObject json = new JSONObject();
             s(json, "error", "login-required");
-            outputBytes = json.toJSONString().getBytes(cs_utf8);
         }
-        else if(core.isLoginSupportEnabled()) { /* If login support enabled, don't cacne */
-            JSONObject json = new JSONObject();
+        else if(core.isLoginSupportEnabled()) {
             if(guest) {
                 s(json, "loggedin", false);
             }
@@ -56,35 +49,55 @@ public class ClientConfigurationServlet extends HttpServlet {
                 s(json, "loggedin", true);
                 s(json, "player", user);
             }
-            core.events.<JSONObject>triggerSync(core, "buildclientconfiguration", json);
-            String s = json.toJSONString();
-            outputBytes = s.getBytes(cs_utf8);
+            JSONObject obj = InternalClientUpdateComponent.getClientConfig();
+            if(obj != null) {
+                json.putAll(obj);
+            }
+            /* Prune based on security */
+            JSONArray wlist = (JSONArray)g(json, "worlds");
+            JSONArray newwlist = new JSONArray();
+            json.put("worlds", newwlist);
+            for(ListIterator<JSONObject> iter = wlist.listIterator(); iter.hasNext();) {
+                JSONObject w = iter.next();
+                String n = (String)g(w, "name");
+                DynmapWorld dw = core.getWorld(n);
+                /* If protected, and we're guest or don't have permission, drop it */
+                if(dw.isProtected() && (guest || (!core.getServer().checkPlayerPermission(user, "world." + n)))) {
+                    /* Don't add to new list */
+                }
+                else {
+                    JSONObject neww = new JSONObject();
+                    neww.putAll(w);
+                    newwlist.add(neww);
+                    JSONArray mlist = (JSONArray)g(w, "maps");
+                    JSONArray newmlist = new JSONArray();
+                    neww.put("maps",  newmlist);
+                    for(ListIterator<JSONObject> iter2 = mlist.listIterator(); iter2.hasNext();) {
+                        JSONObject m = iter2.next();
+                        Boolean prot = (Boolean) g(m, "protected");
+                        /* If not protected, leave it in */
+                        if((prot == null) || (prot.booleanValue() == false)) {
+                            newmlist.add(m);
+                            continue;
+                        }
+                        /* If not guest and we have permission, keep it */
+                        String mn = (String)g(m, "name");
+                        if ((!guest) && core.getServer().checkPlayerPermission(user, "map." + n + "." + mn)) {
+                            newmlist.add(m);
+                        }
+                    }
+                }
+            }
         }
         else { 
-            if(cached_config_hashcode != core.getConfigHashcode()) {
-                cachedConfiguration = cachedConfigurationGuest = null;
-                cached_config_hashcode = core.getConfigHashcode();
+            s(json, "loggedin", !guest);
+            JSONObject obj = InternalClientUpdateComponent.getClientConfig();
+            if(obj != null) {
+                json.putAll(obj);
             }
-            if(guest) {
-                if (cachedConfigurationGuest == null) {
-                    JSONObject json = new JSONObject();
-                    s(json, "loggedin", !guest);
-                    core.events.<JSONObject>triggerSync(core, "buildclientconfiguration", json);
-                    String s = json.toJSONString();
-                    cachedConfigurationGuest = s.getBytes(cs_utf8);
-                }
-            }
-            else {
-                if (cachedConfiguration == null) {
-                    JSONObject json = new JSONObject();
-                    s(json, "loggedin", !guest);
-                    core.events.<JSONObject>triggerSync(core, "buildclientconfiguration", json);
-                    String s = json.toJSONString();
-                    cachedConfiguration = s.getBytes(cs_utf8);
-                }
-            }
-            outputBytes = (guest?cachedConfigurationGuest:cachedConfiguration);
         }
+        outputBytes = json.toJSONString().getBytes(cs_utf8);
+
         String dateStr = new Date().toString();
         res.addHeader("Date", dateStr);
         res.setContentType("text/plain; charset=utf-8");
