@@ -184,10 +184,6 @@ public class ThaumFurnaceRenderer extends CustomRenderer {
                 txtids[i] = calcTexture(ctx, i);
             }
         }
-        Log.info("blk=" + ctx.getBlockTypeID() + ":" + ctx.getBlockData());
-        for(int i = 0; i < 6; i++) {
-            Log.info("side " + i + ": " + txtids[i]);
-        }
         this.addBox(ctx.getPatchFactory(), list, 0, 1, 0, 1, 0, 1, txtids);
         return list.toArray(new RenderPatch[6]);
     }
