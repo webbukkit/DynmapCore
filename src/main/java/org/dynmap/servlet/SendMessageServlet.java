@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -49,6 +50,7 @@ public class SendMessageServlet extends HttpServlet {
     public boolean chat_perms = false;
     public int lengthlimit = 256;
     public DynmapCore core;
+    public HashSet<String> proxyaddress = new HashSet<String>();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -88,9 +90,9 @@ public class SendMessageServlet extends HttpServlet {
                 }
                 boolean isip = true;
                 if ((message.name == null) || message.name.equals("")) {
-                    /* If from loopback, we're probably getting from proxy - need to trust client */
+                    /* If from trusted proxy, check for client */
                     String rmtaddr = request.getRemoteAddr(); 
-                    if (rmtaddr.equals("127.0.0.1") || (rmtaddr.equals("0:0:0:0:0:0:0:1"))) {
+                    if (this.proxyaddress.contains(rmtaddr)) {
                         /* If proxied client address, get original IP */
                         if (request.getHeader("X-Forwarded-For") != null) {
                             message.name = request.getHeader("X-Forwarded-For");
