@@ -157,7 +157,7 @@ public class MarkerSignManager {
                     }                    
                 }
             }
-            MapManager.scheduleDelayedJob(this, 60000);
+            plugin.getServer().scheduleServerTask(sl, 60*20);
         }
     }
     private static SignListener sl = null;  /* Do once - /dynmap reload doesn't reset listeners */
@@ -175,7 +175,7 @@ public class MarkerSignManager {
         if(sl == null) {
             sl = new SignListener();
             plugin.listenerManager.addListener(EventType.SIGN_CHANGE, sl);
-            MapManager.scheduleDelayedJob(sl, 60000);
+            plugin.getServer().scheduleServerTask(sl, 200);
         }
         MarkerSignManager.plugin = plugin;
         return mgr;
