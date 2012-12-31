@@ -124,4 +124,13 @@ public interface DynmapServerInterface {
      * @param name - mod name
      */
     public boolean isModLoaded(String name);
+    /**
+     * Get block ID at given coordinate in given world (if chunk is loaded)
+     * @param wname - world name
+     * @param x - X coordinate
+     * @param y - Y coordinate
+     * @param z - Z coordinate
+     * @return block ID, or -1 if chunk at given coordainte isnt loaded
+     */
+    public int getBlockIDAt(String wname, int x, int y, int z);
 }

@@ -1,8 +1,13 @@
 package org.dynmap.markers.impl;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.dynmap.DynmapCore;
+import org.dynmap.MapManager;
 import org.dynmap.common.DynmapChatColor;
 import org.dynmap.common.DynmapListenerManager;
 import org.dynmap.common.DynmapListenerManager.EventType;
@@ -19,7 +24,13 @@ public class MarkerSignManager {
     private static final int SIGNPOST_ID = 63;
     private static final int WALLSIGN_ID = 68;
         
-    private static class SignListener implements DynmapListenerManager.BlockEventListener, DynmapListenerManager.SignChangeEventListener {
+    private static class SignRec {
+        String wname;
+        int x, y, z;
+        Marker m;
+    }
+    
+    private static class SignListener implements DynmapListenerManager.SignChangeEventListener, Runnable {
         @Override
         public void signChangeEvent(int blkid, String wname, int x, int y, int z, String[] lines, DynmapPlayer p) {
             if(mgr == null)
@@ -78,23 +89,75 @@ public class MarkerSignManager {
                         lines[0] = DynmapChatColor.RED + "<Bad Marker>";
                         return;
                     }
-                }
-            }
-        }
-        @Override
-        public void blockEvent(int blkid, String wname, int x, int y, int z) {
-            if(mgr == null)
-                return;
-            if((blkid == WALLSIGN_ID) || (blkid == SIGNPOST_ID)) {    /* If sign */
-                String id = getSignMarkerID(wname, x, y, z);  /* Marker sign? */
-                Set<MarkerSet> sets = MarkerAPIImpl.api.getMarkerSets();
-                for(MarkerSet ms : sets) {
-                    Marker marker = ms.findMarker(id);   /* See if in this set */
-                    if(marker != null) {
-                        marker.deleteMarker();
+                    if(sign_cache != null) {
+                        SignRec r = new SignRec();
+                        r.wname = wname;
+                        r.x = x;
+                        r.y = y;
+                        r.z = z;
+                        r.m = marker;
+                        sign_cache.put(id,  r); /* Add to cache */
                     }
                 }
             }
+        }
+        private HashMap<String, SignRec> sign_cache = null;
+        
+        public void run() {
+            if(mgr == null)
+                return;
+            if(sign_cache == null) {    /* Initialize sign cache */
+                sign_cache = new HashMap<String, SignRec>();
+                Set<MarkerSet> sets = MarkerAPIImpl.api.getMarkerSets();
+                for(MarkerSet ms : sets) {
+                    for(Marker m : ms.getMarkers()) {
+                        String id = m.getMarkerID();
+                        try {
+                            if(id.startsWith("_sign_")) {
+                                SignRec rec = new SignRec();
+                                /* Parse out the coordinates and world name */
+                                int off = id.lastIndexOf('_');
+                                if(off > 0) {
+                                    rec.z = Integer.parseInt(id.substring(off+1));
+                                    id = id.substring(0,  off);
+                                }
+                                off = id.lastIndexOf('_');
+                                if(off > 0) {
+                                    rec.y = Integer.parseInt(id.substring(off+1));
+                                    id = id.substring(0,  off);
+                                }
+                                off = id.lastIndexOf('_');
+                                if(off > 0) {
+                                    rec.x = Integer.parseInt(id.substring(off+1));
+                                    id = id.substring(0,  off);
+                                }
+                                rec.wname = id.substring(6);
+                                rec.m = m;
+                                sign_cache.put(m.getMarkerID(), rec);
+                            }
+                        } catch (NumberFormatException nfx) {
+                        }
+                    }
+                }
+            }
+            /* Traverse cache - see if anyone is gone */
+            for(Iterator<Entry<String, SignRec>> iter = sign_cache.entrySet().iterator(); iter.hasNext(); ) {
+                Entry<String, SignRec> ent = iter.next();
+                SignRec r = ent.getValue();
+                /* If deleted marker, remote */
+                if(r.m.getMarkerSet() == null) {
+                    iter.remove();
+                }
+                else {
+                    /* Get block ID */
+                    int blkid = plugin.getServer().getBlockIDAt(r.wname, r.x, r.y, r.z);
+                    if((blkid >= 0) && (blkid != WALLSIGN_ID) && (blkid != SIGNPOST_ID)) {
+                        r.m.deleteMarker();
+                        iter.remove();
+                    }                    
+                }
+            }
+            MapManager.scheduleDelayedJob(this, 60000);
         }
     }
     private static SignListener sl = null;  /* Do once - /dynmap reload doesn't reset listeners */
@@ -111,8 +174,8 @@ public class MarkerSignManager {
         mgr = new MarkerSignManager();
         if(sl == null) {
             sl = new SignListener();
-            plugin.listenerManager.addListener(EventType.BLOCK_BREAK, sl);
             plugin.listenerManager.addListener(EventType.SIGN_CHANGE, sl);
+            MapManager.scheduleDelayedJob(sl, 60000);
         }
         MarkerSignManager.plugin = plugin;
         return mgr;
@@ -124,4 +187,5 @@ public class MarkerSignManager {
     private static String getSignMarkerID(String wname, int x, int y, int z) {
         return "_sign_" + wname + "_" + x + "_" + y + "_" + z;
     }
+        
 }
