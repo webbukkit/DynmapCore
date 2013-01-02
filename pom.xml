@@ -76,6 +76,10 @@
                						<pattern>org.yaml.snakeyaml</pattern>
                						<shadedPattern>org.dynmap.snakeyaml</shadedPattern>
                					</relocation>
+            					<relocation>
+									<pattern>org.eclipse.jetty</pattern>
+									<shadedPattern>org.dynmap.jetty</shadedPattern>
+								</relocation>
            					</relocations>							
 							<filters>
 <filter>
