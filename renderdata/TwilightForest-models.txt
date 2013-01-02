@@ -27,6 +27,10 @@ patchblock:id=Critter,id=Cicada,id=Moonworm,data=2,patch0=VertX0In@180
 patchblock:id=Critter,id=Cicada,id=Moonworm,data=4,patch0=VertX0In@270
 patchblock:id=Critter,id=Cicada,id=Moonworm,data=6,patch0=HorizY100
 patchblock:id=Critter,id=Cicada,id=Moonworm,data=5,patch0=HorizY100@180/0/0
+ignore-updates:id=Critter,id=Cicada,id=Moonworm,data=*
+
+# Leaves
+ignore-updates:id=Leaves,data=*
 
 # FireflyJar
 patch:id=JarSide,Ox=0.1875,Oy=0.0,Oz=0.0,Ux=0.1875,Uy=0.0,Uz=1.0,Vx=0.1875,Vy=1.0,Vz=0.0,Umin=0.1875,Umax=0.8125,Vmin=0.0,Vmax=0.875,visibility=top

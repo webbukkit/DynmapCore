@@ -117,6 +117,8 @@ public class DynmapCore {
     private File dataDirectory;
     private File tilesDirectory;
     private String plugin_ver;
+    
+    private String[] deftriggers = { };
 
     /* Constructor for core */
     public DynmapCore() {
@@ -150,6 +152,10 @@ public class DynmapCore {
     
     public final MapManager getMapManager() {
         return mapManager;
+    }
+    
+    public final void setTriggerDefault(String[] triggers) {
+        deftriggers = triggers;
     }
     
     public final void setLeafTransparency(boolean trans) {
@@ -378,10 +384,15 @@ public class DynmapCore {
 
         enabledTriggers.clear();
         List<String> triggers = configuration.getStrings("render-triggers", new ArrayList<String>());
-        if (triggers != null)
+        if ((triggers != null) && (triggers.size() > 0)) 
         {
             for (Object trigger : triggers) {
                 enabledTriggers.add((String) trigger);
+            }
+        }
+        else {
+            for (String def : deftriggers) {
+                enabledTriggers.add(def);
             }
         }
         

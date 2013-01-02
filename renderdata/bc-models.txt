@@ -9,6 +9,7 @@ cfgfile:buildcraft/config/buildcraft.cfg
 cfgfile:config/buildcraft/main.conf
 # Pipe
 customblock:id=pipe.id,data=*,class=org.dynmap.hdmap.renderer.FrameRenderer,linkset=pipes,linkid_0=pipe.id,linkid_1=entine.id,linkid_2=tank.id,linkid_3=miningWell.id,linkid_4=quarry.id,linkid_5=autoWorkbench.id,linkid_6=drill.id,linkid_7=filler.id,linkid_8=refinery.id,linkid_9=pump.id,textureIndex=pipeId,textureOffset=256,index0=item_pipeItemsWood.id,index1=item_pipeItemsCobblestone.id,index2=item_pipeItemsStone.id,index3=item_pipeItemsIron.id,index4=item_pipeItemsGold.id,index5=item_pipeItemsDiamond.id,index6=item_pipeItemsObsidian.id,index7=item_pipeItemsSandstone.id,index8=item_pipeItemsVoid.id,index9=item_pipeLiquidsWood.id,index10=item_pipeLiquidsCobblestone.id,index11=item_pipeLiquidsStone.id,index12=item_pipeLiquidsIron.id,index13=item_pipeLiquidsGold.id,index14=item_pipeLiquidsSandstone.id,index15=item_pipeLiquidsVoid.id,index16=item_pipePowerWood.id,index17=item_pipePowerStone.id,index18=item_pipePowerGold.id,index19=item_pipeStructureCobblestone.id
+ignore-updates:id=pipe.id,data=*
 # Frame
 customblock:id=frame.id,data=*,class=org.dynmap.hdmap.renderer.FrameRenderer,linkset=frame,linkid_0=frame.id
 # Drill
@@ -70,3 +71,6 @@ layer:0,1,2,3,4,5,6,7
 -******-
 -******-
 --------
+ignore-updates:id=tank.id,data=*
+# Filler
+ignore-updates:id=filler.id,data=*

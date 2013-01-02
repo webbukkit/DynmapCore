@@ -35,6 +35,7 @@ public class HDBlockModels {
     private static HashMap<Integer, HDBlockModel> models_by_id_data = new HashMap<Integer, HDBlockModel>();
     private static PatchDefinitionFactory pdf = new PatchDefinitionFactory();
     private static BitSet customModelsRequestingTileData = new BitSet(); // Index by 16*id + data
+    private static BitSet changeIgnoredBlocks = new BitSet();   // Index by 16*id + data
 
     public static final int getMaxPatchCount() { return max_patches; }
     public static final PatchDefinitionFactory getPatchDefinitionFactory() { return pdf; }
@@ -57,6 +58,10 @@ public class HDBlockModels {
             return bm.getTextureCount();
         }
         return 6;
+    }
+    
+    public static final boolean isChangeIgnoredBlock(int blkid, int blkdata) {
+        return changeIgnoredBlocks.get((blkid << 4) | blkdata);
     }
     
     private static void resizeTable(int idx) {
@@ -548,6 +553,8 @@ public class HDBlockModels {
         models_by_id_data.clear();
         /* Reset scaled models by scale cache */
         scaled_models_by_scale.clear();
+        /* Reset change-ignored flags */
+        changeIgnoredBlocks.clear();
         
         /* Load block models */
         InputStream in = TexturePack.class.getResourceAsStream("/models.txt");
@@ -786,6 +793,32 @@ public class HDBlockModels {
                                 linkalg[bid] = linktype;
                                 linkmap[bid] = mapids;
                             }
+                        }
+                    }
+                }
+                else if(line.startsWith("ignore-updates:")) {
+                    ArrayList<Integer> blkids = new ArrayList<Integer>();
+                    int blkdat = 0;
+                    line = line.substring(line.indexOf(':')+1);
+                    String[] args = line.split(",");
+                    for(String a : args) {
+                        String[] av = a.split("=");
+                        if(av.length < 2) continue;
+                        if(av[0].equals("id")) {
+                            blkids.add(getIntValue(varvals,av[1]));
+                        }
+                        else if(av[0].equals("data")) {
+                            if(av[1].equals("*"))
+                                blkdat = 0xFFFF;
+                            else
+                                blkdat |= (1 << getIntValue(varvals,av[1]));
+                        }
+                    }
+                    if(blkdat == 0) blkdat = 0xFFFF;
+                    for(Integer id : blkids) {
+                        if(id <= 0) continue;
+                        for(int i = 0; i < 16; i++) {
+                            changeIgnoredBlocks.set(id*16 + i);
                         }
                     }
                 }

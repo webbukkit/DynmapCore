@@ -62,11 +62,10 @@ public class TexturePack {
     private static final String CUSTOMWATERFLOWING_PNG = "custom_water_flowing.png";
     private static final String SWAMPGRASSCOLOR_PNG = "misc/swampgrasscolor.png";
     private static final String SWAMPFOLIAGECOLOR_PNG = "misc/swampfoliagecolor.png";
-    private static final String SIGN_PNG = "item/sign.png";
 
 	private static final String STANDARDTP = "standard";
     /* Color modifier codes (x1000 for value in definition file, x1000000 for internal value) */
-    private static final int COLORMOD_NONE = 0;
+    //private static final int COLORMOD_NONE = 0;
     private static final int COLORMOD_GRASSTONED = 1;
     private static final int COLORMOD_FOLIAGETONED = 2;
     private static final int COLORMOD_WATERTONED = 3;
@@ -82,7 +81,7 @@ public class TexturePack {
     private static final int COLORMOD_PINETONED = 13;
     private static final int COLORMOD_BIRCHTONED = 14;
     private static final int COLORMOD_LILYTONED = 15;
-    private static final int COLORMOD_OLD_WATERSHADED = 16;
+    //private static final int COLORMOD_OLD_WATERSHADED = 16;
     private static final int COLORMOD_MULTTONED = 17;   /* Toned with colorMult or custColorMult - not biome-style */
     private static final int COLORMOD_GRASSTONED270 = 18; // GRASSTONED + ROT270
     private static final int COLORMOD_FOLIAGETONED270 = 19; // FOLIAGETONED + ROT270
