@@ -111,6 +111,9 @@ public class ForgeConfigFile {
             else if(k.startsWith("item/")) {    /* Item codes? */
                 map.put("item_" + k.substring("item/".length()), getBlockID(k));
             }
+            else if(k.startsWith("walls/")) {    /* Walls (Fancy Walls) codes? */
+                map.put(k, getBlockID(k));
+            }
             else if(k.indexOf("/") < 0) {
                 map.put(k, getBlockID(k));
             }
