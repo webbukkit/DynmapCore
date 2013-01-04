@@ -63,4 +63,8 @@ public interface DynmapPlayer extends DynmapCommandSender {
      * @return UTC time (msec) of first login
      */
     public long getFirstLoginTime();
+    /**
+     * Is invisible
+     */
+    public boolean isInvisible();
 }

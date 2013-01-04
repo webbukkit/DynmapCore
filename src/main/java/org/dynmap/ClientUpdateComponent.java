@@ -12,6 +12,7 @@ public class ClientUpdateComponent extends Component {
     private int hideifshadow;
     private int hideifunder;
     private boolean hideifsneaking;
+    private boolean hideifinvisiblepotion;
     private boolean is_protected;
     
     public ClientUpdateComponent(final DynmapCore core, ConfigurationNode configuration) {
@@ -20,6 +21,7 @@ public class ClientUpdateComponent extends Component {
         hideifshadow = configuration.getInteger("hideifshadow", 15);
         hideifunder = configuration.getInteger("hideifundercover", 15);
         hideifsneaking = configuration.getBoolean("hideifsneaking", false);
+        hideifinvisiblepotion = configuration.getBoolean("hide-if-invisiblity-potion", true);
         is_protected = configuration.getBoolean("protected-player-info", false);
         if(is_protected)
             core.player_info_protected = true;
@@ -97,6 +99,9 @@ public class ClientUpdateComponent extends Component {
                 else {
                     hide = true;
                 }
+            }
+            if((!hide) && hideifinvisiblepotion && p.isInvisible()) {
+                hide = true;
             }
                 
             /* Don't leak player location for world not visible on maps, or if sendposition disbaled */
