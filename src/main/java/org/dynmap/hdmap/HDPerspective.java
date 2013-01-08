@@ -6,15 +6,16 @@ import org.dynmap.DynmapChunk;
 import org.dynmap.DynmapWorld;
 import org.dynmap.MapTile;
 import org.dynmap.utils.MapChunkCache;
+import org.dynmap.utils.TileFlags;
 import org.json.simple.JSONObject;
 
 public interface HDPerspective {
     /* Get name of perspective */
     String getName();
     /* Get tiles invalidated by change at given location */
-    MapTile[] getTiles(DynmapWorld w, int x, int y, int z);
+    List<TileFlags.TileCoord> getTileCoords(DynmapWorld w, int x, int y, int z);
     /* Get tiles invalidated by change at given volume, defined by 2 opposite corner locations */
-    MapTile[] getTiles(DynmapWorld w, int minx, int miny, int minz, int maxx, int maxy, int maxz);
+    List<TileFlags.TileCoord> getTileCoords(DynmapWorld w, int minx, int miny, int minz, int maxx, int maxy, int maxz);
     /* Get tiles adjacent to given tile */
     MapTile[] getAdjecentTiles(MapTile tile);
     /* Get chunks needed for given tile */

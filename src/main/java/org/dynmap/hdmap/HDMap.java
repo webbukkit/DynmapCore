@@ -138,6 +138,7 @@ public class HDMap extends MapType {
         this.mapzoomin = configuration.getInteger("mapzoomin", 2);
         this.append_to_world = configuration.getString("append_to_world", "");
         setProtected(configuration.getBoolean("protected", false));
+        setTileUpdateDelay(configuration.getInteger("tileupdatedelay", -1));
     }
 
     public ConfigurationNode saveConfiguration() {
@@ -162,6 +163,9 @@ public class HDMap extends MapType {
             cn.put("backgroundnight", bg_night_cfg);
         cn.put("append_to_world", append_to_world);
         cn.put("protected", isProtected());
+        if(this.tileupdatedelay > 0) {
+            cn.put("tileupdatedelay", this.tileupdatedelay);
+        }
         return cn;
     }
     
@@ -170,13 +174,13 @@ public class HDMap extends MapType {
     public HDLighting getLighting() { return lighting; }
     
     @Override
-    public MapTile[] getTiles(DynmapWorld w, int x, int y, int z) {
-        return perspective.getTiles(w, x, y, z);
+    public List<TileFlags.TileCoord> getTileCoords(DynmapWorld w, int x, int y, int z) {
+        return perspective.getTileCoords(w, x, y, z);
     }
 
     @Override
-    public MapTile[] getTiles(DynmapWorld w, int minx, int miny, int minz, int maxx, int maxy, int maxz) {
-        return perspective.getTiles(w, minx, miny, minz, maxx, maxy, maxz);
+    public List<TileFlags.TileCoord> getTileCoords(DynmapWorld w, int minx, int miny, int minz, int maxx, int maxy, int maxz) {
+        return perspective.getTileCoords(w, minx, miny, minz, maxx, maxy, maxz);
     }
 
     @Override
@@ -464,5 +468,10 @@ public class HDMap extends MapType {
         if("".equals(v)) v = null;
         icon = v;
         return true;
+    }
+
+    @Override
+    public void addMapTiles(List<MapTile> list, DynmapWorld w, int tx, int ty) {
+        list.add(new HDMapTile(w, this.perspective, tx, ty));
     }
 }

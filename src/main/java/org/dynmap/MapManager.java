@@ -44,6 +44,7 @@ public class MapManager {
     private int max_chunk_loads_per_tick = DEFAULT_CHUNKS_PER_TICK;
     private int parallelrendercnt = 0;
     private int progressinterval = 100;
+    private int tileupdatedelay = 30;
     private boolean saverestorepending = true;
     private boolean hideores = false;
     private boolean usenormalpriority = false;
@@ -139,6 +140,10 @@ public class MapManager {
     
     public Collection<String> getDisabledWorlds() {
         return disabled_worlds;
+    }
+
+    public int getDefTileUpdateDelay() {
+        return tileupdatedelay;
     }
 
     private static class OurThreadFactory implements ThreadFactory {
@@ -715,6 +720,7 @@ public class MapManager {
         public void run() {
             Future<Integer> f = core.getServer().callSyncMethod(new Callable<Integer>() {
                 public Integer call() throws Exception {
+                    long now_nsec = System.nanoTime();
                     for(DynmapWorld w : worlds) {
                         int new_servertime = (int)(w.getTime() % 24000);
                         /* Check if we went from night to day */
@@ -723,6 +729,10 @@ public class MapManager {
                         w.servertime = new_servertime;
                         if(wasday != isday) {
                             pushUpdate(w, new Client.DayNight(isday));            
+                        }
+                        /* Tick invalidated tiles processing */
+                        for(MapTypeState mts : w.mapstate) {
+                            mts.tickMapTypeState(now_nsec);
                         }
                     }
                     return 0;
@@ -754,10 +764,40 @@ public class MapManager {
     private class DoTouchProcessing implements Runnable {
         public void run() {
             processTouchEvents();
+            /* Try to keep update queue above accelerate level, if we have enough */
+            int cnt = 2*tileQueue.accelDequeueThresh;
+            if(cnt < 100) cnt = 100;
+            cnt = cnt - tileQueue.size();
+            if(cnt > 0) {
+                addNextTilesToUpdate(cnt);
+            }
             scheduleDelayedJob(this, 1000); /* Once per second */
         }
     }
     
+    private void addNextTilesToUpdate(int cnt) {
+        ArrayList<MapTile> tiles = new ArrayList<MapTile>();
+        TileFlags.TileCoord coord = new TileFlags.TileCoord();
+        while(cnt > 0) {
+            tiles.clear();
+            for(DynmapWorld w : worlds) {
+                for(MapTypeState mts : w.mapstate) {
+                    if(mts.getNextInvalidTileCoord(coord)) {
+                        mts.type.addMapTiles(tiles, w, coord.x, coord.y);
+                        mts.validateTile(coord.x, coord.y);
+                    }
+                }
+            }
+            if(tiles.size() == 0) {
+                return;
+            }
+            for(MapTile mt : tiles) {
+                tileQueue.push(mt);
+                cnt--;
+            }
+        }
+    }
+
     public MapManager(DynmapCore core, ConfigurationNode configuration) {
         this.core = core;
         mapman = this;
@@ -780,6 +820,7 @@ public class MapManager {
         progressinterval = configuration.getInteger("progressloginterval", 100);
         if(progressinterval < 100) progressinterval = 100;
         saverestorepending = configuration.getBoolean("saverestorepending", true);
+        tileupdatedelay = configuration.getInteger("tileupdatedelay", 30);
         
         this.tileQueue = new AsynchronousQueue<MapTile>(
                 new Handler<MapTile>() {
@@ -966,18 +1007,31 @@ public class MapManager {
             ConfigurationNode cn = new ConfigurationNode(f);
             cn.load();
             /* Get the saved tile definitions */
+            int cnt = 0;
             List<ConfigurationNode> tiles = cn.getNodes("tiles");
             if(tiles != null) {
-                int cnt = 0;
                 for(ConfigurationNode tile : tiles) {
                     MapTile mt = MapTile.restoreTile(w, tile);  /* Restore tile, if possible */
                     if(mt != null) {
-                        if(invalidateTile(mt))
+                        if(tileQueue.push(mt)) {
                             cnt++;
+                        }
                     }
                 }
-                if(cnt > 0)
-                    Log.info("Loaded " + cnt + " pending tile renders for world '" + wname);
+            }
+            /* Get invalid tiles */
+            ConfigurationNode invmap = cn.getNode("invalid");
+            if(invmap != null) {
+                for(MapTypeState mts : w.mapstate) {
+                    List<String> v = invmap.getStrings(mts.type.getPrefix(), null);
+                    if(v != null) {
+                        mts.restore(v);
+                        cnt += mts.getInvCount();
+                    }
+                }
+            }
+            if(cnt > 0) {
+                Log.info("Loaded " + cnt + " pending tile renders for world '" + wname);
             }
             /* Get saved render job, if any */
             ConfigurationNode job = cn.getNode("job");
@@ -1017,11 +1071,23 @@ public class MapManager {
                 savedtiles.add(tilenode);
             }
         }
-        if(savedtiles.size() > 0) { /* Something to save? */
+        int cnt = savedtiles.size();
+        if(cnt > 0) { /* Something to save? */
             saved.put("tiles", savedtiles);
             dosave = true;
-            Log.info("Saved " + savedtiles.size() + " pending tile renders in world '" + w.getName());
         }
+        /* Save invalidated tiles */
+        HashMap<String, Object> invalid = new HashMap<String,Object>();
+        for(MapTypeState mts : w.mapstate) {
+            invalid.put(mts.type.getPrefix(), mts.save());
+            cnt += mts.getInvCount();
+        }
+        if(cnt > 0) {
+            saved.put("invalid", invalid);
+            dosave = true;
+            Log.info("Saved " + cnt + " pending tile renders in world '" + w.getName());
+        }
+        
         FullWorldRenderState job = active_renders.remove(w.getName());
         if(job != null) {
             saved.put("job", job.saveState());
@@ -1059,9 +1125,9 @@ public class MapManager {
         }
     }
 
-    public boolean invalidateTile(MapTile tile) {
-        return tileQueue.push(tile);
-    }
+//    public boolean invalidateTile(MapTile tile) {
+//        return tileQueue.push(tile);
+//    }
 
     public static boolean scheduleDelayedJob(Runnable job, long delay_in_msec) {
         if((mapman != null) && (mapman.render_pool != null)) {
@@ -1362,12 +1428,9 @@ public class MapManager {
                     world = getWorld(wname);
                 }
                 if(world == null) continue;
-                for (int i = 0; i < world.maps.size(); i++) {
-                    MapTile[] tiles = world.maps.get(i).getTiles(world, evt.x, evt.y, evt.z);
-                    for (int j = 0; j < tiles.length; j++) {
-                        if(invalidateTile(tiles[j]))
-                            invalidates++;
-                    }
+                for (MapTypeState mts : world.mapstate) {
+                    List<TileFlags.TileCoord> tiles = mts.type.getTileCoords(world, evt.x, evt.y, evt.z);
+                    invalidates += mts.invalidateTiles(tiles);
                 }
                 if(evt.reason != null) {
                     synchronized(lock) {
@@ -1397,12 +1460,9 @@ public class MapManager {
                 }
                 if(world == null) continue;
                 int invalidates = 0;
-                for (int i = 0; i < world.maps.size(); i++) {
-                    MapTile[] tiles = world.maps.get(i).getTiles(world, evt.xmin, evt.ymin, evt.zmin, evt.xmax, evt.ymax, evt.zmax);
-                    for (int j = 0; j < tiles.length; j++) {
-                        if(invalidateTile(tiles[j]))
-                            invalidates++;
-                    }
+                for (MapTypeState mts : world.mapstate) {
+                    List<TileFlags.TileCoord> tiles = mts.type.getTileCoords(world, evt.xmin, evt.ymin, evt.zmin, evt.xmax, evt.ymax, evt.zmax);
+                    invalidates += mts.invalidateTiles(tiles);
                 }
                 if(evt.reason != null) {
                     synchronized(lock) {

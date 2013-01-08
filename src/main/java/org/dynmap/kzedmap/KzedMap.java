@@ -15,6 +15,7 @@ import org.dynmap.Log;
 import org.dynmap.MapTile;
 import org.dynmap.MapType;
 import org.dynmap.utils.MapChunkCache;
+import org.dynmap.utils.TileFlags;
 import org.json.simple.JSONObject;
 
 public class KzedMap extends MapType {
@@ -39,6 +40,7 @@ public class KzedMap extends MapType {
         renderers.toArray(this.renderers);
         Log.verboseinfo("Loaded " + renderers.size() + " renderers for map '" + getClass().toString() + "'.");
         isbigmap = configuration.getBoolean("isbigmap", false);
+        setTileUpdateDelay(configuration.getInteger("tileupdatedelay", -1));
     }
 
     @Override
@@ -46,6 +48,9 @@ public class KzedMap extends MapType {
         ConfigurationNode cn = super.saveConfiguration();
 
         cn.put("isbigmap", isbigmap);
+        if(this.tileupdatedelay > 0) {
+            cn.put("tileupdatedelay", this.tileupdatedelay);
+        }
         ArrayList<Map<String,Object>> rendinfo = new ArrayList<Map<String,Object>>();
         for(int i = 0; i < renderers.length; i++) {
             ConfigurationNode rcn = renderers[i].saveConfiguration();
@@ -55,7 +60,7 @@ public class KzedMap extends MapType {
         return cn;
     }
     @Override
-    public MapTile[] getTiles(DynmapWorld world, int x, int y, int z) {
+    public List<TileFlags.TileCoord> getTileCoords(DynmapWorld world, int x, int y, int z) {
         int dx = x;
         int dy = y - 127;
         int dz = z;
@@ -65,41 +70,41 @@ public class KzedMap extends MapType {
         int tx = tilex(px);
         int ty = tiley(py);
 
-        ArrayList<MapTile> tiles = new ArrayList<MapTile>();
-
-        addTile(tiles, world, tx, ty);
+        ArrayList<TileFlags.TileCoord> tiles = new ArrayList<TileFlags.TileCoord>();
 
         boolean ledge = tilex(px - 4) != tx;
         boolean tedge = tiley(py - 4) != ty;
         boolean redge = tilex(px + 4) != tx;
         boolean bedge = tiley(py + 4) != ty;
 
+        int tilex = tx >> 7;
+        int tiley = ty >> 7; 
+
+        tiles.add(new TileFlags.TileCoord(tilex, tiley));
         if (ledge)
-            addTile(tiles, world, tx - tileWidth, ty);
+            tiles.add(new TileFlags.TileCoord(tilex - 1, tiley));
         if (redge)
-            addTile(tiles, world, tx + tileWidth, ty);
+            tiles.add(new TileFlags.TileCoord(tilex + 1, tiley));
         if (tedge)
-            addTile(tiles, world, tx, ty - tileHeight);
+            tiles.add(new TileFlags.TileCoord(tilex, tiley - 1));
         if (bedge)
-            addTile(tiles, world, tx, ty + tileHeight);
+            tiles.add(new TileFlags.TileCoord(tilex, tiley + 1));
 
         if (ledge && tedge)
-            addTile(tiles, world, tx - tileWidth, ty - tileHeight);
+            tiles.add(new TileFlags.TileCoord(tilex - 1, tiley - 1));
         if (ledge && bedge)
-            addTile(tiles, world, tx - tileWidth, ty + tileHeight);
+            tiles.add(new TileFlags.TileCoord(tilex - 1, tiley + 1));
         if (redge && tedge)
-            addTile(tiles, world, tx + tileWidth, ty - tileHeight);
+            tiles.add(new TileFlags.TileCoord(tilex + 1, tiley - 1));
         if (redge && bedge)
-            addTile(tiles, world, tx + tileWidth, ty + tileHeight);
+            tiles.add(new TileFlags.TileCoord(tilex + 1, tiley + 1));
 
-        MapTile[] result = new MapTile[tiles.size()];
-        tiles.toArray(result);
-        return result;
+        return tiles;
     }
 
     @Override
-    public MapTile[] getTiles(DynmapWorld world, int minx, int miny, int minz, int maxx, int maxy, int maxz) {
-        ArrayList<MapTile> tiles = new ArrayList<MapTile>();
+    public List<TileFlags.TileCoord> getTileCoords(DynmapWorld world, int minx, int miny, int minz, int maxx, int maxy, int maxz) {
+        ArrayList<TileFlags.TileCoord> tiles = new ArrayList<TileFlags.TileCoord>();
         /* Transform both to tile coordinates */
         int dx = minx;
         int dy = miny - 127;
@@ -120,10 +125,10 @@ public class KzedMap extends MapType {
         /* Now, add the tiles for the ranges - not perfect, but it works (some extra tiles on corners possible) */
         for(int i = mintx >> 7; i <= maxtx >> 7; i++) {
             for(int j = minty >> 7; j < maxty >> 7; j++) {
-                addTile(tiles, world, i << 7, j << 7);
+                tiles.add(new TileFlags.TileCoord(i, j));
             }
         }
-        return tiles.toArray(new MapTile[tiles.size()]);
+        return tiles;
     }
 
     @Override
@@ -143,12 +148,6 @@ public class KzedMap extends MapType {
                 new KzedMapTile(world, this, renderer, t.px, t.py + tileHeight) };
         }
         return new MapTile[0];
-    }
-
-    public void addTile(ArrayList<MapTile> tiles, DynmapWorld world, int px, int py) {
-        for (int i = 0; i < renderers.length; i++) {
-            tiles.add(new KzedMapTile(world, this, renderers[i], px, py));
-        }
     }
 
     /**
@@ -345,5 +344,12 @@ public class KzedMap extends MapType {
     @Override
     public String getPrefix() {
         throw new InvalidParameterException("getPrefix not valid on KzedMap");
+    }
+
+    @Override
+    public void addMapTiles(List<MapTile> list, DynmapWorld w, int tx, int ty) {
+        for(int i = 0; i < renderers.length; i++) {
+            list.add(new KzedMapTile(w, this, renderers[i], tx << 7, ty << 7));
+        }
     }
 }

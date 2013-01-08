@@ -1,6 +1,7 @@
 package org.dynmap;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import org.json.simple.JSONObject;
 
 public abstract class MapType {
     private boolean is_protected;
+    protected int tileupdatedelay;
     
     public enum ImageFormat {
         FORMAT_PNG("png", "png", 0.0f),
@@ -48,9 +50,11 @@ public abstract class MapType {
         public ZoomInfo(String pre, int bg) { prefix = pre; background_argb = bg; }
     }
 
-    public abstract MapTile[] getTiles(DynmapWorld w, int x, int y, int z);
+    public abstract void addMapTiles(List<MapTile> list, DynmapWorld w, int tx, int ty);
+    
+    public abstract List<TileFlags.TileCoord> getTileCoords(DynmapWorld w, int x, int y, int z);
 
-    public abstract MapTile[] getTiles(DynmapWorld w, int minx, int miny, int minz, int maxx, int maxy, int maxz);
+    public abstract List<TileFlags.TileCoord> getTileCoords(DynmapWorld w, int minx, int miny, int minz, int maxx, int maxy, int maxz);
 
     public abstract MapTile[] getAdjecentTiles(MapTile tile);
 
@@ -58,7 +62,16 @@ public abstract class MapType {
     
     public void buildClientConfiguration(JSONObject worldObject, DynmapWorld w) {
     }
-    
+
+    public List<MapTile> getTiles(DynmapWorld w, int x, int y, int z) {
+        List<TileFlags.TileCoord> coords = this.getTileCoords(w, x, y, z);
+        ArrayList<MapTile> tiles = new ArrayList<MapTile>();
+        for(TileFlags.TileCoord c : coords) {
+            this.addMapTiles(tiles, w, c.x, c.y);
+        }
+        return tiles;
+    }
+
     public abstract String getName();
 
     /* Get maps rendered concurrently with this map in this world */
@@ -139,4 +152,18 @@ public abstract class MapType {
         return false;
     }
     public abstract String getPrefix();
+    
+    public int getTileUpdateDelay(DynmapWorld w) {
+        if(tileupdatedelay > 0)
+            return tileupdatedelay;
+        else
+            return w.getTileUpdateDelay();
+    }
+    public boolean setTileUpdateDelay(int delay) {
+        if(tileupdatedelay != delay) {
+            tileupdatedelay = delay;
+            return true;
+        }
+        return false;
+    }
 }

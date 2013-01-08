@@ -1432,6 +1432,21 @@ public class DynmapCore {
         }
         return false;
     }
+    public boolean setWorldTileUpdateDelay(String wname, int tud) {
+        wname = DynmapWorld.normalizeWorldName(wname);
+        List<Map<String,Object>> worlds = world_config.getMapList("worlds");
+        for(Map<String,Object> m : worlds) {
+            String wn = (String)m.get("name");
+            if((wn != null) && (wn.equals(wname))) {
+                if(tud > 0)
+                    m.put("tileupdatedelay", tud);
+                else
+                    m.remove("tileupdatedelay");
+                return true;
+            }
+        }
+        return false;
+    }
     public boolean setWorldCenter(String wname, DynmapLocation loc) {
         wname = DynmapWorld.normalizeWorldName(wname);
         List<Map<String,Object>> worlds = world_config.getMapList("worlds");

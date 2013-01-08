@@ -59,6 +59,10 @@ worlds:
   #  bigworld: true
   #  # Number of extra zoom-out levels for world (each level is twice as big as the previous one)
   #  extrazoomout: 3
+  #  # Default delay on processing of updated tiles, in seconds.  This can reduce potentially expensive re-rendering
+  #  # of frequently updated tiles (such as due to machines, pistons, quarries or other automation).  Value can also be set on
+  #  # individual maps.
+  #  tileupdatedelay: 30
   #  maps:
   #    - class: org.dynmap.hdmap.HDMap
   #      name: flat

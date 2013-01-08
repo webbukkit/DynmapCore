@@ -26,6 +26,8 @@ public abstract class DynmapWorld {
         PERMANENT
     }
     public List<MapType> maps = new ArrayList<MapType>();
+    public List<MapTypeState> mapstate = new ArrayList<MapTypeState>();
+    
     public UpdateQueue updates = new UpdateQueue();
     public DynmapLocation center;
     public List<DynmapLocation> seedloc;    /* All seed location - both direct and based on visibility limits */
@@ -49,6 +51,7 @@ public abstract class DynmapWorld {
     private String wname;
     private String raw_wname;
     private String title;
+    public int tileupdatedelay;
     private boolean is_enabled;
     boolean is_protected;   /* If true, user needs 'dynmap.world.<worldid>' privilege to see world */
     
@@ -589,6 +592,13 @@ public abstract class DynmapWorld {
             if(map.getName() != null)
                 maps.add(map);
         }
+        /* Rebuild map state list - match on indexes */
+        mapstate.clear();
+        for(MapType map : maps) {
+            MapTypeState ms = new MapTypeState(map);
+            ms.setInvalidatePeriod(map.getTileUpdateDelay(this));
+            mapstate.add(ms);
+        }
         Log.info("Loaded " + maps.size() + " maps of world '" + wname + "'.");
         
         List<ConfigurationNode> loclist = worldconfig.getNodes("fullrenderlocations");
@@ -600,6 +610,7 @@ public abstract class DynmapWorld {
         bigworld = worldconfig.getBoolean("bigworld", false);
         is_protected = worldconfig.getBoolean("protected", false);
         setExtraZoomOutLevels(worldconfig.getInteger("extrazoomout", 0));
+        setTileUpdateDelay(worldconfig.getInteger("tileupdatedelay", -1));
         worldtilepath = new File(core.getTilesFolder(), wname);
         if(loclist != null) {
             for(ConfigurationNode loc : loclist) {
@@ -670,6 +681,9 @@ public abstract class DynmapWorld {
         node.put("title", getTitle());
         node.put("enabled", is_enabled);
         node.put("protected", is_protected);
+        if(tileupdatedelay > 0) {
+            node.put("tileupdatedelay",  tileupdatedelay);
+        }
         /* Add center */
         if(center != null) {
             ConfigurationNode c = new ConfigurationNode();
@@ -774,5 +788,14 @@ public abstract class DynmapWorld {
     }
     public boolean isProtected() {
         return is_protected;
+    }
+    public int getTileUpdateDelay() {
+        if(tileupdatedelay > 0)
+            return tileupdatedelay;
+        else
+            return MapManager.mapman.getDefTileUpdateDelay();
+    }
+    public void setTileUpdateDelay(int time_sec) {
+        tileupdatedelay = time_sec;
     }
 }

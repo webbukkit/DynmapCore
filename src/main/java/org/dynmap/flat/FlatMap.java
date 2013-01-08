@@ -26,6 +26,7 @@ import org.dynmap.utils.FileLockManager;
 import org.dynmap.utils.MapChunkCache;
 import org.dynmap.utils.MapIterator;
 import org.dynmap.utils.BlockStep;
+import org.dynmap.utils.TileFlags;
 import org.json.simple.JSONObject;
 
 public class FlatMap extends MapType {
@@ -86,6 +87,7 @@ public class FlatMap extends MapType {
         bg_night_cfg = configuration.getString("backgroundnight");
         mapzoomin = configuration.getInteger("mapzoomin", 3);
         setProtected(configuration.getBoolean("protected", false));
+        setTileUpdateDelay(configuration.getInteger("tileupdatedelay", -1));
     }
     
     @Override
@@ -104,6 +106,9 @@ public class FlatMap extends MapType {
         cn.put("night-and-day", night_and_day);
         cn.put("transparency", transparency);
         cn.put("protected", isProtected());
+        if(this.tileupdatedelay > 0) {
+            cn.put("tileupdatedelay", this.tileupdatedelay);
+        }
         String txt = "none";
         if(textured == Texture.DITHER)
             txt = "dither";
@@ -123,19 +128,19 @@ public class FlatMap extends MapType {
     }
 
     @Override
-    public MapTile[] getTiles(DynmapWorld w, int x, int y, int z) {
-        return new MapTile[] { new FlatMapTile(w, this, x>>7, z>>7, 128) };
+    public List<TileFlags.TileCoord> getTileCoords(DynmapWorld w, int x, int y, int z) {
+        return Collections.singletonList(new TileFlags.TileCoord(x>>7, z>>7));
     }
 
     @Override
-    public MapTile[] getTiles(DynmapWorld w, int xmin, int ymin, int zmin, int xmax, int ymax, int zmax) {
-        ArrayList<MapTile> rslt = new ArrayList<MapTile>();
+    public List<TileFlags.TileCoord> getTileCoords(DynmapWorld w, int xmin, int ymin, int zmin, int xmax, int ymax, int zmax) {
+        ArrayList<TileFlags.TileCoord> rslt = new ArrayList<TileFlags.TileCoord>();
         for(int i = xmin; i <= xmax; i++) {
             for(int j = zmin; j < zmax; j++) {
-                rslt.add(new FlatMapTile(w, this, i, j, 128));
+                rslt.add(new TileFlags.TileCoord(i, j));
             }
         }
-        return rslt.toArray(new MapTile[rslt.size()]);
+        return rslt;
     }
     
     @Override
@@ -637,5 +642,10 @@ public class FlatMap extends MapType {
             s(o, "compassview", "S");   /* Always from south */
         s(o, "image-format", ImageFormat.FORMAT_PNG.getFileExt());
         a(worldObject, "maps", o);
+    }
+
+    @Override
+    public void addMapTiles(List<MapTile> list, DynmapWorld w, int tx, int ty) {
+        list.add(new FlatMapTile(w, this, tx, ty, 128));
     }
 }

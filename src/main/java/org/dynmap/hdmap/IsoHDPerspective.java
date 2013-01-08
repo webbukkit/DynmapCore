@@ -37,6 +37,7 @@ import org.dynmap.utils.MapChunkCache;
 import org.dynmap.utils.MapIterator;
 import org.dynmap.utils.Matrix3D;
 import org.dynmap.utils.PatchDefinition;
+import org.dynmap.utils.TileFlags;
 import org.dynmap.utils.Vector3D;
 import org.json.simple.JSONObject;
 
@@ -1176,8 +1177,8 @@ public class IsoHDPerspective implements HDPerspective {
     }   
 
     @Override
-    public MapTile[] getTiles(DynmapWorld world, int x, int y, int z) {
-        HashSet<MapTile> tiles = new HashSet<MapTile>();
+    public List<TileFlags.TileCoord> getTileCoords(DynmapWorld world, int x, int y, int z) {
+        HashSet<TileFlags.TileCoord> tiles = new HashSet<TileFlags.TileCoord>();
         Vector3D block = new Vector3D();
         block.x = x;
         block.y = y;
@@ -1190,8 +1191,7 @@ public class IsoHDPerspective implements HDPerspective {
                 double initz = block.z;
                 for(int k = 0; k < 2; k++) {
                     world_to_map.transform(block, corner);  /* Get map coordinate of corner */
-                    addTile(tiles, world, fastFloor(corner.x/tileWidth), fastFloor(corner.y/tileHeight));
-                    
+                    tiles.add(new TileFlags.TileCoord(fastFloor(corner.x/tileWidth), fastFloor(corner.y/tileHeight)));
                     block.z += 1;
                 }
                 block.z = initz;
@@ -1200,12 +1200,12 @@ public class IsoHDPerspective implements HDPerspective {
             block.y = inity;
             block.x += 1;
         }
-        return tiles.toArray(new MapTile[tiles.size()]);
+        return new ArrayList<TileFlags.TileCoord>(tiles);
     }
 
     @Override
-    public MapTile[] getTiles(DynmapWorld world, int minx, int miny, int minz, int maxx, int maxy, int maxz) {
-        HashSet<MapTile> tiles = new HashSet<MapTile>();
+    public List<TileFlags.TileCoord> getTileCoords(DynmapWorld world, int minx, int miny, int minz, int maxx, int maxy, int maxz) {
+        ArrayList<TileFlags.TileCoord> tiles = new ArrayList<TileFlags.TileCoord>();
         Vector3D blocks[] = new Vector3D[] { new Vector3D(), new Vector3D() };
         blocks[0].x = minx - 1;
         blocks[0].y = miny - 1;
@@ -1240,10 +1240,10 @@ public class IsoHDPerspective implements HDPerspective {
         /* Now, add the tiles for the ranges - not perfect, but it works (some extra tiles on corners possible) */
         for(int i = mintilex; i <= maxtilex; i++) {
             for(int j = mintiley-1; j <= maxtiley; j++) {   /* Extra 1 - TODO: figure out why needed... */ 
-                addTile(tiles, world, i, j);
+                tiles.add(new TileFlags.TileCoord(i, j));
             }
         }
-        return tiles.toArray(new MapTile[tiles.size()]);
+        return tiles;
     }
 
     @Override
@@ -1261,10 +1261,6 @@ public class IsoHDPerspective implements HDPerspective {
             new HDMapTile(w, this, x + 1, y),
             new HDMapTile(w, this, x, y + 1),
             new HDMapTile(w, this, x - 1, y) };
-    }
-
-    public void addTile(HashSet<MapTile> tiles, DynmapWorld world, int tx, int ty) {
-        tiles.add(new HDMapTile(world, this, tx, ty));
     }
 
     private static class Rectangle {

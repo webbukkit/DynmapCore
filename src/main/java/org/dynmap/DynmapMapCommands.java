@@ -92,6 +92,8 @@ public class DynmapMapCommands {
             }
             StringBuilder sb = new StringBuilder();
             sb.append("world ").append(w.getName()).append(": loaded=").append(w.isLoaded()).append(", enabled=").append(w.isEnabled());
+            sb.append(", title=").append(w.getTitle());
+            
             DynmapLocation loc = w.getCenterLocation();
             if(loc != null) {
                 sb.append(", center=").append(loc.x).append("/").append(loc.y).append("/").append(loc.z);
@@ -99,7 +101,9 @@ public class DynmapMapCommands {
             sb.append(", extrazoomout=").append(w.getExtraZoomOutLevels()).append(", sendhealth=").append(w.sendhealth);
             sb.append(", sendposition=").append(w.sendposition);
             sb.append(", protected=").append(w.is_protected);
-            
+            if(w.tileupdatedelay > 0) {
+                sb.append(", tileupdatedelay=").append(w.tileupdatedelay);
+            }
             sender.sendMessage(sb.toString());
         }
         /* Get disabled worlds */
@@ -189,6 +193,17 @@ public class DynmapMapCommands {
                 }
                 did_update |= core.setWorldZoomOut(wname, exo);
             }
+            else if(tok[0].equalsIgnoreCase("tileupdatedelay")) {  /* tileupdatedelay setting */
+                if(w == null) {
+                    sender.sendMessage("Cannot set tileupdatedelay on disabled or undefined world");
+                    return true;
+                }
+                int tud = -1;
+                try {
+                    tud = Integer.valueOf(tok[1]);
+                } catch (NumberFormatException nfx) {}
+                did_update |= core.setWorldTileUpdateDelay(wname, tud);
+            }
             else if(tok[0].equalsIgnoreCase("center")) {    /* Center */
                 if(w == null) {
                     sender.sendMessage("Cannot set center on disabled or undefined world");
@@ -276,6 +291,9 @@ public class DynmapMapCommands {
                 sb.append(", img-format=").append(hdmt.getImageFormatSetting()).append(", icon=").append(hdmt.getIcon());
                 sb.append(", append-to-world=").append(hdmt.getAppendToWorld());
                 sb.append(", protected=").append(hdmt.isProtected());
+                if(hdmt.tileupdatedelay > 0) {
+                    sb.append(", tileupdatedelay=").append(hdmt.tileupdatedelay);
+                }
                 sender.sendMessage(sb.toString());
             }
         }
@@ -473,6 +491,14 @@ public class DynmapMapCommands {
                     return true;
                 }
                 did_update |= mt.setMapZoomIn(mzi);
+            }
+            else if(tok[0].equalsIgnoreCase("tileupdatedelay")) {
+                int tud = -1;
+                try {
+                    tud = Integer.valueOf(tok[1]);
+                } catch (NumberFormatException nfx) {
+                }
+                did_update |= mt.setTileUpdateDelay(tud);
             }
             else if(tok[0].equalsIgnoreCase("perspective")) {
                 if(MapManager.mapman != null) {
