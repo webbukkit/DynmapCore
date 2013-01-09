@@ -64,6 +64,7 @@ public abstract class DynmapWorld {
     protected DynmapWorld(String wname, int worldheight, int sealevel) {
         this.raw_wname = wname;
         this.wname = normalizeWorldName(wname);
+        this.title = wname;
         this.worldheight = worldheight;
         this.sealevel = sealevel;
         int shift;
@@ -579,7 +580,7 @@ public abstract class DynmapWorld {
         if (!is_enabled) {
             return false;
         }
-        title = worldconfig.getString("title", wname);
+        title = worldconfig.getString("title", title);
         ConfigurationNode ctr = worldconfig.getNode("center");
         int mid_y = worldheight/2;
         if(ctr != null)

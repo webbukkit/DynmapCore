@@ -1033,7 +1033,7 @@ public class DynmapCore {
         String wname = world.getName();
         ConfigurationNode finalConfiguration = new ConfigurationNode();
         finalConfiguration.put("name", wname);
-        finalConfiguration.put("title", wname);
+        finalConfiguration.put("title", world.getTitle());
         
         ConfigurationNode worldConfiguration = getWorldConfigurationNode(wname);
         
