@@ -72,7 +72,7 @@ block:id=block.machine.alpha,data=10,face0=218,face1=218,face2=219,face3=220,fac
 # block.machine.alpha:11 - Feed station
 block:id=block.machine.alpha,data=11,face0=234,face1=236,face2=235,face3=235,face4=235,face5=235,txtid=mach
 # block.machine.alpha:12 - Blast Furnace
-block:id=block.machine.alpha,data=12,allface=215,txtid=mach
+block:id=block.machine.alpha,data=12,allfaces=215,txtid=mach
 # block.machine.alpha:13 - Train dispenser
 block:id=block.machine.alpha,data=13,face0=231,face1=231,face2=232,face3=233,face4=232,face5=232,txtid=mach
 # block.machine.alpha:14 - Water tank

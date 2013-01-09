@@ -1,0 +1,25 @@
+# Thermal Expansion Block mapping
+modname:mod_ThermalExpansion,ThermalExpansion
+# Configuration file
+cfgfile:config/cofh/thermalexpansion.cfg
+# Files
+texturefile:id=blk0,filename=thermalexpansion/gfx/block_textures.png,xcount=16,ycount=16
+# Blocks
+# block.factory.machine:0 - Powered Furnace
+block:id=block.factory.machine,data=0,allfaces=16,west=48,bottom=0,txtid=blk0
+# block.factory.machine:1 - Pulverizer
+block:id=block.factory.machine,data=1,allfaces=16,west=49,bottom=0,txtid=blk0
+# block.factory.machine:2 - Sawmill
+block:id=block.factory.machine,data=2,allfaces=16,west=50,bottom=0,txtid=blk0
+# block.factory.machine:3 - Induction Smelter
+block:id=block.factory.machine,data=3,allfaces=16,west=51,bottom=0,txtid=blk0
+# block.factory.machine:4 - Magma Crucible
+block:id=block.factory.machine,data=4,allfaces=16,west=52,bottom=0,txtid=blk0
+# block.factory.machine:5 - Liquid Transposer
+block:id=block.factory.machine,data=5,allfaces=16,west=53,bottom=0,txtid=blk0
+# block.factory.machine:6 - Glacial Precipitator
+block:id=block.factory.machine,data=6,allfaces=16,west=54,bottom=0,txtid=blk0
+# block.factory.machine:7 - Igneous Extruder
+block:id=block.factory.machine,data=7,allfaces=16,west=55,bottom=0,txtid=blk0
+# block.factory.machine:8 - Aqueous Accumulator
+block:id=block.factory.machine,data=8,allfaces=16,west=56,bottom=0,txtid=blk0

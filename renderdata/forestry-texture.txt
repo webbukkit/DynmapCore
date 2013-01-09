@@ -18,9 +18,101 @@ block:id=resources,data=0,allfaces=0,txtid=blk0
 block:id=resources,data=1,allfaces=3,txtid=blk0
 # resources:2 - Tin Ore
 block:id=resources,data=2,allfaces=10,txtid=blk0
-# beehives:0 - Copper Ore
-block:id=beehives,data=0,allfaces=3,txtid=blk0
-# beehives:1 - Forest Beehive
+# beehives:0 - Forest Beehive
 block:id=beehives,data=1,allsides=2,topbottom=5,txtid=blk0
-# beehives:2 - Meadows Beehive
+# beehives:1 - Meadows Beehive
 block:id=beehives,data=2,allsides=4,topbottom=6,txtid=blk0
+# beehives:2 - Sand Beehive
+block:id=beehives,data=3,allsides=7,topbottom=8,txtid=blk0
+# beehives:3 - Jungle Beehive
+block:id=beehives,data=4,allsides=9,topbottom=10,txtid=blk0
+# beehives:4 - End Beehive
+block:id=beehives,data=5,allsides=11,topbottom=12,txtid=blk0
+# beehives:5 - Snow Beehive
+block:id=beehives,data=6,allsides=23,topbottom=24,txtid=blk0
+# beehives:6 - Swamp Beehive
+block:id=beehives,data=7,allsides=28,topbottom=29,txtid=blk0
+#swarmer hive is missing probably data=8
+# harvester:0 - Logger
+block:id=harvester,data=0,allsides=50,topbottom=48,txtid=blk0
+# harvester:1 - Combine
+block:id=harvester,data=1,allsides=34,topbottom=32,txtid=blk0
+# harvester:2 - Rubber Tree Harvester
+block:id=harvester,data=2,allsides=66,topbottom=64,txtid=blk0
+# harvester:3 - Pumpkin Harvester
+block:id=harvester,data=3,allsides=82,topbottom=80,txtid=blk0
+# harvester:4 - Turbary
+block:id=harvester,data=4,allsides=18,topbottom=16,txtid=blk0
+# harvester:5 - Cacti Harvester
+block:id=harvester,data=5,allsides=114,topbottom=112,txtid=blk0
+# harvester:6 - Mushroom Picker
+block:id=harvester,data=6,allsides=130,topbottom=128,txtid=blk0
+# harvester:7 - Sugar Cane Harvester
+block:id=harvester,data=7,allsides=146,topbottom=144,txtid=blk0
+# harvester:8 - Sugar Cane Harvester
+block:id=harvester,data=8,allsides=162,topbottom=160,txtid=blk0
+# glass:0 - White Glass
+block:id=stained,data=0,allsides=191,txtid=blk0
+# glass:1 - Orange Glass
+block:id=stained,data=1,allsides=190,txtid=blk0
+# glass:2 - Magenta Glass
+block:id=stained,data=2,allsides=189,txtid=blk0
+# glass:3 - Light Blue Glass
+block:id=stained,data=3,allsides=188,txtid=blk0
+# glass:4 - Yellow Glass
+block:id=stained,data=4,allsides=187,txtid=blk0
+# glass:5 - Lime Glass
+block:id=stained,data=5,allsides=186,txtid=blk0
+# glass:6 - Pink Glass
+block:id=stained,data=6,allsides=185,txtid=blk0
+# glass:7 - Gray Glass
+block:id=stained,data=7,allsides=184,txtid=blk0
+# glass:8 - Light Gray Glass
+block:id=stained,data=8,allsides=183,txtid=blk0
+# glass:9 - Cyan Glass
+block:id=stained,data=9,allsides=182,txtid=blk0
+# glass:10 - Purple Glass
+block:id=stained,data=10,allsides=181,txtid=blk0
+# glass:11 - Blue Glass
+block:id=stained,data=11,allsides=180,txtid=blk0
+# glass:12 - Brown Glass
+block:id=stained,data=12,allsides=179,txtid=blk0
+# glass:13 - Green Glass
+block:id=stained,data=13,allsides=178,txtid=blk0
+# glass:14 - Red Glass
+block:id=stained,data=14,allsides=177,txtid=blk0
+# glass:15 - Black Glass
+block:id=stained,data=15,allsides=176,txtid=blk0
+# plank names are wrong because I'm lazy
+# planks:0 - White planks
+block:id=planks,data=0,allsides=224,txtid=blk0
+# planks:1 - Orange planks
+block:id=planks,data=1,allsides=225,txtid=blk0
+# planks:2 - Magenta planks
+block:id=planks,data=2,allsides=226,txtid=blk0
+# planks:3 - Light Blue planks
+block:id=planks,data=3,allsides=227,txtid=blk0
+# planks:4 - Yellow planks
+block:id=planks,data=4,allsides=228,txtid=blk0
+# planks:5 - Lime planks
+block:id=planks,data=5,allsides=229,txtid=blk0
+# planks:6 - Pink planks
+block:id=planks,data=6,allsides=230,txtid=blk0
+# planks:7 - Gray planks
+block:id=planks,data=7,allsides=231,txtid=blk0
+# planks:8 - Light Gray planks
+block:id=planks,data=8,allsides=232,txtid=blk0
+# planks:9 - Cyan planks
+block:id=planks,data=9,allsides=233,txtid=blk0
+# planks:10 - Purple planks
+block:id=planks,data=10,allsides=234,txtid=blk0
+# planks:11 - Blue planks
+block:id=planks,data=11,allsides=235,txtid=blk0
+# planks:12 - Brown planks
+block:id=planks,data=12,allsides=236,txtid=blk0
+# planks:13 - Green planks
+block:id=planks,data=13,allsides=237,txtid=blk0
+# planks:14 - Red planks
+block:id=planks,data=14,allsides=238,txtid=blk0
+# planks:15 - Black planks
+block:id=planks,data=15,allsides=239,txtid=blk0
