@@ -588,7 +588,7 @@ public class MapManager {
                     } catch (CancellationException cx) {
                         notdone = false;
                     } catch (ExecutionException xx) {
-                        Log.severe(xx);
+                        Log.severe("Execution exception while processing tile: ", xx.getCause());
                         notdone = false;
                     } catch (InterruptedException ix) {
                         notdone = false;
@@ -742,6 +742,8 @@ public class MapManager {
                 f.get();
             } catch (CancellationException cx) {
                 return;
+            } catch (ExecutionException ex) {
+                Log.severe("Error while checking world times: ", ex.getCause());
             } catch (Exception ix) {
                 Log.severe(ix);
             }
