@@ -1239,6 +1239,12 @@ public class MapManager {
     public void printStats(DynmapCommandSender sender, String prefix) {
         sender.sendMessage("Tile Render Statistics:");
         MapStats tot = new MapStats();
+        int invcnt = 0;
+        for(DynmapWorld dw : this.worlds) {
+            for(MapTypeState mts : dw.mapstate) {
+                invcnt += mts.getInvCount();
+            }
+        }
         synchronized(lock) {
             for(String k: new TreeSet<String>(mapstats.keySet())) {
                 if((prefix != null) && !k.startsWith(prefix))
@@ -1254,7 +1260,7 @@ public class MapManager {
         }
         sender.sendMessage(String.format("  TOTALS: processed=%d, rendered=%d, updated=%d, transparent=%d",
                 tot.loggedcnt, tot.renderedcnt, tot.updatedcnt, tot.transparentcnt));
-        sender.sendMessage(String.format("  Triggered update queue size: %d", tileQueue.size()));
+        sender.sendMessage(String.format("  Triggered update queue size: %d + %d", tileQueue.size(), invcnt));
         String act = "";
         for(String wn : active_renders.keySet())
         	act += wn + " ";

@@ -3,17 +3,18 @@ package org.dynmap.utils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.dynmap.Log;
+
 public class ForgeConfigFile {
     private File cfg;
     private HashMap<String, String> settings = new HashMap<String, String>();
-    public static final String ALLOWED_CHARS = "._-:\"";
+    public static final String ALLOWED_CHARS = "._-:";
 
     public ForgeConfigFile(File cfgfile) {
         cfg = cfgfile;
@@ -30,41 +31,66 @@ public class ForgeConfigFile {
             rdr = new BufferedReader(new InputStreamReader(fis, "UTF-8"));
             String line;
             ArrayList<String> section = new ArrayList<String>();
+            String tok = "";
             while((line = rdr.readLine()) != null) {
-                int nameStart = -1, nameEnd = -1;
                 boolean skip = false;
+                boolean instr = false;
+                boolean intok = false;
 
                 for (int i = 0; i < line.length() && !skip; ++i) {
-                    if (Character.isLetterOrDigit(line.charAt(i)) || ALLOWED_CHARS.indexOf(line.charAt(i)) != -1) {
-                        if (nameStart == -1) {
-                            nameStart = i;
+                    char c = line.charAt(i);
+                    if(instr) {
+                        if(c != '"') {
+                            tok += c;
                         }
-                        nameEnd = i;
+                        else {
+                            instr = false;
+                            intok = false;
+                        }
+                    }
+                    else if(c == '"') {
+                        tok = "";
+                        intok = instr = true;
+                    }
+                    else if(Character.isLetterOrDigit(line.charAt(i)) || ALLOWED_CHARS.indexOf(line.charAt(i)) != -1) {
+                        if(intok) {
+                            tok += c;
+                        }
+                        else {
+                            tok = "" + c;
+                            intok = true;
+                        }
                     }
                     else if (Character.isWhitespace(line.charAt(i))) {
+                        if((!instr) && intok) {
+                            intok = false;
+                        }
                     }
                     else {
                         switch (line.charAt(i)) {
                             case '#':
                                 skip = true;
+                                instr = intok = false;
                                 break;
                             case '{':
-                                section.add(line.substring(nameStart, nameEnd + 1).trim());
+                                if(tok.equals("") == false) {
+                                    section.add(tok);
+                                    tok = "";
+                                    instr = intok = false;
+                                }
                                 break;
                             case '}':
-                                section.remove(section.size()-1);
+                                if(section.size() > 0) {
+                                    section.remove(section.size()-1);
+                                }
                                 break;
                             case '=':
-                                String propertyName = line.substring(nameStart, nameEnd + 1);
+                                intok = instr = false;
+                                String propertyName = tok;
+                                tok = "";
                                 int off = propertyName.indexOf(':');
                                 if(off >= 0) {  /* Trim off the Forge 6.4.1+ type prefix */
                                     propertyName = propertyName.substring(off+1);
-                                }
-                                if(propertyName.charAt(0) == '"') {
-                                    propertyName = propertyName.substring(1);
-                                }
-                                if(propertyName.charAt(propertyName.length()-1) == '"') {
-                                    propertyName = propertyName.substring(0, propertyName.length()-1);
                                 }
                                 propertyName = propertyName.replace(' ', '_');
                                 for(int j = section.size()-1; j >= 0; j--) {
@@ -113,6 +139,9 @@ public class ForgeConfigFile {
             }
             else if(k.startsWith("walls/")) {    /* Walls (Fancy Walls) codes? */
                 map.put(k, getBlockID(k));
+            }
+            else if(k.startsWith("world/blocks/")) {    /* XyCraft world/blocks */
+                map.put(k.substring("world/".length()), getBlockID(k));
             }
             else if(k.indexOf("/") < 0) {
                 map.put(k, getBlockID(k));
