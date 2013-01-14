@@ -680,13 +680,19 @@ public class HDBlockModels {
                     for(String a : args) {
                         String[] av = a.split("=");
                         if(av.length < 2) continue;
-                        if(av[0].equals("id")) { id = getIntValue(varvals,av[1]); }
+                        if(av[0].equals("id")) {
+                            int newid = getIntValue(varvals,av[1]);
+                            if(newid > 0)
+                                id = newid;
+                        }
                         if(av[0].equals("data")) { data = getIntValue(varvals,av[1]); }
                         if(av[0].equals("rot")) { rot = Integer.parseInt(av[1]); }
                     }
                     /* get old model to be rotated */
                     HDBlockModel mod = models_by_id_data.get((id<<4)+data);
-                    if((mod != null) && ((rot%90) == 0) && (mod instanceof HDBlockVolumetricModel)) {
+                    if(modlist.isEmpty()) {
+                    }
+                    else if((mod != null) && ((rot%90) == 0) && (mod instanceof HDBlockVolumetricModel)) {
                         HDBlockVolumetricModel vmod = (HDBlockVolumetricModel)mod;
                         for(int x = 0; x < scale; x++) {
                             for(int y = 0; y < scale; y++) {
@@ -734,7 +740,12 @@ public class HDBlockModels {
                     for(String a : args) {
                         String[] av = a.split("=");
                         if(av.length < 2) continue;
-                        if(av[0].equals("id")) { id = getIntValue(varvals,av[1]); }
+                        if(av[0].equals("id")) {
+                            int newid = getIntValue(varvals,av[1]);
+                            if(newid > 0) {
+                                id = newid;
+                            }
+                        }
                         if(av[0].equals("data")) { data = getIntValue(varvals,av[1]); }
                         if(av[0].equals("rot")) { roty = Integer.parseInt(av[1]); }
                         if(av[0].equals("roty")) { roty = Integer.parseInt(av[1]); }
@@ -743,7 +754,9 @@ public class HDBlockModels {
                     }
                     /* get old model to be rotated */
                     HDBlockModel mod = models_by_id_data.get((id<<4)+data);
-                    if((mod != null) && (mod instanceof HDBlockPatchModel)) {
+                    if(pmodlist.isEmpty()) {
+                    }
+                    else if((mod != null) && (mod instanceof HDBlockPatchModel)) {
                         HDBlockPatchModel pmod = (HDBlockPatchModel)mod;
                         PatchDefinition patches[] = pmod.getPatches();
                         PatchDefinition newpatches[] = new PatchDefinition[patches.length];
