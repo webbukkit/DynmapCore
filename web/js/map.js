@@ -376,7 +376,7 @@ DynMap.prototype = {
 			.hide()
 			.appendTo(container);
 
-		if(dynmapversion != me.options.dynmapversion) {
+		if(dynmapversion != me.options.coreversion) {
 			me.alertbox
 				.text('Web files are not matched with plugin version: All files need to be same version (' + me.options.dynmapversion + ') - try refreshing browser cache (shift-reload)')
 				.show();

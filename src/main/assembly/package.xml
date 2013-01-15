@@ -8,6 +8,19 @@
     <fileSet>
       <directory>${project.basedir}/web</directory>
       <outputDirectory>/web</outputDirectory>
+      <filtered>true</filtered>
+      <includes>
+      	<include>version.js</include>
+      	<include>index.html</include>
+      	<include>login.html</include></includes>
+    </fileSet>
+    <fileSet>
+      <directory>${project.basedir}/web</directory>
+      <outputDirectory>/web</outputDirectory>
+      <excludes>
+      	<exclude>version.js</exclude>
+      	<exclude>index.html</exclude>
+      	<exclude>login.html</exclude></excludes>
     </fileSet>
     <fileSet>
       <directory>${project.basedir}/colorschemes</directory>
