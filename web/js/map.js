@@ -376,7 +376,7 @@ DynMap.prototype = {
 			.hide()
 			.appendTo(container);
 
-		if(dynmapversion != me.options.coreversion) {
+		if((dynmapversion != me.options.coreversion) && (dynmapversion.indexOf("-Dev") < 0)) { // Disable on dev builds
 			me.alertbox
 				.text('Web files are not matched with plugin version: All files need to be same version (' + me.options.dynmapversion + ') - try refreshing browser cache (shift-reload)')
 				.show();
