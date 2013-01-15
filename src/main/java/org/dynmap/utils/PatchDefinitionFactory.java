@@ -94,6 +94,9 @@ public class PatchDefinitionFactory implements RenderPatchFactory {
         PatchDefinition pd = null;
         if(namemap != null) {
             pd = namemap.get(name);
+            if((pd != null) && (textureidx != pd.textureindex)) {
+                pd = null;
+            }
             if(pd == null) {
                 String patchid = name;
                 int txt_idx = -1;

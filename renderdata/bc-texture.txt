@@ -8,9 +8,10 @@ cfgfile:buildcraft/config/buildcraft.cfg
 cfgfile:config/buildcraft/main.conf
 # Files
 texturefile:id=blk,filename=gfx/buildcraft/blocks/blocks.png,xcount=16,ycount=16
-texturefile:id=wood,filename=gfx/buildcraft/blocks/base_wood.png,xcount=4,ycount=2
-texturefile:id=iron,filename=gfx/buildcraft/blocks/base_iron.png,xcount=4,ycount=2
-texturefile:id=stone,filename=gfx/buildcraft/blocks/base_stone.png,xcount=4,ycount=2
+texturefile:id=wood,filename=gfx/buildcraft/blocks/base_wood.png,xcount=4,ycount=2,format=CUSTOM,tile0=16:1/16:16,tile1=32:1/16:16,tile2=0:17/16:4/0:12,tile3=16:17/16:4/0:12,tile4=32:17/16:4/0:12,tile5=48:17/16:4/0:12
+texturefile:id=iron,filename=gfx/buildcraft/blocks/base_iron.png,xcount=4,ycount=2,format=CUSTOM,tile0=16:1/16:16,tile1=32:1/16:16,tile2=0:17/16:4/0:12,tile3=16:17/16:4/0:12,tile4=32:17/16:4/0:12,tile5=48:17/16:4/0:12
+texturefile:id=stone,filename=gfx/buildcraft/blocks/base_stone.png,xcount=4,ycount=2,format=CUSTOM,tile0=16:1/16:16,tile1=32:1/16:16,tile2=0:17/16:4/0:12,tile3=16:17/16:4/0:12,tile4=32:17/16:4/0:12,tile5=48:17/16:4/0:12
+texturefile:id=green,filename=gfx/buildcraft/blocks/trunk_green.png,xcount=4,ycount=2,format=CUSTOM,tile0=9:1/8:8/4:4,tile1=17:1/8:8/4:4,tile2=1:9/8:12/4:0,tile3=9:9/8:12/4:0,tile4=17:9/8:12/4:0,tile5=25:9/8:12/4:0
 # MINING_WELL_ID      = 150
 block:id=miningWell.id,data=2,east=35,top=4036,north=37,south=37,west=38,bottom=38,txtid=blk
 block:id=miningWell.id,data=3,west=35,top=4036,north=37,south=37,east=38,bottom=38,txtid=blk
@@ -53,9 +54,9 @@ block:id=architect.id,data=5,patch0=48,patch1=6051,patch2-4=48,patch5=52,txtid=b
 # FRAME_ID            = 160
 block:id=frame.id,data=*,patch0=34,txtid=blk,transparency=TRANSPARENT
 # ENGINE_ID           = 161
-block:id=engine.id,data=0,north=8004,east=8005,south=8006,west=8007,top=1,bottom=2,txtid=wood
-block:id=engine.id,data=1,north=8004,east=8005,south=8006,west=8007,top=1,bottom=2,txtid=stone
-block:id=engine.id,data=2,north=8004,east=8005,south=8006,west=8007,top=1,bottom=2,txtid=iron
+block:id=engine.id,data=0,patch0=0,patch1=1,patch2=2,patch3=3,patch4=4,patch5=5,patch6=2,patch7=3,patch8=4,patch9=5,patch10=2:green,patch11=3:green,patch12=4:green,patch13=5:green,patch14=0:green,txtid=wood,transparency=TRANSPARENT
+block:id=engine.id,data=1,patch0=0,patch1=1,patch2=2,patch3=3,patch4=4,patch5=5,patch6=2,patch7=3,patch8=4,patch9=5,patch10=2:green,patch11=3:green,patch12=4:green,patch13=5:green,patch14=0:green,txtid=stone,transparency=TRANSPARENT
+block:id=engine.id,data=2,patch0=0,patch1=1,patch2=2,patch3=3,patch4=4,patch5=5,patch6=2,patch7=3,patch8=4,patch9=5,patch10=2:green,patch11=3:green,patch12=4:green,patch13=5:green,patch14=0:green,txtid=iron,transparency=TRANSPARENT
 # OIL_MOVING_ID       = 162
 block:id=oilMoving.id,data=*,allfaces=223,txtid=blk
 # OIL_STILL_ID        = 163

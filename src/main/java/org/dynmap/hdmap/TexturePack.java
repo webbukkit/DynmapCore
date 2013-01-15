@@ -166,8 +166,13 @@ public class TexturePack {
         CHEST,
         BIGCHEST,
         SIGN,
-        SKIN
+        SKIN,
+        CUSTOM
     };
+    
+    private static class CustomTileRec {
+        int srcx, srcy, width, height, targetx, targety;
+    }
     
     private static int next_dynamic_tile = MAX_TILEINDEX+1;
     private static class DynamicTileFile {
@@ -175,6 +180,7 @@ public class TexturePack {
         int tilecnt_x, tilecnt_y;   /* Number of tiles horizontally and vertically */
         int tile_to_dyntile[];      /* Mapping from tile index in tile file to dynamic ID in global tile table (terrain_argb): 0=unassigned */
         TileFileFormat format;
+        List<CustomTileRec> cust;
     }
     private static ArrayList<DynamicTileFile> addonfiles = new ArrayList<DynamicTileFile>();
 
@@ -818,7 +824,24 @@ public class TexturePack {
         makeFaceImage(img, face_top, 8, 0);
         makeFaceImage(img, face_bottom, 16, 0);
     }
-    
+
+    private void patchCustomImages(int img_id, int[] imgids, List<CustomTileRec> recs, int xcnt, int ycnt)
+    {
+        int mult = imgs[img_id].height / (ycnt * 16); /* Compute scale based on nominal tile count vertically (ycnt * 16) */
+        for(int i = 0; i < imgids.length; i++) {
+            if(imgids[i] <= 0) continue;
+            CustomTileRec ctr = recs.get(i);
+            if(ctr == null) continue;
+            int[] tile = new int[16 * 16 * mult * mult];    /* Make image */
+            copySubimageFromImage(img_id, ctr.srcx * mult, ctr.srcy * mult, ctr.targetx * mult, ctr.targety * mult, 
+                    ctr.width * mult, ctr.height * mult, tile, 16 * mult);
+            /* Put scaled result into tile buffer */
+            int new_argb[] = new int[native_scale*native_scale];
+            scaleTerrainPNGSubImage(16*mult, native_scale, tile, new_argb);
+            terrain_argb[imgids[i]] = new_argb;
+        }
+    }
+
     /* Copy texture pack */
     private TexturePack(TexturePack tp) {
         this.terrain_argb = new int[tp.terrain_argb.length][];
@@ -945,7 +968,6 @@ public class TexturePack {
                             scaleTerrainPNGSubImage(dim, native_scale, old_argb, new_argb);
                             terrain_argb[dtf.tile_to_dyntile[y*dtf.tilecnt_x + x]] = new_argb;
                         }
-
                     }
                 }
                 break;
@@ -960,6 +982,9 @@ public class TexturePack {
                 break;
             case SKIN:
                 patchSkinImages(idx+IMG_CNT, dtf.tile_to_dyntile[TILEINDEX_SKIN_FACEFRONT], dtf.tile_to_dyntile[TILEINDEX_SKIN_FACELEFT], dtf.tile_to_dyntile[TILEINDEX_SKIN_FACERIGHT], dtf.tile_to_dyntile[TILEINDEX_SKIN_FACEBACK], dtf.tile_to_dyntile[TILEINDEX_SKIN_FACETOP], dtf.tile_to_dyntile[TILEINDEX_SKIN_FACEBOTTOM]);
+                break;
+            case CUSTOM:
+                patchCustomImages(idx+IMG_CNT, dtf.tile_to_dyntile, dtf.cust, dtf.tilecnt_x, dtf.tilecnt_y);
                 break;
         }
     }
@@ -979,7 +1004,6 @@ public class TexturePack {
         }
         /* All the same - no biome lookup needed */
         if(same) {
-//            imgs[idx].argb = null;
             li.trivial_color = clr;
         }
         else {  /* Else, calculate color average for lower left quadrant */
@@ -1462,7 +1486,7 @@ public class TexturePack {
                     }
                     if((fname != null) && (id != null)) {
                         /* Register the file */
-                        int fid = findOrAddDynamicTileFile(fname, xdim, ydim, fmt);
+                        int fid = findOrAddDynamicTileFile(fname, xdim, ydim, fmt, args);
                         filetoidx.put(id, fid); /* Save lookup */
                     }
                     else {
@@ -1869,9 +1893,10 @@ public class TexturePack {
      * @param xdim
      * @param ydim
      * @param fmt 
+     * @param args
      * @return dynamic file index
      */
-    private static int findOrAddDynamicTileFile(String fname, int xdim, int ydim, TileFileFormat fmt) {
+    private static int findOrAddDynamicTileFile(String fname, int xdim, int ydim, TileFileFormat fmt, String[] args) {
         DynamicTileFile f;
         /* Find existing, if already there */
         for(int i = 0; i < addonfiles.size(); i++) {
@@ -1898,6 +1923,47 @@ public class TexturePack {
                 break;
             case SIGN:
                 f.tile_to_dyntile = new int[TILEINDEX_SIGN_COUNT]; /* 10 images for sign tile */
+                break;
+            case CUSTOM:
+                {
+                    List<CustomTileRec> recs = new ArrayList<CustomTileRec>();
+                    for(String a : args) {
+                        String[] v = a.split("=");
+                        if(v.length != 2) continue;
+                        if(v[0].startsWith("tile")) {
+                            int id = 0;
+                            try {
+                                id = Integer.parseInt(v[0].substring(4));
+                            } catch (NumberFormatException nfx) {
+                                Log.warning("Bad tile ID: " + v[0]);
+                                continue;
+                            }
+                            while(recs.size() <= id) {
+                                recs.add(null);
+                            }
+                            CustomTileRec rec = new CustomTileRec();
+                            try {
+                                String[] coords = v[1].split("/");
+                                String[] topleft = coords[0].split(":");
+                                rec.srcx = Integer.parseInt(topleft[0]);
+                                rec.srcy = Integer.parseInt(topleft[1]);
+                                String[] size = coords[1].split(":");
+                                rec.width = Integer.parseInt(size[0]);
+                                rec.height = Integer.parseInt(size[1]);
+                                if(coords.length >= 3) {
+                                    String[] dest = coords[2].split(":");
+                                    rec.targetx = Integer.parseInt(dest[0]);
+                                    rec.targety = Integer.parseInt(dest[1]);
+                                }
+                                recs.set(id,  rec);
+                            } catch (Exception x) {
+                                Log.warning("Bad custom tile coordinate: " + v[1]);
+                            }
+                        }
+                    }
+                    f.tile_to_dyntile = new int[recs.size()];
+                    f.cust = recs;
+                }
                 break;
         }
         addonfiles.add(f);

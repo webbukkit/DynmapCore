@@ -254,4 +254,8 @@ public class PatchDefinition implements RenderPatch {
     public int hashCode() {
         return hc;
     }
+    @Override
+    public int getTextureIndex() {
+        return textureindex;
+    }
 }
