@@ -1,0 +1,18 @@
+# ExtraBees Block mapping
+modname:mod_ExtraBees,ExtraBees
+# configuration file
+cfgfile:config/forestry/extrabees/main.conf
+
+# Files
+texturefile:id=blk0,filename=gfx/extrabees/extrabees.png,xcount=16,ycount=16
+
+#Hives
+# hive:0 - Water Beehive
+block:id=item_hive,data=0,allsides=0,topbottom=1,txtid=blk0
+# hive:1 - Stone Beehive
+block:id=item_hive,data=1,allsides=2,topbottom=3,txtid=blk0
+# hive:1 - Nether Beehive
+block:id=item_hive,data=2,allsides=4,topbottom=5,txtid=blk0
+# hive:3 - Marble Beehive
+block:id=item_hive,data=3,allsides=6,topbottom=7,txtid=blk0
+

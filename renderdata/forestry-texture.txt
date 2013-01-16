@@ -4,7 +4,7 @@ modname:mod_Forestry,Forestry
 cfgfile:config/forestry/base.conf
 
 # Files
-texturefile:id=blk0,filename=forestry/blocks.png,xcount=16,ycount=16
+texturefile:id=blk0,filename=gfx/forestry/blocks/blocks.png,xcount=16,ycount=16
 # Blocks
 # soil:0,4,8,12 - Humus
 block:id=soil,data=0,data=4,data=8,data=12,allfaces=1,txtid=blk0
@@ -18,21 +18,25 @@ block:id=resources,data=0,allfaces=0,txtid=blk0
 block:id=resources,data=1,allfaces=3,txtid=blk0
 # resources:2 - Tin Ore
 block:id=resources,data=2,allfaces=10,txtid=blk0
-# beehives:0 - Forest Beehive
+
+#Hives
+# beehives:1 - Forest Beehive
 block:id=beehives,data=1,allsides=2,topbottom=5,txtid=blk0
-# beehives:1 - Meadows Beehive
+# beehives:2 - Meadows Beehive
 block:id=beehives,data=2,allsides=4,topbottom=6,txtid=blk0
-# beehives:2 - Sand Beehive
+# beehives:3 - Sand Beehive
 block:id=beehives,data=3,allsides=7,topbottom=8,txtid=blk0
-# beehives:3 - Jungle Beehive
+# beehives:4 - Jungle Beehive
 block:id=beehives,data=4,allsides=9,topbottom=10,txtid=blk0
-# beehives:4 - End Beehive
+# beehives:5 - End Beehive
 block:id=beehives,data=5,allsides=11,topbottom=12,txtid=blk0
-# beehives:5 - Snow Beehive
+# beehives:6 - Snow Beehive
 block:id=beehives,data=6,allsides=23,topbottom=24,txtid=blk0
-# beehives:6 - Swamp Beehive
+# beehives:7 - Swamp Beehive
 block:id=beehives,data=7,allsides=28,topbottom=29,txtid=blk0
-#swarmer hive is missing probably data=8
+# beehives:8 - Swarmer Beehive
+block:id=beehives,data=8,allsides=44,topbottom=45,txtid=blk0
+
 # harvester:0 - Logger
 block:id=harvester,data=0,allsides=50,topbottom=48,txtid=blk0
 # harvester:1 - Combine
@@ -51,6 +55,7 @@ block:id=harvester,data=6,allsides=130,topbottom=128,txtid=blk0
 block:id=harvester,data=7,allsides=146,topbottom=144,txtid=blk0
 # harvester:8 - Sugar Cane Harvester
 block:id=harvester,data=8,allsides=162,topbottom=160,txtid=blk0
+
 # glass:0 - White Glass
 block:id=stained,data=0,allsides=191,txtid=blk0
 # glass:1 - Orange Glass
@@ -83,6 +88,7 @@ block:id=stained,data=13,allsides=178,txtid=blk0
 block:id=stained,data=14,allsides=177,txtid=blk0
 # glass:15 - Black Glass
 block:id=stained,data=15,allsides=176,txtid=blk0
+
 # plank names are wrong because I'm lazy
 # planks:0 - White planks
 block:id=planks,data=0,allsides=224,txtid=blk0
