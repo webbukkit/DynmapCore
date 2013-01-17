@@ -79,8 +79,13 @@ public class RPMicroRenderer extends CustomRenderer {
     * 62 = Stone step top
     * 63 = Pumpkin top/bottom
     * 64 = Rubberwood log top/bottom
+    * 65 =Chiseled Basalt Brick (blockStone:5)
+    * 66 = Basalt Paver (blockStone:6)
+    * 67 = Silver Block (blockStorage:3)
+    * 68 = Tin Block (blockStorage:4)
+    * 69 = Copper Block (blockStorage:5)
     */
-    private static final int NUM_TEXTURES = 65;
+    private static final int NUM_TEXTURES = 70;
 
     /* Texture index = material index in RP */
     private static final int materialTextureMap[][] = {
@@ -141,15 +146,18 @@ public class RPMicroRenderer extends CustomRenderer {
         { 54 }, // 54 = Ruby Block (blockStorage:0)
         { 55 }, // 55 = Emerald Block (blockStorage:1)
         { 56 }, // 56 = Sapphire Block (blockStorage:2)
-        { 0 }, // 57
-        { 0 }, // 58
+        { 65 }, // 57 = Chiseled Basalt Brick (blockStone:5)
+        { 66 }, // 58 = Basalt Paver (blockStone:6)
         { 0 }, // 59
         { 0 }, // 60
         { 0 }, // 61
         { 0 }, // 62
         { 0 }, // 63
         { 60, 60, 57, 57, 57, 57 }, // 64 = Sandstone (sandStone:2)
-        { 61, 61, 58, 58, 58, 58 } // 65 = Wood (wood:3)
+        { 61, 61, 58, 58, 58, 58 }, // 65 = Wood (wood:3)
+        { 67 }, // 66 = Silver Block (blockStorage:3)
+        { 68 }, // 67 = Tin Block (blockStorage:4)
+        { 69 } // 68 = Copper Block (blockStorage:5)
     };
     @Override
     public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {

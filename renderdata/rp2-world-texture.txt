@@ -39,6 +39,10 @@ block:id=world/stone.id,data=2,allfaces=18,txtid=world
 block:id=world/stone.id,data=3,allfaces=19,txtid=world
 # Basalt bricks (world.stone.id,4)
 block:id=world/stone.id,data=4,allfaces=20,txtid=world
+# Carved Basalt bricks (world.stone.id,5)
+block:id=world/stone.id,data=5,allfaces=21,txtid=world
+# Basalt Paver (world.stone.id,6)
+block:id=world/stone.id,data=6,allfaces=22,txtid=world
 
 # Ruby Ore (world.ores.id,0)
 block:id=world/ores.id,data=0,allfaces=32,txtid=world
@@ -66,6 +70,12 @@ block:id=world/storage.id,data=0,allsides=80,topbottom=6080,txtid=world
 block:id=world/storage.id,data=1,allsides=81,topbottom=6081,txtid=world
 # Sapphire Block (world.storage.id,2)
 block:id=world/storage.id,data=2,allsides=82,topbottom=6082,txtid=world
+# Silver Block (world.storage.id,3)
+block:id=world/storage.id,data=3,allsides=83,topbottom=6083,txtid=world
+# Tin Block (world.storage.id,4)
+block:id=world/storage.id,data=4,allsides=84,topbottom=6084,txtid=world
+# Copper Block (world.storage.id,5)
+block:id=world/storage.id,data=5,allsides=85,topbottom=6085,txtid=world
 
 # Rubber log (world.log.id,*)
 block:id=world/log.id,data=*,allsides=50,topbottom=6051,txtid=world
