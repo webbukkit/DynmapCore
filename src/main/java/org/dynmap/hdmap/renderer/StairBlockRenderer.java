@@ -27,6 +27,10 @@ public class StairBlockRenderer extends CustomRenderer {
     // Array of meshes for 1/4 steps - index = (data value & 7), with clockwise quarter clopped from normal step
     private RenderPatch[][] step_1_4_meshes = new RenderPatch[8][];
     
+    private int textsetcnt = 0;
+    private String textindex = null;
+    private String[] tilefields = null;
+    
     @Override
     public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
         if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
@@ -39,15 +43,31 @@ public class StairBlockRenderer extends CustomRenderer {
             step_1_4_meshes[i] = buildCornerStepMeshes(rpf, i);   
             step_3_4_meshes[i] = buildIntCornerStepMeshes(rpf, i);   
         }
-        
+        textindex = custparm.get("textureindex");
+        if(textindex != null) {
+            String cnt = custparm.get("texturecnt");
+            if(cnt != null) 
+                textsetcnt = Integer.parseInt(cnt);
+            else
+                textsetcnt = 16;
+            tilefields = new String[] { textindex };
+        }
         return true;
     }
 
     @Override
     public int getMaximumTextureCount() {
-        return 3;
+        if(textsetcnt == 0)
+            return 3;
+        else 
+            return textsetcnt;
     }
     
+    @Override
+    public String[] getTileEntityFieldsNeeded() {
+        return tilefields;
+    }
+
     private static final int[] patchlist = { TEXTURE_BOTTOM, TEXTURE_TOP, TEXTURE_SIDES, TEXTURE_SIDES, TEXTURE_SIDES, TEXTURE_SIDES };
     
     private void addBox(RenderPatchFactory rpf, List<RenderPatch> list, double xmin, double xmax, double ymin, double ymax, double zmin, double zmax)  {
@@ -162,6 +182,28 @@ public class StairBlockRenderer extends CustomRenderer {
     
     @Override
     public RenderPatch[] getRenderPatchList(MapDataContext ctx) {
+        RenderPatch[] rp = getBaseRenderPatchList(ctx);
+        if(textindex != null) {
+            int idx = 0;
+            Object o = ctx.getBlockTileEntityField(textindex);
+            if(o instanceof Number) {
+                idx = ((Number)o).intValue();
+            }
+            if((idx < 0) || (idx >= textsetcnt)) {
+                idx = 0;
+            }
+            RenderPatch[] rp2 = new RenderPatch[rp.length];
+            for(int i = 0; i < rp.length; i++) {
+                rp2[i] = ctx.getPatchFactory().getRotatedPatch(rp[i], 0, 0, 0, idx);
+            }
+            return rp2;
+        }
+        else {
+            return rp;
+        }
+    }
+    
+    private RenderPatch[] getBaseRenderPatchList(MapDataContext ctx) {
         int data = ctx.getBlockData() & 0x07;   /* Get block data */
         /* Check block behind stair */
         int cornerid = ctx.getBlockTypeIDAt(off_x[data], 0, off_z[data]);
