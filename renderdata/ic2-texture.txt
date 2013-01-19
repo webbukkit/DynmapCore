@@ -118,7 +118,7 @@ block:id=blockAlloyGlass,data=*,allfaces=13,txtid=blk0,transparency=TRANSPARENT
 # blockAlloy=231
 block:id=blockAlloy,data=*,allfaces=12,txtid=blk0
 # blockFenceIron=232
-block:id=blockFenceIron,data=*,allfaces=1,txtid=blk0,transparency=TRANSPARENT
+block:id=blockFenceIron,data=*,patch0-2=1,txtid=blk0,transparency=TRANSPARENT
 # blockReactorChamber=233
 block:id=blockReactorChamber,data=*,bottom=16,top=17,allsides=67,txtid=blk0
 # blockRubber=234

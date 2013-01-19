@@ -141,29 +141,29 @@ block:id=block.ore,data=0,topbottom=6001,allsides=1,txtid=blk0
 block:id=block.ore,data=1,topbottom=6017,allsides=17,txtid=blk0
 
 # block.post:0 - Wood post
-block:id=block.post,data=0,allsides=87,topbottom=6087,txtid=blk0
+block:id=block.post,data=0,patch0-2=87,txtid=blk0
 # block.post:1 - Stone post
-block:id=block.post,data=1,allsides=103,topbottom=6103,txtid=blk0
+block:id=block.post,data=1,patch0-2=103,txtid=blk0
 # block.post:2 - Metal post
-block:id=block.post,data=2,allsides=169,topbottom=6169,txtid=blk0
+block:id=block.post,data=2,patch0-2=169,txtid=blk0
 
 # block.post.metal:0-15 - metal post
-block:id=block.post.metal,data=0,allsides=240,topbottom=6240,txtid=blk0
-block:id=block.post.metal,data=1,allsides=241,topbottom=6241,txtid=blk0
-block:id=block.post.metal,data=2,allsides=242,topbottom=6242,txtid=blk0
-block:id=block.post.metal,data=3,allsides=243,topbottom=6243,txtid=blk0
-block:id=block.post.metal,data=4,allsides=244,topbottom=6244,txtid=blk0
-block:id=block.post.metal,data=5,allsides=245,topbottom=6245,txtid=blk0
-block:id=block.post.metal,data=6,allsides=246,topbottom=6246,txtid=blk0
-block:id=block.post.metal,data=7,allsides=247,topbottom=6247,txtid=blk0
-block:id=block.post.metal,data=8,allsides=248,topbottom=6248,txtid=blk0
-block:id=block.post.metal,data=9,allsides=249,topbottom=6249,txtid=blk0
-block:id=block.post.metal,data=10,allsides=250,topbottom=6250,txtid=blk0
-block:id=block.post.metal,data=11,allsides=251,topbottom=6251,txtid=blk0
-block:id=block.post.metal,data=12,allsides=252,topbottom=6252,txtid=blk0
-block:id=block.post.metal,data=13,allsides=253,topbottom=6253,txtid=blk0
-block:id=block.post.metal,data=14,allsides=254,topbottom=6254,txtid=blk0
-block:id=block.post.metal,data=15,allsides=255,topbottom=6255,txtid=blk0
+block:id=block.post.metal,data=0,patch0-2=240,txtid=blk0
+block:id=block.post.metal,data=1,patch0-2=241,txtid=blk0
+block:id=block.post.metal,data=2,patch0-2=242,txtid=blk0
+block:id=block.post.metal,data=3,patch0-2=243,txtid=blk0
+block:id=block.post.metal,data=4,patch0-2=244,txtid=blk0
+block:id=block.post.metal,data=5,patch0-2=245,txtid=blk0
+block:id=block.post.metal,data=6,patch0-2=246,txtid=blk0
+block:id=block.post.metal,data=7,patch0-2=247,txtid=blk0
+block:id=block.post.metal,data=8,patch0-2=248,txtid=blk0
+block:id=block.post.metal,data=9,patch0-2=249,txtid=blk0
+block:id=block.post.metal,data=10,patch0-2=250,txtid=blk0
+block:id=block.post.metal,data=11,patch0-2=251,txtid=blk0
+block:id=block.post.metal,data=12,patch0-2=252,txtid=blk0
+block:id=block.post.metal,data=13,patch0-2=253,txtid=blk0
+block:id=block.post.metal,data=14,patch0-2=254,txtid=blk0
+block:id=block.post.metal,data=15,patch0-2=255,txtid=blk0
 
 # (block.signal:0) iron post
 block:id=block.signal,data=0,allfaces=169,txtid=blk0,transparency=TRANSPARENT

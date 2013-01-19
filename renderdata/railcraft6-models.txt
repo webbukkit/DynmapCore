@@ -48,44 +48,15 @@ customblock:id=block.track,data=12,class=org.dynmap.hdmap.renderer.RailCraftTrac
 customblock:id=block.track,data=13,class=org.dynmap.hdmap.renderer.RailCraftTrackRenderer,patch=SlopeXUpZTop@90
 
 # Post, Metal Post - set render algorithm
-linkmap:id=block.post,id=block.post.metal,linkalg=1
-
-block:id=block.post,id=block.post.metal,data=0,scale=16
-rotate:id=85,data=0,rot=0
-block:id=block.post,id=block.post.metal,data=1,scale=16
-rotate:id=85,data=1,rot=0
-block:id=block.post,id=block.post.metal,data=2,scale=16
-rotate:id=block.post,data=1,rot=90
-block:id=block.post,id=block.post.metal,data=4,scale=16
-rotate:id=block.post,data=1,rot=180
-block:id=block.post,id=block.post.metal,data=8,scale=16
-rotate:id=block.post,data=1,rot=270
-block:id=block.post,id=block.post.metal,data=3,scale=16
-rotate:id=85,data=3,rot=0
-block:id=block.post,id=block.post.metal,data=6,scale=16
-rotate:id=block.post,data=3,rot=90
-block:id=block.post,id=block.post.metal,data=12,scale=16
-rotate:id=85,data=3,rot=180
-block:id=block.post,id=block.post.metal,data=9,scale=16
-rotate:id=85,data=3,rot=270
-block:id=block.post,id=block.post.metal,data=5,scale=16
-rotate:id=85,data=5,rot=0
-block:id=block.post,id=block.post.metal,id=113,data=10,scale=16
-rotate:id=block.post,data=5,rot=90
-block:id=block.post,id=block.post.metal,data=7,scale=16
-rotate:id=85,data=7,rot=0
-block:id=block.post,id=block.post.metal,data=14,scale=16
-rotate:id=block.post,data=7,rot=90
-block:id=block.post,id=block.post.metal,data=13,scale=16
-rotate:id=block.post,data=7,rot=180
-block:id=block.post,id=block.post.metal,data=11,scale=16
-rotate:id=block.post,data=7,rot=270
-block:id=block.post,id=block.post.metal,data=15,scale=16
-rotate:id=block.post,data=15,rot=0
+customblock:id=block.post,id=block.post.metal,data=*,class=org.dynmap.hdmap.renderer.FenceWallBlockRenderer,type=fence,link0=107
 
 # (block.signal:0) iron post
-block:id=block.signal,data=0,scale=16
-rotate:id=85,data=0,rot=0
+block:id=block.signal,data=0,scale=4
+layer:0,1,2,3
+----
+-**-
+-**-
+----
 # (block.signal:1) dual head block signal
 block:id=block.signal,data=1,scale=16
 layer:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
@@ -216,10 +187,8 @@ layer:5,6,7,8,9,10,11,12,13,14
 ----------------
 ----------------
 # (block.signal:5) wood post
-block:id=block.signal,data=5,scale=16
-rotate:id=85,data=0,rot=0
 # (block.signal:6) stone post
-block:id=block.signal,data=6,scale=16
+block:id=block.signal,data=5,data=6,scale=16
 layer:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
 ----------------
 ----------------

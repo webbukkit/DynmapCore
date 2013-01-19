@@ -379,35 +379,35 @@ block:id=Crystal_Mushroom_ID,data=0,allsides=169,topbottom=6170,txtid=blk0
 block:id=Crystal_Mushroom_ID,data=1,data=2,data=3,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,allfaces=153,txtid=blk0
 
 # Brown Fence (fenceID:0)
-block:id=fenceID,data=0,allsides=38,topbottom=6038,txtid=blk0,transparency=TRANSPARENT
+block:id=fenceID,data=0,patch0-2=38,txtid=blk0,transparency=TRANSPARENT
 # Purple Fence (fenceID:1)
-block:id=fenceID,data=1,allsides=39,topbottom=6039,txtid=blk0,transparency=TRANSPARENT
+block:id=fenceID,data=1,patch0-2=39,txtid=blk0,transparency=TRANSPARENT
 # Dark Red Fence (fenceID:2)
-block:id=fenceID,data=2,allsides=40,topbottom=6040,txtid=blk0,transparency=TRANSPARENT
+block:id=fenceID,data=2,patch0-2=40,txtid=blk0,transparency=TRANSPARENT
 # Dark Yellow Fence (fenceID:3)
-block:id=fenceID,data=3,allsides=41,topbottom=6041,txtid=blk0,transparency=TRANSPARENT
+block:id=fenceID,data=3,patch0-2=41,txtid=blk0,transparency=TRANSPARENT
 # Peach Fence (fenceID:4)
-block:id=fenceID,data=4,allsides=55,topbottom=6055,txtid=blk0,transparency=TRANSPARENT
+block:id=fenceID,data=4,patch0-2=55,txtid=blk0,transparency=TRANSPARENT
 # Orange Fence (fenceID:5)
-block:id=fenceID,data=5,allsides=56,topbottom=6056,txtid=blk0,transparency=TRANSPARENT
+block:id=fenceID,data=5,patch0-2=56,txtid=blk0,transparency=TRANSPARENT
 # Brightwood Fence (fenceID:6)
-block:id=fenceID,data=6,allsides=57,topbottom=6057,txtid=blk0,transparency=TRANSPARENT
+block:id=fenceID,data=6,patch0-2=57,txtid=blk0,transparency=TRANSPARENT
 # Vibrant Redwood Fence (fenceID:7)
-block:id=fenceID,data=7,allsides=58,topbottom=6058,txtid=blk0,transparency=TRANSPARENT
+block:id=fenceID,data=7,patch0-2=58,txtid=blk0,transparency=TRANSPARENT
 # Vibrant Redwood Fence (fenceID:8)
-block:id=fenceID,data=8,allsides=59,topbottom=6059,txtid=blk0,transparency=TRANSPARENT
+block:id=fenceID,data=8,patch0-2=59,txtid=blk0,transparency=TRANSPARENT
 # Bright Yellow Fence (fenceID:9)
-block:id=fenceID,data=9,allsides=60,topbottom=6060,txtid=blk0,transparency=TRANSPARENT
+block:id=fenceID,data=9,patch0-2=60,txtid=blk0,transparency=TRANSPARENT
 # Old Wood Fence (fenceID:10)
-block:id=fenceID,data=10,allsides=61,topbottom=6061,txtid=blk0,transparency=TRANSPARENT
+block:id=fenceID,data=10,patch0-2=61,txtid=blk0,transparency=TRANSPARENT
 # Old Wood Fence (fenceID:11)
-block:id=fenceID,data=11,allsides=180,topbottom=6180,txtid=blk0,transparency=TRANSPARENT
+block:id=fenceID,data=11,patch0-2=180,txtid=blk0,transparency=TRANSPARENT
 # Dried Bamboo Fence (fenceID:12)
-block:id=fenceID,data=12,allsides=181,topbottom=6181,txtid=blk0,transparency=TRANSPARENT
+block:id=fenceID,data=12,patch0-2=181,txtid=blk0,transparency=TRANSPARENT
 # Crystal Fence (fenceID:13)
-block:id=fenceID,data=13,allsides=174,topbottom=6174,txtid=blk0,transparency=TRANSPARENT
+block:id=fenceID,data=13,patch0-2=174,txtid=blk0,transparency=TRANSPARENT
 # Dark Crystal Fence (fenceID:14)
-block:id=fenceID,data=14,allsides=175,topbottom=6175,txtid=blk0,transparency=TRANSPARENT
+block:id=fenceID,data=14,patch0-2=175,txtid=blk0,transparency=TRANSPARENT
 
 # Crystal torch (torchID)
 block:id=torchID,data=*,allsides=167,txtid=blk0,transparency=TRANSPARENT

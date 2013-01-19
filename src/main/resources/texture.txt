@@ -484,7 +484,7 @@ block:id=83,patch0=73,patch1=73,transparency=TRANSPARENT
 # Jukebox
 block:id=84,allsides=74,topbottom=6075
 # Fence
-block:id=85,allsides=4,topbottom=6004,transparency=TRANSPARENT
+block:id=85,patch0-2=4,transparency=TRANSPARENT
 # Pumpkin
 block:id=86,allsides=118,topbottom=6102
 # Netherrock
@@ -614,7 +614,7 @@ block:id=111,patch0=15076,transparency=TRANSPARENT
 # Nether brick
 block:id=112,allsides=224,topbottom=6224
 # Nether brick fence
-block:id=113,allsides=224,topbottom=6224,transparency=TRANSPARENT
+block:id=113,patch0-2=224,transparency=TRANSPARENT
 # Nether brick stairs
 block:id=114,data=*,patch0-2=224,transparency=SEMITRANSPARENT
 # Nether Wart (small)
@@ -691,9 +691,9 @@ block:id=137,data=*,allsides=184,topbottom=6184
 # Beacon
 block:id=138,data=*,patch0-5=12049,patch6-9=37,patch10=6037,patch11-14=41,patch15=6041,transparency=TRANSPARENT
 # Cobblestone wall
-block:id=139,data=0,data=2,data=3,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,patch0-13=16,transparency=TRANSPARENT
+block:id=139,data=0,data=2,data=3,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,patch0-2=16,transparency=TRANSPARENT
 # Mossy cobblestone wall
-block:id=139,data=1,patch0-13=36,transparency=TRANSPARENT
+block:id=139,data=1,patch0-2=36,transparency=TRANSPARENT
 # Flower pot
 block:id=140,data=0,patch0-5=186,patch6=2,transparency=TRANSPARENT
 # Flower pot with Rose

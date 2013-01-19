@@ -181,7 +181,7 @@ block:id=redrockbrickstairs.id,data=*,patch0-2=11,txtid=blk0,transparency=SEMITR
 block:id=redwoodstairs.id,data=*,patch0-2=128,txtid=blk0,transparency=SEMITRANSPARENT
 
 # wall.id
-block:id=wall.id,data=*,patch0-13=2,txtid=blk0,transparency=TRANSPARENT
+block:id=wall.id,data=*,patch0-2=2,txtid=blk0,transparency=TRANSPARENT
 
 # woodslab.id
 block:id=woodslab.id,data=0,allsides=128,topbottom=6128,txtid=blk0,transparency=SEMITRANSPARENT

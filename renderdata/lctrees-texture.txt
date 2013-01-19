@@ -271,27 +271,27 @@ block:id=crystalLeavesID,data=0,allfaces=142,txtid=blk0
 block:id=crystalLeavesID,data=1,allfaces=139,txtid=blk0
 
 # Brown Fence (fenceID:0)
-block:id=fenceID,data=0,allfaces=38,txtid=blk0
+block:id=fenceID,data=0,patch0-2=38,txtid=blk0
 # Purple Fence (fenceID:1)
-block:id=fenceID,data=1,allfaces=39,txtid=blk0
+block:id=fenceID,data=1,patch0-2=39,txtid=blk0
 # Dark Red Fence (fenceID:2)
-block:id=fenceID,data=2,allfaces=40,txtid=blk0
+block:id=fenceID,data=2,patch0-2=40,txtid=blk0
 # Dark Yellow Fence (fenceID:3)
-block:id=fenceID,data=3,allfaces=41,txtid=blk0
+block:id=fenceID,data=3,patch0-2=41,txtid=blk0
 # Peach Fence (fenceID:4)
-block:id=fenceID,data=4,allfaces=55,txtid=blk0
+block:id=fenceID,data=4,patch0-2=55,txtid=blk0
 # Orange Fence (fenceID:5)
-block:id=fenceID,data=5,allfaces=56,txtid=blk0
+block:id=fenceID,data=5,patch0-2=56,txtid=blk0
 # Brightwood Fence (fenceID:6)
-block:id=fenceID,data=6,allfaces=57,txtid=blk0
+block:id=fenceID,data=6,patch0-2=57,txtid=blk0
 # Vibrant Redwood Fence (fenceID:7)
-block:id=fenceID,data=7,allfaces=58,txtid=blk0
+block:id=fenceID,data=7,patch0-2=58,txtid=blk0
 # Vibrant Redwood Fence (fenceID:8)
-block:id=fenceID,data=8,allfaces=59,txtid=blk0
+block:id=fenceID,data=8,patch0-2=59,txtid=blk0
 # Bright Yellow Fence (fenceID:9)
-block:id=fenceID,data=9,allfaces=60,txtid=blk0
+block:id=fenceID,data=9,patch0-2=60,txtid=blk0
 # Old Wood Fence (fenceID:10)
-block:id=fenceID,data=10,allfaces=61,txtid=blk0
+block:id=fenceID,data=10,patch0-2=61,txtid=blk0
 
 # Crystal torch (torchID)
 block:id=torchID,data=*,allsides=167,txtid=blk0

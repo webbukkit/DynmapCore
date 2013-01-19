@@ -33,7 +33,24 @@ patchblock:id=block.track,data=9,patch0=HorizY001ZTop
 
 # (block.structure:0) iron post
 block:id=block.structure,data=0,scale=16
-rotate:id=85,data=0,rot=0
+layer:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
+----------------
+----------------
+----------------
+----------------
+----********----
+----********----
+----********----
+----********----
+----********----
+----********----
+----********----
+----********----
+----------------
+----------------
+----------------
+----------------
+
 # (block.structure:1) dual head block signal
 block:id=block.structure,data=1,scale=16
 layer:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
@@ -164,10 +181,8 @@ layer:5,6,7,8,9,10,11,12,13,14
 ----------------
 ----------------
 # (block.structure:5) wood post
-block:id=block.structure,data=5,scale=16
-rotate:id=85,data=0,rot=0
 # (block.structure:6) stone post
-block:id=block.structure,data=6,scale=16
+block:id=block.structure,data=5,data=6,scale=16
 layer:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
 ----------------
 ----------------
