@@ -60,6 +60,14 @@ texturefile:id=analbase,filename=gfx/forestry/blocks/analyzer_pedestal.png,xcoun
 texturefile:id=analtow1,filename=gfx/forestry/blocks/analyzer_tower1.png,xcount=4,ycount=2,format=CUSTOM,tile0=0:14/14:14/1:1,tile1=14:14/2:14/0:1,tile2=16:14/14:14/1:1,tile3=30:14/2:14/14:1
 texturefile:id=analtow2,filename=gfx/forestry/blocks/analyzer_tower2.png,xcount=4,ycount=2,format=CUSTOM,tile0=0:14/14:14/1:1,tile1=14:14/2:14/14:1,tile2=16:14/14:14/1:1,tile3=30:14/2:14/0:1
 
+texturefile:id=copperengbase,filename=gfx/forestry/blocks/engine_copper_base.png,xcount=4,ycount=2,format=CUSTOM,tile0=16:0/16:16,tile1=32:0/16:16,tile2=0:16/16:5/0:11,tile3=16:16/16:5/0:11,tile4=32:16/16:5/0:11,tile5=48:16/16:5/0:11
+texturefile:id=bronzeengbase,filename=gfx/forestry/blocks/engine_bronze_base.png,xcount=4,ycount=2,format=CUSTOM,tile0=16:0/16:16,tile1=32:0/16:16,tile2=0:16/16:5/0:11,tile3=16:16/16:5/0:11,tile4=32:16/16:5/0:11,tile5=48:16/16:5/0:11
+texturefile:id=tinengbase,filename=gfx/forestry/blocks/engine_tin_base.png,xcount=4,ycount=2,format=CUSTOM,tile0=16:0/16:16,tile1=32:0/16:16,tile2=0:16/16:5/0:11,tile3=16:16/16:5/0:11,tile4=32:16/16:5/0:11,tile5=48:16/16:5/0:11
+texturefile:id=copperengpiston,filename=gfx/forestry/blocks/engine_copper_piston.png,xcount=4,ycount=2,format=CUSTOM,tile0=12:0/12:12/2:2,tile1=24:0/12:12/2:2,tile2=0:12/12:4/2:7,tile3=12:12/12:4/2:7,tile4=24:12/12:4/2:7,tile5=36:12/12:4/2:7
+texturefile:id=bronzeengpiston,filename=gfx/forestry/blocks/engine_bronze_piston.png,xcount=4,ycount=2,format=CUSTOM,tile0=12:0/12:12/2:2,tile1=24:0/12:12/2:2,tile2=0:12/12:4/2:7,tile3=12:12/12:4/2:7,tile4=24:12/12:4/2:7,tile5=36:12/12:4/2:7
+texturefile:id=tinengpiston,filename=gfx/forestry/blocks/engine_tin_piston.png,xcount=4,ycount=2,format=CUSTOM,tile0=12:0/12:12/2:2,tile1=24:0/12:12/2:2,tile2=0:12/12:4/2:7,tile3=12:12/12:4/2:7,tile4=24:12/12:4/2:7,tile5=36:12/12:4/2:7
+texturefile:id=enginetrunk,filename=gfx/forestry/blocks/engine_trunk_medium.png,xcount=4,ycount=2,format=CUSTOM,tile0=8:0/8:8/4:4,tile1=16:0/8:8/4:4,tile2=0:8/8:12/4:0,tile3=8:8/8:12/4:0,tile4=16:8/8:12/4:0,tile5=24:8/8:12/4:0
+
 # Blocks
 # soil:0,4,8,12 - Humus
 block:id=soil,data=0,data=4,data=8,data=12,allsides=1,topbottom=6001,txtid=blk0
@@ -156,6 +164,9 @@ block:id=alveary,data=1,data=2,data=3,data=4,data=5,data=6,data=7,data=8,data=9,
 block:id=candle,data=*,patch0=39,txtid=blk0,transparency=TRANSPARENT
 
 # engine
+block:id=engine,data=0,patch0=0:bronzeengbase,patch1=1:bronzeengbase,patch2=2:bronzeengbase,patch3=3:bronzeengbase,patch4=4:bronzeengbase,patch5=5:bronzeengbase,patch6=1:bronzeengpiston,patch7=2:bronzeengpiston,patch8=3:bronzeengpiston,patch9=4:bronzeengpiston,patch10=5:bronzeengpiston,patch11=1:enginetrunk,patch12=2:enginetrunk,patch13=3:enginetrunk,patch14=4:enginetrunk,patch15=5:enginetrunk,transparency=TRANSPARENT
+block:id=engine,data=1,patch0=0:copperengbase,patch1=1:copperengbase,patch2=2:copperengbase,patch3=3:copperengbase,patch4=4:copperengbase,patch5=5:copperengbase,patch6=1:copperengpiston,patch7=2:copperengpiston,patch8=3:copperengpiston,patch9=4:copperengpiston,patch10=5:copperengpiston,patch11=1:enginetrunk,patch12=2:enginetrunk,patch13=3:enginetrunk,patch14=4:enginetrunk,patch15=5:enginetrunk,transparency=TRANSPARENT
+block:id=engine,data=2,patch0=0:tinengbase,patch1=1:tinengbase,patch2=2:tinengbase,patch3=3:tinengbase,patch4=4:tinengbase,patch5=5:tinengbase,patch6=1:tinengpiston,patch7=2:tinengpiston,patch8=3:tinengpiston,patch9=4:tinengpiston,patch10=5:tinengpiston,patch11=1:enginetrunk,patch12=2:enginetrunk,patch13=3:enginetrunk,patch14=4:enginetrunk,patch15=5:enginetrunk,transparency=TRANSPARENT
 
 # fan
 block:id=fan,data=0,allsides=72,topbottom=6072,txtid=blk0

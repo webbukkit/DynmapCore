@@ -82,3 +82,13 @@ customblock:id=mill,data=0,data=1,data=2,class=org.dynmap.hdmap.renderer.Rotated
 customblock:id=mill,data=3,class=org.dynmap.hdmap.renderer.RotatedPatchRenderer,index=Orientation,patch0=MillBaseBottom,patch1=MillTop,patch2=MillSide,patch3=MillSide@90,patch4=MillSide@180,patch5=MillSide@270,rot2=90/0/270,rot3=270/0/270,rot4=0/0/270,rot5=180/0/270
 customblock:id=mill,data=4,class=org.dynmap.hdmap.renderer.RotatedPatchRenderer,index=Orientation,patch0=MillBaseBottom,patch1=MillBaseTop,patch2=MillBaseSide@90,patch3=MillBaseSide@180,patch4=MillBaseSide@270,patch5=MillBaseSide,patch6=MillBaseBottom@0/0/180,patch7=MillBaseTop@0/0/180,patch8=MillBaseSide@0/90/180,patch9=MillBaseSide@0/180/180,patch10=MillBaseSide@0/270/180,patch11=MillBaseSide@0/0/180,patch12=MillSide,patch13=MillSide2@90,patch14=MillInside,patch15=MillSide2@270,patch16=MillInside@180,patch17=MillSide2@270,patch18=MillSide@180,patch19=MillSide2@90,rot2=180,rot4=90,rot5=270
 customblock:id=mill,data=5,data=6,data=7,class=org.dynmap.hdmap.renderer.RotatedPatchRenderer,index=Orientation,patch0=MillBaseBottom,patch1=MillTop,patch2=MillSide,patch3=MillSide@90,patch4=MillSide@180,patch5=MillSide@270,rot2=90/0/270,rot3=270/0/270,rot4=0/0/270,rot5=180/0/270
+
+# engine
+patch:id=EngineBaseBottom,Ox=0.0,Oy=0.0,Oz=0.0,Ux=1.0,Uy=0.0,Uz=0.0,Vx=0.0,Vy=0.0,Vz=1.0,visibility=top
+patch:id=EngineBaseTop,Ox=0.0,Oy=0.3125,Oz=1.0,Ux=1.0,Uy=0.3125,Uz=1.0,Vx=0.0,Vy=0.3125,Vz=0.0,visibility=top
+patch:id=EngineBaseSide,Ox=0.0,Oy=0.0,Oz=0.0,Ux=0.0,Uy=0.0,Uz=1.0,Vx=0.0,Vy=1.0,Vz=0.0,Vmin=0.0,Vmax=0.3125,visibility=top
+patch:id=EnginePistonTop,Ox=0.0,Oy=0.5625,Oz=1.0,Ux=1.0,Uy=0.5625,Uz=1.0,Vx=0.0,Vy=0.5625,Vz=0.0,visibility=top
+patch:id=EnginePistonSide,Ox=0.125,Oy=0.0,Oz=0.0,Ux=0.125,Uy=0.0,Uz=1.0,Vx=0.125,Vy=1.0,Vz=0.0,visibility=top
+patch:id=EngineTrunkTop,Ox=0.0,Oy=1,0,Oz=1.0,Ux=1.0,Uy=1.0,Uz=1.0,Vx=0.0,Vy=1.0,Vz=0.0,visibility=top
+patch:id=EngineTrunkSide,Ox=0.25,Oy=0.0,Oz=0.0,Ux=0.25,Uy=0.0,Uz=1.0,Vx=0.25,Vy=1.0,Vz=0.0,visibility=top
+customblock:id=engine,data=0,data=1,data=2,class=org.dynmap.hdmap.renderer.RotatedPatchRenderer,index=Orientation,patch0=EngineBaseBottom,patch1=EngineBaseTop,patch2=EngineBaseSide@90,patch3=EngineBaseSide@180,patch4=EngineBaseSide@270,patch5=EngineBaseSide,patch6=EnginePistonTop,patch7=EnginePistonSide@90,patch8=EnginePistonSide@180,patch9=EnginePistonSide@270,patch10=EnginePistonSide,patch11=EngineTrunkTop,patch12=EngineTrunkSide@90,patch13=EngineTrunkSide@180,patch14=EngineTrunkSide@270,patch15=EngineTrunkSide,rot0=180/0/0,rot2=90/0/270,rot3=270/0/270,rot4=0/0/270,rot5=180/0/270
