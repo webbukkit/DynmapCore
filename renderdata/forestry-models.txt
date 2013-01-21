@@ -92,3 +92,12 @@ patch:id=EnginePistonSide,Ox=0.125,Oy=0.0,Oz=0.0,Ux=0.125,Uy=0.0,Uz=1.0,Vx=0.125
 patch:id=EngineTrunkTop,Ox=0.0,Oy=1,0,Oz=1.0,Ux=1.0,Uy=1.0,Uz=1.0,Vx=0.0,Vy=1.0,Vz=0.0,visibility=top
 patch:id=EngineTrunkSide,Ox=0.25,Oy=0.0,Oz=0.0,Ux=0.25,Uy=0.0,Uz=1.0,Vx=0.25,Vy=1.0,Vz=0.0,visibility=top
 customblock:id=engine,data=0,data=1,data=2,class=org.dynmap.hdmap.renderer.RotatedPatchRenderer,index=Orientation,patch0=EngineBaseBottom,patch1=EngineBaseTop,patch2=EngineBaseSide@90,patch3=EngineBaseSide@180,patch4=EngineBaseSide@270,patch5=EngineBaseSide,patch6=EnginePistonTop,patch7=EnginePistonSide@90,patch8=EnginePistonSide@180,patch9=EnginePistonSide@270,patch10=EnginePistonSide,patch11=EngineTrunkTop,patch12=EngineTrunkSide@90,patch13=EngineTrunkSide@180,patch14=EngineTrunkSide@270,patch15=EngineTrunkSide,rot0=180/0/0,rot2=90/0/270,rot3=270/0/270,rot4=0/0/270,rot5=180/0/270
+
+# machine
+patch:id=FactBaseBottom,Ox=0.0,Oy=0.0,Oz=0.0,Ux=1.0,Uy=0.0,Uz=0.0,Vx=0.0,Vy=0.0,Vz=1.0,visibility=top
+patch:id=FactBaseTop,Ox=0.0,Oy=0.25,Oz=1.0,Ux=1.0,Uy=0.25,Uz=1.0,Vx=0.0,Vy=0.25,Vz=0.0,visibility=top
+patch:id=FactBaseSide,Ox=0.0,Oy=0.0,Oz=0.0,Ux=0.0,Uy=0.0,Uz=1.0,Vx=0.0,Vy=1.0,Vz=0.0,visibility=top
+patch:id=FactTankSide,Ox=0.125,Oy=0.0,Oz=0.0,Ux=0.125,Uy=0.0,Uz=1.0,Vx=0.125,Vy=1.0,Vz=0.0,visibility=top
+
+customblock:id=machine,data=0,data=1,data=2,data=3,data=4,data=5,data=6,data=8,data=9,class=org.dynmap.hdmap.renderer.RotatedPatchRenderer,index=Orientation,patch0=FactBaseBottom,patch1=FactBaseTop,patch2=FactBaseSide@90,patch3=FactBaseSide@180,patch4=FactBaseSide@270,patch5=FactBaseSide,patch6=FactBaseBottom@0/0/180,patch7=FactBaseTop@0/0/180,patch8=FactBaseSide@0/90/180,patch9=FactBaseSide@0/180/180,patch10=FactBaseSide@0/270/180,patch11=FactBaseSide@0/0/180,patch12=FactBaseBottom,patch13=FactBaseBottom@180/0/0,patch14=FactTankSide@180,patch15=FactTankSide@270,patch16=FactTankSide,patch17=FactBaseBottom,patch18=FactBaseBottom@180/0/0,patch19=FactTankSide@180/0/0,patch20=FactTankSide@180/90/0,patch21=FactTankSide@180/180/0,rot0=180/0/0,rot2=90/0/270,rot3=270/0/270,rot4=0/0/270,rot5=180/0/270
+customblock:id=machine,data=7,data=11,class=org.dynmap.hdmap.renderer.RotatedPatchRenderer,index=Orientation,patch0=MillBaseBottom,patch1=MillTop,patch2=MillSide,patch3=MillSide@90,patch4=MillSide@180,patch5=MillSide@270,rot2=90/0/270,rot3=270/0/270,rot4=0/0/270,rot5=180/0/270
