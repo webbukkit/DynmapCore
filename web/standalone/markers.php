@@ -32,7 +32,7 @@ if ((!isset($path)) || strstr($path, "..")) {
     exit();
 }
 
-$fname = $tilespath . $path;
+$fname = $markerspath . $path;
 
 $parts = explode("/", $path);
 
