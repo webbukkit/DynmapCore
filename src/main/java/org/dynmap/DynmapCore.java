@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
@@ -731,14 +732,172 @@ public class DynmapCore {
         "ips-for-id",
         "add-id-for-ip",
         "del-id-for-ip",
-        "webregister"}));
+        "webregister",
+        "help"}));
 
+    private static class CommandInfo {
+        final String cmd;
+        final String subcmd;
+        final String args;
+        final String helptext;
+        public CommandInfo(String cmd, String subcmd, String helptxt) {
+            this.cmd = cmd;
+            this.subcmd = subcmd;
+            this.helptext = helptxt;
+            this.args = "";
+        }
+        public CommandInfo(String cmd, String subcmd, String args, String helptxt) {
+            this.cmd = cmd;
+            this.subcmd = subcmd;
+            this.args = args;
+            this.helptext = helptxt;
+        }
+        public boolean matches(String c, String sc) {
+            return (cmd.equals(c) && subcmd.equals(sc));
+        }
+        public boolean matches(String c) {
+            return cmd.equals(c);
+        }
+    };
+    
+    private static final CommandInfo[] commandinfo = {
+        new CommandInfo("dynmap", "", "Control execution of dynmap."),
+        new CommandInfo("dynmap", "hide", "Hides the current player from the map."),
+        new CommandInfo("dynmap", "hide", "<player>", "Hides <player> on the map."),
+        new CommandInfo("dynmap", "show", "Shows the current player on the map."),
+        new CommandInfo("dynmap", "show", "<player>", "Shows <player> on the map."),
+        new CommandInfo("dynmap", "render", "Renders the tile at your location."),
+        new CommandInfo("dynmap", "fullrender", "Render all maps for entire world from your location."),
+        new CommandInfo("dynmap", "fullrender", "<world>", "Render all maps for world <world>."),
+        new CommandInfo("dynmap", "fullrender", "<world>:<map>", "Render map <map> of world'<world>."),
+        new CommandInfo("dynmap", "radiusrender", "<radius>", "Render at least <radius> block radius from your location on all maps."),
+        new CommandInfo("dynmap", "radiusrender", "<radius> <mapname>", "Render at least <radius> block radius from your location on map <mapname>."),
+        new CommandInfo("dynmap", "radiusrender", "<world> <x> <z> <radius>", "Render at least <radius> block radius from location <x>,<z> on world <world>."),
+        new CommandInfo("dynmap", "radiusrender", "<world> <x> <z> <radius> <map>", "Render at least <radius> block radius from location <x>,<z> on world <world> on map <map>."),
+        new CommandInfo("dynmap", "updaterender", "Render updates starting at your location on all maps."),
+        new CommandInfo("dynmap", "updaterender", "<map>", "Render updates starting at your location on map <map>."),
+        new CommandInfo("dynmap", "updaterender", "<world> <x> <z> <map>", "Render updates starting at location <x>,<z> on world <world> for map <map>."),
+        new CommandInfo("dynmap", "cancelrender", "Cancels any active renders on current world."),
+        new CommandInfo("dynmap", "cancelrender", "<world>", "Cancels any active renders of world <world>."),
+        new CommandInfo("dynmap", "stats", "Show render statistics."),
+        new CommandInfo("dynmap", "triggerstats", "Show render update trigger statistics."),
+        new CommandInfo("dynmap", "resetstats", "Reset render statistics."),
+        new CommandInfo("dynmap", "sendtoweb", "<msg>", "Send message <msg> to web users."),
+        new CommandInfo("dynmap", "purgequeue", "Empty all pending tile updates from update queue."),
+        new CommandInfo("dynmap", "pause", "Show render pause state."),
+        new CommandInfo("dynmap", "pause", "<all|none|full|update>", "Set render pause state."),
+        new CommandInfo("dynmap", "ids-for-ip", "<ipaddress>", "Show player IDs that have logged in from address <ipaddress>."),
+        new CommandInfo("dynmap", "ips-for-id", "<player>", "Show IP addresses that have been used for player <player>."),
+        new CommandInfo("dynmap", "add-id-for-ip", "<player> <ipaddress>", "Associate player <player> with IP address <ipaddress>."),
+        new CommandInfo("dynmap", "del-id-for-ip", "<player> <ipaddress>", "Disassociate player <player> from IP address <ipaddress>."),
+        new CommandInfo("dynmap", "webregister", "Start registration process for creating web login account"),
+        new CommandInfo("dynmap", "webregister", "<player>", "Start registration process for creating web login account for player <player>"),
+        new CommandInfo("dmarker", "", "Manipulate map markers."),
+        new CommandInfo("dmarker", "add", "<label>", "Add new marker with label <label> at current location (use double-quotes if spaces needed)."),
+        new CommandInfo("dmarker", "add", "id:<id> <label>", "Add new marker with ID <id> at current location (use double-quotes if spaces needed)."),
+        new CommandInfo("dmarker", "movehere", "<label>", "Move marker with label <label> to current location."),
+        new CommandInfo("dmarker", "movehere", "id:<id>", "Move marker with ID <id> to current location."),
+        new CommandInfo("dmarker", "update", "<label> icon:<icon> newlabel:<newlabel>", "Update marker with ID <id> with new label <newlabel> and new icon <icon>."),
+        new CommandInfo("dmarker", "delete", "<label>", "Delete marker with label of <label>."),
+        new CommandInfo("dmarker", "delete ", "id:<id>", "Delete marker with ID of <id>."),
+        new CommandInfo("dmarker", "list", "List details of all markers."),
+        new CommandInfo("dmarker", "icons", "List details of all icons."),
+        new CommandInfo("dmarker", "addset", "<label>", "Add marker set with label <label>."),
+        new CommandInfo("dmarker", "addset", "id:<id> <label>", "Add marker set with ID <id> and label <label>."),
+        new CommandInfo("dmarker", "updateset", "id:<id> newlabel:<newlabel>", "Update marker set with ID <id> with new label <newlabel>."),
+        new CommandInfo("dmarker", "updateset", "<label> newlabel:<newlabel>", "Update marker set with label <label> to new label <newlabel>."),
+        new CommandInfo("dmarker", "deleteset", "<label>", "Delete marker set with label <label>."),
+        new CommandInfo("dmarker", "deleteset", "id:<id>", "Delete marker set with ID of <id>."),
+        new CommandInfo("dmarker", "listsets", "List all marker sets."),
+        new CommandInfo("dmarker", "addicon", "id:<id> <label> file:<filename>", "Install new icon with ID <id> using image file <filename>"),
+        new CommandInfo("dmarker", "updateicon", "id:<id> newlabel:<newlabel> file:<filename>", "Update existing icon with ID of <id> with new label or file."),
+        new CommandInfo("dmarker", "updateicon", "<label> newlabel:<newlabel> file:<filename>", "Update existing icon with label of <label> with new label or file."),
+        new CommandInfo("dmarker", "deleteicon", "id:<id>", "Remove icon with ID of <id>."),
+        new CommandInfo("dmarker", "deleteicon", "<label>", "Remove icon with label of <label>."),
+        new CommandInfo("dmarker", "addcorner", "Add corner to corner list using current location."),
+        new CommandInfo("dmarker", "addcorner", "<x> <y> <z> <world>", "Add corner with coordinate <x>, <y>, <z> on world <world> to corner list."),
+        new CommandInfo("dmarker", "clearcorners", "Clear corner list."),
+        new CommandInfo("dmarker", "addarea", "<label>", "Add new area marker with label of <label> using current corner list."),
+        new CommandInfo("dmarker", "addarea", "id:<id> <label>", "Add new area marker with ID of <id> using current corner list."),
+        new CommandInfo("dmarker", "deletearea", "<label>", "Delete area marker with label of <label>."),
+        new CommandInfo("dmarker", "deletearea", "id:<id> <label>", "Delete area marker with ID of <id>."),
+        new CommandInfo("dmarker", "listareas", "List details of all area markers."),
+        new CommandInfo("dmarker", "updatearea", "<label> <arg>:<value> ...", "Update attributes of area marker with label of <label>."),
+        new CommandInfo("dmarker", "updatearea", "id:<id> <arg>:<value> ...", "Update attributes of area marker with ID of <id>."),
+        new CommandInfo("dmarker", "addline", "<label>", "Add new poly-line marker with label of <label> using current corner list."),
+        new CommandInfo("dmarker", "addline", "id:<id> <label>", "Add new poly-line marker with ID of <id> using current corner list."),
+        new CommandInfo("dmarker", "deleteline", "<label>", "Delete poly-line marker with label of <label>."),
+        new CommandInfo("dmarker", "deleteline", "id:<id>", "Delete poly-line marker with ID of <id>."),
+        new CommandInfo("dmarker", "listlines", "List details of all poly-line markers."),
+        new CommandInfo("dmarker", "updateline", "<label> <arg>:<value> ...", "Update attributes of poly-line marker with label of <label>."),
+        new CommandInfo("dmarker", "updateline", "id:<id> <arg>:<value> ...", "Update attributes of poly-line marker with ID of <id>."),
+        new CommandInfo("dmarker", "addcircle", "<label> radius:<rad>", "Add new circle centered at current location with radius of <radius> and label of <label>."),
+        new CommandInfo("dmarker", "addcircle", "id:<id> <label> radius:<rad>", "Add new circle centered at current location with radius of <radius> and ID of <id>."),
+        new CommandInfo("dmarker", "addcircle", "<label> radius:<rad> x:<x> y:<y> z:<z> world:<world>", "Add new circle centered at <x>,<y>,<z> on world <world> with radius of <rad> and label of <label>."),
+        new CommandInfo("dmarker", "deletecircle", "<label>", "Delete circle with label of <label>."),
+        new CommandInfo("dmarker", "deletecircle", "id:<id>", "Delete circle with ID of <id>."),
+        new CommandInfo("dmarker", "listcircles", "List details of all circles."),
+        new CommandInfo("dmarker", "updatecircle", "<label> <arg>:<value> ...", "Update attributes of circle with label of <label>."),
+        new CommandInfo("dmarker", "updatecircle", "id:<id> <arg>:<value> ...", "Update attributes of circle with ID of <id>."),
+        new CommandInfo("dmap", "", "List and modify dynmap configuration."),
+        new CommandInfo("dmap", "worldlist", "List all worlds configured (enabled or disabled)."),
+        new CommandInfo("dmap", "worldset", "<world> enabled:<true|false>", "Enable or disable world named <world>."),
+        new CommandInfo("dmap", "worldset", "<world> center:<x/y/z|here|default>", "Set map center for world <world> to ccoordinates <x>,<y>,<z>."),
+        new CommandInfo("dmap", "worldset", "<world> extrazoomout:<N>", "Set extra zoom out levels for world <world>."),
+        new CommandInfo("dmap", "maplist", "<world>", "List all maps for world <world>"),
+        new CommandInfo("dmap", "mapdelete", "<world>:<map>", "Delete map <map> from world <world>."),
+        new CommandInfo("dmap", "mapadd", "<world>:<map> <attrib>:<value> <attrib>:<value>", "Create map for world <world> with name <map> using provided attributes."),
+        new CommandInfo("dmap", "mapset", "<world>:<map> <attrib>:<value> <attrib>:<value>", "Update map <map> of world <world> with new attribute values."),
+        new CommandInfo("dmap", "worldreset", "<world>", "Reset world <world> to default template for world type"),
+        new CommandInfo("dmap", "worldreset", "<world> <templatename>", "Reset world <world> to temaplte <templatename>.")
+    };
+    
+    public void printCommandHelp(DynmapCommandSender sender, String cmd, String subcmd) {
+        boolean matched = false;
+        if((subcmd != null) && (!subcmd.equals(""))) {
+            for(CommandInfo ci : commandinfo) {
+                if(ci.matches(cmd, subcmd)) {
+                    sender.sendMessage(String.format("/%s %s %s - %s", ci.cmd, ci.subcmd, ci.args, ci.helptext));
+                    matched = true;
+                }
+            }
+            if(!matched) {
+                sender.sendMessage("Invalid subcommand: " + subcmd);
+            }
+            else {
+                return;
+            }
+        }
+        for(CommandInfo ci : commandinfo) {
+            if(ci.matches(cmd, "")) {
+                sender.sendMessage(String.format("/%s - %s", ci.cmd, ci.helptext));
+            }
+        }
+        String subcmdlist = " Valid subcommands:";
+        TreeSet<String> ts = new TreeSet<String>();
+        for(CommandInfo ci : commandinfo) {
+            if(ci.matches(cmd)) {
+                ts.add(ci.subcmd);
+            }
+        }
+        for(String sc : ts) {
+            subcmdlist += " " + sc;
+        }
+        sender.sendMessage(subcmdlist);
+    }
+    
     public boolean processCommand(DynmapCommandSender sender, String cmd, String commandLabel, String[] args) {
         if(cmd.equalsIgnoreCase("dmarker")) {
-            return MarkerAPIImpl.onCommand(this, sender, cmd, commandLabel, args);
+            if(!MarkerAPIImpl.onCommand(this, sender, cmd, commandLabel, args)) {
+                printCommandHelp(sender, cmd, (args.length > 0)?args[0]:"");
+            }
+            return true;
         }
         if (cmd.equalsIgnoreCase("dmap")) {
-            return dmapcmds.processCommand(sender, cmd, commandLabel, args, this);
+            if(!dmapcmds.processCommand(sender, cmd, commandLabel, args, this)) {
+                printCommandHelp(sender, cmd, (args.length > 0)?args[0]:"");
+            }
+            return true;
         }
         if (!cmd.equalsIgnoreCase("dynmap"))
             return false;
@@ -748,13 +907,16 @@ public class DynmapCore {
         /* Re-parse args - handle doublequotes */
         args = parseArgs(args, sender);
         
-        if(args == null)
-            return false;
+        if(args == null) {
+            printCommandHelp(sender, cmd, "");
+            return true;
+        }
 
         if (args.length > 0) {
             String c = args[0];
             if (!commands.contains(c)) {
-                return false;
+                printCommandHelp(sender, cmd, "");
+                return true;
             }
 
             if (c.equals("render") && checkPlayerPermission(sender,"render")) {
@@ -984,7 +1146,7 @@ public class DynmapCore {
                         ipaddr = ip.getHostAddress();
                     } catch (UnknownHostException uhx) {
                         sender.sendMessage("Invalid address : " + args[2]);
-                        return false;
+                        return true;
                     }
                     LinkedList<String> ids = ids_by_ip.get(ipaddr);
                     if(ids == null) {
@@ -1010,9 +1172,14 @@ public class DynmapCore {
                 else
                     sender.sendMessage("Login support is not enabled");
             }
+            else if(c.equals("help")) {
+                printCommandHelp(sender, cmd, (args.length > 1)?args[1]:"");
+            }
             return true;
         }
-        return false;
+        printCommandHelp(sender, cmd, (args.length > 0)?args[0]:"");
+
+        return true;
     }
 
     public boolean checkPlayerPermission(DynmapCommandSender sender, String permission) {
