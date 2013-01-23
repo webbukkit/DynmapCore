@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.dynmap.Log;
+import org.dynmap.hdmap.TexturePack;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
 
@@ -145,4 +146,15 @@ public class PatchDefinitionFactory implements RenderPatchFactory {
         }
         return pd;
     }
+
+    @Override
+    public int getTextureIndexFromMap(String id, int key) {
+        return TexturePack.getTextureIndexFromTextureMap(id, key);
+    }
+
+    @Override
+    public int getTextureCountFromMap(String id) {
+        return TexturePack.getTextureMapLength(id);
+    }
+    
 }

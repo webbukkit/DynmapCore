@@ -29,8 +29,14 @@ public class FrameRenderer extends CustomRenderer {
     private int base_index = 0;
     // Texture index map
     private int[] txtIndex;
+    // Texture offset - added to texture key
+    private int txtOffset = 0;
     // Indexing attribute
     private String idx_attrib = null;
+    // Texture map ID, if being used
+    private String map_id = null;
+    // Texture count
+    private int txtCount = 0;
     
     private String[] tileEntityAttribs = null;
 
@@ -86,35 +92,48 @@ public class FrameRenderer extends CustomRenderer {
         /* See if index attribute defined */
         String idx = custparm.get("textureIndex");
         if(idx != null) {
-            int txtoff = 0;
+            txtOffset = 0;
             String txt_off = custparm.get("textureOffset");
             if(txt_off != null) {
-                txtoff = Integer.valueOf(txt_off);
+                txtOffset = Integer.valueOf(txt_off);
             }
             idx_attrib = idx;
-            ArrayList<Integer> map = new ArrayList<Integer>();
-            for(int id = 0; ; id++) {
-                String v = custparm.get("index" + id);
-                if(v == null) break;
-                map.add(Integer.valueOf(v));
+            
+            map_id = custparm.get("textureMap");
+            if(map_id == null) {    /* If no map, indexes are explicit */
+                ArrayList<Integer> map = new ArrayList<Integer>();
+                for(int id = 0; ; id++) {
+                    String v = custparm.get("index" + id);
+                    if(v == null) break;
+                    map.add(Integer.valueOf(v));
+                }
+                txtIndex = new int[map.size()];
+                for(int id = 0; id < txtIndex.length; id++) {
+                    txtIndex[id] = map.get(id).intValue() + txtOffset;
+                }
+                txtCount = txtIndex.length;
             }
-            txtIndex = new int[map.size()];
-            for(int id = 0; id < txtIndex.length; id++) {
-                txtIndex[id] = map.get(id).intValue() + txtoff;
-            }
+            
             tileEntityAttribs = new String[1];
             tileEntityAttribs[0] = idx_attrib;
         }
         else {
             txtIndex = new int[1];
+            txtCount = 1;
         }
         
         return true;
     }
 
     @Override
-    public int getMaximumTextureCount() {
-        return txtIndex.length;
+    public int getMaximumTextureCount(RenderPatchFactory rpf) {
+        if(map_id != null) {
+            if(txtCount == 0) {
+                txtCount = rpf.getTextureCountFromMap(map_id);
+                if(txtCount < 0) txtCount = 0;
+            }
+        }
+        return txtCount;
     }
     
     @Override
@@ -171,15 +190,25 @@ public class FrameRenderer extends CustomRenderer {
     public RenderPatch[] getRenderPatchList(MapDataContext ctx) {
         int textureIdx = 0;
         
+        if((map_id != null) && (txtCount == 0)) {
+            txtCount = ctx.getPatchFactory().getTextureCountFromMap(map_id);
+        }
         /* See if we have texture index */
         if(idx_attrib != null) {
             Object idxv = ctx.getBlockTileEntityField(idx_attrib);
             if(idxv instanceof Number) {
                 int val = ((Number)idxv).intValue();
-                for(int i = 0; i < txtIndex.length; i++) {
-                    if(val == txtIndex[i]) {
-                        textureIdx = i;
-                        break;
+                if(map_id != null) {    /* If texture map, look up value there */
+                    textureIdx = ctx.getPatchFactory().getTextureIndexFromMap(map_id, val - txtOffset);
+                    if(textureIdx < 0)
+                        textureIdx = 0;
+                }
+                else {
+                    for(int i = 0; i < txtIndex.length; i++) {
+                        if(val == txtIndex[i]) {
+                            textureIdx = i;
+                            break;
+                        }
                     }
                 }
             }
@@ -196,7 +225,7 @@ public class FrameRenderer extends CustomRenderer {
         RenderPatch[][] row = models[idx];
         /* If row not found, add it */
         if(row == null) {
-            row = new RenderPatch[txtIndex.length][];
+            row = new RenderPatch[txtCount][];
             models[idx] = row;
         }
         /* If model not found, create it */

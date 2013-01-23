@@ -189,7 +189,7 @@ public class HDBlockModels {
 
         @Override
         public int getTextureCount() {
-            return render.getMaximumTextureCount();
+            return render.getMaximumTextureCount(pdf);
         }
 
         private static final RenderPatch[] empty_list = new RenderPatch[0];

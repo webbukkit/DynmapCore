@@ -66,7 +66,17 @@ block:id=pump.id,data=*,allsides=99,top=4064,bottom=100,txtid=blk
 # TANK_ID             = 165
 block:id=tank.id,data=*,allsides=96,topbottom=98,txtid=blk,transparency=TRANSPARENT
 # GENERIC_PIPE_ID     = 166
-block:id=pipe.id,data=*,patch0=16,patch1=17,patch2=29,patch3=19,patch4=20,patch5=21,patch6=28,patch7=143,patch8=142,patch9=112,patch10=113,patch11=114,patch12=115,patch13=116,patch14=159,patch15=158,patch16=118,patch17=119,patch18=122,patch19=125,txtid=blk,transparency=TRANSPARENT
+texturemap:mapid=PIPES,id=pipe.id,data=*,transparency=TRANSPARENT
+customblock:id=pipe.id,data=*,class=org.dynmap.hdmap.renderer.FrameRenderer,linkset=pipes,linkid_0=pipe.id,linkid_1=entine.id,linkid_2=tank.id,linkid_3=miningWell.id,linkid_4=quarry.id,linkid_5=autoWorkbench.id,linkid_6=drill.id,linkid_7=filler.id,linkid_8=refinery.id,linkid_9=pump.id,textureIndex=pipeId,textureOffset=256,
+index0=item_pipeItemsWood.id,index1=item_pipeItemsCobblestone.id,index2=item_pipeItemsStone.id,index3=item_pipeItemsIron.id,index4=item_pipeItemsGold.id,index5=item_pipeItemsDiamond.id,index6=item_pipeItemsObsidian.id,index7=item_pipeItemsSandstone.id,index8=item_pipeItemsVoid.id,index9=item_pipeLiquidsWood.id,index10=item_pipeLiquidsCobblestone.id,index11=item_pipeLiquidsStone.id,index12=item_pipeLiquidsIron.id,index13=item_pipeLiquidsGold.id,index14=item_pipeLiquidsSandstone.id,index15=item_pipeLiquidsVoid.id,index16=item_pipePowerWood.id,index17=item_pipePowerStone.id,index18=item_pipePowerGold.id,index19=item_pipeStructureCobblestone.id
+addtotexturemap:mapid=PIPES,key:item_pipeItemsWood.id=16,key:item_pipeItemsCobblestone.id=17,key:item_pipeItemsStone.id=29,txtid=blk
+addtotexturemap:mapid=PIPES,key:item_pipeItemsIron.id=19,key:item_pipeItemsGold.id=20,key:item_pipeItemsDiamond.id=21,txtid=blk
+addtotexturemap:mapid=PIPES,key:item_pipeItemsObsidian.id=28,key:item_pipeItemsSandstone.id=143,key:item_pipeItemsVoid.id=142,txtid=blk
+addtotexturemap:mapid=PIPES,key:item_pipeLiquidsWood.id=112,key:item_pipeLiquidsCobblestone.id=113,key:item_pipeLiquidsStone.id=114,txtid=blk
+addtotexturemap:mapid=PIPES,key:item_pipeLiquidsIron.id=115,key:item_pipeLiquidsGold.id=116,key:item_pipeLiquidsSandstone.id=159,txtid=blk
+addtotexturemap:mapid=PIPES,key:item_pipeLiquidsVoid.id=158,key:item_pipePowerWood.id=118,key:item_pipePowerStone.id=119,txtid=blk
+addtotexturemap:mapid=PIPES,key:item_pipePowerGold.id=122,key:item_pipeStructureCobblestone.id=125,txtid=blk
+
 # REFINERY_ID         = 167 - funky texture mapping - just do tank for now
 block:id=refinery.id,data=*,allsides=96,topbottom=98,txtid=blk,transparency=TRANSPARENT
 # DOCKING_STATION_ID  = 168

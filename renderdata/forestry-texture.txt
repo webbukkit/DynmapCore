@@ -8,6 +8,7 @@ var:log1=0,log2=0,log3=0,log4=0,swarmer=0
 
 # configuration file
 cfgfile:config/forestry/base.conf
+cfgfile:config/forestry/pipes.conf
 
 # Files
 texturefile:id=blk0,filename=gfx/forestry/blocks/blocks.png,xcount=16,ycount=16
@@ -111,6 +112,8 @@ texturefile:id=squeezerres,filename=gfx/forestry/blocks/squeezer_tank_resource_e
 texturefile:id=generatorbase,filename=gfx/forestry/blocks/generator_base.png,xcount=4,ycount=2,format=CUSTOM,tile0=16:0/16:16,tile1=32:0/16:16,tile2=0:16/16:4/0:12,tile3=16:16/16:4/0:12,tile4=32:16/16:4/0:12,tile5=48:16/16:4/0:12
 texturefile:id=generatorprod,filename=gfx/forestry/blocks/generator_tank_product_empty.png,xcount=4,ycount=2,format=CUSTOM,tile0=6:0/12:6/2:2,tile1=18:0/12:6/2:8,tile2=0:6/6:16/2:0,tile3=6:6/12:16/2:0,tile4=18:6/6:16/8:0,tile5=24:6/12:16/2:0
 texturefile:id=generatorres,filename=gfx/forestry/blocks/generator_tank_resource_medium.png,xcount=4,ycount=2,format=CUSTOM,tile0=6:0/12:6/2:8,tile1=18:0/12:6/2:2,tile2=0:6/6:16/8:0,tile3=6:6/12:16/2:0,tile4=18:6/6:16/2:0,tile5=24:6/12:16/2:0
+
+texturefile:id=pipe,filename=gfx/forestry/blocks/pipes.png,xcount=16,ycount=16
 
 # Blocks
 # soil:0,4,8,12 - Humus
@@ -411,3 +414,6 @@ block:id=stump,data=*,patch0=40,txtid=blk0,transparency=TRANSPARENT
 # swarmer
 block:id=swarmer,data=0,allsides=55,topbottom=6055,txtid=blk0
 block:id=swarmer,data=1,data=2,data=3,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,allsides=56,topbottom=6056,txtid=blk0
+
+# propolisPipe
+addtotexturemap:mapid=PIPES,key:propolisPipe=0,txtid=pipe

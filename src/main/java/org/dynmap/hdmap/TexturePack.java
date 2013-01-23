@@ -158,6 +158,7 @@ public class TexturePack {
     private static final int TILEINDEX_SKIN_FACEBACK = 3;
     private static final int TILEINDEX_SKIN_FACETOP = 4;
     private static final int TILEINDEX_SKIN_FACEBOTTOM = 5;
+    private static final int TILEINDEX_SKIN_COUNT = 6;
 
     private static final int BLOCKTABLELEN = 256;  /* Enough for normal block IDs */
 
@@ -338,6 +339,95 @@ public class TexturePack {
             }
         }
 
+    }
+    
+    /**
+     * Texture map - used for accumulation of textures from different sources, keyed by lookup value
+     */
+    public static class TextureMap {
+        private Map<Integer, Integer> key_to_index = new HashMap<Integer, Integer>();
+        private List<Integer> texture_ids = new ArrayList<Integer>();
+        private List<Integer> blockids = new ArrayList<Integer>();
+        private int databits = 0;
+        private BlockTransparency trans = BlockTransparency.OPAQUE;
+        private boolean userender = false;
+        private int colorMult = 0;
+        private CustomColorMultiplier custColorMult = null;
+        private String blockset;
+
+        public int addTextureByKey(int key, int textureid) {
+            int off = texture_ids.size();   /* Next index in array is texture index */
+            texture_ids.add(textureid); /* Add texture ID to list */
+            key_to_index.put(key, off);   /* Add texture index to lookup by key */
+            return off;
+        }
+    }
+    private static HashMap<String, TextureMap> textmap_by_id = new HashMap<String, TextureMap>();
+    
+    /**
+     * Add texture to texture map
+     */
+    private static int addTextureByKey(String id, int key, int textureid) {
+        TextureMap idx = textmap_by_id.get(id);
+        if(idx == null) {   /* Add empty one, if not found */
+            idx = new TextureMap();
+            textmap_by_id.put(id,  idx);
+        }
+        return idx.addTextureByKey(key, textureid);
+    }
+    /**
+     * Add settings for texture map
+     */
+    private static void addTextureIndex(String id, List<Integer> blockids, int databits, BlockTransparency trans, boolean userender, int colorMult, CustomColorMultiplier custColorMult, String blockset) {
+        TextureMap idx = textmap_by_id.get(id);
+        if(idx == null) {   /* Add empty one, if not found */
+            idx = new TextureMap();
+            textmap_by_id.put(id,  idx);
+        }
+        idx.blockids = blockids;
+        idx.databits = databits;
+        idx.trans = trans;
+        idx.userender = userender;
+        idx.colorMult = colorMult;
+        idx.custColorMult = custColorMult;
+    }
+    /**
+     * Finish processing of texture indexes - add to texture maps
+     */
+    private static void processTextureMaps() {
+        for(TextureMap ti : textmap_by_id.values()) {
+            if(ti.blockids.isEmpty()) continue;
+            int[] txtids = new int[ti.texture_ids.size()];
+            for(int i = 0; i < txtids.length; i++) {
+                txtids[i] = ti.texture_ids.get(i).intValue();
+            }
+            HDTextureMap map = new HDTextureMap(ti.blockids, ti.databits, txtids, ti.trans, ti.userender, ti.colorMult, ti.custColorMult, ti.blockset);
+            map.addToTable();
+        }
+    }
+    /**
+     * Get index of texture in texture map
+     */
+    public static int getTextureIndexFromTextureMap(String id, int key) {
+        int idx = -1;
+        TextureMap map = textmap_by_id.get(id);
+        if(map != null) {
+            Integer txtidx = map.key_to_index.get(key);
+            if(txtidx != null) {
+                idx = txtidx.intValue();
+            }
+        }
+        return idx;
+    }
+    /*
+     * Get count of textures in given texture map
+     */
+    public static int getTextureMapLength(String id) {
+        TextureMap map = textmap_by_id.get(id);
+        if(map != null) {
+            return map.texture_ids.size();
+        }
+        return -1;
     }
     /** Get or load texture pack */
     public static TexturePack getTexturePack(DynmapCore core, String tpname) {
@@ -1090,10 +1180,10 @@ public class TexturePack {
                 }
             }
             /* Now, use weights and indices to fill in scaled map */
-            for(int y = 0, off = 0; y < res; y++) {
+            for(int y = 0; y < res; y++) {
                 int ind_y = offsets[y];
                 int wgt_y = weights[y];
-                for(int x = 0; x < res; x++, off++) {
+                for(int x = 0; x < res; x++) {
                     int ind_x = offsets[x];
                     int wgt_x = weights[x];
                     double accum_red = 0;
@@ -1233,6 +1323,8 @@ public class TexturePack {
                 }
             }
         }
+        /* Finish processing of texture maps */
+        processTextureMaps();
         /* Check integrity of texture mappings versus models */
         for(int blkiddata = 0; blkiddata < HDTextureMap.texmaps.length; blkiddata++) {
             int blkid = (blkiddata >> 4);
@@ -1455,6 +1547,108 @@ public class TexturePack {
                     }
                     else {
                         Log.severe("Texture mapping missing required parameters = line " + rdr.getLineNumber() + " of " + txtname);
+                    }
+                }
+                else if(line.startsWith("addtotexturemap:")) {
+                    int srctxtid = -1;
+                    String mapid = null;
+                    line = line.substring(line.indexOf(':') + 1);
+                    String[] args = line.split(",");
+                    for(String a : args) {
+                        String[] av = a.split("=");
+                        if(av.length < 2) continue;
+                        else if(av[0].equals("txtid")) {
+                            if(filetoidx.containsKey(av[1]))
+                                srctxtid = filetoidx.get(av[1]);
+                            else
+                                Log.severe("Format error - line " + rdr.getLineNumber() + " of " + txtname);
+                        }
+                        else if(av[0].equals("mapid")) {
+                            mapid = av[1];
+                        }
+                    }
+                    if(mapid != null) {
+                        for(String a : args) {
+                            String[] av = a.split("=");
+                            if(av.length < 2) continue;
+                            if(av[0].startsWith("key:")) {
+                                addTextureByKey(mapid, getIntValue(varvals, av[0].substring(4)), 
+                                        parseTextureIndex(filetoidx, srctxtid, av[1]));
+                            }
+                        }
+                    }
+                    else {
+                        Log.severe("Missing mapid  - line " + rdr.getLineNumber() + " of " + txtname);
+                    }
+                }
+                else if(line.startsWith("texturemap:")) {
+                    ArrayList<Integer> blkids = new ArrayList<Integer>();
+                    int databits = -1;
+                    int srctxtid = -1;
+                    String mapid = null;
+                    line = line.substring(line.indexOf(':') + 1);
+                    BlockTransparency trans = BlockTransparency.OPAQUE;
+                    int colorMult = 0;
+                    CustomColorMultiplier custColorMult = null;
+                    String[] args = line.split(",");
+                    boolean userenderdata = false;
+                    for(String a : args) {
+                        String[] av = a.split("=");
+                        if(av.length < 2) continue;
+                        if(av[0].equals("id")) {
+                            blkids.add(getIntValue(varvals, av[1]));
+                        }
+                        else if(av[0].equals("mapid")) {
+                            mapid = av[1];
+                        }
+                        else if(av[0].equals("data")) {
+                            if(databits < 0) databits = 0;
+                            if(av[1].equals("*"))
+                                databits = 0xFFFF;
+                            else
+                                databits |= (1 << getIntValue(varvals,av[1]));
+                        }
+                        else if(av[0].equals("transparency")) {
+                            trans = BlockTransparency.valueOf(av[1]);
+                            if(trans == null) {
+                                trans = BlockTransparency.OPAQUE;
+                                Log.severe("Texture mapping has invalid transparency setting - " + av[1] + " - line " + rdr.getLineNumber() + " of " + txtname);
+                            }
+                            /* For leaves, base on leaf transparency setting */
+                            if(trans == BlockTransparency.LEAVES) {
+                                if(core.getLeafTransparency())
+                                    trans = BlockTransparency.TRANSPARENT;
+                                else
+                                    trans = BlockTransparency.OPAQUE;
+                            }
+                            /* If no water lighting fix */
+                            if((blkids.contains(8) || blkids.contains(9)) && (HDMapManager.waterlightingfix == false)) {
+                                trans = BlockTransparency.TRANSPARENT;  /* Treat water as transparent if no fix */
+                            }
+                        }
+                        else if(av[0].equals("userenderdata")) {
+                            userenderdata = av[1].equals("true");
+                        }
+                        else if(av[0].equals("colorMult")) {
+                            colorMult = Integer.valueOf(av[1], 16);
+                        }
+                        else if(av[0].equals("custColorMult")) {
+                            try {
+                                Class<?> cls = Class.forName(av[1]);
+                                custColorMult = (CustomColorMultiplier)cls.newInstance();
+                            } catch (Exception x) {
+                                Log.severe("Error loading custom color multiplier - " + av[1] + ": " + x.getMessage());
+                            }
+                        }
+                    }
+                    /* If no data bits, assume all */
+                    if(databits < 0) databits = 0xFFFF;
+                    /* If we have everything, build texture map */
+                    if((blkids.size() > 0) && (mapid != null)) {
+                        addTextureIndex(mapid, blkids, databits, trans, userenderdata, colorMult, custColorMult, blockset);
+                    }
+                    else {
+                        Log.severe("Texture map missing required parameters = line " + rdr.getLineNumber() + " of " + txtname);
                     }
                 }
                 else if(line.startsWith("texturefile:")) {
@@ -1964,6 +2158,9 @@ public class TexturePack {
                     f.tile_to_dyntile = new int[recs.size()];
                     f.cust = recs;
                 }
+                break;
+            case SKIN:
+                f.tile_to_dyntile = new int[TILEINDEX_SKIN_COUNT]; /* 6 images for skin tile */
                 break;
         }
         addonfiles.add(f);
