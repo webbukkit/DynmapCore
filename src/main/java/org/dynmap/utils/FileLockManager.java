@@ -26,6 +26,8 @@ public class FileLockManager {
     private static Object lock = new Object();
     private static HashMap<String, Integer> filelocks = new HashMap<String, Integer>();
     private static final Integer WRITELOCK = new Integer(-1);
+    public static String preUpdateCommand = null;
+    public static String postUpdateCommand = null;
     /**
      * Get write lock on file - exclusive lock, no other writers or readers
      * @throws InterruptedException
@@ -223,9 +225,23 @@ public class FileLockManager {
                     try { f.close(); } catch (IOException iox) { done = false; }
                 }
                 if(done) {
+                    if (preUpdateCommand != null && !preUpdateCommand.isEmpty()) {
+                        try {
+                            new ProcessBuilder(preUpdateCommand, fnew.getAbsolutePath()).inheritIO().start().waitFor();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
                     fcur.renameTo(fold);
                     fnew.renameTo(fname);
                     fold.delete();
+                    if (postUpdateCommand != null && !postUpdateCommand.isEmpty()) {
+                        try {
+                            new ProcessBuilder(postUpdateCommand, fname.getAbsolutePath()).inheritIO().start().waitFor();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
         }

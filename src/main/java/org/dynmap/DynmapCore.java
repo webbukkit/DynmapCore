@@ -39,6 +39,7 @@ import org.dynmap.markers.impl.MarkerAPIImpl;
 import org.dynmap.servlet.FileLockResourceHandler;
 import org.dynmap.servlet.JettyNullLogger;
 import org.dynmap.servlet.LoginServlet;
+import org.dynmap.utils.FileLockManager;
 import org.dynmap.web.BanIPFilter;
 import org.dynmap.web.CustomHeaderFilter;
 import org.dynmap.web.FilterHandler;
@@ -344,6 +345,10 @@ public class DynmapCore {
         bettergrass = configuration.getBoolean("better-grass", false);
         /* Load full render processing player limit */
         fullrenderplayerlimit = configuration.getInteger("fullrenderplayerlimit", 0);
+                        
+        /* Load preupdate/postupdate commands */
+        FileLockManager.preUpdateCommand = configuration.getString("preupdatecommand", "");
+        FileLockManager.postUpdateCommand = configuration.getString("postupdatecommand", "");
 
         /* Load block models */
         HDBlockModels.loadModels(this, configuration);
