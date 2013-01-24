@@ -525,6 +525,7 @@ public abstract class DynmapWorld {
     }
     /* Test if world is nether */
     public abstract boolean isNether();
+
     /* Get world spawn location */
     public abstract DynmapLocation getSpawnLocation();
     

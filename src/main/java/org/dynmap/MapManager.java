@@ -13,6 +13,7 @@ import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
@@ -36,7 +37,7 @@ public class MapManager {
 
     private static final int DEFAULT_CHUNKS_PER_TICK = 200;
     private static final int DEFAULT_ZOOMOUT_PERIOD = 60;
-    public List<DynmapWorld> worlds = new ArrayList<DynmapWorld>();
+    public List<DynmapWorld> worlds = new CopyOnWriteArrayList<DynmapWorld>();
     private List<String> disabled_worlds = new ArrayList<String>();
     public Map<String, DynmapWorld> worldsLookup = new HashMap<String, DynmapWorld>();
     private DynmapCore core;
