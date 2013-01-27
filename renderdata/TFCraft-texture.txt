@@ -1,0 +1,405 @@
+# TerraFirmaCraft block mapping
+modname:TerraFirmaCraft
+# configuration file
+cfgfile:config/TFC.cfg
+
+# Files
+texturefile:id=blk1,filename=bioxx/terrablocks.png,xcount=16,ycount=16
+texturefile:id=blk2,filename=bioxx/terrablocks2.png,xcount=16,ycount=16
+texturefile:id=rock,filename=bioxx/terrarock.png,xcount=16,ycount=16
+
+# Block
+# Ore
+block:id=Ore,data=0,allsides=128,topbottom=6128,txtid=rock
+block:id=Ore,data=1,allsides=129,topbottom=6129,txtid=rock
+block:id=Ore,data=2,allsides=130,topbottom=6130,txtid=rock
+block:id=Ore,data=3,allsides=131,topbottom=6131,txtid=rock
+block:id=Ore,data=4,allsides=132,topbottom=6132,txtid=rock
+block:id=Ore,data=5,allsides=133,topbottom=6133,txtid=rock
+block:id=Ore,data=6,allsides=134,topbottom=6134,txtid=rock
+block:id=Ore,data=7,allsides=135,topbottom=6135,txtid=rock
+block:id=Ore,data=8,allsides=136,topbottom=6136,txtid=rock
+block:id=Ore,data=9,allsides=137,topbottom=6137,txtid=rock
+block:id=Ore,data=10,allsides=138,topbottom=6138,txtid=rock
+block:id=Ore,data=11,allsides=139,topbottom=6139,txtid=rock
+block:id=Ore,data=12,allsides=140,topbottom=6140,txtid=rock
+block:id=Ore,data=13,allsides=141,topbottom=6141,txtid=rock
+block:id=Ore,data=14,allsides=142,topbottom=6142,txtid=rock
+block:id=Ore,data=15,allsides=143,topbottom=6143,txtid=rock
+# Ore2
+block:id=Ore2,data=0,allsides=144,topbottom=6144,txtid=rock
+block:id=Ore2,data=1,allsides=145,topbottom=6145,txtid=rock
+block:id=Ore2,data=2,allsides=146,topbottom=6146,txtid=rock
+block:id=Ore2,data=3,allsides=147,topbottom=6147,txtid=rock
+block:id=Ore2,data=4,allsides=148,topbottom=6148,txtid=rock
+block:id=Ore2,data=5,allsides=149,topbottom=6149,txtid=rock
+block:id=Ore2,data=6,allsides=150,topbottom=6150,txtid=rock
+block:id=Ore2,data=7,allsides=151,topbottom=6151,txtid=rock
+block:id=Ore2,data=8,allsides=152,topbottom=6152,txtid=rock
+block:id=Ore2,data=9,allsides=153,topbottom=6153,txtid=rock
+block:id=Ore2,data=10,allsides=154,topbottom=6154,txtid=rock
+block:id=Ore2,data=11,allsides=155,topbottom=6155,txtid=rock
+block:id=Ore2,data=12,allsides=156,topbottom=6156,txtid=rock
+block:id=Ore2,data=13,allsides=157,topbottom=6157,txtid=rock
+block:id=Ore2,data=14,allsides=158,topbottom=6158,txtid=rock
+block:id=Ore2,data=15,allsides=159,topbottom=6159,txtid=rock
+# Ore3 (assume 3-15 will be same pattern)
+block:id=Ore3,data=0,allsides=160,topbottom=6160,txtid=rock
+block:id=Ore3,data=1,allsides=161,topbottom=6161,txtid=rock
+block:id=Ore3,data=2,allsides=162,topbottom=6162,txtid=rock
+block:id=Ore3,data=3,allsides=163,topbottom=6163,txtid=rock
+block:id=Ore3,data=4,allsides=164,topbottom=6164,txtid=rock
+block:id=Ore3,data=5,allsides=165,topbottom=6165,txtid=rock
+block:id=Ore3,data=6,allsides=166,topbottom=6166,txtid=rock
+block:id=Ore3,data=7,allsides=167,topbottom=6167,txtid=rock
+block:id=Ore3,data=8,allsides=168,topbottom=6168,txtid=rock
+block:id=Ore3,data=9,allsides=169,topbottom=6169,txtid=rock
+block:id=Ore3,data=10,allsides=170,topbottom=6170,txtid=rock
+block:id=Ore3,data=11,allsides=171,topbottom=6171,txtid=rock
+block:id=Ore3,data=12,allsides=172,topbottom=6172,txtid=rock
+block:id=Ore3,data=13,allsides=173,topbottom=6173,txtid=rock
+block:id=Ore3,data=14,allsides=174,topbottom=6174,txtid=rock
+block:id=Ore3,data=15,allsides=175,topbottom=6175,txtid=rock
+# StoneIgIn
+block:id=StoneIgIn,data=0,allsides=0,topbottom=6000,txtid=rock
+block:id=StoneIgIn,data=1,allsides=1,topbottom=6001,txtid=rock
+block:id=StoneIgIn,data=2,allsides=2,topbottom=6002,txtid=rock
+# StoneIgInCobble
+block:id=StoneIgInCobble,data=0,allsides=16,topbottom=6016,txtid=rock
+block:id=StoneIgInCobble,data=1,allsides=17,topbottom=6017,txtid=rock
+block:id=StoneIgInCobble,data=2,allsides=18,topbottom=6018,txtid=rock
+# StoneIgInSmooth
+block:id=StoneIgInSmooth,data=0,allsides=32,topbottom=6032,txtid=rock
+block:id=StoneIgInSmooth,data=1,allsides=33,topbottom=6033,txtid=rock
+block:id=StoneIgInSmooth,data=2,allsides=34,topbottom=6034,txtid=rock
+# StoneIgInBrick
+block:id=StoneIgInBrick,data=0,allsides=48,topbottom=6048,txtid=rock
+block:id=StoneIgInBrick,data=1,allsides=49,topbottom=6049,txtid=rock
+block:id=StoneIgInBrick,data=2,allsides=50,topbottom=6050,txtid=rock
+# StoneIgEx
+block:id=StoneIgEx,data=0,allsides=3,topbottom=6003,txtid=rock
+block:id=StoneIgEx,data=1,allsides=4,topbottom=6004,txtid=rock
+block:id=StoneIgEx,data=2,allsides=5,topbottom=6005,txtid=rock
+block:id=StoneIgEx,data=3,allsides=6,topbottom=6006,txtid=rock
+# StoneIgExCobble
+block:id=StoneIgExCobble,data=0,allsides=19,topbottom=6019,txtid=rock
+block:id=StoneIgExCobble,data=1,allsides=20,topbottom=6020,txtid=rock
+block:id=StoneIgExCobble,data=2,allsides=21,topbottom=6021,txtid=rock
+block:id=StoneIgExCobble,data=3,allsides=22,topbottom=6022,txtid=rock
+# StoneIgExSmooth
+block:id=StoneIgExSmooth,data=0,allsides=35,topbottom=6035,txtid=rock
+block:id=StoneIgExSmooth,data=1,allsides=36,topbottom=6036,txtid=rock
+block:id=StoneIgExSmooth,data=2,allsides=37,topbottom=6037,txtid=rock
+block:id=StoneIgExSmooth,data=3,allsides=38,topbottom=6038,txtid=rock
+# StoneIgExBrick
+block:id=StoneIgExBrick,data=0,allsides=51,topbottom=6051,txtid=rock
+block:id=StoneIgExBrick,data=1,allsides=52,topbottom=6052,txtid=rock
+block:id=StoneIgExBrick,data=2,allsides=53,topbottom=6053,txtid=rock
+block:id=StoneIgExBrick,data=3,allsides=54,topbottom=6054,txtid=rock
+# StoneSed
+block:id=StoneSed,data=0,allsides=64,topbottom=6064,txtid=rock
+block:id=StoneSed,data=1,allsides=65,topbottom=6065,txtid=rock
+block:id=StoneSed,data=2,allsides=66,topbottom=6066,txtid=rock
+block:id=StoneSed,data=3,allsides=67,topbottom=6067,txtid=rock
+block:id=StoneSed,data=4,allsides=68,topbottom=6068,txtid=rock
+block:id=StoneSed,data=5,allsides=69,topbottom=6069,txtid=rock
+block:id=StoneSed,data=6,allsides=70,topbottom=6070,txtid=rock
+block:id=StoneSed,data=7,allsides=71,topbottom=6071,txtid=rock
+block:id=StoneSed,data=8,allsides=72,topbottom=6072,txtid=rock
+block:id=StoneSed,data=9,allsides=73,topbottom=6073,txtid=rock
+# StoneSedCobble
+block:id=StoneSedCobble,data=0,allsides=80,topbottom=6080,txtid=rock
+block:id=StoneSedCobble,data=1,allsides=81,topbottom=6081,txtid=rock
+block:id=StoneSedCobble,data=2,allsides=82,topbottom=6082,txtid=rock
+block:id=StoneSedCobble,data=3,allsides=83,topbottom=6083,txtid=rock
+block:id=StoneSedCobble,data=4,allsides=84,topbottom=6084,txtid=rock
+block:id=StoneSedCobble,data=5,allsides=85,topbottom=6085,txtid=rock
+block:id=StoneSedCobble,data=6,allsides=86,topbottom=6086,txtid=rock
+block:id=StoneSedCobble,data=7,allsides=87,topbottom=6087,txtid=rock
+block:id=StoneSedCobble,data=8,allsides=88,topbottom=6088,txtid=rock
+block:id=StoneSedCobble,data=9,allsides=89,topbottom=6089,txtid=rock
+# StoneSedSmooth
+block:id=StoneSedSmooth,data=0,allsides=96,topbottom=6096,txtid=rock
+block:id=StoneSedSmooth,data=1,allsides=97,topbottom=6097,txtid=rock
+block:id=StoneSedSmooth,data=2,allsides=98,topbottom=6098,txtid=rock
+block:id=StoneSedSmooth,data=3,allsides=99,topbottom=6099,txtid=rock
+block:id=StoneSedSmooth,data=4,allsides=100,topbottom=6100,txtid=rock
+block:id=StoneSedSmooth,data=5,allsides=101,topbottom=6101,txtid=rock
+block:id=StoneSedSmooth,data=6,allsides=102,topbottom=6102,txtid=rock
+block:id=StoneSedSmooth,data=7,allsides=103,topbottom=6103,txtid=rock
+block:id=StoneSedSmooth,data=8,allsides=104,topbottom=6104,txtid=rock
+block:id=StoneSedSmooth,data=9,allsides=105,topbottom=6105,txtid=rock
+# StoneSedBrick
+block:id=StoneSedBrick,data=0,allsides=112,topbottom=6112,txtid=rock
+block:id=StoneSedBrick,data=1,allsides=113,topbottom=6113,txtid=rock
+block:id=StoneSedBrick,data=2,allsides=114,topbottom=6114,txtid=rock
+block:id=StoneSedBrick,data=3,allsides=115,topbottom=6115,txtid=rock
+block:id=StoneSedBrick,data=4,allsides=116,topbottom=6116,txtid=rock
+block:id=StoneSedBrick,data=5,allsides=117,topbottom=6117,txtid=rock
+block:id=StoneSedBrick,data=6,allsides=118,topbottom=6118,txtid=rock
+block:id=StoneSedBrick,data=7,allsides=119,topbottom=6119,txtid=rock
+block:id=StoneSedBrick,data=8,allsides=120,topbottom=6120,txtid=rock
+block:id=StoneSedBrick,data=9,allsides=121,topbottom=6121,txtid=rock
+# StoneMM
+block:id=StoneMM,data=0,allsides=74,topbottom=6074,txtid=rock
+block:id=StoneMM,data=1,allsides=75,topbottom=6075,txtid=rock
+block:id=StoneMM,data=2,allsides=76,topbottom=6076,txtid=rock
+block:id=StoneMM,data=3,allsides=77,topbottom=6077,txtid=rock
+block:id=StoneMM,data=4,allsides=78,topbottom=6078,txtid=rock
+block:id=StoneMM,data=5,allsides=79,topbottom=6079,txtid=rock
+# StoneMMCobble
+block:id=StoneMMCobble,data=0,allsides=90,topbottom=6090,txtid=rock
+block:id=StoneMMCobble,data=1,allsides=91,topbottom=6091,txtid=rock
+block:id=StoneMMCobble,data=2,allsides=92,topbottom=6092,txtid=rock
+block:id=StoneMMCobble,data=3,allsides=93,topbottom=6093,txtid=rock
+block:id=StoneMMCobble,data=4,allsides=94,topbottom=6094,txtid=rock
+block:id=StoneMMCobble,data=5,allsides=95,topbottom=6095,txtid=rock
+# StoneMMSmooth
+block:id=StoneMMSmooth,data=0,allsides=106,topbottom=6106,txtid=rock
+block:id=StoneMMSmooth,data=1,allsides=107,topbottom=6107,txtid=rock
+block:id=StoneMMSmooth,data=2,allsides=108,topbottom=6108,txtid=rock
+block:id=StoneMMSmooth,data=3,allsides=109,topbottom=6109,txtid=rock
+block:id=StoneMMSmooth,data=4,allsides=110,topbottom=6110,txtid=rock
+block:id=StoneMMSmooth,data=5,allsides=111,topbottom=6111,txtid=rock
+# StoneMMBrick
+block:id=StoneMMBrick,data=0,allsides=122,topbottom=6122,txtid=rock
+block:id=StoneMMBrick,data=1,allsides=123,topbottom=6123,txtid=rock
+block:id=StoneMMBrick,data=2,allsides=124,topbottom=6124,txtid=rock
+block:id=StoneMMBrick,data=3,allsides=125,topbottom=6125,txtid=rock
+block:id=StoneMMBrick,data=4,allsides=126,topbottom=6126,txtid=rock
+block:id=StoneMMBrick,data=5,allsides=127,topbottom=6127,txtid=rock
+# Dirt
+block:id=Dirt,data=0,allsides=112,topbottom=6112,txtid=blk2
+block:id=Dirt,data=1,allsides=113,topbottom=6113,txtid=blk2
+block:id=Dirt,data=2,allsides=114,topbottom=6114,txtid=blk2
+block:id=Dirt,data=3,allsides=115,topbottom=6115,txtid=blk2
+block:id=Dirt,data=4,allsides=116,topbottom=6116,txtid=blk2
+block:id=Dirt,data=5,allsides=117,topbottom=6117,txtid=blk2
+block:id=Dirt,data=6,allsides=118,topbottom=6118,txtid=blk2
+block:id=Dirt,data=7,allsides=119,topbottom=6119,txtid=blk2
+block:id=Dirt,data=8,allsides=120,topbottom=6120,txtid=blk2
+block:id=Dirt,data=9,allsides=121,topbottom=6121,txtid=blk2
+block:id=Dirt,data=10,allsides=122,topbottom=6122,txtid=blk2
+block:id=Dirt,data=11,allsides=123,topbottom=6123,txtid=blk2
+block:id=Dirt,data=12,allsides=124,topbottom=6124,txtid=blk2
+block:id=Dirt,data=13,allsides=125,topbottom=6125,txtid=blk2
+block:id=Dirt,data=14,allsides=126,topbottom=6126,txtid=blk2
+block:id=Dirt,data=15,allsides=127,topbottom=6127,txtid=blk2
+# Dirt2
+block:id=Dirt2,data=0,allsides=128,topbottom=6128,txtid=blk2
+block:id=Dirt2,data=1,allsides=129,topbottom=6129,txtid=blk2
+block:id=Dirt2,data=2,allsides=130,topbottom=6130,txtid=blk2
+block:id=Dirt2,data=3,allsides=131,topbottom=6131,txtid=blk2
+block:id=Dirt2,data=4,allsides=132,topbottom=6132,txtid=blk2
+block:id=Dirt2,data=5,allsides=133,topbottom=6133,txtid=blk2
+block:id=Dirt2,data=6,allsides=134,topbottom=6134,txtid=blk2
+# Sand
+block:id=Sand,data=0,allsides=208,topbottom=6208,txtid=blk2
+block:id=Sand,data=1,allsides=209,topbottom=6209,txtid=blk2
+block:id=Sand,data=2,allsides=210,topbottom=6210,txtid=blk2
+block:id=Sand,data=3,allsides=211,topbottom=6211,txtid=blk2
+block:id=Sand,data=4,allsides=212,topbottom=6212,txtid=blk2
+block:id=Sand,data=5,allsides=213,topbottom=6213,txtid=blk2
+block:id=Sand,data=6,allsides=214,topbottom=6214,txtid=blk2
+block:id=Sand,data=7,allsides=215,topbottom=6215,txtid=blk2
+block:id=Sand,data=8,allsides=216,topbottom=6216,txtid=blk2
+block:id=Sand,data=9,allsides=217,topbottom=6217,txtid=blk2
+block:id=Sand,data=10,allsides=218,topbottom=6218,txtid=blk2
+block:id=Sand,data=11,allsides=219,topbottom=6219,txtid=blk2
+block:id=Sand,data=12,allsides=220,topbottom=6220,txtid=blk2
+block:id=Sand,data=13,allsides=221,topbottom=6221,txtid=blk2
+block:id=Sand,data=14,allsides=222,topbottom=6222,txtid=blk2
+block:id=Sand,data=15,allsides=223,topbottom=6223,txtid=blk2
+# Sand2
+block:id=Sand2,data=0,allsides=224,topbottom=6224,txtid=blk2
+block:id=Sand2,data=1,allsides=225,topbottom=6225,txtid=blk2
+block:id=Sand2,data=2,allsides=226,topbottom=6226,txtid=blk2
+block:id=Sand2,data=3,allsides=227,topbottom=6227,txtid=blk2
+block:id=Sand2,data=4,allsides=228,topbottom=6228,txtid=blk2
+block:id=Sand2,data=5,allsides=229,topbottom=6229,txtid=blk2
+block:id=Sand2,data=6,allsides=230,topbottom=6230,txtid=blk2
+block:id=Sand2,data=7,allsides=231,topbottom=6231,txtid=blk2
+block:id=Sand2,data=8,allsides=232,topbottom=6232,txtid=blk2
+block:id=Sand2,data=9,allsides=233,topbottom=6233,txtid=blk2
+block:id=Sand2,data=10,allsides=234,topbottom=6234,txtid=blk2
+block:id=Sand2,data=11,allsides=235,topbottom=6235,txtid=blk2
+block:id=Sand2,data=12,allsides=236,topbottom=6236,txtid=blk2
+block:id=Sand2,data=13,allsides=237,topbottom=6237,txtid=blk2
+block:id=Sand2,data=14,allsides=238,topbottom=6238,txtid=blk2
+block:id=Sand2,data=15,allsides=239,topbottom=6239,txtid=blk2
+# Clay
+block:id=Clay,data=0,allsides=144,topbottom=6144,txtid=blk2
+block:id=Clay,data=1,allsides=145,topbottom=6145,txtid=blk2
+block:id=Clay,data=2,allsides=146,topbottom=6146,txtid=blk2
+block:id=Clay,data=3,allsides=147,topbottom=6147,txtid=blk2
+block:id=Clay,data=4,allsides=148,topbottom=6148,txtid=blk2
+block:id=Clay,data=5,allsides=149,topbottom=6149,txtid=blk2
+block:id=Clay,data=6,allsides=150,topbottom=6150,txtid=blk2
+block:id=Clay,data=7,allsides=151,topbottom=6151,txtid=blk2
+block:id=Clay,data=8,allsides=152,topbottom=6152,txtid=blk2
+block:id=Clay,data=9,allsides=153,topbottom=6153,txtid=blk2
+block:id=Clay,data=10,allsides=154,topbottom=6154,txtid=blk2
+block:id=Clay,data=11,allsides=155,topbottom=6155,txtid=blk2
+block:id=Clay,data=12,allsides=156,topbottom=6156,txtid=blk2
+block:id=Clay,data=13,allsides=157,topbottom=6157,txtid=blk2
+block:id=Clay,data=14,allsides=158,topbottom=6158,txtid=blk2
+block:id=Clay,data=15,allsides=159,topbottom=6159,txtid=blk2
+# Clay2 (assume 6-15 follow pattern)
+block:id=Clay2,data=0,allsides=160,topbottom=6160,txtid=blk2
+block:id=Clay2,data=1,allsides=161,topbottom=6161,txtid=blk2
+block:id=Clay2,data=2,allsides=162,topbottom=6162,txtid=blk2
+block:id=Clay2,data=3,allsides=163,topbottom=6163,txtid=blk2
+block:id=Clay2,data=4,allsides=164,topbottom=6164,txtid=blk2
+block:id=Clay2,data=5,allsides=165,topbottom=6165,txtid=blk2
+block:id=Clay2,data=6,allsides=166,topbottom=6166,txtid=blk2
+block:id=Clay2,data=7,allsides=167,topbottom=6167,txtid=blk2
+block:id=Clay2,data=8,allsides=168,topbottom=6168,txtid=blk2
+block:id=Clay2,data=9,allsides=169,topbottom=6169,txtid=blk2
+block:id=Clay2,data=10,allsides=170,topbottom=6170,txtid=blk2
+block:id=Clay2,data=11,allsides=171,topbottom=6171,txtid=blk2
+block:id=Clay2,data=12,allsides=172,topbottom=6172,txtid=blk2
+block:id=Clay2,data=13,allsides=173,topbottom=6173,txtid=blk2
+block:id=Clay2,data=14,allsides=174,topbottom=6174,txtid=blk2
+block:id=Clay2,data=15,allsides=175,topbottom=6175,txtid=blk2
+# Grass
+block:id=Grass,data=0,patch0=112,patch1=1255,patch2=11112,txtid=blk2
+block:id=Grass,data=1,patch0=113,patch1=1255,patch2=11113,txtid=blk2
+block:id=Grass,data=2,patch0=114,patch1=1255,patch2=11114,txtid=blk2
+block:id=Grass,data=3,patch0=115,patch1=1255,patch2=11115,txtid=blk2
+block:id=Grass,data=4,patch0=116,patch1=1255,patch2=11116,txtid=blk2
+block:id=Grass,data=5,patch0=117,patch1=1255,patch2=11117,txtid=blk2
+block:id=Grass,data=6,patch0=118,patch1=1255,patch2=11118,txtid=blk2
+block:id=Grass,data=7,patch0=119,patch1=1255,patch2=11119,txtid=blk2
+block:id=Grass,data=8,patch0=120,patch1=1255,patch2=11120,txtid=blk2
+block:id=Grass,data=9,patch0=121,patch1=1255,patch2=11121,txtid=blk2
+block:id=Grass,data=10,patch0=122,patch1=1255,patch2=11122,txtid=blk2
+block:id=Grass,data=11,patch0=123,patch1=1255,patch2=11123,txtid=blk2
+block:id=Grass,data=12,patch0=124,patch1=1255,patch2=11124,txtid=blk2
+block:id=Grass,data=13,patch0=125,patch1=1255,patch2=11125,txtid=blk2
+block:id=Grass,data=14,patch0=126,patch1=1255,patch2=11126,txtid=blk2
+block:id=Grass,data=15,patch0=127,patch1=1255,patch2=11127,txtid=blk2
+# Grass2
+block:id=Grass2,data=0,patch0=128,patch1=1255,patch2=11128,txtid=blk2
+block:id=Grass2,data=1,patch0=129,patch1=1255,patch2=11129,txtid=blk2
+block:id=Grass2,data=2,patch0=130,patch1=1255,patch2=11130,txtid=blk2
+block:id=Grass2,data=3,patch0=131,patch1=1255,patch2=11131,txtid=blk2
+block:id=Grass2,data=4,patch0=132,patch1=1255,patch2=11132,txtid=blk2
+block:id=Grass2,data=5,patch0=133,patch1=1255,patch2=11133,txtid=blk2
+block:id=Grass2,data=6,patch0=134,patch1=1255,patch2=11134,txtid=blk2
+# Peat
+block:id=Peat,data=0,allsides=135,topbottom=6135,txtid=blk2
+# ClayGrass
+block:id=ClayGrass,data=0,patch0=144,patch1=1255,patch2=11144,txtid=blk2
+block:id=ClayGrass,data=1,patch0=145,patch1=1255,patch2=11145,txtid=blk2
+block:id=ClayGrass,data=2,patch0=146,patch1=1255,patch2=11146,txtid=blk2
+block:id=ClayGrass,data=3,patch0=147,patch1=1255,patch2=11147,txtid=blk2
+block:id=ClayGrass,data=4,patch0=148,patch1=1255,patch2=11148,txtid=blk2
+block:id=ClayGrass,data=5,patch0=149,patch1=1255,patch2=11149,txtid=blk2
+block:id=ClayGrass,data=6,patch0=150,patch1=1255,patch2=11150,txtid=blk2
+block:id=ClayGrass,data=7,patch0=151,patch1=1255,patch2=11151,txtid=blk2
+block:id=ClayGrass,data=8,patch0=152,patch1=1255,patch2=11152,txtid=blk2
+block:id=ClayGrass,data=9,patch0=153,patch1=1255,patch2=11153,txtid=blk2
+block:id=ClayGrass,data=10,patch0=154,patch1=1255,patch2=11154,txtid=blk2
+block:id=ClayGrass,data=11,patch0=155,patch1=1255,patch2=11155,txtid=blk2
+block:id=ClayGrass,data=12,patch0=156,patch1=1255,patch2=11156,txtid=blk2
+block:id=ClayGrass,data=13,patch0=157,patch1=1255,patch2=11157,txtid=blk2
+block:id=ClayGrass,data=14,patch0=158,patch1=1255,patch2=11158,txtid=blk2
+block:id=ClayGrass,data=15,patch0=159,patch1=1255,patch2=11159,txtid=blk2
+# ClayGrass2 (assume 6-15 follow pattern)
+block:id=ClayGrass2,data=0,patch0=160,patch1=1255,patch2=11160,txtid=blk2
+block:id=ClayGrass2,data=1,patch0=161,patch1=1255,patch2=11161,txtid=blk2
+block:id=ClayGrass2,data=2,patch0=162,patch1=1255,patch2=11162,txtid=blk2
+block:id=ClayGrass2,data=3,patch0=163,patch1=1255,patch2=11163,txtid=blk2
+block:id=ClayGrass2,data=4,patch0=164,patch1=1255,patch2=11164,txtid=blk2
+block:id=ClayGrass2,data=5,patch0=165,patch1=1255,patch2=11165,txtid=blk2
+block:id=ClayGrass2,data=6,patch0=166,patch1=1255,patch2=11166,txtid=blk2
+block:id=ClayGrass2,data=7,patch0=167,patch1=1255,patch2=11167,txtid=blk2
+block:id=ClayGrass2,data=8,patch0=168,patch1=1255,patch2=11168,txtid=blk2
+block:id=ClayGrass2,data=9,patch0=169,patch1=1255,patch2=11169,txtid=blk2
+block:id=ClayGrass2,data=10,patch0=170,patch1=1255,patch2=11170,txtid=blk2
+block:id=ClayGrass2,data=11,patch0=171,patch1=1255,patch2=11171,txtid=blk2
+block:id=ClayGrass2,data=12,patch0=172,patch1=1255,patch2=11172,txtid=blk2
+block:id=ClayGrass2,data=13,patch0=173,patch1=1255,patch2=11173,txtid=blk2
+block:id=ClayGrass2,data=14,patch0=174,patch1=1255,patch2=11174,txtid=blk2
+block:id=ClayGrass2,data=15,patch0=175,patch1=1255,patch2=11175,txtid=blk2
+# PeatGrass
+block:id=PeatGrass,data=0,patch0=135,patch1=1255,patch2=11135,txtid=blk2
+# DryGrass
+block:id=DryGrass,data=0,patch0=112,patch1=1252,patch2=11112,txtid=blk2
+block:id=DryGrass,data=1,patch0=113,patch1=1252,patch2=11113,txtid=blk2
+block:id=DryGrass,data=2,patch0=114,patch1=1252,patch2=11114,txtid=blk2
+block:id=DryGrass,data=3,patch0=115,patch1=1252,patch2=11115,txtid=blk2
+block:id=DryGrass,data=4,patch0=116,patch1=1252,patch2=11116,txtid=blk2
+block:id=DryGrass,data=5,patch0=117,patch1=1252,patch2=11117,txtid=blk2
+block:id=DryGrass,data=6,patch0=118,patch1=1252,patch2=11118,txtid=blk2
+block:id=DryGrass,data=7,patch0=119,patch1=1252,patch2=11119,txtid=blk2
+block:id=DryGrass,data=8,patch0=120,patch1=1252,patch2=11120,txtid=blk2
+block:id=DryGrass,data=9,patch0=121,patch1=1252,patch2=11121,txtid=blk2
+block:id=DryGrass,data=10,patch0=122,patch1=1252,patch2=11122,txtid=blk2
+block:id=DryGrass,data=11,patch0=123,patch1=1252,patch2=11123,txtid=blk2
+block:id=DryGrass,data=12,patch0=124,patch1=1252,patch2=11124,txtid=blk2
+block:id=DryGrass,data=13,patch0=125,patch1=1252,patch2=11125,txtid=blk2
+block:id=DryGrass,data=14,patch0=126,patch1=1252,patch2=11126,txtid=blk2
+block:id=DryGrass,data=15,patch0=127,patch1=1252,patch2=11127,txtid=blk2
+# DryGrass2
+block:id=DryGrass2,data=0,patch0=128,patch1=1252,patch2=11128,txtid=blk2
+block:id=DryGrass2,data=1,patch0=129,patch1=1252,patch2=11129,txtid=blk2
+block:id=DryGrass2,data=2,patch0=130,patch1=1252,patch2=11130,txtid=blk2
+block:id=DryGrass2,data=3,patch0=131,patch1=1252,patch2=11131,txtid=blk2
+block:id=DryGrass2,data=4,patch0=132,patch1=1252,patch2=11132,txtid=blk2
+block:id=DryGrass2,data=5,patch0=133,patch1=1252,patch2=11133,txtid=blk2
+block:id=DryGrass2,data=6,patch0=134,patch1=1252,patch2=11134,txtid=blk2
+# LooseRock (doesn't check rock layers - can't do this)
+block:id=LooseRock,data=*,patch0=0,txtid=rock
+# LogPile
+block:id=LogPile,data=0,data=2,face0=6093,face1=6093,face2=94,face3=94,face4=92,face5=92,txtid=blk1
+block:id=LogPile,data=1,data=3,face0=6092,face1=6092,face2=92,face3=92,face4=94,face5=94,txtid=blk1
+block:id=LogPile,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,allsides=92,topbottom=6092,txtid=blk1
+# Sulfur
+block:id=Sulfur,data=0,patch0=252,txtid=blk1,transparency=TRANSPARENT
+block:id=Sulfur,data=1,patch0=253,txtid=blk1,transparency=TRANSPARENT
+block:id=Sulfur,data=2,patch0=254,txtid=blk1,transparency=TRANSPARENT
+block:id=Sulfur,data=3,patch0=255,txtid=blk1,transparency=TRANSPARENT
+# tilledSoil
+block:id=tilledSoil,data=0,allsides=112,bottom=6112,top=6176,txtid=blk2
+block:id=tilledSoil,data=1,allsides=113,bottom=6113,top=6177,txtid=blk2
+block:id=tilledSoil,data=2,allsides=114,bottom=6114,top=6178,txtid=blk2
+block:id=tilledSoil,data=3,allsides=115,bottom=6115,top=6179,txtid=blk2
+block:id=tilledSoil,data=4,allsides=116,bottom=6116,top=6180,txtid=blk2
+block:id=tilledSoil,data=5,allsides=117,bottom=6117,top=6181,txtid=blk2
+block:id=tilledSoil,data=6,allsides=118,bottom=6118,top=6182,txtid=blk2
+block:id=tilledSoil,data=7,allsides=119,bottom=6119,top=6183,txtid=blk2
+block:id=tilledSoil,data=8,allsides=120,bottom=6120,top=6184,txtid=blk2
+block:id=tilledSoil,data=9,allsides=121,bottom=6121,top=6185,txtid=blk2
+block:id=tilledSoil,data=10,allsides=122,bottom=6122,top=6186,txtid=blk2
+block:id=tilledSoil,data=11,allsides=123,bottom=6123,top=6187,txtid=blk2
+block:id=tilledSoil,data=12,allsides=124,bottom=6124,top=6188,txtid=blk2
+block:id=tilledSoil,data=13,allsides=125,bottom=6125,top=6189,txtid=blk2
+block:id=tilledSoil,data=14,allsides=126,bottom=6126,top=6190,txtid=blk2
+block:id=tilledSoil,data=15,allsides=127,bottom=6127,top=6191,txtid=blk2
+# tilledSoil2
+block:id=tilledSoil2,data=0,allsides=128,bottom=6128,top=6192,txtid=blk2
+block:id=tilledSoil2,data=1,allsides=129,bottom=6129,top=6193,txtid=blk2
+block:id=tilledSoil2,data=2,allsides=130,bottom=6130,top=6194,txtid=blk2
+block:id=tilledSoil2,data=3,allsides=131,bottom=6131,top=6195,txtid=blk2
+block:id=tilledSoil2,data=4,allsides=132,bottom=6132,top=6196,txtid=blk2
+block:id=tilledSoil2,data=5,allsides=133,bottom=6133,top=6197,txtid=blk2
+block:id=tilledSoil2,data=6,allsides=134,bottom=6134,top=6198,txtid=blk2
+# WoodSupportV
+# WoodSupportH
+block:id=WoodSupportV,id=WoodSupportH,data=0,patch0=96,txtid=blk2,transparency=TRANSPARENT
+block:id=WoodSupportV,id=WoodSupportH,data=1,patch0=97,txtid=blk2,transparency=TRANSPARENT
+block:id=WoodSupportV,id=WoodSupportH,data=2,patch0=98,txtid=blk2,transparency=TRANSPARENT
+block:id=WoodSupportV,id=WoodSupportH,data=3,patch0=99,txtid=blk2,transparency=TRANSPARENT
+block:id=WoodSupportV,id=WoodSupportH,data=4,patch0=100,txtid=blk2,transparency=TRANSPARENT
+block:id=WoodSupportV,id=WoodSupportH,data=5,patch0=101,txtid=blk2,transparency=TRANSPARENT
+block:id=WoodSupportV,id=WoodSupportH,data=6,patch0=102,txtid=blk2,transparency=TRANSPARENT
+block:id=WoodSupportV,id=WoodSupportH,data=7,patch0=103,txtid=blk2,transparency=TRANSPARENT
+block:id=WoodSupportV,id=WoodSupportH,data=8,patch0=104,txtid=blk2,transparency=TRANSPARENT
+block:id=WoodSupportV,id=WoodSupportH,data=9.patch0=105,txtid=blk2,transparency=TRANSPARENT
+block:id=WoodSupportV,id=WoodSupportH,data=10,patch0=106,txtid=blk2,transparency=TRANSPARENT
+block:id=WoodSupportV,id=WoodSupportH,data=11,patch0=107,txtid=blk2,transparency=TRANSPARENT
+block:id=WoodSupportV,id=WoodSupportH,data=12,patch0=108,txtid=blk2,transparency=TRANSPARENT
+block:id=WoodSupportV,id=WoodSupportH,data=13,patch0=109,txtid=blk2,transparency=TRANSPARENT
+block:id=WoodSupportV,id=WoodSupportH,data=14,patch0=110,txtid=blk2,transparency=TRANSPARENT
+block:id=WoodSupportV,id=WoodSupportH,data=15,patch0=111,txtid=blk2,transparency=TRANSPARENT
