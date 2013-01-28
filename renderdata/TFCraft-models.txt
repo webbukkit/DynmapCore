@@ -32,3 +32,6 @@ customblock:id=WoodSupportV,data=*,class=org.dynmap.hdmap.renderer.TFCSupportRen
 
 # WoodSupportH
 customblock:id=WoodSupportH,data=*,class=org.dynmap.hdmap.renderer.TFCSupportRenderer
+
+# fruitTreeWood=
+customblock:id=fruitTreeWood,data=*,class=org.dynmap.hdmap.renderer.TFCWoodRenderer

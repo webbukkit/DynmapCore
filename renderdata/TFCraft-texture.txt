@@ -7,6 +7,8 @@ cfgfile:config/TFC.cfg
 texturefile:id=blk1,filename=bioxx/terrablocks.png,xcount=16,ycount=16
 texturefile:id=blk2,filename=bioxx/terrablocks2.png,xcount=16,ycount=16
 texturefile:id=rock,filename=bioxx/terrarock.png,xcount=16,ycount=16
+texturefile:id=veg,filename=bioxx/vegetation.png,xcount=16,ycount=16
+texturefile:id=plants,filename=bioxx/tfcplants.png,xcount=16,ycount=16
 
 # Block
 # Ore
@@ -396,10 +398,113 @@ block:id=WoodSupportV,id=WoodSupportH,data=5,patch0=101,txtid=blk2,transparency=
 block:id=WoodSupportV,id=WoodSupportH,data=6,patch0=102,txtid=blk2,transparency=TRANSPARENT
 block:id=WoodSupportV,id=WoodSupportH,data=7,patch0=103,txtid=blk2,transparency=TRANSPARENT
 block:id=WoodSupportV,id=WoodSupportH,data=8,patch0=104,txtid=blk2,transparency=TRANSPARENT
-block:id=WoodSupportV,id=WoodSupportH,data=9.patch0=105,txtid=blk2,transparency=TRANSPARENT
+block:id=WoodSupportV,id=WoodSupportH,data=9,patch0=105,txtid=blk2,transparency=TRANSPARENT
 block:id=WoodSupportV,id=WoodSupportH,data=10,patch0=106,txtid=blk2,transparency=TRANSPARENT
 block:id=WoodSupportV,id=WoodSupportH,data=11,patch0=107,txtid=blk2,transparency=TRANSPARENT
 block:id=WoodSupportV,id=WoodSupportH,data=12,patch0=108,txtid=blk2,transparency=TRANSPARENT
 block:id=WoodSupportV,id=WoodSupportH,data=13,patch0=109,txtid=blk2,transparency=TRANSPARENT
 block:id=WoodSupportV,id=WoodSupportH,data=14,patch0=110,txtid=blk2,transparency=TRANSPARENT
 block:id=WoodSupportV,id=WoodSupportH,data=15,patch0=111,txtid=blk2,transparency=TRANSPARENT
+# fruitTreeWood
+block:id=fruitTreeWood,data=0,patch0=0,txtid=veg,transparency=TRANSPARENT
+block:id=fruitTreeWood,data=1,patch0=1,txtid=veg,transparency=TRANSPARENT
+block:id=fruitTreeWood,data=2,patch0=2,txtid=veg,transparency=TRANSPARENT
+block:id=fruitTreeWood,data=3,patch0=3,txtid=veg,transparency=TRANSPARENT
+block:id=fruitTreeWood,data=4,patch0=4,txtid=veg,transparency=TRANSPARENT
+block:id=fruitTreeWood,data=5,patch0=5,txtid=veg,transparency=TRANSPARENT
+block:id=fruitTreeWood,data=6,patch0=6,txtid=veg,transparency=TRANSPARENT
+block:id=fruitTreeWood,data=7,patch0=7,txtid=veg,transparency=TRANSPARENT
+block:id=fruitTreeWood,data=8,patch0=8,txtid=veg,transparency=TRANSPARENT
+block:id=fruitTreeWood,data=9,patch0=9,txtid=veg,transparency=TRANSPARENT
+block:id=fruitTreeWood,data=10,patch0=10,txtid=veg,transparency=TRANSPARENT
+block:id=fruitTreeWood,data=11,patch0=11,txtid=veg,transparency=TRANSPARENT
+block:id=fruitTreeWood,data=12,patch0=12,txtid=veg,transparency=TRANSPARENT
+block:id=fruitTreeWood,data=13,patch0=13,txtid=veg,transparency=TRANSPARENT
+block:id=fruitTreeWood,data=14,patch0=14,txtid=veg,transparency=TRANSPARENT
+block:id=fruitTreeWood,data=15,patch0=15,txtid=veg,transparency=TRANSPARENT
+# frultTreeLeaves
+block:id=fruitTreeLeaves,data=0,data=8,allfaces=2048,txtid=veg,transparency=LEAVES
+block:id=fruitTreeLeaves,data=1,data=9,allfaces=2049,txtid=veg,transparency=LEAVES
+block:id=fruitTreeLeaves,data=2,data=10,allfaces=2050,txtid=veg,transparency=LEAVES
+block:id=fruitTreeLeaves,data=3,data=11,allfaces=2051,txtid=veg,transparency=LEAVES
+block:id=fruitTreeLeaves,data=4,data=12,allfaces=2052,txtid=veg,transparency=LEAVES
+block:id=fruitTreeLeaves,data=5,data=13,allfaces=2053,txtid=veg,transparency=LEAVES
+block:id=fruitTreeLeaves,data=6,data=14,allfaces=2054,txtid=veg,transparency=LEAVES
+block:id=fruitTreeLeaves,data=7,data=15,allfaces=2055,txtid=veg,transparency=LEAVES
+# fruitTreeLeaves2
+block:id=fruitTreeLeaves2,data=0,data=8,allfaces=2056,txtid=veg,transparency=LEAVES
+block:id=fruitTreeLeaves2,data=1,data=9,allfaces=2057,txtid=veg,transparency=LEAVES
+block:id=fruitTreeLeaves2,data=2,data=10,allfaces=2058,txtid=veg,transparency=LEAVES
+block:id=fruitTreeLeaves2,data=3,data=11,allfaces=2059,txtid=veg,transparency=LEAVES
+block:id=fruitTreeLeaves2,data=4,data=12,allfaces=2060,txtid=veg,transparency=LEAVES
+block:id=fruitTreeLeaves2,data=5,data=13,allfaces=2061,txtid=veg,transparency=LEAVES
+block:id=fruitTreeLeaves2,data=6,data=14,allfaces=2062,txtid=veg,transparency=LEAVES
+block:id=fruitTreeLeaves2,data=7,data=15,allfaces=2063,txtid=veg,transparency=LEAVES
+# Override for standard planks (id=5)
+block:id=5,data=0,allsides=176,topbottom=6176,txtid=blk1
+block:id=5,data=1,allsides=177,topbottom=6177,txtid=blk1
+block:id=5,data=2,allsides=178,topbottom=6178,txtid=blk1
+block:id=5,data=3,allsides=179,topbottom=6179,txtid=blk1
+block:id=5,data=4,allsides=180,topbottom=6180,txtid=blk1
+block:id=5,data=5,allsides=181,topbottom=6181,txtid=blk1
+block:id=5,data=6,allsides=182,topbottom=6182,txtid=blk1
+block:id=5,data=7,allsides=183,topbottom=6183,txtid=blk1
+block:id=5,data=8,allsides=184,topbottom=6184,txtid=blk1
+block:id=5,data=9,allsides=185,topbottom=6185,txtid=blk1
+block:id=5,data=10,allsides=186,topbottom=6186,txtid=blk1
+block:id=5,data=11,allsides=187,topbottom=6187,txtid=blk1
+block:id=5,data=12,allsides=188,topbottom=6188,txtid=blk1
+block:id=5,data=13,allsides=189,topbottom=6189,txtid=blk1
+block:id=5,data=14,allsides=190,topbottom=6190,txtid=blk1
+block:id=5,data=15,allsides=191,topbottom=6191,txtid=blk1
+# Override for standard saplings (id=6)
+block:id=6,data=0,patch0-1=160,txtid=blk1,transparency=TRANSPARENT
+block:id=6,data=1,patch0-1=161,txtid=blk1,transparency=TRANSPARENT
+block:id=6,data=2,patch0-1=162,txtid=blk1,transparency=TRANSPARENT
+block:id=6,data=3,patch0-1=163,txtid=blk1,transparency=TRANSPARENT
+block:id=6,data=4,patch0-1=164,txtid=blk1,transparency=TRANSPARENT
+block:id=6,data=5,patch0-1=165,txtid=blk1,transparency=TRANSPARENT
+block:id=6,data=6,patch0-1=166,txtid=blk1,transparency=TRANSPARENT
+block:id=6,data=7,patch0-1=167,txtid=blk1,transparency=TRANSPARENT
+block:id=6,data=8,patch0-1=168,txtid=blk1,transparency=TRANSPARENT
+block:id=6,data=9,patch0-1=169,txtid=blk1,transparency=TRANSPARENT
+block:id=6,data=10,patch0-1=170,txtid=blk1,transparency=TRANSPARENT
+block:id=6,data=11,patch0-1=171,txtid=blk1,transparency=TRANSPARENT
+block:id=6,data=12,patch0-1=172,txtid=blk1,transparency=TRANSPARENT
+block:id=6,data=13,patch0-1=173,txtid=blk1,transparency=TRANSPARENT
+block:id=6,data=14,patch0-1=174,txtid=blk1,transparency=TRANSPARENT
+block:id=6,data=15,patch0-1=175,txtid=blk1,transparency=TRANSPARENT
+# Override for standard log (id=17)
+block:id=17,data=0,topbottom=6144,allsides=128,txtid=blk1
+block:id=17,data=1,topbottom=6145,allsides=129,txtid=blk1
+block:id=17,data=2,topbottom=6146,allsides=130,txtid=blk1
+block:id=17,data=3,topbottom=6147,allsides=131,txtid=blk1
+block:id=17,data=4,topbottom=6148,allsides=132,txtid=blk1
+block:id=17,data=5,topbottom=6149,allsides=133,txtid=blk1
+block:id=17,data=6,topbottom=6150,allsides=134,txtid=blk1
+block:id=17,data=7,topbottom=6151,allsides=135,txtid=blk1
+block:id=17,data=8,topbottom=6152,allsides=136,txtid=blk1
+block:id=17,data=9,topbottom=6153,allsides=137,txtid=blk1
+block:id=17,data=10,topbottom=6154,allsides=138,txtid=blk1
+block:id=17,data=11,topbottom=6155,allsides=139,txtid=blk1
+block:id=17,data=12,topbottom=6156,allsides=140,txtid=blk1
+block:id=17,data=13,topbottom=6157,allsides=141,txtid=blk1
+block:id=17,data=14,topbottom=6158,allsides=142,txtid=blk1
+block:id=17,data=15,topbottom=6159,allsides=143,txtid=blk1
+# Override for standard leaves (id=18)
+block:id=18,data=0,allfaces=1096,txtid=blk1,transparency=LEAVES
+block:id=18,data=1,allfaces=1097,txtid=blk1,transparency=LEAVES
+block:id=18,data=2,allfaces=1098,txtid=blk1,transparency=LEAVES
+block:id=18,data=3,allfaces=1099,txtid=blk1,transparency=LEAVES
+block:id=18,data=4,allfaces=1100,txtid=blk1,transparency=LEAVES
+block:id=18,data=5,allfaces=1101,txtid=blk1,transparency=LEAVES
+block:id=18,data=6,allfaces=1102,txtid=blk1,transparency=LEAVES
+block:id=18,data=7,allfaces=1103,txtid=blk1,transparency=LEAVES
+block:id=18,data=8,allfaces=1104,txtid=blk1,transparency=LEAVES
+block:id=18,data=9,allfaces=1105,txtid=blk1,transparency=LEAVES
+block:id=18,data=10,allfaces=1106,txtid=blk1,transparency=LEAVES
+block:id=18,data=11,allfaces=1107,txtid=blk1,transparency=LEAVES
+block:id=18,data=12,allfaces=1108,txtid=blk1,transparency=LEAVES
+block:id=18,data=13,allfaces=1109,txtid=blk1,transparency=LEAVES
+block:id=18,data=14,allfaces=1110,txtid=blk1,transparency=LEAVES
+block:id=18,data=15,allfaces=1111,txtid=blk1,transparency=LEAVES

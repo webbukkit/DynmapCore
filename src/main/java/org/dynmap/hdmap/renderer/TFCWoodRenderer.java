@@ -14,11 +14,8 @@ import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
 
-public class TFCSupportRenderer extends CustomRenderer {
+public class TFCWoodRenderer extends CustomRenderer {
     private int blkid;    
-    private boolean isVert;
-    private static BitSet vertid = new BitSet();
-    private static BitSet horizid = new BitSet();
 
     private static final int SIDE_XP = 0x1;
     private static final int SIDE_XN = 0x2;
@@ -36,14 +33,6 @@ public class TFCSupportRenderer extends CustomRenderer {
         if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
             return false;
         this.blkid = blkid; /* Remember our block ID */
-        String vert = custparm.get("vert");
-        if((vert != null) && (vert.equals("true"))) {
-            isVert = true;
-            vertid.set(blkid, true);
-        }
-        else {
-            horizid.set(blkid, true);
-        }
         /* Generate meshes */
         buildMeshes(rpf);
         
@@ -64,34 +53,34 @@ public class TFCSupportRenderer extends CustomRenderer {
     private void buildMeshes(RenderPatchFactory rpf) {
         ArrayList<RenderPatch> list = new ArrayList<RenderPatch>();
         for(int dat = 0; dat < 32; dat++) {
-            switch(dat & SIDE_X) {
+            int dat2 = dat;
+            if((dat & SIDE_YN) == 0) {  /* Nothing below, always X-Y */
+                dat2 |= SIDE_X | SIDE_Z;
+            }
+            else {  /* Else, add center */
+                addBox(rpf, list, 0.3125, 0.6875, 0.0, 1.0, 0.3125, 0.6875);
+            }
+            switch(dat2 & SIDE_X) {
                 case SIDE_XP: // Just X+
-                    addBox(rpf, list, 0.75, 1.0, 0.5, 1.0, 0.25, 0.75);
+                    addBox(rpf, list, 0.6875, 1.0, 0.375, 0.625, 0.375, 0.625);
                     break;
                 case SIDE_XN: // Just X-
-                    addBox(rpf, list, 0.0, 0.25, 0.5, 1.0, 0.25, 0.75);
+                    addBox(rpf, list, 0.0, 0.3125, 0.375, 0.625, 0.375, 0.625);
                     break;
                 case SIDE_X: // X- and X+
-                    addBox(rpf, list, 0.0, 1.0, 0.5, 1.0, 0.25, 0.75);
+                    addBox(rpf, list, 0.0, 1.0, 0.375, 0.625, 0.375, 0.625);
                     break;
             }
-            switch(dat & SIDE_Z) {
+            switch(dat2 & SIDE_Z) {
                 case SIDE_ZP: // Just Z+
-                    addBox(rpf, list, 0.25, 0.75, 0.5, 1.0, 0.75, 1.0);
+                    addBox(rpf, list, 0.375, 0.625, 0.375, 0.625, 0.6875, 1.0);
                     break;
                 case SIDE_ZN: // Just Z-
-                    addBox(rpf, list, 0.25, 0.75, 0.5, 1.0, 0.0, 0.25);
+                    addBox(rpf, list, 0.375, 0.625, 0.375, 0.625, 0.0, 0.3125);
                     break;
                 case SIDE_Z: // Z- and Z+
-                    addBox(rpf, list, 0.25, 0.75, 0.5, 1.0, 0.0, 1.0);
+                    addBox(rpf, list, 0.375, 0.625, 0.375, 0.625, 0.0, 1.0);
                     break;
-            }
-            /* Always have post on vertical */
-            if(isVert || ((dat & SIDE_YN) != 0)) {
-                addBox(rpf, list, 0.25, 0.75, 0.0, 1.0, 0.25, 0.75);
-            }
-            else {
-                addBox(rpf, list, 0.25, 0.75, 0.5, 1.0, 0.25, 0.75);
             }
             meshes[dat] = list.toArray(new RenderPatch[list.size()]);
             list.clear();
@@ -111,16 +100,13 @@ public class TFCSupportRenderer extends CustomRenderer {
         int connect = 0;
         for(int i = 0; i < sides.length; i++) {
             int id = ctx.getBlockTypeIDAt(sides[i][0], sides[i][1], sides[i][2]);
-            if(id == 0) continue;
-            if(vertid.get(id) || horizid.get(id)) {
+            if(id == blkid) {
                 connect |= sides[i][3];
             }
         }
-        if(!isVert) {   /* Link horizontal to verticals below */
-            int id = ctx.getBlockTypeIDAt(0, -1, 0);
-            if((id > 0) && vertid.get(id)) {
-                connect |= SIDE_YN;
-            }
+        int id = ctx.getBlockTypeIDAt(0, -1, 0);
+        if(id > 0) {
+            connect |= SIDE_YN;
         }
         return meshes[connect];
     }    
