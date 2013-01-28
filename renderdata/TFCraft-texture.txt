@@ -618,3 +618,181 @@ block:id=WallSmoothMM,data=2,patch0-2=108,txtid=rock,transparency=TRANSPARENT
 block:id=WallSmoothMM,data=3,patch0-2=109,txtid=rock,transparency=TRANSPARENT
 block:id=WallSmoothMM,data=4,patch0-2=110,txtid=rock,transparency=TRANSPARENT
 block:id=WallSmoothMM,data=5,patch0-2=111,txtid=rock,transparency=TRANSPARENT
+
+/* 470 */     DoorOak = new BlockCustomDoor(TFC_Settings.getIntFor(config, "block", "DoorOak", 2041), agi.d, 0).b("Door Oak");
+/* 471 */     DoorAspen = new BlockCustomDoor(TFC_Settings.getIntFor(config, "block", "DoorAspen", 2042), agi.d, 1).b("Door Aspen");
+/* 472 */     DoorBirch = new BlockCustomDoor(TFC_Settings.getIntFor(config, "block", "DoorBirch", 2043), agi.d, 2).b("Door Birch");
+/* 473 */     DoorChestnut = new BlockCustomDoor(TFC_Settings.getIntFor(config, "block", "DoorChestnut", 2044), agi.d, 3).b("Door Chestnut");
+/* 474 */     DoorDouglasFir = new BlockCustomDoor(TFC_Settings.getIntFor(config, "block", "DoorDouglasFir", 2045), agi.d, 4).b("Door Douglas Fir");
+/* 475 */     DoorHickory = new BlockCustomDoor(TFC_Settings.getIntFor(config, "block", "DoorHickory", 2046), agi.d, 5).b("Door Hickory");
+/* 476 */     DoorMaple = new BlockCustomDoor(TFC_Settings.getIntFor(config, "block", "DoorMaple", 2047), agi.d, 6).b("Door Maple");
+/* 477 */     DoorAsh = new BlockCustomDoor(TFC_Settings.getIntFor(config, "block", "DoorAsh", 2048), agi.d, 7).b("Door Ash");
+/* 478 */     DoorPine = new BlockCustomDoor(TFC_Settings.getIntFor(config, "block", "DoorPine", 2049), agi.d, 8).b("Door Pine");
+/* 479 */     DoorSequoia = new BlockCustomDoor(TFC_Settings.getIntFor(config, "block", "DoorSequoia", 2050), agi.d, 9).b("Door Sequoia");
+/* 480 */     DoorSpruce = new BlockCustomDoor(TFC_Settings.getIntFor(config, "block", "DoorSpruce", 2051), agi.d, 10).b("Door Spruce");
+/* 481 */     DoorSycamore = new BlockCustomDoor(TFC_Settings.getIntFor(config, "block", "DoorSycamore", 2052), agi.d, 11).b("Door Sycamore");
+/* 482 */     DoorWhiteCedar = new BlockCustomDoor(TFC_Settings.getIntFor(config, "block", "DoorWhiteCedar", 2053), agi.d, 12).b("Door White Cedar");
+/* 483 */     DoorWhiteElm = new BlockCustomDoor(TFC_Settings.getIntFor(config, "block", "DoorWhiteElm", 2054), agi.d, 13).b("Door White Elm");
+/* 484 */     DoorWillow = new BlockCustomDoor(TFC_Settings.getIntFor(config, "block", "DoorWillow", 2055), agi.d, 14).b("Door Willow");
+/* 485 */     DoorKapok = new BlockCustomDoor(TFC_Settings.getIntFor(config, "block", "DoorKapok", 2056), agi.d, 15).b("Door Kapok");
+
+# DoorOak
+block:id=DoorOak,data=0,data=1,patch0=16,patch1=7016,patch2=7016,patch3=16,patch4=4016,patch5=4016,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorOak,data=2,data=3,patch0=7016,patch1=16,patch2=7016,patch3=16,patch4=4016,patch5=4016,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorOak,data=4,data=5,patch0=7016,patch1=16,patch2=7016,patch3=16,patch4=4016,patch5=4016,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorOak,data=6,data=7,patch0=16,patch1=7016,patch2=7016,patch3=16,patch4=4016,patch5=4016,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorOak,data=8,data=9,patch0=0,patch1=7000,patch2=7000,patch3=0,patch4=4000,patch5=4000,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorOak,data=10,data=11,patch0=7000,patch1=0,patch2=7000,patch3=0,patch4=4000,patch5=4000,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorOak,data=12,data=13,patch0=7000,patch1=0,patch2=7000,patch3=0,patch4=4000,patch5=4000,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorOak,data=14,data=15,patch0=0,patch1=7000,patch2=7000,patch3=0,patch4=4000,patch5=4000,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+
+# DoorAspen
+block:id=DoorAspen,data=0,data=1,patch0=17,patch1=7017,patch2=7017,patch3=17,patch4=4017,patch5=4017,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorAspen,data=2,data=3,patch0=7017,patch1=17,patch2=7017,patch3=17,patch4=4017,patch5=4017,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorAspen,data=4,data=5,patch0=7017,patch1=17,patch2=7017,patch3=17,patch4=4017,patch5=4017,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorAspen,data=6,data=7,patch0=17,patch1=7017,patch2=7017,patch3=17,patch4=4017,patch5=4017,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorAspen,data=8,data=9,patch0=1,patch1=7001,patch2=7001,patch3=1,patch4=4001,patch5=4001,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorAspen,data=10,data=11,patch0=7001,patch1=1,patch2=7001,patch3=1,patch4=4001,patch5=4001,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorAspen,data=12,data=13,patch0=7001,patch1=1,patch2=7001,patch3=1,patch4=4001,patch5=4001,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorAspen,data=14,data=15,patch0=1,patch1=7001,patch2=7001,patch3=1,patch4=4001,patch5=4001,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+
+# DoorBirch
+block:id=DoorBirch,data=0,data=1,patch0=18,patch1=7018,patch2=7018,patch3=18,patch4=4018,patch5=4018,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorBirch,data=2,data=3,patch0=7018,patch1=18,patch2=7018,patch3=18,patch4=4018,patch5=4018,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorBirch,data=4,data=5,patch0=7018,patch1=18,patch2=7018,patch3=18,patch4=4018,patch5=4018,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorBirch,data=6,data=7,patch0=18,patch1=7018,patch2=7018,patch3=18,patch4=4018,patch5=4018,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorBirch,data=8,data=9,patch0=2,patch1=7002,patch2=7002,patch3=2,patch4=4002,patch5=4002,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorBirch,data=10,data=11,patch0=7002,patch1=2,patch2=7002,patch3=2,patch4=4002,patch5=4002,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorBirch,data=12,data=13,patch0=7002,patch1=2,patch2=7002,patch3=2,patch4=4002,patch5=4002,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorBirch,data=14,data=15,patch0=2,patch1=7002,patch2=7002,patch3=2,patch4=4002,patch5=4002,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+
+# DoorChestnut
+block:id=DoorChestnut,data=0,data=1,patch0=19,patch1=7019,patch2=7019,patch3=19,patch4=4019,patch5=4019,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorChestnut,data=2,data=3,patch0=7019,patch1=19,patch2=7019,patch3=19,patch4=4019,patch5=4019,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorChestnut,data=4,data=5,patch0=7019,patch1=19,patch2=7019,patch3=19,patch4=4019,patch5=4019,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorChestnut,data=6,data=7,patch0=19,patch1=7019,patch2=7019,patch3=19,patch4=4019,patch5=4019,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorChestnut,data=8,data=9,patch0=3,patch1=7003,patch2=7003,patch3=3,patch4=4003,patch5=4003,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorChestnut,data=10,data=11,patch0=7003,patch1=3,patch2=7003,patch3=3,patch4=4003,patch5=4003,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorChestnut,data=12,data=13,patch0=7003,patch1=3,patch2=7003,patch3=3,patch4=4003,patch5=4003,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorChestnut,data=14,data=15,patch0=3,patch1=7003,patch2=7003,patch3=3,patch4=4003,patch5=4003,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+
+# DoorDouglasFir
+block:id=DoorDouglasFir,data=0,data=1,patch0=20,patch1=7020,patch2=7020,patch3=20,patch4=4020,patch5=4020,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorDouglasFir,data=2,data=3,patch0=7020,patch1=20,patch2=7020,patch3=20,patch4=4020,patch5=4020,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorDouglasFir,data=4,data=5,patch0=7020,patch1=20,patch2=7020,patch3=20,patch4=4020,patch5=4020,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorDouglasFir,data=6,data=7,patch0=20,patch1=7020,patch2=7020,patch3=20,patch4=4020,patch5=4020,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorDouglasFir,data=8,data=9,patch0=4,patch1=7004,patch2=7004,patch3=4,patch4=4004,patch5=4004,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorDouglasFir,data=10,data=11,patch0=7004,patch1=4,patch2=7004,patch3=4,patch4=4004,patch5=4004,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorDouglasFir,data=12,data=13,patch0=7004,patch1=4,patch2=7004,patch3=4,patch4=4004,patch5=4004,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorDouglasFir,data=14,data=15,patch0=4,patch1=7004,patch2=7004,patch3=4,patch4=4004,patch5=4004,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+
+# DoorHickory
+block:id=DoorHickory,data=0,data=1,patch0=21,patch1=7021,patch2=7021,patch3=21,patch4=4021,patch5=4021,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorHickory,data=2,data=3,patch0=7021,patch1=21,patch2=7021,patch3=21,patch4=4021,patch5=4021,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorHickory,data=4,data=5,patch0=7021,patch1=21,patch2=7021,patch3=21,patch4=4021,patch5=4021,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorHickory,data=6,data=7,patch0=21,patch1=7021,patch2=7021,patch3=21,patch4=4021,patch5=4021,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorHickory,data=8,data=9,patch0=5,patch1=7005,patch2=7005,patch3=5,patch4=4005,patch5=4005,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorHickory,data=10,data=11,patch0=7005,patch1=5,patch2=7005,patch3=5,patch4=4005,patch5=4005,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorHickory,data=12,data=13,patch0=7005,patch1=5,patch2=7005,patch3=5,patch4=4005,patch5=4005,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorHickory,data=14,data=15,patch0=5,patch1=7005,patch2=7005,patch3=5,patch4=4005,patch5=4005,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+
+# DoorMaple
+block:id=DoorMaple,data=0,data=1,patch0=22,patch1=7022,patch2=7022,patch3=22,patch4=4022,patch5=4022,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorMaple,data=2,data=3,patch0=7022,patch1=22,patch2=7022,patch3=22,patch4=4022,patch5=4022,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorMaple,data=4,data=5,patch0=7022,patch1=22,patch2=7022,patch3=22,patch4=4022,patch5=4022,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorMaple,data=6,data=7,patch0=22,patch1=7022,patch2=7022,patch3=22,patch4=4022,patch5=4022,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorMaple,data=8,data=9,patch0=6,patch1=7006,patch2=7006,patch3=6,patch4=4006,patch5=4006,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorMaple,data=10,data=11,patch0=7006,patch1=6,patch2=7006,patch3=6,patch4=4006,patch5=4006,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorMaple,data=12,data=13,patch0=7006,patch1=6,patch2=7006,patch3=6,patch4=4006,patch5=4006,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorMaple,data=14,data=15,patch0=6,patch1=7006,patch2=7006,patch3=6,patch4=4006,patch5=4006,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+
+# DoorAsh
+block:id=DoorAsh,data=0,data=1,patch0=23,patch1=7023,patch2=7023,patch3=23,patch4=4023,patch5=4023,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorAsh,data=2,data=3,patch0=7023,patch1=23,patch2=7023,patch3=23,patch4=4023,patch5=4023,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorAsh,data=4,data=5,patch0=7023,patch1=23,patch2=7023,patch3=23,patch4=4023,patch5=4023,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorAsh,data=6,data=7,patch0=23,patch1=7023,patch2=7023,patch3=23,patch4=4023,patch5=4023,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorAsh,data=8,data=9,patch0=7,patch1=7007,patch2=7007,patch3=7,patch4=4007,patch5=4007,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorAsh,data=10,data=11,patch0=7007,patch1=7,patch2=7007,patch3=7,patch4=4007,patch5=4007,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorAsh,data=12,data=13,patch0=7007,patch1=7,patch2=7007,patch3=7,patch4=4007,patch5=4007,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorAsh,data=14,data=15,patch0=7,patch1=7007,patch2=7007,patch3=7,patch4=4007,patch5=4007,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+
+# DoorPine
+block:id=DoorPine,data=0,data=1,patch0=24,patch1=7024,patch2=7024,patch3=24,patch4=4024,patch5=4024,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorPine,data=2,data=3,patch0=7024,patch1=24,patch2=7024,patch3=24,patch4=4024,patch5=4024,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorPine,data=4,data=5,patch0=7024,patch1=24,patch2=7024,patch3=24,patch4=4024,patch5=4024,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorPine,data=6,data=7,patch0=24,patch1=7024,patch2=7024,patch3=24,patch4=4024,patch5=4024,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorPine,data=8,data=9,patch0=8,patch1=7008,patch2=7008,patch3=8,patch4=4008,patch5=4008,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorPine,data=10,data=11,patch0=7008,patch1=8,patch2=7008,patch3=8,patch4=4008,patch5=4008,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorPine,data=12,data=13,patch0=7008,patch1=8,patch2=7008,patch3=8,patch4=4008,patch5=4008,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorPine,data=14,data=15,patch0=8,patch1=7008,patch2=7008,patch3=8,patch4=4008,patch5=4008,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+
+# DoorSequoia
+block:id=DoorSequoia,data=0,data=1,patch0=25,patch1=7025,patch2=7025,patch3=25,patch4=4025,patch5=4025,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorSequoia,data=2,data=3,patch0=7025,patch1=25,patch2=7025,patch3=25,patch4=4025,patch5=4025,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorSequoia,data=4,data=5,patch0=7025,patch1=25,patch2=7025,patch3=25,patch4=4025,patch5=4025,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorSequoia,data=6,data=7,patch0=25,patch1=7025,patch2=7025,patch3=25,patch4=4025,patch5=4025,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorSequoia,data=8,data=9,patch0=9,patch1=7009,patch2=7009,patch3=9,patch4=4009,patch5=4009,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorSequoia,data=10,data=11,patch0=7009,patch1=9,patch2=7009,patch3=9,patch4=4009,patch5=4009,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorSequoia,data=12,data=13,patch0=7009,patch1=9,patch2=7009,patch3=9,patch4=4009,patch5=4009,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorSequoia,data=14,data=15,patch0=9,patch1=7009,patch2=7009,patch3=9,patch4=4009,patch5=4009,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+
+# DoorSpruce
+block:id=DoorSpruce,data=0,data=1,patch0=26,patch1=7026,patch2=7026,patch3=26,patch4=4026,patch5=4026,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorSpruce,data=2,data=3,patch0=7026,patch1=26,patch2=7026,patch3=26,patch4=4026,patch5=4026,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorSpruce,data=4,data=5,patch0=7026,patch1=26,patch2=7026,patch3=26,patch4=4026,patch5=4026,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorSpruce,data=6,data=7,patch0=26,patch1=7026,patch2=7026,patch3=26,patch4=4026,patch5=4026,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorSpruce,data=8,data=9,patch0=10,patch1=7010,patch2=7010,patch3=10,patch4=4010,patch5=4010,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorSpruce,data=10,data=11,patch0=7010,patch1=10,patch2=7010,patch3=10,patch4=4010,patch5=4010,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorSpruce,data=12,data=13,patch0=7010,patch1=10,patch2=7010,patch3=10,patch4=4010,patch5=4010,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorSpruce,data=14,data=15,patch0=10,patch1=7010,patch2=7010,patch3=10,patch4=4010,patch5=4010,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+
+# DoorSycamore
+block:id=DoorSycamore,data=0,data=1,patch0=27,patch1=7027,patch2=7027,patch3=27,patch4=4027,patch5=4027,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorSycamore,data=2,data=3,patch0=7027,patch1=27,patch2=7027,patch3=27,patch4=4027,patch5=4027,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorSycamore,data=4,data=5,patch0=7027,patch1=27,patch2=7027,patch3=27,patch4=4027,patch5=4027,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorSycamore,data=6,data=7,patch0=27,patch1=7027,patch2=7027,patch3=27,patch4=4027,patch5=4027,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorSycamore,data=8,data=9,patch0=11,patch1=7011,patch2=7011,patch3=11,patch4=4011,patch5=4011,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorSycamore,data=10,data=11,patch0=7011,patch1=11,patch2=7011,patch3=11,patch4=4011,patch5=4011,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorSycamore,data=12,data=13,patch0=7011,patch1=11,patch2=7011,patch3=11,patch4=4011,patch5=4011,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorSycamore,data=14,data=15,patch0=11,patch1=7011,patch2=7011,patch3=11,patch4=4011,patch5=4011,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+
+# DoorWhiteCedar
+block:id=DoorWhiteCedar,data=0,data=1,patch0=28,patch1=7028,patch2=7028,patch3=28,patch4=4028,patch5=4028,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorWhiteCedar,data=2,data=3,patch0=7028,patch1=28,patch2=7028,patch3=28,patch4=4028,patch5=4028,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorWhiteCedar,data=4,data=5,patch0=7028,patch1=28,patch2=7028,patch3=28,patch4=4028,patch5=4028,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorWhiteCedar,data=6,data=7,patch0=28,patch1=7028,patch2=7028,patch3=28,patch4=4028,patch5=4028,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorWhiteCedar,data=8,data=9,patch0=12,patch1=7012,patch2=7012,patch3=12,patch4=4012,patch5=4012,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorWhiteCedar,data=10,data=11,patch0=7012,patch1=12,patch2=7012,patch3=12,patch4=4012,patch5=4012,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorWhiteCedar,data=12,data=13,patch0=7012,patch1=12,patch2=7012,patch3=12,patch4=4012,patch5=4012,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorWhiteCedar,data=14,data=15,patch0=12,patch1=7012,patch2=7012,patch3=12,patch4=4012,patch5=4012,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+
+# DoorWhiteElm
+block:id=DoorWhiteElm,data=0,data=1,patch0=29,patch1=7029,patch2=7029,patch3=29,patch4=4029,patch5=4029,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorWhiteElm,data=2,data=3,patch0=7029,patch1=29,patch2=7029,patch3=29,patch4=4029,patch5=4029,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorWhiteElm,data=4,data=5,patch0=7029,patch1=29,patch2=7029,patch3=29,patch4=4029,patch5=4029,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorWhiteElm,data=6,data=7,patch0=29,patch1=7029,patch2=7029,patch3=29,patch4=4029,patch5=4029,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorWhiteElm,data=8,data=9,patch0=13,patch1=7013,patch2=7013,patch3=13,patch4=4013,patch5=4013,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorWhiteElm,data=10,data=11,patch0=7013,patch1=13,patch2=7013,patch3=13,patch4=4013,patch5=4013,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorWhiteElm,data=12,data=13,patch0=7013,patch1=13,patch2=7013,patch3=13,patch4=4013,patch5=4013,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorWhiteElm,data=14,data=15,patch0=13,patch1=7013,patch2=7013,patch3=13,patch4=4013,patch5=4013,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+
+# DoorWillow
+block:id=DoorWillow,data=0,data=1,patch0=30,patch1=7030,patch2=7030,patch3=30,patch4=4030,patch5=4030,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorWillow,data=2,data=3,patch0=7030,patch1=30,patch2=7030,patch3=30,patch4=4030,patch5=4030,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorWillow,data=4,data=5,patch0=7030,patch1=30,patch2=7030,patch3=30,patch4=4030,patch5=4030,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorWillow,data=6,data=7,patch0=30,patch1=7030,patch2=7030,patch3=30,patch4=4030,patch5=4030,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorWillow,data=8,data=9,patch0=14,patch1=7014,patch2=7014,patch3=14,patch4=4014,patch5=4014,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorWillow,data=10,data=11,patch0=7014,patch1=14,patch2=7014,patch3=14,patch4=4014,patch5=4014,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorWillow,data=12,data=13,patch0=7014,patch1=14,patch2=7014,patch3=14,patch4=4014,patch5=4014,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorWillow,data=14,data=15,patch0=14,patch1=7014,patch2=7014,patch3=14,patch4=4014,patch5=4014,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+
+# DoorKapok
+block:id=DoorKapok,data=0,data=1,patch0=31,patch1=7031,patch2=7031,patch3=31,patch4=4031,patch5=4031,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorKapok,data=2,data=3,patch0=7031,patch1=31,patch2=7031,patch3=31,patch4=4031,patch5=4031,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorKapok,data=4,data=5,patch0=7031,patch1=31,patch2=7031,patch3=31,patch4=4031,patch5=4031,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorKapok,data=6,data=7,patch0=31,patch1=7031,patch2=7031,patch3=31,patch4=4031,patch5=4031,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorKapok,data=8,data=9,patch0=15,patch1=7015,patch2=7015,patch3=15,patch4=4015,patch5=4015,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorKapok,data=10,data=11,patch0=7015,patch1=15,patch2=7015,patch3=15,patch4=4015,patch5=4015,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorKapok,data=12,data=13,patch0=7015,patch1=15,patch2=7015,patch3=15,patch4=4015,patch5=4015,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+block:id=DoorKapok,data=14,data=15,patch0=15,patch1=7015,patch2=7015,patch3=15,patch4=4015,patch5=4015,transparency=TRANSPARENT,userenderdata=true,txtid=blk1
+
