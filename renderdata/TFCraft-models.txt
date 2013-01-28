@@ -35,3 +35,28 @@ customblock:id=WoodSupportH,data=*,class=org.dynmap.hdmap.renderer.TFCSupportRen
 
 # fruitTreeWood=
 customblock:id=fruitTreeWood,data=*,class=org.dynmap.hdmap.renderer.TFCWoodRenderer
+
+# WallCobbleIgIn
+# WallRawIgIn
+# WallBrickIgIn
+# WallSmoothIgIn
+customblock:id=WallCobbleIgIn,id=WallRawIgIn,id=WallBrickIgIn,id=WallSmoothIgIn,data=0,data=1,data=2,class=org.dynmap.hdmap.renderer.FenceWallBlockRenderer,type=wall,link0=107
+
+# WallCobbleIgEx
+# WallRawIgEx
+# WallBrickIgEx
+# WallSmoothIgEx
+customblock:id=WallCobbleIgEx,id=WallRawIgEx,id=WallBrickIgEx,id=WallSmoothIgEx,data=0,data=1,data=2,data=3,class=org.dynmap.hdmap.renderer.FenceWallBlockRenderer,type=wall,link0=107
+
+# WallCobbleSed
+# WallRawSed
+# WallBrickSed
+# WallSmoothSed
+customblock:id=WallCobbleSed,id=WallRawSed,id=WallBrickSed,id=WallSmoothSed,data=0,data=1,data=2,data=3,data=4,data=5,data=6,data=7,data=8,data=9,class=org.dynmap.hdmap.renderer.FenceWallBlockRenderer,type=wall,link0=107
+
+# WallCobbleMM
+# WallRawMM
+# WallBrickMM
+# WallSmoothMM
+customblock:id=WallCobbleMM,id=WallRawMM,id=WallBrickMM,id=WallSmoothMM,data=0,data=1,data=2,data=3,data=4,data=5,class=org.dynmap.hdmap.renderer.FenceWallBlockRenderer,type=wall,link0=107
+

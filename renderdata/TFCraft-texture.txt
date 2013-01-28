@@ -508,3 +508,113 @@ block:id=18,data=12,allfaces=1108,txtid=blk1,transparency=LEAVES
 block:id=18,data=13,allfaces=1109,txtid=blk1,transparency=LEAVES
 block:id=18,data=14,allfaces=1110,txtid=blk1,transparency=LEAVES
 block:id=18,data=15,allfaces=1111,txtid=blk1,transparency=LEAVES
+# bucketWater
+block:id=bucketWater,allfaces=12258,transparency=SEMITRANSPARENT
+# WallCobbleIgIn
+block:id=WallCobbleIgIn,data=0,patch0-2=16,txtid=rock,transparency=TRANSPARENT
+block:id=WallCobbleIgIn,data=1,patch0-2=17,txtid=rock,transparency=TRANSPARENT
+block:id=WallCobbleIgIn,data=2,patch0-2=18,txtid=rock,transparency=TRANSPARENT
+# WallCobbleIgEx
+block:id=WallCobbleIgEx,data=0,patch0-2=19,txtid=rock,transparency=TRANSPARENT
+block:id=WallCobbleIgEx,data=1,patch0-2=20,txtid=rock,transparency=TRANSPARENT
+block:id=WallCobbleIgEx,data=2,patch0-2=21,txtid=rock,transparency=TRANSPARENT
+block:id=WallCobbleIgEx,data=3,patch0-2=22,txtid=rock,transparency=TRANSPARENT
+# WallCobbleSed
+block:id=WallCobbleSed,data=0,patch0-2=80,txtid=rock,transparency=TRANSPARENT
+block:id=WallCobbleSed,data=1,patch0-2=81,txtid=rock,transparency=TRANSPARENT
+block:id=WallCobbleSed,data=2,patch0-2=82,txtid=rock,transparency=TRANSPARENT
+block:id=WallCobbleSed,data=3,patch0-2=83,txtid=rock,transparency=TRANSPARENT
+block:id=WallCobbleSed,data=4,patch0-2=84,txtid=rock,transparency=TRANSPARENT
+block:id=WallCobbleSed,data=5,patch0-2=85,txtid=rock,transparency=TRANSPARENT
+block:id=WallCobbleSed,data=6,patch0-2=86,txtid=rock,transparency=TRANSPARENT
+block:id=WallCobbleSed,data=7,patch0-2=87,txtid=rock,transparency=TRANSPARENT
+block:id=WallCobbleSed,data=8,patch0-2=88,txtid=rock,transparency=TRANSPARENT
+block:id=WallCobbleSed,data=9,patch0-2=89,txtid=rock,transparency=TRANSPARENT
+# WallCobbleMM
+block:id=WallCobbleMM,data=0,patch0-2=90,txtid=rock,transparency=TRANSPARENT
+block:id=WallCobbleMM,data=1,patch0-2=91,txtid=rock,transparency=TRANSPARENT
+block:id=WallCobbleMM,data=2,patch0-2=92,txtid=rock,transparency=TRANSPARENT
+block:id=WallCobbleMM,data=3,patch0-2=93,txtid=rock,transparency=TRANSPARENT
+block:id=WallCobbleMM,data=4,patch0-2=94,txtid=rock,transparency=TRANSPARENT
+block:id=WallCobbleMM,data=5,patch0-2=95,txtid=rock,transparency=TRANSPARENT
+# WallRawIgIn
+block:id=WallRawIgIn,data=0,patch0-2=0,txtid=rock,transparency=TRANSPARENT
+block:id=WallRawIgIn,data=1,patch0-2=1,txtid=rock,transparency=TRANSPARENT
+block:id=WallRawIgIn,data=2,patch0-2=2,txtid=rock,transparency=TRANSPARENT
+# WallRawIgEx
+block:id=WallRawIgEx,data=0,patch0-2=3,txtid=rock,transparency=TRANSPARENT
+block:id=WallRawIgEx,data=1,patch0-2=4,txtid=rock,transparency=TRANSPARENT
+block:id=WallRawIgEx,data=2,patch0-2=5,txtid=rock,transparency=TRANSPARENT
+block:id=WallRawIgEx,data=3,patch0-2=6,txtid=rock,transparency=TRANSPARENT
+# WallRawSed
+block:id=WallRawSed,data=0,patch0-2=64,txtid=rock,transparency=TRANSPARENT
+block:id=WallRawSed,data=1,patch0-2=65,txtid=rock,transparency=TRANSPARENT
+block:id=WallRawSed,data=2,patch0-2=66,txtid=rock,transparency=TRANSPARENT
+block:id=WallRawSed,data=3,patch0-2=67,txtid=rock,transparency=TRANSPARENT
+block:id=WallRawSed,data=4,patch0-2=68,txtid=rock,transparency=TRANSPARENT
+block:id=WallRawSed,data=5,patch0-2=69,txtid=rock,transparency=TRANSPARENT
+block:id=WallRawSed,data=6,patch0-2=70,txtid=rock,transparency=TRANSPARENT
+block:id=WallRawSed,data=7,patch0-2=71,txtid=rock,transparency=TRANSPARENT
+block:id=WallRawSed,data=8,patch0-2=72,txtid=rock,transparency=TRANSPARENT
+block:id=WallRawSed,data=9,patch0-2=73,txtid=rock,transparency=TRANSPARENT
+# WallRawMM
+block:id=WallRawMM,data=0,patch0-2=74,txtid=rock,transparency=TRANSPARENT
+block:id=WallRawMM,data=1,patch0-2=75,txtid=rock,transparency=TRANSPARENT
+block:id=WallRawMM,data=2,patch0-2=76,txtid=rock,transparency=TRANSPARENT
+block:id=WallRawMM,data=3,patch0-2=77,txtid=rock,transparency=TRANSPARENT
+block:id=WallRawMM,data=4,patch0-2=78,txtid=rock,transparency=TRANSPARENT
+block:id=WallRawMM,data=5,patch0-2=79,txtid=rock,transparency=TRANSPARENT
+# WallBrickIgIn
+block:id=WallBrickIgIn,data=0,patch0-2=48,txtid=rock,transparency=TRANSPARENT
+block:id=WallBrickIgIn,data=1,patch0-2=49,txtid=rock,transparency=TRANSPARENT
+block:id=WallBrickIgIn,data=2,patch0-2=50,txtid=rock,transparency=TRANSPARENT
+# WallBrickIgEx
+block:id=WallBrickIgEx,data=0,patch0-2=51,txtid=rock,transparency=TRANSPARENT
+block:id=WallBrickIgEx,data=1,patch0-2=52,txtid=rock,transparency=TRANSPARENT
+block:id=WallBrickIgEx,data=2,patch0-2=53,txtid=rock,transparency=TRANSPARENT
+block:id=WallBrickIgEx,data=3,patch0-2=54,txtid=rock,transparency=TRANSPARENT
+# WallBrickSed
+block:id=WallBrickSed,data=0,patch0-2=112,txtid=rock,transparency=TRANSPARENT
+block:id=WallBrickSed,data=1,patch0-2=113,txtid=rock,transparency=TRANSPARENT
+block:id=WallBrickSed,data=2,patch0-2=114,txtid=rock,transparency=TRANSPARENT
+block:id=WallBrickSed,data=3,patch0-2=115,txtid=rock,transparency=TRANSPARENT
+block:id=WallBrickSed,data=4,patch0-2=116,txtid=rock,transparency=TRANSPARENT
+block:id=WallBrickSed,data=5,patch0-2=117,txtid=rock,transparency=TRANSPARENT
+block:id=WallBrickSed,data=6,patch0-2=118,txtid=rock,transparency=TRANSPARENT
+block:id=WallBrickSed,data=7,patch0-2=119,txtid=rock,transparency=TRANSPARENT
+block:id=WallBrickSed,data=8,patch0-2=120,txtid=rock,transparency=TRANSPARENT
+block:id=WallBrickSed,data=9,patch0-2=121,txtid=rock,transparency=TRANSPARENT
+# WallBrickMM
+block:id=WallBrickMM,data=0,patch0-2=122,txtid=rock,transparency=TRANSPARENT
+block:id=WallBrickMM,data=1,patch0-2=123,txtid=rock,transparency=TRANSPARENT
+block:id=WallBrickMM,data=2,patch0-2=124,txtid=rock,transparency=TRANSPARENT
+block:id=WallBrickMM,data=3,patch0-2=125,txtid=rock,transparency=TRANSPARENT
+block:id=WallBrickMM,data=4,patch0-2=126,txtid=rock,transparency=TRANSPARENT
+block:id=WallBrickMM,data=5,patch0-2=127,txtid=rock,transparency=TRANSPARENT
+# WallSmoothIgIn
+block:id=WallSmoothIgIn,data=0,patch0-2=32,txtid=rock,transparency=TRANSPARENT
+block:id=WallSmoothIgIn,data=1,patch0-2=33,txtid=rock,transparency=TRANSPARENT
+block:id=WallSmoothIgIn,data=2,patch0-2=34,txtid=rock,transparency=TRANSPARENT
+# WallSmoothIgEx
+block:id=WallSmoothIgEx,data=0,patch0-2=35,txtid=rock,transparency=TRANSPARENT
+block:id=WallSmoothIgEx,data=1,patch0-2=36,txtid=rock,transparency=TRANSPARENT
+block:id=WallSmoothIgEx,data=2,patch0-2=37,txtid=rock,transparency=TRANSPARENT
+block:id=WallSmoothIgEx,data=3,patch0-2=38,txtid=rock,transparency=TRANSPARENT
+# WallSmoothSed
+block:id=WallSmoothSed,data=0,patch0-2=96,txtid=rock,transparency=TRANSPARENT
+block:id=WallSmoothSed,data=1,patch0-2=97,txtid=rock,transparency=TRANSPARENT
+block:id=WallSmoothSed,data=2,patch0-2=98,txtid=rock,transparency=TRANSPARENT
+block:id=WallSmoothSed,data=3,patch0-2=99,txtid=rock,transparency=TRANSPARENT
+block:id=WallSmoothSed,data=4,patch0-2=100,txtid=rock,transparency=TRANSPARENT
+block:id=WallSmoothSed,data=5,patch0-2=101,txtid=rock,transparency=TRANSPARENT
+block:id=WallSmoothSed,data=6,patch0-2=102,txtid=rock,transparency=TRANSPARENT
+block:id=WallSmoothSed,data=7,patch0-2=103,txtid=rock,transparency=TRANSPARENT
+block:id=WallSmoothSed,data=8,patch0-2=104,txtid=rock,transparency=TRANSPARENT
+block:id=WallSmoothSed,data=9,patch0-2=105,txtid=rock,transparency=TRANSPARENT
+# WallSmoothMM
+block:id=WallSmoothMM,data=0,patch0-2=106,txtid=rock,transparency=TRANSPARENT
+block:id=WallSmoothMM,data=1,patch0-2=107,txtid=rock,transparency=TRANSPARENT
+block:id=WallSmoothMM,data=2,patch0-2=108,txtid=rock,transparency=TRANSPARENT
+block:id=WallSmoothMM,data=3,patch0-2=109,txtid=rock,transparency=TRANSPARENT
+block:id=WallSmoothMM,data=4,patch0-2=110,txtid=rock,transparency=TRANSPARENT
+block:id=WallSmoothMM,data=5,patch0-2=111,txtid=rock,transparency=TRANSPARENT
