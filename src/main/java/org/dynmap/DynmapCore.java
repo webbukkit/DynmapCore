@@ -29,6 +29,7 @@ import org.dynmap.common.DynmapListenerManager;
 import org.dynmap.common.DynmapListenerManager.EventType;
 import org.dynmap.common.DynmapPlayer;
 import org.dynmap.common.DynmapServerInterface;
+import org.dynmap.common.VersionCheck;
 import org.dynmap.debug.Debug;
 import org.dynmap.debug.Debugger;
 import org.dynmap.hdmap.HDBlockModels;
@@ -70,6 +71,8 @@ public class DynmapCore {
     
     private DynmapServerInterface server;
     private String version;
+    private String platform = null;
+    private String platformVersion = null;
     private Server webServer = null;
     private String webhostname = null;
     private int webport = 0;
@@ -132,8 +135,13 @@ public class DynmapCore {
     }
     
     /* Dependencies - need to be supplied by plugin wrapper */
+    public void setPluginVersion(String pluginver, String platform) {
+        this.plugin_ver = pluginver;
+        this.platform = platform;
+    }
+    /* Default platform to forge... */
     public void setPluginVersion(String pluginver) {
-        plugin_ver = pluginver;
+        setPluginVersion(pluginver, "Forge");
     }
     public void setDataFolder(File dir) {
         dataDirectory = dir;
@@ -144,8 +152,11 @@ public class DynmapCore {
     public final File getTilesFolder() {
         return tilesDirectory;
     }
+    
     public void setMinecraftVersion(String mcver) {
+        this.platformVersion = mcver;
     }
+    
     public void setServer(DynmapServerInterface srv) {
         server = srv;
     }
@@ -425,6 +436,8 @@ public class DynmapCore {
         Log.info("version " + plugin_ver + " is enabled - core version " + version );
 
         events.<Object>trigger("initialized", null);
+        
+        VersionCheck.runCheck(this);
         
         return true;
     }
@@ -1817,5 +1830,12 @@ public class DynmapCore {
     }
     public int getCurrentPlayers() {
         return server.getCurrentPlayers();
+    }
+    
+    public String getDynmapPluginPlatform() {
+        return platform;
+    }
+    public String getDynmapPluginPlatformVersion() {
+        return platformVersion;
     }
 }
