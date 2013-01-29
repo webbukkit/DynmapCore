@@ -226,6 +226,7 @@ public class TexturePack {
     }
     public static class HDTextureMap {
         private int faces[];  /* index in terrain.png of image for each face (indexed by BlockStep.ordinal() OR patch index) */
+        private byte[] layers;  /* If layered, each index corresponds to faces index, and value is index of next layer */
         private List<Integer> blockids;
         private int databits;
         private BlockTransparency bt;
@@ -276,10 +277,12 @@ public class TexturePack {
             colorMult = 0;
             custColorMult = null;
             faces = new int[] { TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK };
+            layers = null;
         }
         
-        public HDTextureMap(List<Integer> blockids, int databits, int[] faces, BlockTransparency trans, boolean userender, int colorMult, CustomColorMultiplier custColorMult, String blockset) {
+        public HDTextureMap(List<Integer> blockids, int databits, int[] faces, byte[] layers, BlockTransparency trans, boolean userender, int colorMult, CustomColorMultiplier custColorMult, String blockset) {
             this.faces = faces;
+            this.layers = layers;
             this.blockids = blockids;
             this.databits = databits;
             this.bt = trans;
@@ -401,7 +404,7 @@ public class TexturePack {
             for(int i = 0; i < txtids.length; i++) {
                 txtids[i] = ti.texture_ids.get(i).intValue();
             }
-            HDTextureMap map = new HDTextureMap(ti.blockids, ti.databits, txtids, ti.trans, ti.userender, ti.colorMult, ti.custColorMult, ti.blockset);
+            HDTextureMap map = new HDTextureMap(ti.blockids, ti.databits, txtids, null, ti.trans, ti.userender, ti.colorMult, ti.custColorMult, ti.blockset);
             map.addToTable();
         }
     }
@@ -1409,6 +1412,7 @@ public class TexturePack {
                     int srctxtid = -1;
                     int faces[] = new int[] { TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK };
                     int txtidx[] = new int[] { -1, -1, -1, -1, -1, -1 };
+                    byte layers[] = null;
                     line = line.substring(6);
                     BlockTransparency trans = BlockTransparency.OPAQUE;
                     int colorMult = 0;
@@ -1537,11 +1541,31 @@ public class TexturePack {
                             }
                         }
                     }
+                    for(String a : args) {
+                        String[] av = a.split("=");
+                        if(av.length < 2) continue;
+                        if(av[0].startsWith("layer")) {
+                            if(layers == null) {
+                                layers = new byte[faces.length];
+                                Arrays.fill(layers, (byte)-1);
+                            }
+                            String v[] = av[0].substring(5).split("-");
+                            int id1, id2;
+                            id1 = id2 = Integer.parseInt(v[0]);
+                            if(v.length > 1) {
+                                id2 = Integer.parseInt(v[1]);
+                            }
+                            byte val = (byte)Integer.parseInt(av[1]);
+                            for(; id1 <= id2; id1++) {
+                                layers[id1] = val;
+                            }
+                        }
+                    }
                     /* If no data bits, assume all */
                     if(databits < 0) databits = 0xFFFF;
                     /* If we have everything, build block */
                     if(blkids.size() > 0) {
-                        HDTextureMap map = new HDTextureMap(blkids, databits, faces, trans, userenderdata, colorMult, custColorMult, blockset);
+                        HDTextureMap map = new HDTextureMap(blkids, databits, faces, layers, trans, userenderdata, colorMult, custColorMult, blockset);
                         map.addToTable();
                         cnt++;
                     }
@@ -1794,12 +1818,29 @@ public class TexturePack {
         BlockStep laststep = ps.getLastBlockStep();
         int patchid = ps.getTextureIndex();   /* See if patch index */
         int textid;
+        int faceindex;
         if(patchid >= 0) {
-            textid = map.faces[patchid];    /* Get index of patch */
+            faceindex = patchid;
         }
         else {
-            textid = map.faces[laststep.ordinal()]; /* Get index of texture source */
+            faceindex = laststep.ordinal();
         }
+        textid = map.faces[faceindex];
+        readColor(ps, mapiter, rslt, blkid, lastblocktype, ss, blkdata, map, laststep, patchid, textid);
+        if(map.layers != null) {    /* If layered */
+            /* While transparent and more layers */
+            while(rslt.isTransparent() && (map.layers[faceindex] >= 0)) {
+                faceindex = map.layers[faceindex];
+                textid = map.faces[faceindex];
+                readColor(ps, mapiter, rslt, blkid, lastblocktype, ss, blkdata, map, laststep, patchid, textid);
+            }
+        }
+    }
+    /**
+     * Read color for given subblock coordinate, with given block id and data and face
+     */
+    private final void readColor(final HDPerspectiveState ps, final MapIterator mapiter, final Color rslt, final int blkid, final int lastblocktype,
+                final TexturePackHDShader.ShaderState ss, int blkdata, HDTextureMap map, BlockStep laststep, int patchid, int textid) {
         if(textid < 0) {
             rslt.setTransparent();
             return;

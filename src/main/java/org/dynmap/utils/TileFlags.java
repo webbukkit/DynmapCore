@@ -1,6 +1,7 @@
 package org.dynmap.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -197,12 +198,12 @@ public class TileFlags {
 	
 	public class Iterator {
 	    private Long[] keySet;
-	    private int lastIndex;
+	    private int nextIndex;
 	    private int lastKeyIndex;
 	    
 	    Iterator() {
 	        this.keySet = new Long[1];
-	        this.lastIndex = -1;
+	        this.nextIndex = 0;
 	        this.lastKeyIndex = -1;
 	    }
 	    public boolean hasNext() {
@@ -215,7 +216,7 @@ public class TileFlags {
 	        while(true) {
 	            if(lastKeyIndex < 0) {
 	                Set<Long> ks = chunkmap.keySet();
-                    lastIndex = -1;
+                    nextIndex = 0;
 	                if(ks.size() == 0) {
 	                    return false;
 	                }
@@ -224,26 +225,21 @@ public class TileFlags {
 	            }
 	            for(; lastKeyIndex < keySet.length; lastKeyIndex++) {
 	                Long k = keySet[lastKeyIndex];
+	                if(k == null) continue;
 	                long[] flgs = chunkmap.get(k);
-	                if(flgs == null) { /* Nothing there now */
-	                    lastIndex = -1;
-	                }
-	                else { /* Else, scan for next 1 after last index */
-	                    lastIndex++;
-	                    for(int vidx = lastIndex >> 6; vidx < 64; vidx++) {
-	                        if(flgs[vidx] == 0L) continue;
-	                        for(int bidx = lastIndex & 0x3F; bidx < 64; bidx++) {
-	                            if((flgs[vidx] & (1L << bidx)) != 0) {
-	                                lastIndex = (vidx << 6) | bidx;
-	                                coord.x = (int)(((k >> 32) & 0xFFFFFFFFL) << 6) | bidx;
-	                                coord.y = (int)((k & 0xFFFFFFFFL) << 6) | vidx;
-	                                return true;
-	                            }
-	                        }
-	                        lastIndex = 0;
+	                if(flgs != null) { /* Scan for next 1 after last index */
+	                    for( ; nextIndex < (64*64); nextIndex++) {
+	                        int hidx = (nextIndex >> 6) & 0x3F;
+	                        int vidx = (nextIndex & 0x3F);
+                            if((flgs[vidx] & (1L << hidx)) != 0) {
+                                coord.x = (int)(((k >> 32) & 0xFFFFFFFFL) << 6) | hidx;
+                                coord.y = (int)((k & 0xFFFFFFFFL) << 6) | vidx;
+                                nextIndex++;
+                                return true;
+                            }
 	                    }
-	                    lastIndex = -1;
 	                }
+	                nextIndex = 0;
 	            }
 	            lastKeyIndex = -1;
 	        }
