@@ -135,7 +135,7 @@ block:id=block.cube,data=3,allfaces=215,txtid=blk0
 # block.cube:4 - Crushed Obsidian
 block:id=block.cube,data=4,allfaces=227,txtid=blk0
 # block.cube:5 - Sandy Brick
-block:id=block.cube,data=5,allfaces=170,txtid=blk0
+block:id=block.cube,data=5,allfaces=170,txtid=mach
 
 # block.ore:0 - Sulfur
 block:id=block.ore,data=0,topbottom=6001,allsides=1,txtid=blk0
