@@ -16,6 +16,11 @@ texturefile:id=pers,filename=ic2/sprites/block_personal.png,xcount=16,ycount=16
 block:id=blockScaffold,data=*,allsides=116,topbottom=117,txtid=blk0
 #  data=2
 block:id=blockScaffold,data=2,allfaces=118,txtid=blk0
+# blockIronScaffold
+#  data=*
+block:id=blockIronScaffold,data=*,allsides=132,topbottom=133,txtid=blk0
+#  data=2
+block:id=blockIronScaffold,data=2,allfaces=134,txtid=blk0
 # blockWall=221
 #  data=0
 block:id=blockWall,data=0,allfaces=96,txtid=blk0
