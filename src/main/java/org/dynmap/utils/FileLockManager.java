@@ -229,7 +229,7 @@ public class FileLockManager {
                 if(done) {
                     if (preUpdateCommand != null && !preUpdateCommand.isEmpty()) {
                         try {
-                            new ProcessBuilder(preUpdateCommand, fnew.getAbsolutePath()).inheritIO().start().waitFor();
+                            new ProcessBuilder(preUpdateCommand, fnew.getAbsolutePath()).start().waitFor();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -239,7 +239,7 @@ public class FileLockManager {
                     fold.delete();
                     if (postUpdateCommand != null && !postUpdateCommand.isEmpty()) {
                         try {
-                            new ProcessBuilder(postUpdateCommand, fname.getAbsolutePath()).inheritIO().start().waitFor();
+                            new ProcessBuilder(postUpdateCommand, fname.getAbsolutePath()).start().waitFor();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
