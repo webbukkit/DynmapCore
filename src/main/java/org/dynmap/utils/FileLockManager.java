@@ -1,6 +1,8 @@
 package org.dynmap.utils;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.RandomAccessFile;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -240,11 +242,24 @@ public class FileLockManager {
         
         synchronized(baos_lock) {
             while(!done) {
+                FileInputStream fis = null;
                 try {
                     ImageIO.setUseCache(false); /* Don't use file cache - too small to be worth it */
-                    img = ImageIO.read(fname);
+                    fis = new FileInputStream(fname);
+                    byte[] b = new byte[(int) fname.length()];
+                    fis.read(b);
+                    fis.close();
+                    fis = null;
+                    ByteArrayInputStream bais = new ByteArrayInputStream(b);
+                    img = ImageIO.read(bais);
+                    bais.close();
                     done = true;    /* Done if no I/O error - retries don't fix format errors */
                 } catch (IOException iox) {
+                } finally {
+                    if(fis != null) {
+                        try { fis.close(); } catch (IOException io) {}
+                        fis = null;
+                    }
                 }
                 if(!done) {
                     if(retrycnt < MAX_WRITE_RETRIES) {

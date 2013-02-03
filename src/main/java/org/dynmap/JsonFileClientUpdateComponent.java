@@ -66,6 +66,9 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                     RandomAccessFile fos = null;
                     boolean good = false;
                     try {
+                        if(f.newfile.exists()) {
+                            f.newfile.delete();
+                        }
                         fos = new RandomAccessFile(f.newfile, "rw");
                         if(f.phpwrapper) {
                             fos.write("<?php /*\n".getBytes(cs_utf8));
