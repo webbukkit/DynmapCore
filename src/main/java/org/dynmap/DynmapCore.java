@@ -358,8 +358,8 @@ public class DynmapCore {
         fullrenderplayerlimit = configuration.getInteger("fullrenderplayerlimit", 0);
                         
         /* Load preupdate/postupdate commands */
-        FileLockManager.preUpdateCommand = configuration.getString("preupdatecommand", "");
-        FileLockManager.postUpdateCommand = configuration.getString("postupdatecommand", "");
+        FileLockManager.preUpdateCommand = configuration.getString("custom-commands/image-updates/preupdatecommand", "");
+        FileLockManager.postUpdateCommand = configuration.getString("custom-commands/image-updates/postupdatecommand", "");
 
         /* Load block models */
         HDBlockModels.loadModels(this, configuration);
