@@ -45,21 +45,33 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
     private long last_confighash;
     private MessageDigest md;
 
-    private Object filelock = new Object();
     private static class FileToWrite {
         File file;
         File newfile;
         File oldfile;
         byte[] content;
         boolean phpwrapper;
+        @Override
+        public boolean equals(Object o) {
+            if(o instanceof FileToWrite) {
+                return ((FileToWrite)o).file.equals(this.file);
+            }
+            return false;
+        }
     }
     private class FileProcessor implements Runnable {
-        LinkedList<FileToWrite> files = new LinkedList<FileToWrite>();
         public void run() {
-            synchronized(filelock) {
-                pending = null; /* We're working - use new job for additional updates */
-            }
-            for(FileToWrite f : files) {
+            while(true) {
+                FileToWrite f = null;
+                synchronized(lock) {
+                    if(files_to_write.isEmpty() == false) {
+                        f = files_to_write.removeFirst();
+                    }
+                    else {
+                        pending = null;
+                        return;
+                    }
+                }
                 int retrycnt = 0;
                 boolean done = false;
                 while(!done) {
@@ -106,8 +118,10 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
             }
         }
     }
-    private FileProcessor pending = null;
-    
+    private Object lock = new Object();
+    private FileProcessor pending;
+    private LinkedList<FileToWrite> files_to_write = new LinkedList<FileToWrite>();
+
     private void enqueueFileWrite(File file, File newfile, File oldfile, byte[] content, boolean phpwrap) {
         FileToWrite ftw = new FileToWrite();
         ftw.file = file;
@@ -115,16 +129,18 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
         ftw.oldfile = oldfile;
         ftw.content = content;
         ftw.phpwrapper = phpwrap;
-        synchronized(filelock) {
-            boolean added = false;
-            if (pending == null) {
-                added = true;
+        synchronized(lock) {
+            boolean didadd = false;
+            if(pending == null) {
+                didadd = true;
                 pending = new FileProcessor();
             }
-            pending.files.addLast(ftw);
-            if(added)
-                MapManager.scheduleDelayedJob(pending, 0);
-       }
+            files_to_write.remove(ftw);
+            files_to_write.add(ftw);
+            if(didadd) {
+                MapManager.scheduleDelayedJob(new FileProcessor(), 0);
+            }
+        }
     }
     
     private Charset cs_utf8 = Charset.forName("UTF-8");
