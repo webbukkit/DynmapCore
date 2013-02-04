@@ -143,7 +143,7 @@ public class ForgeConfigFile {
             else if(k.startsWith("world/blocks/")) {    /* XyCraft world/blocks */
                 map.put(k.substring("world/".length()), getBlockID(k));
             }
-            else if(k.indexOf("/") < 0) {
+            else {
                 map.put(k, getBlockID(k));
             }
         }
