@@ -1,0 +1,56 @@
+# Industrial Craft 2 Power Converters Block mapping
+modname:mod_PowerConverters,PowerConverters
+# Configuration file
+cfgfile:config/PowerConverters.cfg
+
+# Files
+texturefile:id=blk0,filename=powercrystals/powerconverters/textures/terrain_0.png,xcount=16,ycount=16
+
+# Blocks
+#ID.BlockBuildcraft data=0 "Buildcraft Consumer"
+block:id=ID.BlockBuildcraft,data=0,allfaces=0,txtid=blk0
+#ID.BlockBuildcraft data=1 "Buildcraft Producer"
+block:id=ID.BlockBuildcraft,data=1,allfaces=2,txtid=blk0
+
+#ID.BlockCommon, data=0 "Energy bridge"
+block:id=ID.BlockCommon,data=0,allfaces=5,txtid=blk0
+#ID.BlockCommon, data=2 "Universal Charger"
+block:id=ID.BlockCommon,data=2,allfaces=38,txtid=blk0
+
+
+#I:ID.BlockIndustrialCraft data=0 "IC2 LV Consumer"
+block:id=ID.BlockIndustrialCraft,data=0,allfaces=6,txtid=blk0
+#I:ID.BlockIndustrialCraft data=1 "IC2 LV Producer"
+block:id=ID.BlockIndustrialCraft,data=1,allfaces=8,txtid=blk0
+#I:ID.BlockIndustrialCraft data=2 "IC2 MV Consumer"
+block:id=ID.BlockIndustrialCraft,data=2,allfaces=10,txtid=blk0
+#I:ID.BlockIndustrialCraft data=3 "IC2 MV Producer"
+block:id=ID.BlockIndustrialCraft,data=3,allfaces=12,txtid=blk0
+#I:ID.BlockIndustrialCraft data=4 "IC2 HV Consumer"
+block:id=ID.BlockIndustrialCraft,data=4,allfaces=14,txtid=blk0
+#I:ID.BlockIndustrialCraft data=5 "IC2 HV Producer"
+block:id=ID.BlockIndustrialCraft,data=5,allfaces=16,txtid=blk0
+#I:ID.BlockIndustrialCraft data=6 "IC2 EV Consumer"
+block:id=ID.BlockIndustrialCraft,data=6,allfaces=18,txtid=blk0
+#I:ID.BlockIndustrialCraft data=7 "IC2 EV Producer"
+block:id=ID.BlockIndustrialCraft,data=7,allfaces=20,txtid=blk0
+
+
+#I:ID.BlockSteam data=0 "Steam Consumer"
+block:id=ID.BlockSteam,data=0,allfaces=22,txtid=blk0
+#I:ID.BlockSteam data=1 "Steam Producer"
+block:id=ID.BlockSteam,data=1,allfaces=24,txtid=blk0
+
+
+#I:ID.BlockUniversalElectricty data=0 "UE LV Consumer"
+block:id=ID.BlockUniversalElectricty,data=0,allfaces=26,txtid=blk0
+#I:ID.BlockUniversalElectricty data=1 "UE LV Poducer"
+block:id=ID.BlockUniversalElectricty,data=1,allfaces=28,txtid=blk0
+#I:ID.BlockUniversalElectricty data=2 "UE MV Consumer"
+block:id=ID.BlockUniversalElectricty,data=2,allfaces=30,txtid=blk0
+#I:ID.BlockUniversalElectricty data=3 "UE MV Poducer"
+block:id=ID.BlockUniversalElectricty,data=3,allfaces=32,txtid=blk0
+#I:ID.BlockUniversalElectricty data=4 "UE HV Consumer"
+block:id=ID.BlockUniversalElectricty,data=4,allfaces=34,txtid=blk0
+#I:ID.BlockUniversalElectricty data=5 "UE HV Poducer"
+block:id=ID.BlockUniversalElectricty,data=5,allfaces=36,txtid=blk0
