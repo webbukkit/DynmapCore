@@ -1,5 +1,7 @@
 # RedPower2 Lighting block mapping
 modname:mod_RedPowerLighting,RedPowerLighting
+
+var:lighting/lampInvOn.id=0,lighting/lampInvOff.id=0
 # configuration file
 cfgfile:redpower/redpower.cfg
 cfgfile:config/redpower/redpower.cfg
