@@ -54,3 +54,12 @@ block:id=ID.BlockUniversalElectricty,data=3,allfaces=32,txtid=blk0
 block:id=ID.BlockUniversalElectricty,data=4,allfaces=34,txtid=blk0
 #I:ID.BlockUniversalElectricty data=5 "UE HV Poducer"
 block:id=ID.BlockUniversalElectricty,data=5,allfaces=36,txtid=blk0
+#I:ID.BlockUniversalElectricty data=6 "UE 480V Consumer"
+block:id=ID.BlockUniversalElectricty,data=6,allfaces=44,txtid=blk0
+#I:ID.BlockUniversalElectricty data=7 "UE 480V Poducer"
+block:id=ID.BlockUniversalElectricty,data=7,allfaces=46,txtid=blk0
+
+#I:ID.BlockFactorization data=0 "Factorization Consumer"
+block:id=ID.BlockFactorization,data=0,allfaces=40,txtid=blk0
+#I:ID.BlockFactorization data=1 "Factorization Producer"
+block:id=ID.BlockFactorization,data=1,allfaces=42,txtid=blk0
