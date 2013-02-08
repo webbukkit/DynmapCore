@@ -1,5 +1,8 @@
 # Industrial Craft 2 Power Converters Block mapping
 modname:mod_PowerConverters,PowerConverters
+
+var:ID.BlockBuildcraft=0,ID.BlockCommon=0,ID.BlockIndustrialCraft=0,ID.BlockSteam=0,ID.BlockUniversalElectricty=0,ID.BlockFactorization=0
+
 # Configuration file
 cfgfile:config/PowerConverters.cfg
 
