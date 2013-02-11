@@ -86,6 +86,7 @@ public class TexturePack {
     private static final int COLORMOD_GRASSTONED270 = 18; // GRASSTONED + ROT270
     private static final int COLORMOD_FOLIAGETONED270 = 19; // FOLIAGETONED + ROT270
     private static final int COLORMOD_WATERTONED270 = 20; // WATERTONED + ROT270 
+    private static final int COLORMOD_MULTTONED_CLEARINSIDE = 21; // MULTTONED + CLEARINSIDE
     
     private static final int COLORMOD_MULT_FILE = 1000;
     private static final int COLORMOD_MULT_INTERNAL = 1000000;
@@ -1425,7 +1426,7 @@ public class TexturePack {
                             if(filetoidx.containsKey(av[1]))
                                 srctxtid = filetoidx.get(av[1]);
                             else
-                                Log.severe("Format error - line " + rdr.getLineNumber() + " of " + txtname);
+                                Log.severe("Format error - line " + rdr.getLineNumber() + " of " + txtname + ": bad texture " + av[1]);
                         }
                     }
                     boolean userenderdata = false;
@@ -1530,7 +1531,7 @@ public class TexturePack {
                     		userenderdata = av[1].equals("true");
                         }
                         else if(av[0].equals("colorMult")) {
-                            colorMult = Integer.valueOf(av[1], 16);
+                            colorMult = (int)Long.parseLong(av[1], 16);
                         }
                         else if(av[0].equals("custColorMult")) {
                             try {
@@ -1895,7 +1896,7 @@ public class TexturePack {
         textid = textid % COLORMOD_MULT_INTERNAL;
         
         /* If clear-inside op, get out early */
-        if(textop == COLORMOD_CLEARINSIDE) {
+        if((textop == COLORMOD_CLEARINSIDE) || (textop == COLORMOD_MULTTONED_CLEARINSIDE)) {
             /* Check if previous block is same block type as we are: surface is transparent if it is */
             if(blkid == lastblocktype) {
                 rslt.setTransparent();
@@ -1904,6 +1905,9 @@ public class TexturePack {
             /* If water block, to watercolor tone op */
             if((blkid == 8) || (blkid == 9)) {
                 textop = water_toned_op;
+            }
+            else if(textop == COLORMOD_MULTTONED_CLEARINSIDE) {
+                textop = COLORMOD_MULTTONED;
             }
         }
 
@@ -2045,6 +2049,7 @@ public class TexturePack {
         }
 
         int clrmult = -1;
+        int clralpha = 0xFF000000;
         /* Switch based on texture modifier */
         switch(textop) {
             case COLORMOD_GRASSTONED:
@@ -2102,11 +2107,14 @@ public class TexturePack {
                 else {
                     clrmult = map.colorMult;
                 }
+                if((clrmult & 0xFF000000) != 0) {
+                    clralpha = clrmult;
+                }
                 break;
         }
         
         if((clrmult != -1) && (clrmult != 0)) {
-            rslt.blendColor(clrmult | 0xFF000000);
+            rslt.blendColor(clrmult | clralpha);
         }
     }
     

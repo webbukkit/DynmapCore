@@ -7,4 +7,16 @@ public class DynmapChunk {
         this.x = x;
         this.z = z;
     }
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof DynmapChunk) {
+            DynmapChunk dc = (DynmapChunk)o;
+            return (dc.x == this.x) && (dc.z == this.z);
+        }
+        return false;
+    }
+    @Override
+    public int hashCode() {
+        return x ^ (z << 5);
+    }
 }
