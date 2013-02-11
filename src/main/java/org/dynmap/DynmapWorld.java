@@ -443,7 +443,7 @@ public abstract class DynmapWorld {
                         Log.warning("Aborted zoom tile update " + zf.getPath());
                         return;
                     }
-                    if(im != null) {
+                    if((im != null) && (im.getWidth() == width) && (im.getHeight() == height)) {
                         im.getRGB(0, 0, width, height, argb, 0, width);    /* Read data */
                         im.flush();
                         blank = false;
