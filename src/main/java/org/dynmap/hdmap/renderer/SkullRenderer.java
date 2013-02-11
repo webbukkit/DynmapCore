@@ -58,8 +58,10 @@ public class SkullRenderer extends CustomRenderer {
         int face = 0;
         Object val = ctx.getBlockTileEntityField("Rot");
         if(val instanceof Byte) rot = ((Byte)val).intValue();
+        while(rot < 0) rot += NUM_DIRECTIONS; // Normalize (bad values from some mods)
         val = ctx.getBlockTileEntityField("SkullType");
         if(val instanceof Byte) face = ((Byte)val).intValue();
+        while(face < 0) face += faces.length; // Normalize (bad values from some mods)
         int idx = (NUM_DIRECTIONS * face) + rot;
         if(idx < meshes.length) {
             if(meshes[idx] == null) {
