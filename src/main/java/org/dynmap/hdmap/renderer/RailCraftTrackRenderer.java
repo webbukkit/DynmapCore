@@ -25,7 +25,7 @@ public class RailCraftTrackRenderer extends CustomRenderer {
             maxTrackId = Integer.parseInt(cnt);
         }
         else {
-            maxTrackId = 36;
+            maxTrackId = 35;
         }
         String patchid = custparm.get("patch");
         if(patchid == null) {
@@ -47,7 +47,7 @@ public class RailCraftTrackRenderer extends CustomRenderer {
 
     @Override
     public int getMaximumTextureCount() {
-        return maxTrackId;
+        return maxTrackId + 1;
     }
     
     @Override
