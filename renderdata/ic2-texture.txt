@@ -140,9 +140,9 @@ block:id=blockITNT,data=*,bottom=58,top=59,allsides=60,txtid=blk0
 # blockHarz=240
 block:id=blockHarz,data=*,allfaces=43,txtid=blk0
 # blockRubSapling=241
-block:id=blockRubSapling,data=*,allsides=2038,transparency=TRANSPARENT,txtid=blk0
+block:id=blockRubSapling,data=*,allsides=14038,transparency=TRANSPARENT,txtid=blk0
 # blockRubLeaves=242
-block:id=blockRubLeaves,data=*,allfaces=2040,transparency=TRANSPARENT,txtid=blk0
+block:id=blockRubLeaves,data=*,allfaces=14052,transparency=LEAVES
 # blockRubWood=243
 block:id=blockRubWood,data=*,topbottom=47,allsides=44,txtid=blk0
 # blockMiningTip=244
