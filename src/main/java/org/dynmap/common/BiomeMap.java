@@ -33,9 +33,9 @@ public class BiomeMap {
     
     private final double tmp;
     private final double rain;
-    private final int watercolormult;
-    private final int grassmult;
-    private final int foliagemult;
+    private int watercolormult;
+    private int grassmult;
+    private int foliagemult;
     private final String id;
     private final int index;
     
@@ -101,13 +101,19 @@ public class BiomeMap {
     public final int getModifiedGrassMultiplier(int rawgrassmult) {
         if(grassmult == 0)
             return rawgrassmult;
-        return ((rawgrassmult & 0xfefefe) + grassmult) / 2;
+        else if(grassmult > 0xFFFFFF)
+            return grassmult & 0xFFFFFF;
+        else
+            return ((rawgrassmult & 0xfefefe) + grassmult) / 2;
     }
     
     public final int getModifiedFoliageMultiplier(int rawfoliagemult) {
         if(foliagemult == 0)
             return rawfoliagemult;
-        return ((rawfoliagemult & 0xfefefe) + foliagemult) / 2;
+        else if(foliagemult > 0xFFFFFF)
+            return foliagemult & 0xFFFFFF;
+        else
+            return ((rawfoliagemult & 0xfefefe) + foliagemult) / 2;
     }
     public final int getWaterColorMult() {
         return watercolormult;
@@ -127,5 +133,14 @@ public class BiomeMap {
     }
     public static final BiomeMap[] values() {
         return biome_by_index;
+    }
+    public void setWaterColorMultiplier(int watercolormult) {
+        this.watercolormult = watercolormult;
+    }
+    public void setGrassColorMultiplier(int grassmult) {
+        this.grassmult = grassmult;
+    }
+    public void setFoliageColorMultiplier(int foliagemult) {
+        this.foliagemult = foliagemult;
     }
 }

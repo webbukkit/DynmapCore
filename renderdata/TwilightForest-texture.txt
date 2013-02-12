@@ -10,6 +10,14 @@ cfgfile:config/TwilightForest.cfg
 # Files
 texturefile:id=blk0,filename=twilightforest/terrain.png
 
+# Biomes
+# Fire swamp
+biome:id=biome/biome.id.FireSwamp,grassColorMult=1572E23,foliageColorMult=164260F,waterColorMult=6C2C2C
+# Swamp
+biome:id=biome/biome.id.Swamp,grassColorMult=4E0E4E,foliageColorMult=4E0E4E
+# Dark Forest
+biome:id=biome/biome.id.DarkForest,grassColorMult=1E0E4E,foliageColorMult=1E0E4E
+
 # Blocks
 
 # BossSpawner
@@ -32,10 +40,10 @@ block:id=Hedge,data=0,data=2,data=3,data=4,data=5,data=6,data=7,data=8,data=9,da
 block:id=Hedge,data=1,allsides=10,topbottom=6010,txtid=blk0
 
 # Leaves
-block:id=Leaves,data=0,data=4,data=8,data=12,topbottom=17052,allsides=17052,transparency=LEAVES,colorMult=488518
-block:id=Leaves,data=1,data=5,data=9,data=13,topbottom=17052,allsides=17052,transparency=LEAVES,colorMult=609860
-block:id=Leaves,data=2,data=6,data=10,data=14,topbottom=17052,allsides=17052,transparency=LEAVES,colorMult=80A755
-block:id=Leaves,data=3,data=7,data=11,data=15,topbottom=17052,allsides=17052,transparency=LEAVES,custColorMult=org.dynmap.hdmap.colormult.TFSpecialLeafColorMultiplier
+block:id=Leaves,data=0,data=4,data=8,data=12,topbottom=2052,allsides=2052,transparency=LEAVES
+block:id=Leaves,data=1,data=5,data=9,data=13,topbottom=22052,allsides=22052,transparency=LEAVES,colorMult=469A66
+block:id=Leaves,data=2,data=6,data=10,data=14,topbottom=22052,allsides=22052,transparency=LEAVES,colorMult=C0E694
+block:id=Leaves,data=3,data=7,data=11,data=15,topbottom=22052,allsides=22052,transparency=LEAVES,custColorMult=org.dynmap.hdmap.colormult.TFSpecialLeafColorMultiplier
 
 # Log
 # Oak Log

@@ -25,6 +25,7 @@ import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapCore;
 import org.dynmap.Log;
 import org.dynmap.MapManager;
+import org.dynmap.common.BiomeMap;
 import org.dynmap.renderer.CustomColorMultiplier;
 import org.dynmap.utils.DynmapBufferedImage;
 import org.dynmap.utils.BlockStep;
@@ -87,6 +88,7 @@ public class TexturePack {
     private static final int COLORMOD_FOLIAGETONED270 = 19; // FOLIAGETONED + ROT270
     private static final int COLORMOD_WATERTONED270 = 20; // WATERTONED + ROT270 
     private static final int COLORMOD_MULTTONED_CLEARINSIDE = 21; // MULTTONED + CLEARINSIDE
+    private static final int COLORMOD_FOLIAGEMULTTONED = 22; // FOLIAGETONED + colorMult or custColorMult
     
     private static final int COLORMOD_MULT_FILE = 1000;
     private static final int COLORMOD_MULT_INTERNAL = 1000000;
@@ -1772,6 +1774,47 @@ public class TexturePack {
                     }
                     if(!found) return;
                 }
+                else if(line.startsWith("biome:")) {
+                    line = line.substring(6).trim();
+                    String args[] = line.split(",");
+                    int id = 0;
+                    int grasscolormult = -1;
+                    int foliagecolormult = -1;
+                    int watercolormult = -1;
+                    for(int i = 0; i < args.length; i++) {
+                        String[] v = args[i].split("=");
+                        if(v.length < 2) {
+                            Log.severe("Format error - line " + rdr.getLineNumber() + " of " + txtname);
+                            return;
+                        }
+                        if(v[0].equals("id")) {
+                            id = getIntValue(varvals, v[1]);   
+                        }
+                        else if(v[0].equals("grassColorMult")) {
+                            grasscolormult = Integer.valueOf(v[1], 16);
+                        }
+                        else if(v[0].equals("foliageColorMult")) {
+                            foliagecolormult = Integer.valueOf(v[1], 16);
+                        }
+                        else if(v[0].equals("waterColorMult")) {
+                            watercolormult = Integer.valueOf(v[1], 16);
+                        }
+                    }
+                    if(id > 0) {
+                        BiomeMap b = BiomeMap.byBiomeID(id); /* Find biome */
+                        if(b == null) {
+                            Log.severe("Format error - line " + rdr.getLineNumber() + " of " + txtname + ": " + id);
+                        }
+                        else {
+                            if(foliagecolormult != -1)
+                                b.setFoliageColorMultiplier(foliagecolormult);
+                            if(grasscolormult != -1)
+                                b.setGrassColorMultiplier(grasscolormult);
+                            if(watercolormult != -1)
+                                b.setWaterColorMultiplier(watercolormult);
+                        }
+                    }
+                }
             }
             if(mod_cfg_needed) {
                 Log.severe("Error loading configuration file for " + modname);
@@ -2076,6 +2119,24 @@ public class TexturePack {
                     clrmult = imgs[IMG_FOLIAGECOLOR].trivial_color;
                 }
                 break;
+            case COLORMOD_FOLIAGEMULTTONED:
+                if(ss.do_biome_shading) {
+                    if(imgs[IMG_SWAMPFOLIAGECOLOR] != null)
+                        clrmult = mapiter.getSmoothColorMultiplier(imgs[IMG_FOLIAGECOLOR].argb, imgs[IMG_FOLIAGECOLOR].width, imgs[IMG_SWAMPFOLIAGECOLOR].argb, imgs[IMG_SWAMPFOLIAGECOLOR].width);
+                    else
+                        clrmult = mapiter.getSmoothFoliageColorMultiplier(imgs[IMG_FOLIAGECOLOR].argb, imgs[IMG_FOLIAGECOLOR].width);
+                }
+                else {
+                    clrmult = imgs[IMG_FOLIAGECOLOR].trivial_color;
+                }
+                if(map.custColorMult != null) {
+                    clrmult = ((clrmult & 0xFEFEFE) + map.custColorMult.getColorMultiplier(mapiter)) / 2;
+                }
+                else {
+                    clrmult = ((clrmult & 0xFEFEFE) + map.colorMult) / 2;
+                }
+                break;
+                
             case COLORMOD_WATERTONED:
             case COLORMOD_WATERTONED270:
                 if(imgs[IMG_WATERCOLORX] != null) {
