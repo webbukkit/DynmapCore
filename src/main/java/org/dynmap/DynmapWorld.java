@@ -467,6 +467,7 @@ public abstract class DynmapWorld {
                         zIm.setRGB(((i>>1) != 0)?0:width/2, (i & 1) * height/2, width/2, height/2, argb, 0, width);
                     }
                     else {
+                        if(im != null) { im.flush(); }
                         Arrays.fill(argb, pd.background);
                         f.delete(); /* Delete file - unreadable image */
                     }
