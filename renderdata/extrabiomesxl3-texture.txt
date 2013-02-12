@@ -7,6 +7,28 @@ cfgfile:config/extrabiomes/extrabiomes.cfg
 
 # Files
 texturefile:id=blk0,filename=extrabiomes/extrabiomes.png,xcount=16,ycount=16
+# Biomes
+#  Autumn Woods
+biome:id=biome/autumnwoods.id,temp=1.0,rain=0.1
+#  Forested Hills
+biome:id=biome/forestedhills.id,temp=0.8,rain=1.0
+#  Green Hills
+biome:id=biome/greenhills.id,temp=0.7,rain=0.8
+#  Meadow
+biome:id=biome/meadow.id,temp=1.0,rain=1.0
+#  Mini Jungle
+biome:id=biome/minijungle.id,waterColorMult=24B01C
+#  Pine Forest
+biome:id=biome/pineforest.id,temp=0.4,rain=0.6
+#  Snowy Forest
+biome:id=biome/snowyforest.id,temp=0.0,rain=0.2
+#  Snowy Rainforest
+biome:id=biome/snowyrainforest.id,temp=0.0,rain=0.1
+#  Wasteland
+biome:id=biome/wasteland.id,waterColorMult=F08000
+#  Woodlands
+biome:id=biome/woodlands.id,temp=1.0,rain=0.2
+
 # Blocks
 # Cracked Sand (crackedsandID:*)
 block:id=crackedsand.id,data=*,allsides=0,topbottom=6000,txtid=blk0

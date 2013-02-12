@@ -31,8 +31,8 @@ public class BiomeMap {
     
     public static final int LAST_WELL_KNOWN = 22;
     
-    private final double tmp;
-    private final double rain;
+    private double tmp;
+    private double rain;
     private int watercolormult;
     private int grassmult;
     private int foliagemult;
@@ -49,16 +49,8 @@ public class BiomeMap {
     }
     private BiomeMap(int idx, String id, double tmp, double rain, int waterColorMultiplier, int grassmult, int foliagemult) {
         /* Clamp values : we use raw values from MC code, which are clamped during color mapping only */
-        if(tmp > 1.0)
-            tmp = 1.0;
-        else if(tmp < 0.0)
-            tmp = 0.0;
-        this.tmp = tmp;
-        if(rain > 1.0)
-            rain = 1.0;
-        else if(rain < 0.0)
-            rain = 0.0;
-        this.rain = rain;
+        setTemperature(tmp);
+        setRainfall(rain);
         this.watercolormult = waterColorMultiplier;
         this.grassmult = grassmult;
         this.foliagemult = foliagemult;
@@ -142,5 +134,15 @@ public class BiomeMap {
     }
     public void setFoliageColorMultiplier(int foliagemult) {
         this.foliagemult = foliagemult;
+    }
+    public void setTemperature(double tmp) {
+        if(tmp < 0.0) tmp = 0.0;
+        if(tmp > 1.0) tmp = 1.0;
+        this.tmp = tmp;
+    }
+    public void setRainfall(double rain) {
+        if(rain < 0.0) rain = 0.0;
+        if(rain > 1.0) rain = 1.0;
+        this.rain = rain;
     }
 }

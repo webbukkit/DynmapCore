@@ -1781,6 +1781,8 @@ public class TexturePack {
                     int grasscolormult = -1;
                     int foliagecolormult = -1;
                     int watercolormult = -1;
+                    double rain = -1.0;
+                    double tmp = -1.0;
                     for(int i = 0; i < args.length; i++) {
                         String[] v = args[i].split("=");
                         if(v.length < 2) {
@@ -1799,6 +1801,12 @@ public class TexturePack {
                         else if(v[0].equals("waterColorMult")) {
                             watercolormult = Integer.valueOf(v[1], 16);
                         }
+                        else if(v[0].equals("temp")) {
+                            tmp = Double.parseDouble(v[1]);
+                        }
+                        else if(v[0].equals("rain")) {
+                            rain = Double.parseDouble(v[1]);
+                        }
                     }
                     if(id > 0) {
                         BiomeMap b = BiomeMap.byBiomeID(id); /* Find biome */
@@ -1812,6 +1820,10 @@ public class TexturePack {
                                 b.setGrassColorMultiplier(grasscolormult);
                             if(watercolormult != -1)
                                 b.setWaterColorMultiplier(watercolormult);
+                            if(tmp != -1.0)
+                                b.setTemperature(tmp);
+                            if(rain != -1.0)
+                                b.setRainfall(rain);
                         }
                     }
                 }
