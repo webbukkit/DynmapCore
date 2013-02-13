@@ -37,6 +37,8 @@ public class FrameRenderer extends CustomRenderer {
     private String map_id = null;
     // Texture count
     private int txtCount = 0;
+    // Texture default index (if indexed and not found)
+    private int txtDefIndex = -1;
     
     private String[] tileEntityAttribs = null;
 
@@ -98,6 +100,10 @@ public class FrameRenderer extends CustomRenderer {
                 txtOffset = Integer.valueOf(txt_off);
             }
             idx_attrib = idx;
+            String txt_def = custparm.get("textureDefault");
+            if(txt_def != null) {
+                txtDefIndex = Integer.valueOf(txt_def);
+            }
             
             map_id = custparm.get("textureMap");
             if(map_id == null) {    /* If no map, indexes are explicit */
@@ -200,6 +206,8 @@ public class FrameRenderer extends CustomRenderer {
                 int val = ((Number)idxv).intValue();
                 if(map_id != null) {    /* If texture map, look up value there */
                     textureIdx = ctx.getPatchFactory().getTextureIndexFromMap(map_id, val - txtOffset);
+                    if((textureIdx < 0) && (txtDefIndex >= 0))
+                        textureIdx = ctx.getPatchFactory().getTextureIndexFromMap(map_id, txtDefIndex);
                     if(textureIdx < 0)
                         textureIdx = 0;
                 }

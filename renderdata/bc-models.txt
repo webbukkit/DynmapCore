@@ -8,7 +8,7 @@ var:item_pipeItemsVoid.id=0,item_pipeItemsSandstone.id=0,item_pipeLiquidsVoid.id
 cfgfile:buildcraft/config/buildcraft.cfg
 cfgfile:config/buildcraft/main.conf
 # Pipe
-customblock:id=pipe.id,data=*,class=org.dynmap.hdmap.renderer.FrameRenderer,linkset=pipes,linkid_0=pipe.id,linkid_1=entine.id,linkid_2=tank.id,linkid_3=miningWell.id,linkid_4=quarry.id,linkid_5=autoWorkbench.id,linkid_6=drill.id,linkid_7=filler.id,linkid_8=refinery.id,linkid_9=pump.id,textureIndex=pipeId,textureOffset=256,textureMap=PIPES
+customblock:id=pipe.id,data=*,class=org.dynmap.hdmap.renderer.FrameRenderer,linkset=pipes,linkid_0=pipe.id,linkid_1=entine.id,linkid_2=tank.id,linkid_3=miningWell.id,linkid_4=quarry.id,linkid_5=autoWorkbench.id,linkid_6=drill.id,linkid_7=filler.id,linkid_8=refinery.id,linkid_9=pump.id,textureIndex=pipeId,textureOffset=256,textureMap=PIPES,textureDefault=item_pipeItemsCobblestone.id
 ignore-updates:id=pipe.id,data=*
 # Frame
 customblock:id=frame.id,data=*,class=org.dynmap.hdmap.renderer.FrameRenderer,linkset=frame,linkid_0=frame.id

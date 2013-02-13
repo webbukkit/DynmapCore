@@ -3,6 +3,7 @@ modname:mod_BuildCraftCore,BuildCraft|Core
 # Defaults
 var:template.id=0,architect.id=0,pathMarker.id=0,item_pipeStructureCobblestone.id=0
 var:item_pipeItemsSandstone.id=0,item_pipeItemsVoid.id=0,item_pipeLiquidsSandstone.id=0,item_pipeLiquidsVoid.id=0
+var:item_pipeItemsEmerald.id=0,item_pipeLiquidsEmerald=0
 
 # configuration file
 cfgfile:buildcraft/config/buildcraft.cfg
@@ -75,6 +76,7 @@ addtotexturemap:mapid=PIPES,key:item_pipeLiquidsWood.id=112,key:item_pipeLiquids
 addtotexturemap:mapid=PIPES,key:item_pipeLiquidsIron.id=115,key:item_pipeLiquidsGold.id=116,key:item_pipeLiquidsSandstone.id=159,txtid=blk
 addtotexturemap:mapid=PIPES,key:item_pipeLiquidsVoid.id=158,key:item_pipePowerWood.id=118,key:item_pipePowerStone.id=119,txtid=blk
 addtotexturemap:mapid=PIPES,key:item_pipePowerGold.id=122,key:item_pipeStructureCobblestone.id=125,txtid=blk
+addtotexturemap:mapid=PIPES,txtid=blk,key:item_pipeItemsEmerald.id=109,key:item_pipeLiquidsEmerald.id=111
 
 # REFINERY_ID         = 167 - funky texture mapping - just do tank for now
 block:id=refinery.id,data=*,allsides=96,topbottom=98,txtid=blk,transparency=TRANSPARENT
