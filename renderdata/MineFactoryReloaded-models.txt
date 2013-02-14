@@ -1,0 +1,74 @@
+# MineFactory Reloaded Block mapping
+modname:MFReloaded
+# Defaults
+
+# configuration file
+cfgfile:config/MFReloaded.cfg
+
+# Vertical patch, 45 degrees from xz=1.0/0.0 to xz=0.0/1.0
+patch:id=VertX1Z0ToX0Z1,Ox=1.0,Oy=0.0,Oz=0.0,Ux=0.0,Uy=0.0,Uz=1.0,Vx=1.0,Vy=1.0,Vz=0.0,visibility=flip
+# Vertical patch, X+ facing side from xz=0.5,1.0 to 0.5/0.0
+patch:id=VertX05,Ox=0.5,Oy=0.0,Oz=1.0,Ux=0.5,Uy=0.0,Uz=0.0,Vx=0.5,Vy=1.0,Vz=1.0
+# Vertical patch, X+ facing side from xz=0.5,1.0 to 0.5/0.0 (left half)
+patch:id=VertX05Left,Ox=0.5,Oy=0.0,Oz=1.0,Ux=0.5,Uy=0.0,Uz=0.0,Vx=0.5,Vy=1.0,Vz=1.0,Umax=0.5
+# Vertical patch, X+ facing side from xz=0.5,1.0 to 0.5/0.0 (right half)
+patch:id=VertX05Right,Ox=0.5,Oy=0.0,Oz=1.0,Ux=0.5,Uy=0.0,Uz=0.0,Vx=0.5,Vy=1.0,Vz=1.0,Umin=0.5
+# Vertical patch, X+ facing side from xz=0.5,1.0 to 0.5/0.0 (strip - 0.4375 to 0.5625)
+patch:id=VertX05Strip,Ox=0.5,Oy=0.0,Oz=1.0,Ux=0.5,Uy=0.0,Uz=0.0,Vx=0.5,Vy=1.0,Vz=1.0,Umin=0.4375,Umax=0.5625
+# Horizontal patch - Y+ facing at Y=1.0, top of texture at +Z, vertical strip (0.4375 to 0.5625)
+patch:id=HorizY100ZTopStrip,Ox=0.0,Oy=1.0,Oz=0.0,Ux=1.0,Uy=1.0,Uz=0.0,Vx=0.0,Vy=1.0,Vz=1.0,Umin=0.4375,Umax=0.5625
+# Horizontal patch - Y+ facing at Y=1.0, top of texture at +Z, vertical strip (0.4375 to 0.5625), Top half (V>= 0.5)
+patch:id=HorizY100ZTopStripTop,Ox=0.0,Oy=1.0,Oz=0.0,Ux=1.0,Uy=1.0,Uz=0.0,Vx=0.0,Vy=1.0,Vz=1.0,Umin=0.4375,Umax=0.5625,Vmin=0.5
+# Horizontal patch - Y+ facing at Y=1.0, top of texture at +Z, vertical strip (0.4375 to 0.5625), Bottom half (V < 0.5)
+patch:id=HorizY100ZTopStripBottom,Ox=0.0,Oy=1.0,Oz=0.0,Ux=1.0,Uy=1.0,Uz=0.0,Vx=0.0,Vy=1,0,Vz=1.0,Umin=0.4375,Umax=0.5625,Vmax=0.5
+# Horizontal patch - Y+ facing at Y=0.01, top of texture at +Z
+patch:id=HorizY001ZTop,Ox=0.0,Oy=0.01,Oz=0.0,Ux=1.0,Uy=0.01,Uz=0.0,Vx=0.0,Vy=0.01,Vz=1.0
+# Sloped patch - up to X+, top of texture at Z+
+patch:id=SlopeXUpZTop,Ox=0.0,Oy=0.0,Oz=0.0,Ux=0.0,Uy=0.0,Uz=1.0,Vx=1.0,Vy=1.0,Vz=0.0
+
+# Block
+
+# MachineBlock
+customblock:id=ID.MachineBlock,data=*,class=org.dynmap.hdmap.renderer.RotatedBoxRenderer,textureIndex=rotation,index0=0,map0=S012345,index1=1,map1=S012345,index2=4,map2=S012345,index3=5,map3=S013254,index4=3,map4=S014532,index5=2,map5=S015423
+# MachineBlock1
+customblock:id=ID.MachineBlock1,data=*,class=org.dynmap.hdmap.renderer.RotatedBoxRenderer,textureIndex=rotation,index0=0,map0=S012345,index1=1,map1=S012345,index2=4,map2=S012345,index3=5,map3=S013254,index4=3,map4=S014532,index5=2,map5=S015423
+
+# ID.CargoRailDropoffBlock
+# ID.CargoRailPickupBlock
+# ID.PassengerRailDropoffBlock
+# ID.PassengerRailPickupBlock
+patchblock:id=ID.CargoRailDropoffBlock,id=ID.CargoRailPickupBlock,id=ID.PassengerRailDropoffBlock,id=ID.PassengerRailPickupBlock,data=0,patch0=HorizY001ZTop
+patchblock:id=ID.CargoRailDropoffBlock,id=ID.CargoRailPickupBlock,id=ID.PassengerRailDropoffBlock,id=ID.PassengerRailPickupBlock,data=8,patch0=HorizY001ZTop
+patchblock:id=ID.CargoRailDropoffBlock,id=ID.CargoRailPickupBlock,id=ID.PassengerRailDropoffBlock,id=ID.PassengerRailPickupBlock,data=1,patch0=HorizY001ZTop@90
+patchblock:id=ID.CargoRailDropoffBlock,id=ID.CargoRailPickupBlock,id=ID.PassengerRailDropoffBlock,id=ID.PassengerRailPickupBlock,data=9,patch0=HorizY001ZTop@90
+patchblock:id=ID.CargoRailDropoffBlock,id=ID.CargoRailPickupBlock,id=ID.PassengerRailDropoffBlock,id=ID.PassengerRailPickupBlock,data=2,data=10,patch0=SlopeXUpZTop
+patchblock:id=ID.CargoRailDropoffBlock,id=ID.CargoRailPickupBlock,id=ID.PassengerRailDropoffBlock,id=ID.PassengerRailPickupBlock,data=3,data=11,patch0=SlopeXUpZTop@180
+patchblock:id=ID.CargoRailDropoffBlock,id=ID.CargoRailPickupBlock,id=ID.PassengerRailDropoffBlock,id=ID.PassengerRailPickupBlock,data=4,data=12,patch0=SlopeXUpZTop@270
+patchblock:id=ID.CargoRailDropoffBlock,id=ID.CargoRailPickupBlock,id=ID.PassengerRailDropoffBlock,id=ID.PassengerRailPickupBlock,data=5,data=13,patch0=SlopeXUpZTop@90
+
+# ID.ConveyorBlock
+patchblock:id=ID.ConveyorBlock,data=0,patch0=HorizY001ZTop@90
+patchblock:id=ID.ConveyorBlock,data=1,patch0=HorizY001ZTop@180
+patchblock:id=ID.ConveyorBlock,data=2,patch0=HorizY001ZTop@270
+patchblock:id=ID.ConveyorBlock,data=3,patch0=HorizY001ZTop
+
+# ID.RubberSapling
+patchblock:id=ID.RubberSapling,data=*,patch0=VertX1Z0ToX0Z1,patch1=VertX1Z0ToX0Z1@90
+
+# ID.StainedGlassPane
+linkmap:id=ID.StainedGlassPane,linkalg=4
+patchblock:id=ID.StainedGlassPane,data=0,data=15,patch0=VertX05,patch1=VertX05@90,patch2=HorizY100ZTopStrip,patch3=HorizY100ZTopStrip@90
+patchblock:id=ID.StainedGlassPane,data=1,patch0=VertX05Left@90,patch1=HorizY100ZTopStripTop@90,patch2=VertX05Strip
+patchblock:id=ID.StainedGlassPane,data=2,patch0=VertX05Left@180,patch1=HorizY100ZTopStripTop@180,patch2=VertX05Strip@90
+patchblock:id=ID.StainedGlassPane,data=4,patch0=VertX05Left@270,patch1=HorizY100ZTopStripTop@270,patch2=VertX05Strip@180
+patchblock:id=ID.StainedGlassPane,data=8,patch0=VertX05Left,patch1=HorizY100ZTopStripTop,patch2=VertX05Strip@270
+patchblock:id=ID.StainedGlassPane,data=5,patch0=VertX05@90,patch1=HorizY100ZTopStrip@90
+patchblock:id=ID.StainedGlassPane,data=10,patch0=VertX05,patch1=HorizY100ZTopStrip
+patchblock:id=ID.StainedGlassPane,data=7,patch0=VertX05@90,patch1=HorizY100ZTopStrip@90,patch2=VertX05Left@180,patch3=HorizY100ZTopStripTop@180
+patchblock:id=ID.StainedGlassPane,data=14,patch0=VertX05@180,patch1=HorizY100ZTopStrip@180,patch2=VertX05Left@270,patch3=HorizY100ZTopStripTop@270
+patchblock:id=ID.StainedGlassPane,data=13,patch0=VertX05@270,patch1=HorizY100ZTopStrip@270,patch2=VertX05Left,patch3=HorizY100ZTopStripTop
+patchblock:id=ID.StainedGlassPane,data=11,patch0=VertX05,patch1=HorizY100ZTopStrip,patch2=VertX05Left@90,patch3=HorizY100ZTopStripTop@90
+patchblock:id=ID.StainedGlassPane,data=6,patch0=VertX05Left@180,patch1=HorizY100ZTopStripTop@180,patch2=VertX05Left@270,patch3=HorizY100ZTopStripTop@270
+patchblock:id=ID.StainedGlassPane,data=12,patch0=VertX05Left@270,patch1=HorizY100ZTopStripTop@270,patch2=VertX05Left,patch3=HorizY100ZTopStripTop
+patchblock:id=ID.StainedGlassPane,data=9,patch0=VertX05Left,patch1=HorizY100ZTopStripTop,patch2=VertX05Left@90,patch3=HorizY100ZTopStripTop@90
+patchblock:id=ID.StainedGlassPane,data=3,patch0=VertX05Left@90,patch1=HorizY100ZTopStripTop@90,patch2=VertX05Left@180,patch3=HorizY100ZTopStripTop@180
