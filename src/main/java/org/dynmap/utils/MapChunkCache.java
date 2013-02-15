@@ -9,9 +9,6 @@ public interface MapChunkCache {
         FILL_STONE_PLAIN,
         FILL_OCEAN
     };
-    public static class VisibilityLimit {
-        public int x0, x1, z0, z1;
-    }
     /**
      * Set chunk data type needed
      * @param blockdata - need block type and data for chunk
