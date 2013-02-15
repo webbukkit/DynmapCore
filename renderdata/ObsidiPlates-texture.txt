@@ -1,0 +1,7 @@
+# ObsidiPlates Texture mapping
+modname:ObsidiPlates
+# configuration file
+cfgfile:config/ObsidiPlates.cfg
+
+# Blocks
+block:id=obsidianPlate,data=*,allsides=37,topbottom=6037
