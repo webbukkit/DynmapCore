@@ -5,6 +5,7 @@ var:stairs=0,stained=0,fences=0,slabs1=0,slabs2=0,planks=0,saplingGE=0,alveary=0
 var:heater=0,leaves=0,stairs=0,stained=0,fences=0,slabs1=0,slabs2=0,planks=0
 var:saplingGE=0,alveary=0,fan=0,heater=0,leaves=0
 var:log1=0,log2=0,log3=0,log4=0,swarmer=0
+var:propolisPipe=0
 
 # configuration file
 cfgfile:config/forestry/base.conf
