@@ -32,8 +32,8 @@ function getMinecraftTime(servertime) {
 		servertime: servertime,
 		days: parseInt((servertime+8000) / 24000),
 		
-		// Assuming it is day at 8:00
-		hours: (parseInt(servertime / 1000)+8) % 24,
+		// Assuming it is day at 6:00
+		hours: (parseInt(servertime / 1000)+6) % 24,
 		minutes: parseInt(((servertime / 1000) % 1) * 60),
 		seconds: parseInt(((((servertime / 1000) % 1) * 60) % 1) * 60),
 		
