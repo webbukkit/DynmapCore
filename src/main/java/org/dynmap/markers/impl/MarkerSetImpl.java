@@ -30,10 +30,12 @@ class MarkerSetImpl implements MarkerSet {
     private int prio = 0;
     private int minzoom = 0;
     private Boolean showlabels = null;
+    private MarkerIcon deficon;
     
     MarkerSetImpl(String id) {
         setid = id;
         label = id;
+        deficon = MarkerAPIImpl.getMarkerIconImpl(MarkerIcon.DEFAULT);
     }
     
     MarkerSetImpl(String id, String lbl, Set<MarkerIcon> iconlimit, boolean persistent) {
@@ -51,6 +53,7 @@ class MarkerSetImpl implements MarkerSet {
             }
         }
         ispersistent = persistent;
+        deficon = MarkerAPIImpl.getMarkerIconImpl(MarkerIcon.DEFAULT);
     }
     
     void cleanup() {
@@ -63,6 +66,7 @@ class MarkerSetImpl implements MarkerSet {
         for(CircleMarkerImpl m : circlemarkers.values())
             m.cleanup();
         markers.clear();
+        deficon = null;
     }
     
     @Override
@@ -98,6 +102,7 @@ class MarkerSetImpl implements MarkerSet {
                 id = "marker_" + i; 
             } while(markers.containsKey(id));
         }
+        if(icon == null) icon = deficon;
         if(markers.containsKey(id)) return null;    /* Duplicate ID? */
         if(!(icon instanceof MarkerIconImpl)) return null;
         /* If limited icons, and this isn't valid one, quit */
@@ -213,6 +218,18 @@ class MarkerSetImpl implements MarkerSet {
         cleanup();
     }
     /**
+     * Insert marker from set
+     * 
+     * @param marker
+     */
+    void insertMarker(MarkerImpl marker) {
+        markers.put(marker.getMarkerID(), marker);
+        if(ispersistent && marker.isPersistentMarker()) {   /* If persistent */
+            MarkerAPIImpl.saveMarkers();        /* Drive save */
+        }
+        MarkerAPIImpl.markerUpdated(marker, MarkerUpdate.CREATED);
+    }
+    /**
      * Remove marker from set
      * 
      * @param marker
@@ -223,6 +240,18 @@ class MarkerSetImpl implements MarkerSet {
             MarkerAPIImpl.saveMarkers();        /* Drive save */
         }
         MarkerAPIImpl.markerUpdated(marker, MarkerUpdate.DELETED);
+    }
+    /**
+     * Insert marker from set
+     * 
+     * @param marker
+     */
+    void insertAreaMarker(AreaMarkerImpl marker) {
+        areamarkers.put(marker.getMarkerID(),marker);   /* Add to set */
+        if(ispersistent && marker.isPersistentMarker()) {   /* If persistent */
+            MarkerAPIImpl.saveMarkers();        /* Drive save */
+        }
+        MarkerAPIImpl.areaMarkerUpdated(marker, MarkerUpdate.CREATED);
     }
     /**
      * Remove marker from set
@@ -237,6 +266,18 @@ class MarkerSetImpl implements MarkerSet {
         MarkerAPIImpl.areaMarkerUpdated(marker, MarkerUpdate.DELETED);
     }
     /**
+     * Insert marker from set
+     * 
+     * @param marker
+     */
+    void insertPolyLineMarker(PolyLineMarkerImpl marker) {
+        linemarkers.put(marker.getMarkerID(), marker);   /* Insert to set */
+        if(ispersistent && marker.isPersistentMarker()) {   /* If persistent */
+            MarkerAPIImpl.saveMarkers();        /* Drive save */
+        }
+        MarkerAPIImpl.polyLineMarkerUpdated(marker, MarkerUpdate.CREATED);
+    }
+    /**
      * Remove marker from set
      * 
      * @param marker
@@ -247,6 +288,18 @@ class MarkerSetImpl implements MarkerSet {
             MarkerAPIImpl.saveMarkers();        /* Drive save */
         }
         MarkerAPIImpl.polyLineMarkerUpdated(marker, MarkerUpdate.DELETED);
+    }
+    /**
+     * Insert marker from set
+     * 
+     * @param marker
+     */
+    void insertCircleMarker(CircleMarkerImpl marker) {
+        circlemarkers.put(marker.getMarkerID(), marker);   /* Insert to set */
+        if(ispersistent && marker.isPersistentMarker()) {   /* If persistent */
+            MarkerAPIImpl.saveMarkers();        /* Drive save */
+        }
+        MarkerAPIImpl.circleMarkerUpdated(marker, MarkerUpdate.CREATED);
     }
     /**
      * Remove marker from set
@@ -310,6 +363,12 @@ class MarkerSetImpl implements MarkerSet {
         setnode.put("hide", hide_by_def);
         setnode.put("layerprio", prio);
         setnode.put("minzoom", minzoom);
+        if(deficon != null) {
+            setnode.put("deficon", deficon.getMarkerIconID());
+        }
+        else {
+            setnode.put("deficon", MarkerIcon.DEFAULT);
+        }
         if(showlabels != null)
             setnode.put("showlabels", showlabels);
         return setnode;
@@ -390,7 +449,13 @@ class MarkerSetImpl implements MarkerSet {
             showlabels = node.getBoolean("showlabels", false);
         else
             showlabels = null;
-        
+        String defid = node.getString("deficon");
+        if((defid != null) && (MarkerAPIImpl.api != null)) {
+            deficon = MarkerAPIImpl.getMarkerIconImpl(defid);
+        }
+        else {
+            deficon = MarkerAPIImpl.getMarkerIconImpl(MarkerIcon.DEFAULT);
+        }
         ispersistent = true;
         
         return true;
@@ -576,5 +641,20 @@ class MarkerSetImpl implements MarkerSet {
             }
         }
         return match;
+    }
+
+    @Override
+    public void setDefaultMarkerIcon(MarkerIcon defmark) {
+        if(deficon != defmark) {
+            deficon = defmark;
+            MarkerAPIImpl.markerSetUpdated(this, MarkerUpdate.UPDATED);
+            if(ispersistent)
+                MarkerAPIImpl.saveMarkers();
+        }
+    }
+
+    @Override
+    public MarkerIcon getDefaultMarkerIcon() {
+        return deficon;
     }
 }

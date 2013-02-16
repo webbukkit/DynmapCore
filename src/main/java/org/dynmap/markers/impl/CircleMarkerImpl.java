@@ -118,6 +118,7 @@ class CircleMarkerImpl implements CircleMarker {
 
     @Override
     public void deleteMarker() {
+        if(markerset == null) return;
         markerset.removeCircleMarker(this);   /* Remove from our marker set (notified by set) */
         cleanup();
     }
@@ -296,5 +297,13 @@ class CircleMarkerImpl implements CircleMarker {
             if(ispersistent)
                 MarkerAPIImpl.saveMarkers();
         }
+    }
+    @Override
+    public void setMarkerSet(MarkerSet newset) {
+        if(markerset != null) {
+            markerset.removeCircleMarker(this);   /* Remove from our marker set (notified by set) */
+        }
+        markerset = (MarkerSetImpl)newset;
+        markerset.insertCircleMarker(this);
     }
 }

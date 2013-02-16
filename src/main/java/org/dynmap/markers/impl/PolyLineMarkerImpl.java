@@ -122,6 +122,7 @@ class PolyLineMarkerImpl implements PolyLineMarker {
 
     @Override
     public void deleteMarker() {
+        if(markerset == null) return;
         markerset.removePolyLineMarker(this);   /* Remove from our marker set (notified by set) */
         cleanup();
     }
@@ -143,6 +144,7 @@ class PolyLineMarkerImpl implements PolyLineMarker {
     
     @Override
     public void setLabel(String lbl, boolean markup) {
+        if(markerset == null) return;
         label = lbl;
         this.markup = markup;
         MarkerAPIImpl.polyLineMarkerUpdated(this, MarkerUpdate.UPDATED);
@@ -195,6 +197,7 @@ class PolyLineMarkerImpl implements PolyLineMarker {
     }
     @Override
     public void setDescription(String desc) {
+        if(markerset == null) return;
         if((this.desc == null) || (this.desc.equals(desc) == false)) {
             this.desc = desc;
             MarkerAPIImpl.polyLineMarkerUpdated(this, MarkerUpdate.UPDATED);
@@ -236,6 +239,7 @@ class PolyLineMarkerImpl implements PolyLineMarker {
     }
     @Override
     public void setCornerLocation(int n, double x, double y, double z) {
+        if(markerset == null) return;
         Coord c;
         if(n >= corners.size()) {
             corners.add(new Coord(x, y, z));
@@ -254,6 +258,7 @@ class PolyLineMarkerImpl implements PolyLineMarker {
     }
     @Override
     public void deleteCorner(int n) {
+        if(markerset == null) return;
         if(n < corners.size()) {
             corners.remove(n);
             MarkerAPIImpl.polyLineMarkerUpdated(this, MarkerUpdate.UPDATED);
@@ -263,6 +268,7 @@ class PolyLineMarkerImpl implements PolyLineMarker {
     }
     @Override
     public void setCornerLocations(double[] x, double[] y, double[] z) {
+        if(markerset == null) return;
         /* Check if equals */
         int sz = Math.min(x.length, Math.min(y.length, z.length));
         if(sz == corners.size()) {
@@ -287,6 +293,7 @@ class PolyLineMarkerImpl implements PolyLineMarker {
     }
     @Override
     public void setLineStyle(int weight, double opacity, int color) {
+        if(markerset == null) return;
         if((weight != lineweight) || (opacity != lineopacity) || (color != linecolor)) {
             lineweight = weight;
             lineopacity = opacity;
@@ -308,4 +315,13 @@ class PolyLineMarkerImpl implements PolyLineMarker {
     public int getLineColor() {
         return linecolor;
     }
+    @Override
+    public void setMarkerSet(MarkerSet newset) {
+        if(markerset != null) {
+            markerset.removePolyLineMarker(this);   /* Remove from our marker set (notified by set) */
+        }
+        markerset = (MarkerSetImpl)newset;
+        markerset.insertPolyLineMarker(this);
+    }
+
 }

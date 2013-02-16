@@ -102,6 +102,7 @@ class MarkerImpl implements Marker {
 
     @Override
     public void deleteMarker() {
+        if(markerset == null) return;
         markerset.removeMarker(this);   /* Remove from our marker set (notified by set) */
         cleanup();
     }
@@ -113,6 +114,7 @@ class MarkerImpl implements Marker {
 
     @Override
     public boolean setMarkerIcon(MarkerIcon icon) {
+        if(markerset == null) return false;
         if(!(icon instanceof MarkerIconImpl)) {
             return false;
         }
@@ -146,6 +148,7 @@ class MarkerImpl implements Marker {
     
     @Override
     public void setLabel(String lbl, boolean markup) {
+        if(markerset == null) return;
         label = lbl;
         this.markup = markup;
         MarkerAPIImpl.markerUpdated(this, MarkerUpdate.UPDATED);
@@ -195,6 +198,7 @@ class MarkerImpl implements Marker {
     }
     @Override
     public void setLocation(String worldid, double x, double y, double z) {
+        if(markerset == null) return;
         this.world = worldid;
         this.x = x;
         this.y = y;
@@ -209,6 +213,7 @@ class MarkerImpl implements Marker {
     }
     @Override
     public void setDescription(String desc) {
+        if(markerset == null) return;
         if((this.desc == null) || (this.desc.equals(desc) == false)) {
             this.desc = desc;
             MarkerAPIImpl.markerUpdated(this, MarkerUpdate.UPDATED);
@@ -223,5 +228,12 @@ class MarkerImpl implements Marker {
     public String getDescription() {
         return this.desc;
     }
-
+    @Override
+    public void setMarkerSet(MarkerSet newset) {
+        if(markerset != null) {
+            markerset.removeMarker(this);   /* Remove from our marker set (notified by set) */
+        }
+        markerset = (MarkerSetImpl)newset;
+        markerset.insertMarker(this);
+    }
 }

@@ -134,6 +134,7 @@ class AreaMarkerImpl implements AreaMarker {
 
     @Override
     public void deleteMarker() {
+        if(markerset == null) return;
         markerset.removeAreaMarker(this);   /* Remove from our marker set (notified by set) */
         cleanup();
     }
@@ -155,6 +156,7 @@ class AreaMarkerImpl implements AreaMarker {
     
     @Override
     public void setLabel(String lbl, boolean markup) {
+        if(markerset == null) return;
         label = lbl;
         this.markup = markup;
         MarkerAPIImpl.areaMarkerUpdated(this, MarkerUpdate.UPDATED);
@@ -207,6 +209,7 @@ class AreaMarkerImpl implements AreaMarker {
     }
     @Override
     public void setDescription(String desc) {
+        if(markerset == null) return;
         if((this.desc == null) || (this.desc.equals(desc) == false)) {
             this.desc = desc;
             MarkerAPIImpl.areaMarkerUpdated(this, MarkerUpdate.UPDATED);
@@ -231,6 +234,7 @@ class AreaMarkerImpl implements AreaMarker {
     }
     @Override
     public void setRangeY(double ytop, double ybottom) {
+        if(markerset == null) return;
         if((this.ytop != ytop) || (this.ybottom != ybottom)) {
             this.ytop = ytop;
             this.ybottom = ybottom;
@@ -259,6 +263,7 @@ class AreaMarkerImpl implements AreaMarker {
     }
     @Override
     public void setCornerLocation(int n, double x, double z) {
+        if(markerset == null) return;
         Coord c;
         if(n >= corners.size()) {
             corners.add(new Coord(x, z));
@@ -276,6 +281,7 @@ class AreaMarkerImpl implements AreaMarker {
     }
     @Override
     public void deleteCorner(int n) {
+        if(markerset == null) return;
         if(n < corners.size()) {
             corners.remove(n);
             MarkerAPIImpl.areaMarkerUpdated(this, MarkerUpdate.UPDATED);
@@ -285,6 +291,7 @@ class AreaMarkerImpl implements AreaMarker {
     }
     @Override
     public void setCornerLocations(double[] x, double[] z) {
+        if(markerset == null) return;
         /* Check if equals */
         if(x.length == corners.size()) {
             boolean match = true;
@@ -308,6 +315,7 @@ class AreaMarkerImpl implements AreaMarker {
     }
     @Override
     public void setLineStyle(int weight, double opacity, int color) {
+        if(markerset == null) return;
         if((weight != lineweight) || (opacity != lineopacity) || (color != linecolor)) {
             lineweight = weight;
             lineopacity = opacity;
@@ -331,6 +339,7 @@ class AreaMarkerImpl implements AreaMarker {
     }
     @Override
     public void setFillStyle(double opacity, int color) {
+        if(markerset == null) return;
         if((opacity != fillopacity) || (color != fillcolor)) {
             fillopacity = opacity;
             fillcolor = color;
@@ -347,4 +356,13 @@ class AreaMarkerImpl implements AreaMarker {
     public int getFillColor() {
         return fillcolor;
     }
+    @Override
+    public void setMarkerSet(MarkerSet newset) {
+        if(markerset != null) {
+            markerset.removeAreaMarker(this);   /* Remove from our marker set (notified by set) */
+        }
+        markerset = (MarkerSetImpl)newset;
+        markerset.insertAreaMarker(this);
+    }
+
 }

@@ -927,7 +927,9 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     private static final String ARG_FILE = "file";
     private static final String ARG_HIDE = "hide";
     private static final String ARG_ICON = "icon";
+    private static final String ARG_DEFICON = "deficon";
     private static final String ARG_SET = "set";
+    private static final String ARG_NEWSET = "newset";
     private static final String ARG_PRIO = "prio";
     private static final String ARG_MINZOOM = "minzoom";
     private static final String ARG_STROKEWEIGHT = "weight";
@@ -1009,6 +1011,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     public static boolean onCommand(DynmapCore plugin, DynmapCommandSender sender, String cmd, String commandLabel, String[] args) {
         String id, setid, file, label, newlabel, iconid, prio, minzoom;
         String x, y, z, world, normalized_world;
+        String deficon, newset;
         
         if(api == null) {
             sender.sendMessage("Markers component is not enabled.");
@@ -1066,9 +1069,6 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                     return true;
                 }
                 /* Fill in defaults for missing parameters */
-                if(iconid == null) {
-                    iconid = MarkerIcon.DEFAULT;
-                }
                 if(setid == null) {
                     setid = MarkerSet.DEFAULT;
                 }
@@ -1078,7 +1078,16 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                     sender.sendMessage("Error: invalid set - " + setid);
                     return true;
                 }
-                MarkerIcon ico = api.getMarkerIcon(iconid);
+                MarkerIcon ico = null;
+                if(iconid == null) {
+                    ico = set.getDefaultMarkerIcon();
+                }
+                if(ico == null) {
+                    if(iconid == null) {
+                        iconid = MarkerIcon.DEFAULT;
+                    }
+                    ico = api.getMarkerIcon(iconid);
+                }
                 if(ico == null) {
                     sender.sendMessage("Error: invalid icon - " + iconid);
                     return true;
@@ -1152,6 +1161,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 id = parms.get(ARG_ID);
                 label = parms.get(ARG_LABEL);
                 setid = parms.get(ARG_SET);
+                newset = parms.get(ARG_NEWSET);
                 x = parms.get(ARG_X);
                 y = parms.get(ARG_Y);
                 z = parms.get(ARG_Z);
@@ -1214,7 +1224,14 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 }
                 if(loc != null)
                     marker.setLocation(loc.world, loc.x, loc.y, loc.z);
-                
+                if(newset != null) {
+                    MarkerSet ms = api.getMarkerSet(newset);
+                    if(ms == null) {
+                        sender.sendMessage("Error: invalid new marker set - " + newset);
+                        return true;
+                    }
+                    marker.setMarkerSet(ms);
+                }
                 sender.sendMessage("Updated marker id:" + marker.getMarkerID() + " (" + marker.getLabel() + ")");
             }
             else {
@@ -1286,7 +1303,8 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             for(String s : sortmarkers.keySet()) {
                 Marker m = sortmarkers.get(s);
                 sender.sendMessage(m.getMarkerID() + ": label:\"" + m.getLabel() + "\", set:" + m.getMarkerSet().getMarkerSetID() + 
-                                   ", world:" + m.getWorld() + ", x:" + m.getX() + ", y:" + m.getY() + ", z:" + m.getZ());
+                                   ", world:" + m.getWorld() + ", x:" + m.getX() + ", y:" + m.getY() + ", z:" + m.getZ() + 
+                                   ", icon:" + m.getMarkerIcon().getMarkerIconID());
             }
         }
         /* List icons */
@@ -1306,6 +1324,10 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 label = parms.get(ARG_LABEL);
                 prio = parms.get(ARG_PRIO);
                 minzoom = parms.get(ARG_MINZOOM);
+                deficon = parms.get(ARG_DEFICON);
+                if(deficon == null) {
+                    deficon = MarkerIcon.DEFAULT;
+                }
                 if((id == null) && (label == null)) {
                     sender.sendMessage("<label> or id:<marker-id> required");
                     return true;
@@ -1343,6 +1365,13 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                             sender.sendMessage("Invalid priority: " + prio);
                         }
                     }
+                    MarkerIcon mi = MarkerAPIImpl.getMarkerIconImpl(deficon);
+                    if(mi != null) {
+                        set.setDefaultMarkerIcon(mi);
+                    }
+                    else {
+                        sender.sendMessage("Invalid default icon: " + deficon);
+                    }
                     if(minzoom != null) {
                         try {
                             set.setMinZoom(Integer.valueOf(minzoom));
@@ -1366,6 +1395,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 label = parms.get(ARG_LABEL);
                 prio = parms.get(ARG_PRIO);
                 minzoom = parms.get(ARG_MINZOOM);
+                deficon = parms.get(ARG_DEFICON);
                 if((id == null) && (label == null)) {
                     sender.sendMessage("<label> or id:<set-id> required");
                     return true;
@@ -1407,6 +1437,16 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                         set.setLabelShow(false);
                     else
                         set.setLabelShow(null);
+                }
+                if(deficon != null) {
+                    MarkerIcon mi = null;
+                    if(deficon.equals("") == false) {
+                        mi = MarkerAPIImpl.getMarkerIconImpl(deficon);
+                        if(mi == null) {
+                            sender.sendMessage("Error: invalid marker icon - " + deficon);
+                        }
+                    }
+                    set.setDefaultMarkerIcon(mi);
                 }
 
                 if(prio != null) {
@@ -1475,8 +1515,9 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             for(String s : setids) {
                 MarkerSet set = api.markersets.get(s);
                 Boolean b = set.getLabelShow();
+                MarkerIcon defi = set.getDefaultMarkerIcon();
                 sender.sendMessage(set.getMarkerSetID() + ": label:\"" + set.getMarkerSetLabel() + "\", hide:" + set.getHideByDefault() + ", prio:" + set.getLayerPriority() + ", minzoom:" + set.getMinZoom() + 
-                        ", showlabels=" + ((b != null)?b:"null"));
+                        ", showlabels:" + ((b != null)?b:"null") + ", deficon:" + ((defi != null)?defi.getMarkerIconID():""));
             }
         }
         /* Add new icon */
@@ -1498,7 +1539,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 }
                 if(label == null)
                     label = id;
-                MarkerIcon ico = api.getMarkerIcon(id);
+                MarkerIcon ico = MarkerAPIImpl.getMarkerIconImpl(id);
                 if(ico != null) {
                     sender.sendMessage("Icon '" + id + "' already defined.");
                     return true;
@@ -1541,7 +1582,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 }
                 MarkerIcon ico = null;
                 if(id != null) {
-                    ico = api.getMarkerIcon(id);
+                    ico = MarkerAPIImpl.getMarkerIconImpl(id);
                     if(ico == null) {
                         sender.sendMessage("Error: icon does not exist - id:" + id);
                         return true;
@@ -1596,7 +1637,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                     return true;
                 }
                 if(id != null) {
-                    MarkerIcon ico = api.getMarkerIcon(id);
+                    MarkerIcon ico = MarkerAPIImpl.getMarkerIconImpl(id);
                     if(ico == null) {
                         sender.sendMessage("Error: icon does not exist - id:" + id);
                         return true;
