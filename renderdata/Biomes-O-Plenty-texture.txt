@@ -102,16 +102,21 @@ block:id=Acacia_Single_Slab_ID,data=0,data=4,data=8,data=12,allsides=45,topbotto
 block:id=Acacia_Stairs_ID,data=*,patch0-2=45,transparency=SEMITRANSPARENT,txtid=blk0
 
 #  "Anenome ID"
+block:id=Anenome_ID,data=*,patch0-1=17,txtid=blk0,transparency=TRANSPARENT
 #  "Apple Leaves ID"
 block:id=Apple_Leaves_ID,data=0,data=4,data=8,data=12,allfaces=78,txtid=blk0
 #  "Apple Sapling ID"
-block:id=Apple_Sapling_ID,data=0,data=4,data=8,data=12,patch0-1=106,txtid=blk0
+block:id=Apple_Sapling_ID,data=0,data=4,data=8,data=12,patch0-1=106,txtid=blk0,transparency=TRANSPARENT
 #  "Bamboo ID"
+block:id=Bamboo_ID,data=*,patch0-1=19,txtid=blk0,transparency=TRANSPARENT
 #  "Bamboo Leaves ID"
 block:id=Bamboo_Leaves_ID,data=0,data=4,data=8,data=12,allfaces=96,txtid=blk0
 #  "Barley ID"
+block:id=Barley_ID,data=*,patch0-3=58,transparency=TRANSPARENT,txtid=blk0
 #  "Bush ID"
+block:id=Bush_ID,data=*,patch0-1=1001,txtid=blk0,transparency=TRANSPARENT
 #  "Cattail ID"
+block:id=Cattail_ID,data=*,patch0-3=2,transparency=TRANSPARENT,txtid=blk0
 
 #  "Cherry Double Slab ID"
 block:id=Cherry_Double_Slab_ID,data=0,data=4,data=8,data=12,allsides=36,topbottom=6036,txtid=blk0
@@ -128,7 +133,9 @@ block:id=Cherry_Single_Slab_ID,data=0,data=4,data=8,data=12,allsides=36,topbotto
 block:id=Cherry_Stairs_ID,data=*,patch0-2=36,transparency=SEMITRANSPARENT,txtid=blk0
 
 #  "Clover ID"
+block:id=Clover_ID,data=*,patch0=15,txtid=blk0,transparency=TRANSPARENT
 #  "Daisy ID"
+block:id=Daisy_ID,data=*,patch0-1=10,txtid=blk0,transparency=TRANSPARENT
 
 #  "Dark Double Slab ID"
 block:id=Dark_Double_Slab_ID,data=0,data=4,data=8,data=12,allsides=38,topbottom=6038,txtid=blk0
@@ -149,15 +156,26 @@ block:id=Dark_Single_Slab_ID,data=0,data=4,data=8,data=12,allsides=38,topbottom=
 block:id=Dark_Stairs_ID,data=*,patch0-2=38,transparency=SEMITRANSPARENT,txtid=blk0
 
 #  "Dead Grass ID"
+block:id=Dead_Grass_ID,data=*,patch0-1=3,txtid=blk0,transparency=TRANSPARENT
 #  "Dead Log ID"
+block:id=Dead_Log_ID,data=0,allsides=39,topbottom=6255,txtid=blk0
+block:id=Dead_Log_ID,data=4,north=255,south=255,east=4039,west=4039,top=39,bottom=39,txtid=blk0
+block:id=Dead_Log_ID,data=8,north=4039,south=4039,east=255,west=255,top=4039,bottom=4039,txtid=blk0
+block:id=Dead_Log_ID,data=12,allsides=39,topbottom=6039,txtid=blk0
 #  "Deathbloom ID"
+block:id=Deathbloom_ID,data=*,patch0-1=112,transparency=TRANSPARENT,txtid=blk0
+
 #  "Desert Grass ID"
+block:id=Desert_Grass_ID,data=*,patch0-1=4,transparency=TRANSPARENT,txtid=blk0
 #  "Desert Sprouts ID"
+block:id=Desert_Sprouts_ID,data=*,patch0-1=117,transparency=TRANSPARENT,txtid=blk0
 #  "Dune Grass ID"
+block:id=Dune_Grass_ID,data=*,patch0-1=116,transparency=TRANSPARENT,txtid=blk0
+
 #  "Dying Leaves ID"
 block:id=Dying_Leaves_ID,data=0,data=4,data=8,data=12,allfaces=76,txtid=blk0
 #  "Dying Sapling ID"
-block:id=Dying_Sapling_ID,data=0,data=4,data=8,data=12,patch0-1=104,transparency=TRANSPARENT,txtid=blk0
+block:id=Dying_Sapling_ID,data=*,patch0-1=104,transparency=TRANSPARENT,txtid=blk0
 
 #  "Fir Double Slab ID"
 block:id=Fir_Double_Slab_ID,data=0,data=4,data=8,data=12,allsides=47,topbottom=6047,txtid=blk0
@@ -180,12 +198,22 @@ block:id=Fir_Stairs_ID,data=*,patch0-2=47,transparency=SEMITRANSPARENT,txtid=blk
 #  "Fruitless Apple Leaves ID"
 block:id=Fruitless_Apple_Leaves_ID,data=0,data=4,data=8,data=12,allfaces=80,txtid=blk0
 #  "Giant Flower Stem ID"
+block:id=Giant_Flower_Stem_ID,data=0,allsides=48,topbottom=6254,txtid=blk0
+block:id=Giant_Flower_Stem_ID,data=4,north=254,south=254,east=4048,west=4048,top=48,bottom=48,txtid=blk0
+block:id=Giant_Flower_Stem_ID,data=8,north=4048,south=4048,east=254,west=254,top=4048,bottom=4048,txtid=blk0
+block:id=Giant_Flower_Stem_ID,data=12,allsides=48,topbottom=6048,txtid=blk0
 #  "Giant Red Flower ID"
+block:id=Giant_Red_Flower_ID,data=*,allsides=49,topbottom=6049,txtid=blk0
 #  "Giant Yellow Flower ID"
+block:id=Giant_Yellow_Flower_ID,data=*,allsides=50,topbottom=6050,txtid=blk0
 #  "Glowflower ID"
+block:id=Glowflower_ID,data=*,patch0-1=6,transparency=TRANSPARENT,txtid=blk0
 #  "High Grass Bottom ID"
+block:id=High_Grass_Bottom_ID,data=*,patch0-1=1007,transparency=TRANSPARENT,txtid=blk0
 #  "High Grass Top ID"
+block:id=High_Grass_Top_ID,data=*,patch0-1=1008,transparency=TRANSPARENT,txtid=blk0
 #  "Hydrangea ID"
+block:id=Hydrangea_ID,data=*,patch0-1=113,transparency=TRANSPARENT,txtid=blk0
 
 #  "Magic Double Slab ID"
 block:id=Magic_Double_Slab_ID,data=0,data=4,data=8,data=12,allsides=56,topbottom=6056,txtid=blk0
@@ -228,10 +256,17 @@ block:id=Maple_Leaves_ID,data=0,data=4,data=8,data=12,allfaces=68,txtid=blk0
 #  "Maple Sapling ID"
 block:id=Maple_Sapling_ID,data=0,data=4,data=8,data=12,patch0-1=101,transparency=TRANSPARENT,txtid=blk0
 #  "Medium Grass ID"
+block:id=Medium_Grass_ID,data=*,patch0-1=1115,transparency=TRANSPARENT,txtid=blk0
+
 #  "Mud Brick Double Slab ID"
+block:id=Mud_Brick_Double_Slab_ID,data=0,data=4,data=8,data=12,allsides=52,topbottom=6052,txtid=blk0
 #  "Mud Brick Single Slab ID"
+block:id=Mud_Brick_Single_Slab_ID,data=0,data=4,data=8,data=12,allsides=52,topbottom=6052,txtid=blk0
 #  "Mud Brick Stairs ID"
+block:id=Mud_Brick_Stairs_ID,data=*,patch0-2=52,transparency=SEMITRANSPARENT,txtid=blk0
 #  "Mud Bricks ID"
+block:id=Mud_Bricks_ID,data=*,allsides=52,topbottom=6052,txtid=blk0
+
 #  "Orange Autumn Leaves ID"
 block:id=Orange_Autumn_Leaves_ID,data=0,data=4,data=8,data=12,allfaces=66,txtid=blk0
 #  "Orange Autumn Sapling ID"
@@ -253,7 +288,7 @@ block:id=Palm_Log_ID,data=12,allsides=59,topbottom=6059,txtid=blk0
 #  "Palm Plank ID"
 block:id=Palm_Plank_ID,data=*,allsides=60,topbottom=6060,txtid=blk0
 #  "Palm Sapling ID"
-block:id=Palm_Sapling_ID,data=0,data=4,data=8,data=12,patch0-1=100,transparency=TRANSPARENT,txtid=blk0
+block:id=Palm_Sapling_ID,data=*,patch0-1=100,transparency=TRANSPARENT,txtid=blk0
 #  "Palm Single Slab ID"
 block:id=Palm_Single_Slab_ID,data=0,data=4,data=8,data=12,allsides=60,topbottom=6060,txtid=blk0
 #  "Palm Stairs ID"
@@ -264,14 +299,25 @@ block:id=Pink_Cherry_Leaves_ID,data=0,data=4,data=8,data=12,allfaces=70,txtid=bl
 #  "Pink Cherry Sapling ID"
 block:id=Pink_Cherry_Sapling_ID,data=0,data=4,data=8,data=12,patch0-1=108,transparency=TRANSPARENT,txtid=blk0
 #  "Pink Flower ID"
+block:id=Pink_Flower_ID,data=*,patch0-1=54,transparency=TRANSPARENT,txtid=blk0
+
 #  "Red Rock Brick Double Slab ID"
+block:id=Red_Rock_Brick_Double_Slab_ID,data=0,data=4,data=8,data=12,allsides=24,topbottom=6024,txtid=blk0
 #  "Red Rock Brick Single Slab ID"
+block:id=Red_Rock_Brick_Single_Slab_ID,data=0,data=4,data=8,data=12,allsides=24,topbottom=6024,txtid=blk0
 #  "Red Rock Brick Stairs ID"
+block:id=Red_Rock_Brick_Stairs_ID,data=*,patch0-2=24,transparency=SEMITRANSPARENT,txtid=blk0
 #  "Red Rock Bricks ID"
+block:id=Red_Rock_Bricks_ID,data=*,allsides=24,topbottom=6024,txtid=blk0
+
 #  "Red Rock Cobblestone Double Slab ID"
+block:id=Red_Rock_Cobblestone_Double_Slab_ID,data=0,data=4,data=8,data=12,allsides=23,topbottom=6023,txtid=blk0
 #  "Red Rock Cobblestone ID"
+block:id=Red_Rock_Cobblestone_ID,data=*,allsides=23,topbottom=6023,txtid=blk0
 #  "Red Rock Cobblestone Single Slab ID"
+block:id=Red_Rock_Cobblestone_Single_Slab_ID,data=0,data=4,data=8,data=12,allsides=23,topbottom=6023,txtid=blk0
 #  "Red Rock Cobblestone Stairs ID"
+block:id=Red_Rock_Cobblestone_Stairs_ID,data=*,patch0-2=23,transparency=SEMITRANSPARENT,txtid=blk0
 
 #  "Redwood Double Slab ID"
 block:id=Redwood_Double_Slab_ID,data=0,data=4,data=8,data=12,allsides=41,topbottom=6041,txtid=blk0
@@ -285,26 +331,34 @@ block:id=Redwood_Log_ID,data=12,allsides=40,topbottom=6040,txtid=blk0
 #  "Redwood Plank ID"
 block:id=Redwood_Plank_ID,data=*,allsides=41,topbottom=6041,txtid=blk0
 #  "Redwood Sapling ID"
-block:id=Redwood_Sapling_ID,data=0,data=4,data=8,data=12,patch0-1=99,transparency=TRANSPARENT,txtid=blk0
+block:id=Redwood_Sapling_ID,data=*,patch0-1=99,transparency=TRANSPARENT,txtid=blk0
 #  "Redwood Single Slab ID"
 block:id=Redwood_Single_Slab_ID,data=0,data=4,data=8,data=12,allsides=41,topbottom=6041,txtid=blk0
 #  "Redwood Stairs ID"
 block:id=Redwood_Stairs_ID,data=*,patch0-2=41,transparency=SEMITRANSPARENT,txtid=blk0
 
 #  "Short Grass ID"
+block:id=Short_Grass_ID,data=*,patch0-1=1012,transparency=TRANSPARENT,txtid=blk0
 #  "Sprout ID"
+block:id=Sprout_ID,data=*,patch0-1=1013,transparency=TRANSPARENT,txtid=blk0
 #  "Swampflower ID"
+block:id=Swampflower_ID,data=*,patch0-1=0,transparency=TRANSPARENT,txtid=blk0
 #  "Thorns ID"
+block:id=Thorns_ID,data=*,patch0-1=14,transparency=TRANSPARENT,txtid=blk0
 #  "Tiny Cactus ID"
+block:id=Tiny_Cactus_ID,data=*,patch0-1=51,transparency=TRANSPARENT,txtid=blk0
 #  "Toadstool ID"
+block:id=Toadstool_ID,data=*,patch0-1=16,transparency=TRANSPARENT,txtid=blk0
 #  "Tree Moss ID"
+block:id=Tree_Moss_ID,patch0-4=2057,transparency=TRANSPARENT,txtid=blk0
 #  "Violet ID"
+block:id=Violet_ID,data=*,patch0-1=114,transparency=TRANSPARENT,txtid=blk0
 #  "White Cherry Leaves ID"
 block:id=White_Cherry_Leaves_ID,data=0,data=4,data=8,data=12,allfaces=72,txtid=blk0
 #  "White Cherry Sapling ID"
 block:id=White_Cherry_Sapling_ID,data=0,data=4,data=8,data=12,patch0-1=109,transparency=TRANSPARENT,txtid=blk0
 #  "Wildflower ID"
-
+block:id=Wildflower_ID,data=*,patch0-1=11,transparency=TRANSPARENT,txtid=blk0
 #  "Willow Double Slab ID"
 block:id=Willow_Double_Slab_ID,data=0,data=4,data=8,data=12,allsides=43,topbottom=6043,txtid=blk0
 #  "Willow ID"
