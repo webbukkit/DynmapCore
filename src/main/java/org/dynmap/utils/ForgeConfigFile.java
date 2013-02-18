@@ -92,10 +92,10 @@ public class ForgeConfigFile {
                                 if(off >= 0) {  /* Trim off the Forge 6.4.1+ type prefix */
                                     propertyName = propertyName.substring(off+1);
                                 }
-                                propertyName = propertyName.replace(' ', '_');
                                 for(int j = section.size()-1; j >= 0; j--) {
                                     propertyName = section.get(j) + "/" + propertyName;
                                 }
+                                propertyName = propertyName.replace(' ', '_');
                                 settings.put(propertyName, line.substring(i + 1).trim());
                                 break;
                         }
