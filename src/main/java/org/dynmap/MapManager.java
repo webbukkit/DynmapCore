@@ -723,13 +723,15 @@ public class MapManager {
                 public Integer call() throws Exception {
                     long now_nsec = System.nanoTime();
                     for(DynmapWorld w : worlds) {
-                        int new_servertime = (int)(w.getTime() % 24000);
-                        /* Check if we went from night to day */
-                        boolean wasday = w.servertime >= 0 && w.servertime < 13700;
-                        boolean isday = new_servertime >= 0 && new_servertime < 13700;
-                        w.servertime = new_servertime;
-                        if(wasday != isday) {
-                            pushUpdate(w, new Client.DayNight(isday));            
+                        if(w.isLoaded()) {
+                            int new_servertime = (int)(w.getTime() % 24000);
+                            /* Check if we went from night to day */
+                            boolean wasday = w.servertime >= 0 && w.servertime < 13700;
+                            boolean isday = new_servertime >= 0 && new_servertime < 13700;
+                            w.servertime = new_servertime;
+                            if(wasday != isday) {
+                                pushUpdate(w, new Client.DayNight(isday));            
+                            }
                         }
                         /* Tick invalidated tiles processing */
                         for(MapTypeState mts : w.mapstate) {
