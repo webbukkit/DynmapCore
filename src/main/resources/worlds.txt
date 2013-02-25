@@ -25,22 +25,28 @@ worlds:
   #    - x: -15000
   #      y: 64
   #      z: -5000
-  #  # Use visibilitylimits to restrict which areas of maps on your world to render (zero or more rectangles can be defined)
+  #  # Use visibilitylimits to restrict which areas of maps on your world to render (zero or more shapes can be defined)
+  #  # For a rectangle, the area is defined by x0, z0 to x1, z1
+  #  # For a circle, the area is defined by a center at x,z with a radius 'r'
   #  visibilitylimits:
   #    - x0: -1000
   #      z0: -1000
   #      x1: 1000
   #      z1: 1000
-  #    - x0: -2000
-  #      z0: -1000
-  #      x1: -1000
-  #      z1: -500
+  #    - x: -2000
+  #      z: -1000
+  #      r: 200
   #  # Use hiddenlimits to specifically hide portions of your world (the opposite of visibilitylimits)
+  #  # For a rectangle, the area is defined by x0, z0 to x1, z1
+  #  # For a circle, the area is defined by a center at x,z with a radius 'r'
   #  hiddenlimits:
   #    - x0: 100
   #      z0: 0
   #      x1: 200
   #      z1: 0
+  #    - x: -2000
+  #      z: -1000
+  #      r: 200
   #  # Use hidestyle to control how hidden-but-existing chunks are to be rendered (air=empty air (same as ungenerated), stone=a flat stone plain, ocean=a flat ocean)
   #  hidestyle: stone
   #  # Use 'autogenerate-to-visibilitylimits: true' to choose to force the generation of ungenerated chunks while rendering maps on this world, for any chunks within the defined
