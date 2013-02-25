@@ -22,12 +22,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public abstract class DynmapWorld {
-
-    public enum AutoGenerateOption {
-        NONE,
-        FORMAPONLY,
-        PERMANENT
-    }
     public List<MapType> maps = new ArrayList<MapType>();
     public List<MapTypeState> mapstate = new ArrayList<MapTypeState>();
     
@@ -38,7 +32,6 @@ public abstract class DynmapWorld {
     
     public List<VisibilityLimit> visibility_limits;
     public List<VisibilityLimit> hidden_limits;
-    public AutoGenerateOption do_autogenerate;
     public MapChunkCache.HiddenChunkStyle hiddenchunkstyle;
     public int servertime;
     public boolean sendposition;
@@ -671,20 +664,6 @@ public abstract class DynmapWorld {
                 hidden_limits.add(lim);
             }            
         }
-        String autogen = worldconfig.getString("autogenerate-to-visibilitylimits", "none");
-        if(autogen.equals("permanent")) {
-            do_autogenerate = AutoGenerateOption.PERMANENT;
-        }
-        else if(autogen.equals("map-only")) {
-            do_autogenerate = AutoGenerateOption.FORMAPONLY;
-        }
-        else {
-            do_autogenerate = AutoGenerateOption.NONE;
-        }
-        if((do_autogenerate != AutoGenerateOption.NONE) && (visibility_limits == null)) {
-            Log.info("Warning: Automatic world generation to visible limits option requires that visibitylimits be set - option disabled");
-            do_autogenerate = AutoGenerateOption.NONE;
-        }
         String hiddenchunkstyle = worldconfig.getString("hidestyle", "stone");
         if(hiddenchunkstyle.equals("air"))
             this.hiddenchunkstyle = MapChunkCache.HiddenChunkStyle.FILL_AIR;
@@ -780,19 +759,6 @@ public abstract class DynmapWorld {
             }
             node.put("hiddenlimits", lims);
         }
-        /* Save auto-generate settings */
-        String autogen = "none";
-        switch(do_autogenerate) {
-            case PERMANENT:
-                autogen = "permanent";
-                break;
-            case FORMAPONLY:
-                autogen = "map-only";
-                break;
-            default:
-                break;
-        }
-        node.put("autogenerate-to-visibilitylimits", autogen);
         /* Handle hide style */
         String hide = "stone";
         switch(hiddenchunkstyle) {

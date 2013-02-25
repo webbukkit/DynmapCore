@@ -61,10 +61,6 @@ public interface MapChunkCache {
      */
     public void setHiddenRange(VisibilityLimit limit);
     /**
-     * Set autogenerate - must be done after at least one visible range has been set
-     */
-    public void setAutoGenerateVisbileRanges(DynmapWorld.AutoGenerateOption do_generate);
-    /**
      * Get world
      */
     public DynmapWorld getWorld();
