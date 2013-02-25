@@ -10,6 +10,9 @@ import org.dynmap.debug.Debug;
 import org.dynmap.utils.DynmapBufferedImage;
 import org.dynmap.utils.FileLockManager;
 import org.dynmap.utils.MapChunkCache;
+import org.dynmap.utils.RectangleVisibilityLimit;
+import org.dynmap.utils.RoundVisibilityLimit;
+import org.dynmap.utils.VisibilityLimit;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -33,8 +36,8 @@ public abstract class DynmapWorld {
     public List<DynmapLocation> seedloc;    /* All seed location - both direct and based on visibility limits */
     private List<DynmapLocation> seedloccfg;    /* Configured full render seeds only */
     
-    public List<MapChunkCache.VisibilityLimit> visibility_limits;
-    public List<MapChunkCache.VisibilityLimit> hidden_limits;
+    public List<VisibilityLimit> visibility_limits;
+    public List<VisibilityLimit> hidden_limits;
     public AutoGenerateOption do_autogenerate;
     public MapChunkCache.HiddenChunkStyle hiddenchunkstyle;
     public int servertime;
@@ -625,28 +628,46 @@ public abstract class DynmapWorld {
         /* Load visibility limits, if any are defined */
         List<ConfigurationNode> vislimits = worldconfig.getNodes("visibilitylimits");
         if(vislimits != null) {
-            visibility_limits = new ArrayList<MapChunkCache.VisibilityLimit>();
+            visibility_limits = new ArrayList<VisibilityLimit>();
             for(ConfigurationNode vis : vislimits) {
-                MapChunkCache.VisibilityLimit lim = new MapChunkCache.VisibilityLimit();
-                lim.x0 = vis.getInteger("x0", 0);
-                lim.x1 = vis.getInteger("x1", 0);
-                lim.z0 = vis.getInteger("z0", 0);
-                lim.z1 = vis.getInteger("z1", 0);
+                VisibilityLimit lim;
+                if (vis.containsKey("r")) {  /* It is round visibility limit */
+                    int x_center = vis.getInteger("x", 0);
+                    int z_center = vis.getInteger("z", 0);
+                    int radius = vis.getInteger("r", 0);
+                    lim = new RoundVisibilityLimit(x_center, z_center, radius);
+                }
+                else {  /* Rectangle visibility limit */
+                    int x0 = vis.getInteger("x0", 0);
+                    int x1 = vis.getInteger("x1", 0);
+                    int z0 = vis.getInteger("z0", 0);
+                    int z1 = vis.getInteger("z1", 0);
+                    lim = new RectangleVisibilityLimit(x0, z0, x1, z1);
+                }
                 visibility_limits.add(lim);
                 /* Also, add a seed location for the middle of each visible area */
-                seedloc.add(new DynmapLocation(wname, (lim.x0+lim.x1)/2, 64, (lim.z0+lim.z1)/2));
+                seedloc.add(new DynmapLocation(wname, lim.xCenter(), 64, lim.zCenter()));
             }            
         }
         /* Load hidden limits, if any are defined */
         List<ConfigurationNode> hidelimits = worldconfig.getNodes("hiddenlimits");
         if(hidelimits != null) {
-            hidden_limits = new ArrayList<MapChunkCache.VisibilityLimit>();
+            hidden_limits = new ArrayList<VisibilityLimit>();
             for(ConfigurationNode vis : hidelimits) {
-                MapChunkCache.VisibilityLimit lim = new MapChunkCache.VisibilityLimit();
-                lim.x0 = vis.getInteger("x0", 0);
-                lim.x1 = vis.getInteger("x1", 0);
-                lim.z0 = vis.getInteger("z0", 0);
-                lim.z1 = vis.getInteger("z1", 0);
+                VisibilityLimit lim;
+                if (vis.containsKey("r")) {  /* It is round visibility limit */
+                    int x_center = vis.getInteger("x", 0);
+                    int z_center = vis.getInteger("z", 0);
+                    int radius = vis.getInteger("r", 0);
+                    lim = new RoundVisibilityLimit(x_center, z_center, radius);
+                }
+                else {  /* Rectangle visibility limit */
+                    int x0 = vis.getInteger("x0", 0);
+                    int x1 = vis.getInteger("x1", 0);
+                    int z0 = vis.getInteger("z0", 0);
+                    int z1 = vis.getInteger("z1", 0);
+                    lim = new RectangleVisibilityLimit(x0, z0, x1, z1);
+                }
                 hidden_limits.add(lim);
             }            
         }
@@ -717,12 +738,21 @@ public abstract class DynmapWorld {
         if(visibility_limits != null) {
             ArrayList<Map<String,Object>> lims = new ArrayList<Map<String,Object>>();
             for(int i = 0; i < visibility_limits.size(); i++) {
-                MapChunkCache.VisibilityLimit lim = visibility_limits.get(i);
+                VisibilityLimit lim = visibility_limits.get(i);
                 LinkedHashMap<String, Object> lv = new LinkedHashMap<String,Object>();
-                lv.put("x0", lim.x0);
-                lv.put("z0", lim.z0);
-                lv.put("x1", lim.x1);
-                lv.put("z1", lim.z1);
+                if (lim instanceof RectangleVisibilityLimit) {
+                    RectangleVisibilityLimit rect_lim = (RectangleVisibilityLimit) lim;
+                    lv.put("x0", rect_lim.x_min);
+                    lv.put("z0", rect_lim.z_min);
+                    lv.put("x1", rect_lim.x_max);
+                    lv.put("z1", rect_lim.z_max);
+                }
+                else {
+                    RoundVisibilityLimit round_lim = (RoundVisibilityLimit) lim;
+                    lv.put("x", round_lim.x_center);
+                    lv.put("z", round_lim.z_center);
+                    lv.put("r", round_lim.radius);
+                }
                 lims.add(lv);
             }
             node.put("visibilitylimits", lims);
@@ -731,12 +761,21 @@ public abstract class DynmapWorld {
         if(hidden_limits != null) {
             ArrayList<Map<String,Object>> lims = new ArrayList<Map<String,Object>>();
             for(int i = 0; i < hidden_limits.size(); i++) {
-                MapChunkCache.VisibilityLimit lim = visibility_limits.get(i);
+                VisibilityLimit lim = visibility_limits.get(i);
                 LinkedHashMap<String, Object> lv = new LinkedHashMap<String,Object>();
-                lv.put("x0", lim.x0);
-                lv.put("z0", lim.z0);
-                lv.put("x1", lim.x1);
-                lv.put("z1", lim.z1);
+                if (lim instanceof RectangleVisibilityLimit) {
+                    RectangleVisibilityLimit rect_lim = (RectangleVisibilityLimit) lim;
+                    lv.put("x0", rect_lim.x_min);
+                    lv.put("z0", rect_lim.z_min);
+                    lv.put("x1", rect_lim.x_max);
+                    lv.put("z1", rect_lim.z_max);
+                }
+                else {
+                    RoundVisibilityLimit round_lim = (RoundVisibilityLimit) lim;
+                    lv.put("x", round_lim.x_center);
+                    lv.put("z", round_lim.z_center);
+                    lv.put("r", round_lim.radius);
+                }
                 lims.add(lv);
             }
             node.put("hiddenlimits", lims);
