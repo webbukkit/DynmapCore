@@ -3,7 +3,7 @@ modname:mod_BuildCraftCore,BuildCraft|Core
 # Defaults
 var:template.id=0,architect.id=0,pathMarker.id=0,item_pipeStructureCobblestone.id=0
 var:item_pipeItemsSandstone.id=0,item_pipeItemsVoid.id=0,item_pipeLiquidsSandstone.id=0,item_pipeLiquidsVoid.id=0
-var:item_pipeItemsEmerald.id=0,item_pipeLiquidsEmerald=0
+var:item_pipeItemsEmerald.id=0,item_pipeLiquidsEmerald.id=0
 
 # configuration file
 cfgfile:buildcraft/config/buildcraft.cfg
