@@ -173,5 +173,5 @@
 			<version>${nbtVersion}</version>
 		</dependency>
 	</dependencies>
-	<version>1.5</version>
+	<version>1.6</version>
 </project>
