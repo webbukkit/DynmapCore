@@ -45,11 +45,11 @@ if (!Array.prototype.indexOf) {
 
 var DynmapLayerControl = L.Control.Layers.extend({
 	getPosition: function() {
-		return L.Control.Position.TOP_LEFT;
+		return 'topleft';
 	}
 });
-	
-	
+
+
 var DynmapTileLayer = L.TileLayer.extend({
 	_currentzoom: undefined,
 	getProjection: function() {
@@ -60,11 +60,11 @@ var DynmapTileLayer = L.TileLayer.extend({
 		tile.attr('src', src);
 		tile.show();
 	},
-	
+
 	getTileName: function(tilePoint, zoom) {
 		throw "getTileName not implemented";
 	},
-	
+
 	getTileUrl: function(tilePoint, zoom) {
 		var tileName = this.getTileName(tilePoint, zoom);
 		var url = this._cachedTileUrls[tileName];
@@ -73,7 +73,7 @@ var DynmapTileLayer = L.TileLayer.extend({
 		}
 		return url;
 	},
-	
+
 	updateNamedTile: function(name) {
 		var tile = this._namedTiles[name];
 		delete this._cachedTileUrls[name];
@@ -81,7 +81,7 @@ var DynmapTileLayer = L.TileLayer.extend({
 			this.updateTile(tile);
 		}
 	},
-	
+
 	updateTile: function(tile) {
 		this._loadTile(tile, tile.tilePoint, this._map.getZoom());
 	},
@@ -91,26 +91,26 @@ var DynmapTileLayer = L.TileLayer.extend({
 			return;
 		var queue = [],
 			center = bounds.getCenter();
-		
+
 		for (var j = bounds.min.y; j <= bounds.max.y; j++) {
-			for (var i = bounds.min.x; i <= bounds.max.x; i++) {				
+			for (var i = bounds.min.x; i <= bounds.max.x; i++) {
 				if ((i + ':' + j) in this._tiles) { continue; }
 				queue.push(new L.Point(i, j));
 			}
 		}
-		
+
 		// load tiles in order of their distance to center
 		queue.sort(function(a, b) {
 			return a.distanceTo(center) - b.distanceTo(center);
 		});
-		
+
 		var fragment = document.createDocumentFragment();
-		
+
 		this._tilesToLoad = queue.length;
 		for (var k = 0, len = this._tilesToLoad; k < len; k++) {
 			this._addTile(queue[k], fragment);
 		}
-		
+
 		this._container.appendChild(fragment);
 	},
 	//Copy and mod of Leaflet method - marked changes with Dynmap: to simplify reintegration
@@ -120,7 +120,7 @@ var DynmapTileLayer = L.TileLayer.extend({
 			key = tilePoint.x + ':' + tilePoint.y,
 			name = this.getTileName(tilePoint, zoom),	//Dynmap
 			tileLimit = (1 << zoom);
-			
+
 		// wrap tile coordinates
 		if (!this.options.continuousWorld) {
 			if (!this.options.noWrap) {
@@ -129,28 +129,28 @@ var DynmapTileLayer = L.TileLayer.extend({
 				this._tilesToLoad--;
 				return;
 			}
-			
+
 			if (tilePoint.y < 0 || tilePoint.y >= tileLimit) {
 				this._tilesToLoad--;
 				return;
 			}
 		}
-		
+
 		// create tile
 		var tile = this._createTile();
 		tile.tileName = name;	//Dynmap
 		tile.tilePoint = tilePoint;	//Dynmap
 		L.DomUtil.setPosition(tile, tilePos);
-		
+
 		this._tiles[key] = tile;
 		this._namedTiles[name] = tile;	//Dynmap
-        
+
 		if (this.options.scheme == 'tms') {
 			tilePoint.y = tileLimit - tilePoint.y - 1;
 		}
 
 		this._loadTile(tile, tilePoint, zoom);
-		
+
 		container.appendChild(tile);
 	},
 	_loadTile: function(tile, tilePoint, zoom) {
@@ -179,10 +179,10 @@ var DynmapTileLayer = L.TileLayer.extend({
 		if (this._loadingTiles.length > 4) { return; }
 		var next = this._loadQueue.shift();
 		if (!next) { return; }
-		
+
 		next.loadSrc();
 	},
-	
+
 	_removeOtherTiles: function(bounds) {
 		var kArr, x, y, key;
 
@@ -202,7 +202,7 @@ var DynmapTileLayer = L.TileLayer.extend({
 					delete this._tiles[key];
 				}
 			}
-		}		
+		}
 	},
 	_updateTileSize: function() {
 		var newzoom = this._map.getZoom();
@@ -214,7 +214,7 @@ var DynmapTileLayer = L.TileLayer.extend({
 			}
 		}
 	},
-	
+
 	_reset: function() {
 		this._updateTileSize();
 		this._tiles = {};
@@ -225,7 +225,7 @@ var DynmapTileLayer = L.TileLayer.extend({
 		this._initContainer();
 		this._container.innerHTML = '';
 	},
-	
+
 	_update: function() {
 		this._updateTileSize();
 		var bounds = this._map.getPixelBounds(),
@@ -238,9 +238,9 @@ var DynmapTileLayer = L.TileLayer.extend({
 				Math.floor(bounds.max.x / tileSize),
 				Math.floor(bounds.max.y / tileSize)),
 			tileBounds = new L.Bounds(nwTilePoint, seTilePoint);
-	
+
 		this._addTilesFromCenterOut(tileBounds);
-	
+
 		if (this.options.unloadInvisibleTiles) {
 			this._removeOtherTiles(tileBounds);
 		}
@@ -260,7 +260,7 @@ var DynmapTileLayer = L.TileLayer.extend({
 		this._createTileProto();
 	},
 	updateTileSize: function(zoom) {},
-	
+
 	// Some helper functions.
 	zoomprefix: function(amount) {
 		return 'zzzzzzzzzzzzzzzzzzzzzz'.substr(0, amount);
@@ -298,7 +298,7 @@ function loadjs(url, completed) {
 		isloaded = true;
 		completed();
 	};
-	
+
 	// Hack for IE, don't know whether this still applies to IE9.
 	script.onreadystatechange = function() {
 		if (script.readyState == 'loaded' || script.readyState == 'complete')
@@ -318,13 +318,13 @@ function loadcss(url, completed) {
 			isloaded = true;
 			completed();
 		};
-		
+
 		// Hack for IE, don't know whether this still applies to IE9.
 		script.onreadystatechange = function() {
 			script.onload();
 		};
 	}
-	
+
 	(document.head || document.getElementsByTagName('head')[0]).appendChild(script);
 }
 

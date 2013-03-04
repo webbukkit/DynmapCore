@@ -1,9 +1,9 @@
 componentconstructors['coord'] = function(dynmap, configuration) {
-	
-	var Coord = L.Class.extend({
+
+	var Coord = L.Control.extend({
 		valfield: $('<span/>'),
 		mcrfield: $('<span/>'),
-		
+
 		onAdd: function(map) {
 			if(configuration.hidey)
 				this._container = L.DomUtil.create('div', 'coord-control coord-control-noy');
@@ -18,21 +18,22 @@ componentconstructors['coord'] = function(dynmap, configuration) {
 				this.mcrfield.addClass('coord-control-value').text('').appendTo(this._container);
 			}
 			this._update();
+			return this.getContainer();
 		},
-	
+
 		getPosition: function() {
-			return L.Control.Position.TOP_LEFT;
+			return 'topleft';
 		},
-	
+
 		getContainer: function() {
 			return this._container;
 		},
-	
+
 		_update: function() {
 			if (!this._map) return;
 		}
 	});
-	
+
 	var coord = new Coord();
 	dynmap.map.addControl(coord);
 	dynmap.map.on('mousemove', function(mevent) {

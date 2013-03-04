@@ -1,5 +1,5 @@
 "use strict";
-//if (!console) console = { log: function() {} }; 
+//if (!console) console = { log: function() {} };
 
 var componentconstructors = {};
 var maptypes = {};
@@ -30,7 +30,7 @@ function DynMap(options) {
 			me.saveURL();
 			window.location = 'login.html';
 		}
-		else if(configuration.error) {	
+		else if(configuration.error) {
 			alert(configuration.error);
 		}
 		else {
@@ -67,12 +67,12 @@ DynMap.prototype = {
 	configure: function(configuration) {
 		var me = this;
 		$.extend(me.options, configuration);
-		
+
 		$.each(me.options.worlds, function(index, worldentry) {
 			var world = me.worlds[worldentry.name] = $.extend({}, worldentry, {
 				maps: {}
 			});
-			
+
 			$.each(worldentry.maps, function(index, mapentry) {
 				var map = $.extend({}, mapentry, {
 					world: world,
@@ -80,7 +80,7 @@ DynMap.prototype = {
 				});
 				map = world.maps[mapentry.name] = maptypes[mapentry.type](map);
 				if(me.options.defaultmap && me.options.defaultmap == mapentry.name)
-					world.defaultmap = map;				
+					world.defaultmap = map;
 				world.defaultmap = world.defaultmap || map;
 			});
 			me.defaultworld = me.defaultworld || world;
@@ -107,71 +107,88 @@ DynMap.prototype = {
 	},
 	initialize: function() {
 		var me = this;
-		
+
+		// Get a handle to the DOM element which acts as the overall container and apply a class of
+		// "dynmap" to it.
 		var container = $(me.options.container);
 		container.addClass('dynmap');
-		
+
+		// Create a new container within the main container which actually holds the map. It needs a
+		// class of "map".
 		var mapContainer;
 		(mapContainer = $('<div/>'))
 			.addClass('map')
 			.appendTo(container);
 
+		// Set the title if the options specify one.
 		if(me.options.title)
 			document.title = me.options.title;
-			
+
+		// Try to set the default zoom level based on the URL parameter.
 		var urlzoom = me.getIntParameterByName('zoom');
 		if(urlzoom != null)
 			me.options.defaultzoom = urlzoom;
 
+		// Decide whether or not the layer control will be visible based on the URL parameter or
+		// or fallback to the options
 		var showlayerctl = me.getParameterByName('showlayercontrol');
 		if(showlayerctl != "")
 			me.options.showlayercontrol = showlayerctl;
-			
+
+		// If we still don't have a default zoom level, force it to be 1
 		if(typeof me.options.defaultzoom == 'undefined')
 			me.options.defaultzoom = 1;
-		
+
+		// Decide whether we should be following a given player or not based solely on URL parameter.
 		var initfollowplayer = me.getParameterByName('playername');
 		if(initfollowplayer != "")
 			me.initfollow = initfollowplayer;
 
+		// Derive the state of the sidebar based on the URL parameter.
 		var sidebaropen = me.getParameterByName('sidebaropened');
 		if(sidebaropen == 'false' || sidebaropen == 'true' || sidebaropen == 'pinned')
 			me.options.sidebaropened = sidebaropen;
-			
+
 		var map = this.map = new L.Map(mapContainer.get(0), {
 			zoom: me.options.defaultzoom,
 			center: new L.LatLng(0, 0),
 			zoomAnimation: true,
 			attributionControl: false,
-			crs: L.Util.extend({}, L.CRS, {
+			crs: L.extend({}, L.CRS, {
 				code: 'simple',
 				projection: {
 						project: function(latlng) {
+							// Direct translation of lat -> x, lng -> y.
 							return new L.Point(latlng.lat, latlng.lng);
 						},
-						unproject: function(point, unbounded) {
-							return new L.LatLng(point.x, point.y, true);
+						unproject: function(point) {
+							// Direct translation of x -> lat, y -> lng.
+							return new L.LatLng(point.x, point.y);
 						}
 					},
-				transformation: new L.Transformation(1, 0, 1, 0)
+				// a = 1; b = 2; c = 1; d = 0
+				// x = a * x + b; y = c * y + d
+				// End result is 1:1 values during transformation.
+				transformation: new L.Transformation(1, 0, 1, 0),
+				scale: function(zoom) {
+					// Equivalent to 2 raised to the power of zoom, but faster.
+					return (1 << zoom);
+				}
 			}),
-			scale: function(zoom) {
-				return (1 << zoom);
-			},
 			continuousWorld: true,
 			worldCopyJump: false
 		});
 		window.map = map; // Placate Leaflet need for top-level 'map'....
-		
+
 		map.on('zoomend', function() {
 			me.maptype.updateTileSize(me.map.getZoom());
 			$(me).trigger('zoomchanged');
 		});
-			
+
 		/*google.maps.event.addListener(map, 'dragstart', function(mEvent) {
 			me.followPlayer(null);
 		});*/
-		
+
 		// Sidebar
 		var panel;
 		var sidebar;
@@ -182,14 +199,14 @@ DynMap.prototype = {
 			var pincls = 'pinned'
 			if(me.options.sidebaropened == 'false')
 				pincls = '';
-				
+
 			sidebar = me.sidebar = $('<div/>')
 					.addClass('sidebar ' + pincls);
 
 			panel = $('<div/>')
 				.addClass('panel')
 				.appendTo(sidebar);
-		
+
 			// Pin button.
 			pinbutton = $('<div/>')
 				.addClass('pin')
@@ -212,30 +229,30 @@ DynMap.prototype = {
 		// World scrollbuttons
 		var upbtn_world = $('<div/>')
 		.addClass('scrollup')
-		.bind('mousedown mouseup touchstart touchend', function(event){ 
+		.bind('mousedown mouseup touchstart touchend', function(event){
 		    if(event.type == 'mousedown' || event.type == 'touchstart'){
 				worldlist.animate({"scrollTop": "-=300px"}, 3000, 'linear');
 		    }else{
-		        worldlist.stop(); 
+		        worldlist.stop();
 		    }
 		});
 		var downbtn_world = $('<div/>')
 		.addClass('scrolldown')
-		.bind('mousedown mouseup touchstart touchend', function(event){ 
-		    if(event.type == 'mousedown' || event.type == 'touchstart'){ 
+		.bind('mousedown mouseup touchstart touchend', function(event){
+		    if(event.type == 'mousedown' || event.type == 'touchstart'){
 				worldlist.animate({"scrollTop": "+=300px"}, 3000, 'linear');
-		    }else{ 
-		        worldlist.stop(); 
+		    }else{
+		        worldlist.stop();
 		    }
 		});
-        
+
 		// Worlds
 		var worldlist;
 		$('<fieldset/>')
 			.append($('<legend/>').text(me.options['msg-maptypes']))
 			.append(upbtn_world)
 			.append(me.worldlist = worldlist = $('<ul/>').addClass('worldlist')
-				.bind('mousewheel', function(event, delta){ 
+				.bind('mousewheel', function(event, delta){
 					this.scrollTop -= (delta * 10);
 					event.preventDefault();
 				})
@@ -246,7 +263,7 @@ DynMap.prototype = {
         var maplists = {};
 		var worldsadded = {};
 		$.each(me.worlds, function(index, world) {
-			var maplist; 
+			var maplist;
 			world.element = $('<li/>')
 				.addClass('world')
 				.text(world.title)
@@ -256,10 +273,10 @@ DynMap.prototype = {
 				.data('world', world);
 			maplists[world.name] = maplist;
 		});
-		        		
+
 		$.each(me.worlds, function(index, world) {
-			var maplist = maplists[world.name]; 
-			
+			var maplist = maplists[world.name];
+
 			$.each(world.maps, function(mapindex, map) {
 				//me.map.mapTypes.set(map.world.name + '.' + map.name, map);
 				var wname = world.name;
@@ -274,7 +291,7 @@ DynMap.prototype = {
 				if(!worldsadded[wname]) {
 					worldsadded[wname] = true;
 				}
-				
+
 				map.element = $('<li/>')
 					.addClass('map')
 					.append($('<a/>')
@@ -295,42 +312,42 @@ DynMap.prototype = {
 				world.element.appendTo(worldlist);
 			}
 		});
-		
+
 		// The scrollbuttons
 		// we need to show/hide them depending: if (me.playerlist.scrollHeight() > me.playerlist.innerHeight()) or something.
 		var upbtn = $('<div/>')
 		.addClass('scrollup')
-		.bind('mousedown mouseup touchstart touchend', function(event){ 
+		.bind('mousedown mouseup touchstart touchend', function(event){
 		    if(event.type == 'mousedown' || event.type == 'touchstart'){
 				playerlist.animate({"scrollTop": "-=300px"}, 3000, 'linear');
 		    }else{
-		        playerlist.stop(); 
+		        playerlist.stop();
 		    }
 		});
 		var downbtn = $('<div/>')
 		.addClass('scrolldown')
-		.bind('mousedown mouseup touchstart touchend', function(event){ 
-		    if(event.type == 'mousedown' || event.type == 'touchstart'){ 
+		.bind('mousedown mouseup touchstart touchend', function(event){
+		    if(event.type == 'mousedown' || event.type == 'touchstart'){
 				playerlist.animate({"scrollTop": "+=300px"}, 3000, 'linear');
-		    }else{ 
-		        playerlist.stop(); 
+		    }else{
+		        playerlist.stop();
 		    }
 		});
-		
+
 		// The Player List
 		var playerlist;
 		$('<fieldset/>')
 			.append(me.playerfield = $('<legend/>').text(me.options['msg-players']))
 			.append(upbtn)
 			.append(me.playerlist = playerlist = $('<ul/>').addClass('playerlist')
-				.bind('mousewheel', function(event, delta){ 
+				.bind('mousewheel', function(event, delta){
 					this.scrollTop -= (delta * 10);
 					event.preventDefault();
 				})
 			)
 			.append(downbtn)
 			.appendTo(panel);
-		
+
 		var updateHeight = function() {
 			if(sidebar.innerHeight() > (2*worldlist.scrollHeight())) { /* Big enough */
 				worldlist.height(worldlist.scrollHeight());
@@ -341,7 +358,7 @@ DynMap.prototype = {
 				worldlist.height(sidebar.innerHeight() / 2);
 				upbtn_world.toggle(true);
 				downbtn_world.toggle(true);
-			}				
+			}
 			playerlist.height(sidebar.innerHeight() - (playerlist.offset().top - worldlist.offset().top) - 64); // here we need a fix to avoid the static value, but it works fine this way :P
 			var scrollable = playerlist.scrollHeight() > playerlist.height();
 			upbtn.toggle(scrollable);
@@ -361,7 +378,7 @@ DynMap.prototype = {
 		if(L.Browser.mobile)
 			compass.addClass('mobilecompass');
 		compass.appendTo(container);
-		
+
 		if(me.options.sidebaropened != 'true') {
 			var hitbar = $('<div/>')
 			.addClass('hitbar')
@@ -382,11 +399,11 @@ DynMap.prototype = {
 				.show();
 			return;
 		}
-		
+
 		me.initLogin();
-		
+
 		me.selectMap(me.defaultworld.defaultmap);
-		
+
 		var componentstoload = 0;
 		var configset = { };
 		$.each(me.options.components, function(index, configuration) {
@@ -396,7 +413,7 @@ DynMap.prototype = {
 			}
 			configset[configuration.type].push(configuration);
 		});
-		
+
 		var tobeloaded = {};
 		$.each(configset, function(type, configlist) {
 		    tobeloaded[type] = true;
@@ -427,13 +444,13 @@ DynMap.prototype = {
 			});
 			if(componentstoload > 0)
 				setTimeout(function() { me.update(); }, me.options.updaterate);
-		}, 15000); 
+		}, 15000);
 	},
 	getProjection: function() { return this.maptype.getProjection(); },
 	selectMapAndPan: function(map, location, completed) {
 		if (!map) { throw "Cannot select map " + map; }
 		var me = this;
-		
+
 		if (me.maptype === map) {
 			return;
 		}
@@ -448,7 +465,7 @@ DynMap.prototype = {
 		var worldChanged = me.world !== map.options.world;
 		var projectionChanged = (me.maptype && me.maptype.getProjection()) !== (map && map.projection);
 
-		var prevzoom = me.map.getZoom(); 					
+		var prevzoom = me.map.getZoom();
 
 		var prevworld = me.world;
 
@@ -456,17 +473,17 @@ DynMap.prototype = {
 			me.registeredTiles = [];
 		    me.inittime = new Date().getTime();
 		}
-				
+
 		if(worldChanged && me.world) {
 			me.world.lastcenter = me.maptype.getProjection().fromLatLngToLocation(me.map.getCenter(), 64);
 		}
-		
+
 		if (me.maptype) {
 			me.map.removeLayer(me.maptype);
 		}
-		
+
 		var prevmap = me.maptype;
-	
+
 		me.world = mapWorld;
 		me.maptype = map;
 
@@ -474,7 +491,7 @@ DynMap.prototype = {
 			prevzoom = me.maptype.options.maxZoom;
 		me.map.options.maxZoom = me.maptype.options.maxZoom;
 		me.map.options.minZoom = me.maptype.options.minZoom;
-				
+
 		if (projectionChanged || worldChanged || location) {
 			var centerPoint;
 			if(location) {
@@ -499,11 +516,11 @@ DynMap.prototype = {
 			}
 			me.map.setView(centerPoint, prevzoom, true);
 		}
-		else {			
+		else {
 			me.map.setZoom(prevzoom);
 		}
 		me.map.addLayer(me.maptype);
-				
+
 		if (worldChanged) {
 			$(me).trigger('worldchanged');
 		}
@@ -512,8 +529,8 @@ DynMap.prototype = {
 		$('.map', me.worldlist).removeClass('selected');
 		$(map.element).addClass('selected');
 		me.updateBackground();
-		
-		
+
+
 		if (completed) {
 			completed();
 		}
@@ -541,7 +558,7 @@ DynMap.prototype = {
 	},
 	panToLocation: function(location, completed) {
 		var me = this;
-		
+
 		if (location.world) {
 			me.selectWorldAndPan(location.world, location, function() {
 				if(completed) completed();
@@ -571,7 +588,7 @@ DynMap.prototype = {
 		$(me).trigger('worldupdating');
 		$.getJSON(me.formatUrl('update', { world: me.world.name, timestamp: me.lasttimestamp }), function(update) {
 				if (!update) {
-					me.lasttimestamp--;	// Avoid same TS URL				
+					me.lasttimestamp--;	// Avoid same TS URL
 					setTimeout(function() { me.update(); }, me.options.updaterate);
 					return;
 				}
@@ -585,9 +602,9 @@ DynMap.prototype = {
 					else {
 						alert(update.error);
 					}
-					return;						
+					return;
 				}
-				
+
 				if (!me.options.jsonfile) {
 					me.lasttimestamp = update.timestamp;
 				}
@@ -597,19 +614,19 @@ DynMap.prototype = {
 				}
 				me.playerfield.text(me.options['msg-players'] + " [" + update.currentcount + "/" + me.options.maxcount + "]");
 
-				me.servertime = update.servertime;                
+				me.servertime = update.servertime;
 				var newserverday = (me.servertime > 23100 || me.servertime < 12900);
 				if(me.serverday != newserverday) {
 					me.serverday = newserverday;
-					
-					me.updateBackground();				
+
+					me.updateBackground();
 					if(me.maptype.options.nightandday) {
 						// Readd map.
 						me.map.removeLayer(me.maptype);
 						me.map.addLayer(me.maptype);
 					}
 				}
-                    
+
 				var newplayers = {};
 				$.each(update.players, function(index, playerUpdate) {
 					var name = playerUpdate.name;
@@ -632,12 +649,12 @@ DynMap.prototype = {
 						me.removePlayer(player);
 					}
 				}
-				
+
 				$.each(update.updates, function(index, update) {
 					// Only handle updates that are actually new.
 					if(!me.options.jsonfile || me.lasttimestamp <= update.timestamp) {
 						$(me).trigger('worldupdate', [ update ]);
-						
+
 						swtch(update.type, {
 							tile: function() {
 								me.onTileUpdated(update.name,update.timestamp);
@@ -658,14 +675,14 @@ DynMap.prototype = {
 					//var divs = $('div[rel]');
 					//divs.filter(function(i){return parseInt(divs[i].attr('rel')) > timestamp+me.options.messagettl;}).remove();
 				});
-				
+
 				$(me).trigger('worldupdated', [ update ]);
-				
+
 				me.lasttimestamp = update.timestamp;
 				me.missedupdates = 0;
 				setTimeout(function() { me.update(); }, me.options.updaterate);
 			}, function(status, statusText, request) {
-				me.lasttimestamp--;	// Avoid same TS URL				
+				me.lasttimestamp--;	// Avoid same TS URL
 				me.missedupdates++;
 				if(me.missedupdates > 2) {
 					me.alertbox
@@ -680,7 +697,7 @@ DynMap.prototype = {
 	getTileUrl: function(tileName, always) {
 		var me = this;
 		var tile = me.registeredTiles[tileName];
-		
+
 		if(tile == null) {
 			var url = me.options.url.tiles;
 			if(url.indexOf('?') > 0)
@@ -708,9 +725,9 @@ DynMap.prototype = {
 				armor: update.armor,
 				account: update.account
 		};
-		
+
 		$(me).trigger('playeradded', [ player ]);
-		
+
 		// Create the player-menu-item.
 		var playerIconContainer;
 		var menuitem = player.menuitem = $('<li/>')
@@ -759,13 +776,13 @@ DynMap.prototype = {
 		var location = player.location = new Location(me.worlds[update.world], parseFloat(update.x), parseFloat(update.y), parseFloat(update.z));
 		player.health = update.health;
 		player.armor = update.armor;
-		
+
 		$(me).trigger('playerupdated', [ player ]);
-		
+
 		// Update menuitem.
 		if(me.options.grayplayerswhenhidden)
 			player.menuitem.toggleClass('otherworld', me.world !== location.world);
-		
+
 		if (player === me.followingPlayer) {
 			// Follow the updated player.
 			me.panToLocation(player.location);
@@ -773,18 +790,18 @@ DynMap.prototype = {
 	},
 	removePlayer: function(player) {
 		var me = this;
-		
+
 		delete me.players[player.name];
-		
+
 		$(me).trigger('playerremoved', [ player ]);
-		
+
 		// Remove menu item.
 		player.menuitem.remove();
 	},
 	followPlayer: function(player) {
 		var me = this;
 		$('.following', me.playerlist).removeClass('following');
-		
+
 		if(player) {
 			if(!player.location.world)
 				return;
@@ -849,19 +866,19 @@ DynMap.prototype = {
 		}
 		return null;
 	},
-	
+
 	layersetlist: [],
-	
+
 	addToLayerSelector: function(layer, name, priority) {
 		var me = this;
 
-		if(me.options.showlayercontrol != "false" && (!me.layercontrol)) {		
+		if(me.options.showlayercontrol != "false" && (!me.layercontrol)) {
 			me.layercontrol = new DynmapLayerControl();
 			if(me.options.showlayercontrol == "pinned")
 				me.layercontrol.options.collapsed = false;
 			map.addControl(me.layercontrol);
 		}
-		
+
 		var i;
 		for(i = 0; i < me.layersetlist.length; i++) {
 			if(me.layersetlist[i].layer === layer) {
@@ -912,7 +929,7 @@ DynMap.prototype = {
 		var me = this;
 		if(!me.options['login-enabled'])
 			return;
-			
+
 		var login = L.Class.extend({
 			onAdd: function(map) {
 				this._container = L.DomUtil.create('div', 'logincontainer');
@@ -931,7 +948,7 @@ DynMap.prototype = {
 				var cls = 'loginbutton';
 				if(me.options.sidebaropened != 'false') {
 					cls = 'loginbutton pinnedloginbutton';
-				}				
+				}
 				if (me.options.loggedin) {
 					c = $('<button/>').addClass(cls).click(function(event) {
 						$.ajax({
@@ -949,7 +966,7 @@ DynMap.prototype = {
 						me.saveURL();
 						window.location = "login.html";
 					}).text('Login').appendTo(c)[0];
-				}				
+				}
 			}
 		});
 		var l = new login();
@@ -974,7 +991,7 @@ DynMap.prototype = {
 					return true;
 				}
 			}
-		}		  				
+		}
 		return false;
     }
 };
