@@ -181,10 +181,13 @@ ignore-updates:id=18,data=*
 # Spruce Wood stair
 # Birch Wood stair
 # Jungle Wood stair
-customblock:id=53,id=67,id=108,id=109,id=114,id=128,id=134,id=135,id=136,data=*,class=org.dynmap.hdmap.renderer.StairBlockRenderer
+# (156)	Quartz Stairs
+customblock:id=53,id=67,id=108,id=109,id=114,id=128,id=134,id=135,id=136,id=156,data=*,class=org.dynmap.hdmap.renderer.StairBlockRenderer
 
 # Chest - set render alg
 linkmap:id=54,linkalg=2
+# Trap Chest - set render alg
+linkmap:id=146,linkalg=2
 # Slab (stone, sandstone, wood, cobblestone)
 # Wood Slab
 block:id=44,id=126,data=0,data=1,data=2,data=3,data=4,data=5,data=6,data=7,scale=4
@@ -315,8 +318,10 @@ ignore-updates:id=75,id=76,data=*
 customblock:id=85,id=113,data=*,class=org.dynmap.hdmap.renderer.FenceWallBlockRenderer,type=fence,link0=107
 
 # Stone pressure plate
-# Wooden pressure plate 
-block:id=72,id=70,data=*,scale=16
+# Wooden pressure plate
+# Light weighted pressure plate
+# Heavy weighted pressure plate
+block:id=72,id=70,id=147,id=148,data=*,scale=16
 layer:0
 ----------------
 -**************-
@@ -1371,7 +1376,8 @@ layer:3,4
 -******-
 --****--
 # Chest - single, facing west
-block:id=54,data=0,scale=16
+# Trap Chest - single, facing west
+block:id=54,id=146,data=0,scale=16
 layer:0,1,2,3,4,5,6,7,12,13
 ----------------
 -**************-
@@ -1407,17 +1413,17 @@ layer:8,9,10,11
 -**************-
 ----------------
 # Chest - single, facing south
-block:id=54,data=1,scale=16
+block:id=54,id=146,data=1,scale=16
 rotate:id=54,data=0,rot=270
 # Chest - single, facing east
-block:id=54,data=2,scale=16
+block:id=54,id=146,data=2,scale=16
 rotate:id=54,data=0,rot=180
 # Chest - single, facing north
-block:id=54,data=3,scale=16
+block:id=54,id=146,data=3,scale=16
 rotate:id=54,data=0,rot=90
 
 # Chest - left side of double, facing west
-block:id=54,data=4,scale=16
+block:id=54,id=146,data=4,scale=16
 layer:0,1,2,3,4,5,6,7,12,13
 ----------------
 -**************-
@@ -1453,16 +1459,16 @@ layer:8,9,10,11
 -**************-
 ***************-
 # Chest - left side of double, facing south
-block:id=54,data=5,scale=16
+block:id=54,id=146,data=5,scale=16
 rotate:id=54,data=4,rot=270
 # Chest - left side of double, facing east
-block:id=54,data=6,scale=16
+block:id=54,id=146,data=6,scale=16
 rotate:id=54,data=4,rot=180
 # Chest - left side of double, facing north
-block:id=54,data=7,scale=16
+block:id=54,id=146,data=7,scale=16
 rotate:id=54,data=4,rot=90
 # Chest - right side of double, facing west
-block:id=54,data=8,scale=16
+block:id=54,id=146,data=8,scale=16
 layer:0,1,2,3,4,5,6,7,12,13
 -**************-
 -**************-
@@ -1498,13 +1504,13 @@ layer:8,9,10,11
 -**************-
 ----------------
 # Chest - right side of double, facing south
-block:id=54,data=9,scale=16
+block:id=54,id=146,data=9,scale=16
 rotate:id=54,data=8,rot=270
 # Chest - right side of double, facing east
-block:id=54,data=10,scale=16
+block:id=54,id=146,data=10,scale=16
 rotate:id=54,data=8,rot=180
 # Chest - right side of double, facing north
-block:id=54,data=11,scale=16
+block:id=54,id=146,data=11,scale=16
 rotate:id=54,data=8,rot=90
 # Cake Block
 block:id=92,data=*,scale=16
