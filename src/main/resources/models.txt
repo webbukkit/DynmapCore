@@ -417,31 +417,39 @@ rotate:id=77,data=1,rot=270
 # Rails - flat - east/west
 # Powered rails - flat - east/west
 # Detector rails - flat - east/west
-patchblock:id=66,id=27,id=28,data=0,patch0=HorizY001ZTop
+# (157)	Activator Rail
+patchblock:id=66,id=27,id=28,id=157,data=0,patch0=HorizY001ZTop
 # Powered rails - flat - east/west (powered)
-patchblock:id=27,data=8,patch0=HorizY001ZTop
+# (157)	Activator Rail
+patchblock:id=27,id=157,data=8,patch0=HorizY001ZTop
 # Rails - flat - north/south
 # Powered rails - flat - north/south
 # Detector rails - flat - north/south
-patchblock:id=66,id=27,id=28,data=1,patch0=HorizY001ZTop@90
+# (157)	Activator Rail
+patchblock:id=66,id=27,id=28,id=157,data=1,patch0=HorizY001ZTop@90
 # Powered rails - flat - north/south (powred)
-patchblock:id=27,data=9,patch0=HorizY001ZTop@90
+# (157)	Activator Rail
+patchblock:id=27,id=157,data=9,patch0=HorizY001ZTop@90
 # Rails - ascending to south 
 # Powered rails - ascending to south (powered or unpowered)
 # Detector rails - ascending to south
-patchblock:id=66,id=27,id=28,data=2,data=10,patch0=SlopeXUpZTop
+# (157)	Activator Rail
+patchblock:id=66,id=27,id=28,id=157,data=2,data=10,patch0=SlopeXUpZTop
 # Rails - ascending to north
 # Powered rails - ascending to north
 # Detector rails - ascending to north
-patchblock:id=66,id=27,id=28,data=3,data=11,patch0=SlopeXUpZTop@180
+# (157)	Activator Rail
+patchblock:id=66,id=27,id=28,id=157,data=3,data=11,patch0=SlopeXUpZTop@180
 # Rails - ascending to east
 # Powered rails - ascending to east
 # Detector rails - ascending to east
-patchblock:id=66,id=27,id=28,data=4,data=12,patch0=SlopeXUpZTop@270
+# (157)	Activator Rail
+patchblock:id=66,id=27,id=28,id=157,data=4,data=12,patch0=SlopeXUpZTop@270
 # Rails - ascending to west
 # Powered rails - ascending to west
 # Detector rails - ascending to west
-patchblock:id=66,id=27,id=28,data=5,data=13,patch0=SlopeXUpZTop@90
+# (157)	Activator Rail
+patchblock:id=66,id=27,id=28,id=157,data=5,data=13,patch0=SlopeXUpZTop@90
 # Rails - northeast corner
 patchblock:id=66,data=6,patch0=HorizY001ZTop@90
 # Rails - southeast corner
@@ -1601,3 +1609,76 @@ patchblock:id=145,data=2,data=6,data=10,data=14
 patchrotate:id=145,data=1,rot=90
 patchblock:id=145,data=3,data=7,data=11,data=15
 patchrotate:id=145,data=1,rot=180
+
+# (151) Daylight Sensor
+block:id=151,data=*,scale=8
+layer:0,1,2
+********
+********
+********
+********
+********
+********
+********
+********
+
+# (149) Redstone Comparator (inactive)
+# (150) Redstone Comparator (active)
+block:id=149,id=150,data=0,data=4,data=8,data=12,scale=16
+layer:0,1
+****************
+****************
+****************
+****************
+****************
+****************
+****************
+****************
+****************
+****************
+****************
+****************
+****************
+****************
+****************
+****************
+layer:2,3
+----------------
+----------------
+----------------
+----------------
+---**-----------
+---**-----------
+----------------
+------------**--
+------------**--
+----------------
+---**-----------
+---**-----------
+----------------
+----------------
+----------------
+----------------
+layer:4,5,6
+----------------
+----------------
+----------------
+----------------
+---**-----------
+---**-----------
+----------------
+----------------
+----------------
+----------------
+---**-----------
+---**-----------
+----------------
+----------------
+----------------
+----------------
+block:id=149,id=150,data=1,data=5,data=9,data=13,scale=16
+rotate:id=149,data=0,rot=90
+block:id=149,id=150,data=2,data=6,data=10,data=14,scale=16
+rotate:id=149,data=0,rot=180
+block:id=149,id=150,data=3,data=7,data=11,data=15,scale=16
+rotate:id=149,data=0,rot=270

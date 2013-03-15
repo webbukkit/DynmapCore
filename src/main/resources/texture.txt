@@ -25,7 +25,12 @@ texturefile:id=qbline,filename=textures/blocks/quartzblock_lines.png,xcount=1,yc
 texturefile:id=qblinetop,filename=textures/blocks/quartzblock_lines_top.png,xcount=1,ycount=1
 texturefile:id=qbside,filename=textures/blocks/quartzblock_side.png,xcount=1,ycount=1
 texturefile:id=qbtop,filename=textures/blocks/quartzblock_top.png,xcount=1,ycount=1
-
+texturefile:id=actrail,filename=textures/blocks/activatorRail.png,xcount=1,ycount=1
+texturefile:id=actrailpowered,filename=textures/blocks/activatorRail_powered.png,xcount=1,ycount=1
+texturefile:id=dayside,filename=textures/blocks/daylightDetector_side.png,xcount=1,ycount=1
+texturefile:id=daytop,filename=textures/blocks/daylightDetector_top.png,xcount=1,ycount=1
+texturefile:id=comparator,filename=textures/blocks/comparator.png,xcount=1,ycount=1
+texturefile:id=comparatorlit,filename=textures/blocks/comparator_lit.png,xcount=1,ycount=1
 ######
 # Stone
 block:id=1,allsides=1,topbottom=6001
@@ -771,8 +776,18 @@ block:id=147,allsides=23,topbottom=6023
 block:id=148,allsides=22,topbottom=6022
 
 # (149) Redstone Comparator (inactive)
+block:id=149,data=0,data=4,data=8,data=12,top=6000:comparator,allsides=1,bottom=1,transparency=TRANSPARENT
+block:id=149,data=1,data=5,data=9,data=13,top=5000:comparator,allsides=1,bottom=1,transparency=TRANSPARENT
+block:id=149,data=2,data=6,data=10,data=14,top=4000:comparator,allsides=1,bottom=1,transparency=TRANSPARENT
+block:id=149,data=3,data=7,data=11,data=15,top=0:comparator,allsides=1,bottom=1,transparency=TRANSPARENT
 # (150) Redstone Comparator (active)
+block:id=150,data=0,data=4,data=8,data=12,top=6000:comparatorlit,allsides=1,bottom=1,transparency=TRANSPARENT
+block:id=150,data=1,data=5,data=9,data=13,top=5000:comparatorlit,allsides=1,bottom=1,transparency=TRANSPARENT
+block:id=150,data=2,data=6,data=10,data=14,top=4000:comparatorlit,allsides=1,bottom=1,transparency=TRANSPARENT
+block:id=150,data=3,data=7,data=11,data=15,top=0:comparatorlit,allsides=1,bottom=1,transparency=TRANSPARENT
+
 # (151) Daylight Sensor
+block:id=151,data=*,allsides=0:dayside,bottom=6000:dayside,top=6000:daytop
 
 # (152) Block of Redstone
 block:id=152,data=*,allsides=0,topbottom=6000,txtid=blkred
@@ -797,4 +812,25 @@ block:id=155,data=4,top=6000:qbline,bottom=6000:qbline,north=6000:qbline,south=6
 block:id=156,data=*,patch0=0:qbside,patch1=0:qbtop,patch2=0:qbbot,transparency=SEMITRANSPARENT
 
 # (157)	Activator Rail
+# Activator rail - heading east-west - unpowered
+block:id=157,data=0,patch0=0:actrail,transparency=TRANSPARENT
+# Activator rail - incline to east - unpowered
+# Activator rail - incline to west - unpowered
+block:id=157,data=4,data=5,patch0=0:actrail,transparency=TRANSPARENT
+# Activator rail - heading east-west - powered
+block:id=157,data=8,patch0=0:actrailpowered,transparency=TRANSPARENT
+# Activator rail - incline to east - powered
+# Activator rail - incline to west - powered
+block:id=157,data=12,data=13,patch0=0:actrailpowered,transparency=TRANSPARENT
+# Activator rail - heading north-south - unpowered
+block:id=157,data=1,patch0=0:actrail,transparency=TRANSPARENT
+# Activator rail - inclined to north - unpowered
+# Activator rail - inclined to south - unpowered
+block:id=157,data=2,data=3,patch0=0:actrail,transparency=TRANSPARENT
+# Activator rail - heading north-south - powered
+block:id=157,data=9,patch0=0:actrailpowered,transparency=TRANSPARENT
+# Activator rail - inclined to north - powered
+# Activator rail - inclined to south - powered
+block:id=157,data=10,data=11,patch0=0:actrailpowered,transparency=TRANSPARENT
+
 # (158)	Dropper
