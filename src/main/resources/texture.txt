@@ -33,6 +33,9 @@ texturefile:id=comparator,filename=textures/blocks/comparator.png,xcount=1,ycoun
 texturefile:id=comparatorlit,filename=textures/blocks/comparator_lit.png,xcount=1,ycount=1
 texturefile:id=dropper,filename=textures/blocks/dropper_front.png,xcount=1,ycount=1
 texturefile:id=droppervert,filename=textures/blocks/dropper_front_vertical.png,xcount=1,ycount=1
+texturefile:id=hopper,filename=textures/blocks/hopper.png,xcount=1,ycount=1
+texturefile:id=hopperinside,filename=textures/blocks/hopper_inside.png,xcount=1,ycount=1
+
 ######
 # Stone
 block:id=1,allsides=1,topbottom=6001
@@ -798,6 +801,7 @@ block:id=152,data=*,allsides=0,topbottom=6000,txtid=blkred
 block:id=153,data=*,allsides=0,topbottom=6000,txtid=quartzore
 
 # (154)	Hopper
+block:id=154,data=*,allsides=0:hopper,top=6000:hopperinside,bottom=6000:hopper
 
 #  (155:0) Block of Quartz
 block:id=155,data=0,top=0:qbtop,bottom=0:qbbot,allsides=0:qbside
