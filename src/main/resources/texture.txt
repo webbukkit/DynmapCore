@@ -31,6 +31,8 @@ texturefile:id=dayside,filename=textures/blocks/daylightDetector_side.png,xcount
 texturefile:id=daytop,filename=textures/blocks/daylightDetector_top.png,xcount=1,ycount=1
 texturefile:id=comparator,filename=textures/blocks/comparator.png,xcount=1,ycount=1
 texturefile:id=comparatorlit,filename=textures/blocks/comparator_lit.png,xcount=1,ycount=1
+texturefile:id=dropper,filename=textures/blocks/dropper_front.png,xcount=1,ycount=1
+texturefile:id=droppervert,filename=textures/blocks/dropper_front_vertical.png,xcount=1,ycount=1
 ######
 # Stone
 block:id=1,allsides=1,topbottom=6001
@@ -834,3 +836,9 @@ block:id=157,data=9,patch0=0:actrailpowered,transparency=TRANSPARENT
 block:id=157,data=10,data=11,patch0=0:actrailpowered,transparency=TRANSPARENT
 
 # (158)	Dropper
+block:id=158,data=0,top=62,east=62,south=62,north=62,west=62,bottom=6000:droppervert
+block:id=158,data=1,top=6000:droppervert,east=62,south=62,north=62,west=62,bottom=62
+block:id=158,data=2,top=62,east=0:dropper,south=45,north=45,west=45,bottom=62
+block:id=158,data=3,top=62,west=0:dropper,south=45,north=45,east=45,bottom=62
+block:id=158,data=4,top=62,north=0:dropper,south=45,east=45,west=45,bottom=62
+block:id=158,data=5,top=62,south=0:dropper,north=45,east=45,west=45,bottom=62
