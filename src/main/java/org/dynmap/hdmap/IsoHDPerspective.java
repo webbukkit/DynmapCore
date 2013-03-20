@@ -1517,15 +1517,20 @@ public class IsoHDPerspective implements HDPerspective {
             try {
                 if((!f.exists()) || (crc != hashman.getImageHashCode(tile.getKey(prefix), null, tile.tx, tile.ty))) {
                     /* Wrap buffer as buffered image */
-                    Debug.debug("saving image " + f.getPath());
-                    if(!f.getParentFile().exists())
-                        f.getParentFile().mkdirs();
-                    try {
-                        FileLockManager.imageIOWrite(im[i].buf_img, fmt, f);
-                    } catch (IOException e) {
-                        Debug.error("Failed to save image: " + f.getPath(), e);
-                    } catch (java.lang.NullPointerException e) {
-                        Debug.error("Failed to save image (NullPointerException): " + f.getPath(), e);
+                    if(rendered[i]) {   
+                        Debug.debug("saving image " + f.getPath());
+                        if(!f.getParentFile().exists())
+                            f.getParentFile().mkdirs();
+                        try {
+                            FileLockManager.imageIOWrite(im[i].buf_img, fmt, f);
+                        } catch (IOException e) {
+                            Debug.error("Failed to save image: " + f.getPath(), e);
+                        } catch (java.lang.NullPointerException e) {
+                            Debug.error("Failed to save image (NullPointerException): " + f.getPath(), e);
+                        }
+                    }
+                    else {
+                        f.delete();
                     }
                     MapManager.mapman.pushUpdate(tile.getDynmapWorld(), new Client.Tile(fname));
                     hashman.updateHashCode(tile.getKey(prefix), null, tile.tx, tile.ty, crc);
@@ -1535,6 +1540,11 @@ public class IsoHDPerspective implements HDPerspective {
                 }
                 else {
                     Debug.debug("skipping image " + f.getPath() + " - hash match");
+                    if(!rendered[i]) {   
+                        f.delete();
+                        hashman.updateHashCode(tile.getKey(prefix), null, tile.tx, tile.ty, -1);
+                        tile.getDynmapWorld().enqueueZoomOutUpdate(f);
+                    }
                 }
             } finally {
                 FileLockManager.releaseWriteLock(f);
@@ -1550,15 +1560,20 @@ public class IsoHDPerspective implements HDPerspective {
                 try {
                     if((!f.exists()) || (crc != hashman.getImageHashCode(tile.getKey(prefix), "day", tile.tx, tile.ty))) {
                         /* Wrap buffer as buffered image */
-                        Debug.debug("saving image " + f.getPath());
-                        if(!f.getParentFile().exists())
-                            f.getParentFile().mkdirs();
-                        try {
-                            FileLockManager.imageIOWrite(dayim[i].buf_img, fmt, f);
-                        } catch (IOException e) {
-                            Debug.error("Failed to save image: " + f.getPath(), e);
-                        } catch (java.lang.NullPointerException e) {
-                            Debug.error("Failed to save image (NullPointerException): " + f.getPath(), e);
+                        if(rendered[i]) {
+                            Debug.debug("saving image " + f.getPath());
+                            if(!f.getParentFile().exists())
+                                f.getParentFile().mkdirs();
+                            try {
+                                FileLockManager.imageIOWrite(dayim[i].buf_img, fmt, f);
+                            } catch (IOException e) {
+                                Debug.error("Failed to save image: " + f.getPath(), e);
+                            } catch (java.lang.NullPointerException e) {
+                                Debug.error("Failed to save image (NullPointerException): " + f.getPath(), e);
+                            }
+                        }
+                        else {
+                            f.delete();
                         }
                         MapManager.mapman.pushUpdate(tile.getDynmapWorld(), new Client.Tile(fname));
                         hashman.updateHashCode(tile.getKey(prefix), "day", tile.tx, tile.ty, crc);
@@ -1568,6 +1583,11 @@ public class IsoHDPerspective implements HDPerspective {
                     }
                     else {
                         Debug.debug("skipping image " + f.getPath() + " - hash match");
+                        if(!rendered[i]) {   
+                            hashman.updateHashCode(tile.getKey(prefix), "day", tile.tx, tile.ty, -1);
+                            tile.getDynmapWorld().enqueueZoomOutUpdate(f);
+                            f.delete();
+                        }
                     }
                 } finally {
                     FileLockManager.releaseWriteLock(f);
