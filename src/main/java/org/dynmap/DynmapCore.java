@@ -59,7 +59,7 @@ import org.yaml.snakeyaml.Yaml;
 import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
 
-public class DynmapCore {
+public class DynmapCore implements DynmapCommonAPI {
     /**
      * Callbacks for core initialization - subclassed by platform plugins
      */
