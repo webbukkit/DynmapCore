@@ -1,21 +1,22 @@
 componentconstructors['logo'] = function(dynmap, configuration) {
 	
-	var Logo = L.Class.extend({
+	var Logo = L.Control.extend({
 		onAdd: function(map) {
 			this._container = L.DomUtil.create('div', 'leaflet-control-attribution');
 			this._map = map;
 			this._update();
+			return this._container;
 		},
 	
 		getPosition: function() {
 			if(configuration.position == 'top-left')
-				return L.Control.Position.TOP_LEFT;
+				return 'topleft';
 			else if(configuration.position == 'top-right')
-				return L.Control.Position.TOP_RIGHT;
+				return 'topright';
 			else if(configuration.position == 'bottom-left')
-				return L.Control.Position.BOTTOM_LEFT;
+				return 'bottomleft';
 			else
-				return L.Control.Position.BOTTOM_RIGHT;
+				return 'bottomright';
 		},
 	
 		getContainer: function() {

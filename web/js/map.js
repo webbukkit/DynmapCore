@@ -930,14 +930,15 @@ DynMap.prototype = {
 		if(!me.options['login-enabled'])
 			return;
 
-		var login = L.Class.extend({
+		var login = L.Control.extend({
 			onAdd: function(map) {
 				this._container = L.DomUtil.create('div', 'logincontainer');
 				this._map = map;
 				this._update();
+				return this._container;
 			},
 			getPosition: function() {
-				return L.Control.Position.BOTTOM_RIGHT;
+				return 'bottomright';
 			},
 			getContainer: function() {
 				return this._container;
