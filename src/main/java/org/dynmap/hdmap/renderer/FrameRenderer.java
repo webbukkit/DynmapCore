@@ -237,7 +237,9 @@ public class FrameRenderer extends CustomRenderer {
             models[idx] = row;
         }
         /* If model not found, create it */
-        RenderPatch[] model = row[textureIdx];
+        RenderPatch[] model = null;
+        if(textureIdx < row.length)
+            model = row[textureIdx];
         if(model == null) {
             model = buildModel(ctx.getPatchFactory(), idx, textureIdx);
             row[textureIdx] = model;
