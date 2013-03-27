@@ -75,7 +75,7 @@ public abstract class DynmapWorld {
         zoomoutupdates = new HashSet[lvl];
         for(int i = 0; i < lvl; i++)
             zoomoutupdates[i] = new HashSet<String>();
-    	checkts = true;
+    	checkts = do_init_scan;
     }
     public int getExtraZoomOutLevels() { return extrazoomoutlevels; }
     
