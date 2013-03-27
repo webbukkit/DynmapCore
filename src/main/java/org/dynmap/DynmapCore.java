@@ -339,6 +339,8 @@ public class DynmapCore implements DynmapCommonAPI {
             def_image_format = "png";
         }
         
+        DynmapWorld.doInitialScan(configuration.getBoolean("initial-zoomout-validate", true));
+        
         smoothlighting = configuration.getBoolean("smooth-lighting", false);
         Log.verbose = configuration.getBoolean("verbose", true);
         deftemplatesuffix = configuration.getString("deftemplatesuffix", "");

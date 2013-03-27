@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public abstract class DynmapWorld {
+    private static boolean do_init_scan = true;
     public List<MapType> maps = new ArrayList<MapType>();
     public List<MapTypeState> mapstate = new ArrayList<MapTypeState>();
     
@@ -42,7 +43,7 @@ public abstract class DynmapWorld {
     private Object lock = new Object();
     @SuppressWarnings("unchecked")
     private HashSet<String> zoomoutupdates[] = new HashSet[0];
-    private boolean checkts = true;	/* Check timestamps on first run with new configuration */
+    private boolean checkts = do_init_scan;	/* Check timestamps on first run with new configuration */
     private boolean cancelled;
     private String wname;
     private String raw_wname;
@@ -805,5 +806,11 @@ public abstract class DynmapWorld {
     }
     public void setTileUpdateDelay(int time_sec) {
         tileupdatedelay = time_sec;
+    }
+    public static void doInitialScan(boolean doscan) {
+        do_init_scan = doscan;
+        if(!doscan) {
+            Log.info("Initial zoomout validate cancelled");
+        }
     }
 }
