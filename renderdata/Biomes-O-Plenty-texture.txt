@@ -1,5 +1,14 @@
 # Biomes O Plenty Block mapping
 modname:BiomesOPlenty
+
+var:biome_ids/Meadow_Forest_ID=0,biome_ids/Promised_Land_(Hills)_ID=0,biome_ids/Promised_Land_(Swamp)_ID=0,biome_ids/Tundra_(Dry)_ID=0
+var:biome_ids/Wasteland_(Trees)_ID=0
+var:terrain_block_ids/Crag_Rock_ID=0,terrain_block_ids/Hard_Dirt_ID=0,terrain_block_ids/Hard_Sand_ID=0
+var:terrain_block_ids/Holy_Grass_ID=0,terrain_block_ids/Holy_Stone_ID=0
+var:Algae_ID=0,Amethyst_Ore_ID=0,Bamboo_Thatching_ID=0
+var:Holy_Double_Slab_ID=0,Holy_Leaves_ID=0,Holy_Log_ID=0,Holy_Plank_ID=0,Holy_Sapling_ID=0,Holy_Single_Slab_ID=0,Holy_Stairs_ID=0,Holy_Tall_Grass_ID=0
+var:Moss_ID=0,Smoldering_Grass_ID=0,Quicksand_ID=0,Block_of_Amethyst_ID=0
+
 # configuration file
 cfgfile:config/BiomesOPlenty.cfg
 
@@ -20,7 +29,7 @@ biome:id=biome_ids/Cherry_Blossom_Grove_ID,grassColorMult=1A3FFAA
 #  Crag
 biome:id=biome_ids/Crag_ID,grassColorMult=10E6A35
 #  Dead Forest
-biome:id=biome_ids/Dead_Forest_ID,grassColorMult=1C0D85D
+biome:id=biome_ids/Dead_Forest_ID,grassColorMult=1BCA165
 #  Deadlands
 biome:id=biome_ids/Deadlands_ID,waterColorMult=1FF0000
 #  Deciduous Forest
@@ -101,6 +110,11 @@ block:id=Acacia_Single_Slab_ID,data=0,data=4,data=8,data=12,allsides=45,topbotto
 #  "Acacia Stairs ID"
 block:id=Acacia_Stairs_ID,data=*,patch0-2=45,transparency=SEMITRANSPARENT,txtid=blk0
 
+#  "Algae ID"
+block:id=Algae_ID,data=*,patch0=15121,transparency=TRANSPARENT,txtid=blk0
+#  "Amethyst Ore ID"
+block:id=Amethyst_Ore_ID,data=*,allsides=125,topbottom=6125,txtid=blk0
+
 #  "Anenome ID"
 block:id=Anenome_ID,data=*,patch0-1=17,txtid=blk0,transparency=TRANSPARENT
 #  "Apple Leaves ID"
@@ -111,8 +125,13 @@ block:id=Apple_Sapling_ID,data=0,data=4,data=8,data=12,patch0-1=106,txtid=blk0,t
 block:id=Bamboo_ID,data=*,patch0-1=19,txtid=blk0,transparency=TRANSPARENT
 #  "Bamboo Leaves ID"
 block:id=Bamboo_Leaves_ID,data=0,data=4,data=8,data=12,allfaces=96,txtid=blk0
+#  "Bamboo Thatching ID"
+block:id=Bamboo_Thatching_ID,data=*,allsides=132,topbottom=6132,txtid=blk0
+
 #  "Barley ID"
 block:id=Barley_ID,data=*,patch0-3=58,transparency=TRANSPARENT,txtid=blk0
+#  "Block of Amethyst ID"
+block:id=Block_of_Amethyst_ID,data=*,allsides=131,topbottom=6131,txtid=blk0
 #  "Bush ID"
 block:id=Bush_ID,data=*,patch0-1=1001,txtid=blk0,transparency=TRANSPARENT
 #  "Cattail ID"
@@ -212,6 +231,27 @@ block:id=Glowflower_ID,data=*,patch0-1=6,transparency=TRANSPARENT,txtid=blk0
 block:id=High_Grass_Bottom_ID,data=*,patch0-1=1007,transparency=TRANSPARENT,txtid=blk0
 #  "High Grass Top ID"
 block:id=High_Grass_Top_ID,data=*,patch0-1=1008,transparency=TRANSPARENT,txtid=blk0
+
+#  "Holy Double Slab ID"
+block:id=Holy_Double_Slab_ID,data=0,data=4,data=8,data=12,allsides=129,topbottom=6129,txtid=blk0
+#  "Holy Leaves ID"
+block:id=Holy_Leaves_ID,data=0,data=4,data=8,data=12,allfaces=126,txtid=blk0
+#  "Holy Log ID"
+block:id=Holy_Log_ID,data=0,allsides=128,topbottom=6255,txtid=blk0
+block:id=Holy_Log_ID,data=4,north=255,south=255,east=4128,west=4128,top=128,bottom=128,txtid=blk0
+block:id=Holy_Log_ID,data=8,north=4128,south=4128,east=255,west=255,top=4128,bottom=4128,txtid=blk0
+block:id=Holy_Log_ID,data=12,allsides=128,topbottom=6128,txtid=blk0
+#  "Holy Plank ID"
+block:id=Holy_Plank_ID,data=*,allsides=129,topbottom=6129,txtid=blk0
+#  "Holy Sapling ID"
+block:id=Holy_Sapling_ID,data=0,data=4,data=8,data=12,patch0-1=130,transparency=TRANSPARENT,txtid=blk0
+#  "Holy Single Slab ID"
+block:id=Holy_Single_Slab_ID,data=0,data=4,data=8,data=12,allsides=129,topbottom=6129,txtid=blk0
+#  "Holy Stairs ID"
+block:id=Holy_Stairs_ID,data=*,patch0-2=129,transparency=SEMITRANSPARENT,txtid=blk0
+#  "Holy Tall Grass ID"
+block:id=Holy_Tall_Grass_ID,data=*,patch0-1=30,txtid=blk0,transparency=TRANSPARENT
+
 #  "Hydrangea ID"
 block:id=Hydrangea_ID,data=*,patch0-1=113,transparency=TRANSPARENT,txtid=blk0
 
@@ -258,6 +298,9 @@ block:id=Maple_Sapling_ID,data=0,data=4,data=8,data=12,patch0-1=101,transparency
 #  "Medium Grass ID"
 block:id=Medium_Grass_ID,data=*,patch0-1=1115,transparency=TRANSPARENT,txtid=blk0
 
+#  "Moss ID"
+block:id=Moss_ID,patch0-4=2133,transparency=TRANSPARENT,txtid=blk0
+
 #  "Mud Brick Double Slab ID"
 block:id=Mud_Brick_Double_Slab_ID,data=0,data=4,data=8,data=12,allsides=52,topbottom=6052,txtid=blk0
 #  "Mud Brick Single Slab ID"
@@ -300,6 +343,8 @@ block:id=Pink_Cherry_Leaves_ID,data=0,data=4,data=8,data=12,allfaces=70,txtid=bl
 block:id=Pink_Cherry_Sapling_ID,data=0,data=4,data=8,data=12,patch0-1=108,transparency=TRANSPARENT,txtid=blk0
 #  "Pink Flower ID"
 block:id=Pink_Flower_ID,data=*,patch0-1=54,transparency=TRANSPARENT,txtid=blk0
+#  "Quicksand ID"
+block:id=Quicksand_ID,data=*,allsides=135,topbottom=6135,txtid=blk0
 
 #  "Red Rock Brick Double Slab ID"
 block:id=Red_Rock_Brick_Double_Slab_ID,data=0,data=4,data=8,data=12,allsides=24,topbottom=6024,txtid=blk0
@@ -339,6 +384,8 @@ block:id=Redwood_Stairs_ID,data=*,patch0-2=41,transparency=SEMITRANSPARENT,txtid
 
 #  "Short Grass ID"
 block:id=Short_Grass_ID,data=*,patch0-1=1012,transparency=TRANSPARENT,txtid=blk0
+#  "Smoldering Grass ID"
+block:id=Smoldering_Grass_ID,data=*,patch0-1=1123,transparency=TRANSPARENT,txtid=blk0
 #  "Sprout ID"
 block:id=Sprout_ID,data=*,patch0-1=1013,transparency=TRANSPARENT,txtid=blk0
 #  "Swampflower ID"
@@ -389,10 +436,20 @@ block:id=Yellow_Autumn_Sapling_ID,data=0,data=4,data=8,data=12,patch0-1=103,tran
 block:id=terrain_block_ids/Ash_Block_ID,data=*,allsides=21,topbottom=6021,txtid=blk0
 #  "Ash Stone ID"
 block:id=terrain_block_ids/Ash_Stone_ID,data=*,allsides=22,topbottom=6022,txtid=blk0
+#  "Crag Rock ID"
+block:id=terrain_block_ids/Crag_Rock_ID,data=*,allsides=134,topbottom=6134,txtid=blk0
 #  "Dried Dirt ID"
 block:id=terrain_block_ids/Dried_Dirt_ID,data=*,allsides=5,topbottom=6005,txtid=blk0
+#  "Hard Dirt ID"
+block:id=terrain_block_ids/Hard_Dirt_ID,data=*,allsides=26,topbottom=6026,txtid=blk0
 #  "Hard Ice ID"
 block:id=terrain_block_ids/Hard_Ice_ID,data=*,allsides=53,topbottom=6053,txtid=blk0
+#  "Hard Sand ID"
+block:id=terrain_block_ids/Hard_Sand_ID,data=*,allsides=25,topbottom=6025,txtid=blk0
+#  "Holy Grass ID"
+block:id=terrain_block_ids/Holy_Grass_ID,data=*,allsides=28,top=6029,bottom=6027,txtid=blk0
+#  "Holy Stone ID"
+block:id=terrain_block_ids/Holy_Stone_ID,data=*,allsides=27,topbottom=6027,txtid=blk0
 #  "Mud ID"
 block:id=terrain_block_ids/Mud_ID,data=*,allsides=9,topbottom=6009,txtid=blk0
 #  "Origin Grass ID"
