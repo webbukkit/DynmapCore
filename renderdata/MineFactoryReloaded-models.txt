@@ -1,7 +1,7 @@
 # MineFactory Reloaded Block mapping
 modname:MFReloaded
 # Defaults
-
+var:ID.MachineBlock1=0,ID.StainedGlass=0,ID.StainedGlassPane=0
 # configuration file
 cfgfile:config/MFReloaded.cfg
 
