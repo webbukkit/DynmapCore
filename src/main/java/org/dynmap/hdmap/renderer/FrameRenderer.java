@@ -1,6 +1,7 @@
 package org.dynmap.hdmap.renderer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -242,6 +243,10 @@ public class FrameRenderer extends CustomRenderer {
             model = row[textureIdx];
         if(model == null) {
             model = buildModel(ctx.getPatchFactory(), idx, textureIdx);
+            if(textureIdx >= row.length) {
+                row = Arrays.copyOf(row, textureIdx+1);
+                models[idx] = row;
+            }
             row[textureIdx] = model;
         }
         return model;
