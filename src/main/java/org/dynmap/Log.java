@@ -4,8 +4,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Log {
-    protected static Logger log = Logger.getLogger("Minecraft");
-    protected static String prefix = "[dynmap] ";
+    protected static Logger log = Logger.getLogger("Dynmap");
+    protected static String prefix = "";
     public static boolean verbose = false;
     public static void setLogger(Logger logger, String pre) {
         log = logger;
