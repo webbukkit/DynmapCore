@@ -171,7 +171,8 @@ public class TexturePack {
         BIGCHEST,
         SIGN,
         SKIN,
-        CUSTOM
+        CUSTOM,
+        TILESET
     };
     
     private static class CustomTileRec {
@@ -185,6 +186,8 @@ public class TexturePack {
         int tile_to_dyntile[];      /* Mapping from tile index in tile file to dynamic ID in global tile table (terrain_argb): 0=unassigned */
         TileFileFormat format;
         List<CustomTileRec> cust;
+        String[] tilenames;         /* For TILESET, array of tilenames, indexed by tile index */
+        String setdir;              /* For TILESET, directory of tile set in texture */
     }
     private static ArrayList<DynamicTileFile> addonfiles = new ArrayList<DynamicTileFile>();
 
@@ -1314,6 +1317,21 @@ public class TexturePack {
         String[] files = renderdir.list();
         if(files != null) {
             for(String fname : files) {
+                if(fname.endsWith("-tilesets.txt")) {    /* If tileset definition - used for building resources for textures */
+                    File custom = new File(renderdir, fname);
+                    if(custom.canRead()) {
+                        try {
+                            in = new FileInputStream(custom);
+                            loadTileSetsFile(in, custom.getPath(), config, core, fname.substring(0,  fname.indexOf("-tilesets.txt")));
+                        } catch (IOException iox) {
+                            Log.severe("Error loading " + custom.getPath() + " - " + iox);
+                        } finally {
+                            if(in != null) { try { in.close(); } catch (IOException x) {} in = null; }
+                        }
+                    }
+                }
+            }
+            for(String fname : files) {
                 if(fname.endsWith("-texture.txt")) {
                     File custom = new File(renderdir, fname);
                     if(custom.canRead()) {
@@ -1393,6 +1411,93 @@ public class TexturePack {
             txtid =findOrAddDynamicTile(srctxtid, txtid); 
         }
         return txtid + (COLORMOD_MULT_INTERNAL * funcid);
+    }
+    /**
+     * Load texture pack mappings from tilesets.txt file
+     */
+    private static void loadTileSetsFile(InputStream txtfile, String txtname, ConfigurationNode config, DynmapCore core, String blockset) {
+        LineNumberReader rdr = null;
+        DynamicTileFile tfile = null;
+        
+        try {
+            String line;
+            rdr = new LineNumberReader(new InputStreamReader(txtfile));
+            while((line = rdr.readLine()) != null) {
+                if(line.startsWith("#")) {
+                }
+                else if(line.startsWith("tileset:")) { /* Start of tileset definition */
+                    line = line.substring(line.indexOf(':')+1);
+                    int xdim = 16, ydim = 16;
+                    String fname = null;
+                    String setdir = null;
+                    String[] toks = line.split(",");
+                    for(String tok : toks) {
+                        String[] v = tok.split("=");
+                        if(v.length < 2) continue;
+                        if(v[0].equals("xcount")) {
+                            xdim = Integer.parseInt(v[1]);
+                        }
+                        else if(v[0].equals("ycount")) {
+                            ydim = Integer.parseInt(v[1]);
+                        }
+                        else if(v[0].equals("setdir")) {
+                            setdir = v[1];
+                        }
+                        else if(v[0].equals("filename")) {
+                            fname = v[1];
+                        }
+                    }
+                    if ((fname != null) && (setdir != null)) {
+                        /* Register tile file */
+                        int fid = findOrAddDynamicTileFile(fname, xdim, ydim, TileFileFormat.TILESET, new String[0]);
+                        tfile = addonfiles.get(fid);
+                        if (tfile == null) {
+                            Log.severe("Error registering tile set " + fname + " at " + rdr.getLineNumber() + " of " + txtname);
+                            return;
+                        }
+                        /* Initialize tile name map and set directory path */
+                        tfile.tilenames = new String[tfile.tile_to_dyntile.length];
+                        tfile.setdir = setdir;
+                    }
+                    else {
+                        Log.severe("Error defining tile set at " + rdr.getLineNumber() + " of " + txtname);
+                        return;
+                    }
+                }
+                else if(Character.isDigit(line.charAt(0))) {    /* Starts with digit?  tile mapping */
+                    int split = line.indexOf('-');  /* Find first dash */
+                    if(split < 0) continue;
+                    String id = line.substring(0, split).trim();
+                    String name = line.substring(split+1).trim();
+                    String[] coord = id.split(",");
+                    int idx = -1;
+                    if(coord.length == 2) { /* If x,y */
+                        idx = (Integer.parseInt(coord[1]) * tfile.tilecnt_x) + Integer.parseInt(coord[0]);
+                    }
+                    else if(coord.length == 1) { /* Just index */
+                        idx = Integer.parseInt(coord[0]);
+                    }
+                    if((idx >= 0) && (idx < tfile.tilenames.length)) {
+                        tfile.tilenames[idx] = name;
+                    }
+                    else {
+                        Log.severe("Bad tile index - line " + rdr.getLineNumber() + " of " + txtname);
+                    }
+                }
+            }
+        } catch (IOException iox) {
+            Log.severe("Error reading " + txtname + " - " + iox.toString());
+        } catch (NumberFormatException nfx) {
+            Log.severe("Format error - line " + rdr.getLineNumber() + " of " + txtname + ": " + nfx.getMessage());
+        } finally {
+            if(rdr != null) {
+                try {
+                    rdr.close();
+                    rdr = null;
+                } catch (IOException e) {
+                }
+            }
+        }
     }
     /**
      * Load texture pack mappings from texture.txt file
@@ -2766,6 +2871,300 @@ public class TexturePack {
         }
     }
     private static final int[] smooth_water_mult = new int[10];
+    
+    private static final String[] terrain_map = {
+       "grass_top",
+       "stone",
+       "dirt",
+       "grass_side",
+       "wood",
+       "stoneslab_side",
+       "stoneslab_top",
+       "brick",
+       "tnt_side",
+       "tnt_top",
+       "tnt_bottom",
+       "web",
+       "rose",
+       "flower",
+       "portal",
+       "sapling",
+       "stonebrick",
+       "bedrock",
+       "sand",
+       "gravel",
+       "tree_side",
+       "tree_top",
+       "blockIron",
+       "blockGold",
+       "blockDiamond",
+       "blockEmerald",
+       null,
+       null,
+       "mushroom_red",
+       "mushroom_brown",
+       "sapling_jungle",
+       null,
+       "oreGold",
+       "oreIron",
+       "oreCoal",
+       "bookshelf",
+       "stoneMoss",
+       "obsidian",
+       "grass_side_overlay",
+       "tallgrass",
+       null,
+       "beacon",
+       null,
+       "workbench_top",
+       "furnace_front",
+       "furnace_side",
+       "dispenser_front",
+       null,
+       "sponge",
+       "glass",
+       "oreDiamond",
+       "oreRedstone",
+       "leaves",
+       "leaves_opaque",
+       "stonebricksmooth",
+       "deadbush",
+       "fern",
+       null,
+       null,
+       "workbench_side",
+       "workbench_front",
+       "furnace_front_lit",
+       "furnace_top",
+       "sapling_spruce",
+       "cloth_0",
+       "mobSpawner",
+       "snow",
+       "ice",
+       "snow_side",
+       "cactus_top",
+       "cactus_side",
+       "cactus_bottom",
+       "clay",
+       "reeds",
+       "musicBlock",
+       "jukebox_top",
+       "waterlily",
+       "mycel_side",
+       "mycel_top",
+       "sapling_birch",
+       "torch",
+       "doorWood_upper",
+       "doorIron_upper",
+       "ladder",
+       "trapdoor",
+       "fenceIron",
+       "farmland_wet",
+       "farmland_dry",
+       "crops_0",
+       "crops_1",
+       "crops_2",
+       "crops_3",
+       "crops_4",
+       "crops_5",
+       "crops_6",
+       "crops_7",
+       "lever",
+       "doorWood_lower",
+       "doorIron_lower",
+       "redtorch_lit",
+       "stonebricksmooth_mossy",
+       "stonebricksmooth_cracked",
+       "pumpkin_top",
+       "hellrock",
+       "hellsand",
+       "lightgem",
+       "piston_top_sticky",
+       "piston_top",
+       "piston_side",
+       "piston_bottom",
+       "piston_inner_top",
+       "stem_straight",
+       "rail_turn",
+       "cloth_15",
+       "cloth_7",
+       "redtorch",
+       "tree_spruce",
+       "tree_birch",
+       "pumpkin_side",
+       "pumpkin_face",
+       "pumpkin_jack",
+       "cake_top",
+       "cake_side",
+       "cake_inner",
+       "cake_bottom",
+       "mushroom_skin_red",
+       "mushroom_skin_brown",
+       "stem_bent",
+       "rail",
+       "cloth_14",
+       "cloth_6",
+       "repeater",
+       "leaves_spruce",
+       "leaves_spruce_opaque",
+       "bed_feet_top",
+       "bed_head_top",
+       "melon_side",
+       "melon_top",
+       "cauldron_top",
+       "cauldron_inner",
+       null,
+       "mushroom_skin_stem",
+       "mushroom_inside",
+       "vine",
+       "blockLapis",
+       "cloth_13",
+       "cloth_5",
+       "repeater_lit",
+       "thinglass_top",
+       "bed_feet_end",
+       "bed_feet_side",
+       "bed_head_side",
+       "bed_head_end",
+       "tree_jungle",
+       "cauldron_side",
+       "cauldron_bottom",
+       "brewingStand_base",
+       "brewingStand",
+       "endframe_top",
+       "endframe_side",
+       "oreLapis",
+       "cloth_12",
+       "cloth_4",
+       "goldenRail",
+       "redstoneDust_cross",
+       "redstoneDust_line",
+       "enchantment_top",
+       "dragonEgg",
+       "cocoa_2",
+       "cocoa_1",
+       "cocoa_0",
+       "oreEmerald",
+       "tripWireSource",
+       "tripWire",
+       "endframe_eye",
+       "whiteStone",
+       "sandstone_top",
+       "cloth_11",
+       "cloth_3",
+       "goldenRail_powered",
+       "redstoneDust_cross_overlay",
+       "redstoneDust_line_overlay",
+       "enchantment_side",
+       "enchantment_bottom",
+       "commandBlock",
+       "itemframe_back",
+       "flowerPot",
+       null,
+       null,
+       null,
+       null,
+       null,
+       "sandstone_side",
+       "cloth_10",
+       "cloth_2",
+       "detectorRail",
+       "leaves_jungle",
+       "leaves_jungle_opaque",
+       "wood_spruce",
+       "wood_jungle",
+       "carrots_0",
+       "carrots_1",
+       "carrots_2",
+       "carrots_3",
+       "potatoes_3",
+       null,
+       null,
+       null,
+       "sandstone_bottom",
+       "cloth_9",
+       "cloth_1",
+       "redstoneLight",
+       "redstoneLight_lit",
+       "stonebricksmooth_carved",
+       "wood_birch",
+       "anvil_base",
+       "anvil_top_damaged_1",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "netherBrick",
+       "cloth_8",
+       "netherStalk_0",
+       "netherStalk_1",
+       "netherStalk_2",
+       "sandstone_carved",
+       "sandstone_smooth",
+       "anvil_top",
+       "anvil_top_damaged_2",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "destroy_0",
+       "destroy_1",
+       "destroy_2",
+       "destroy_3",
+       "destroy_4",
+       "destroy_5",
+       "destroy_6",
+       "destroy_7",
+       "destroy_8",
+       "destroy_9",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null };
+
+    private static BufferedImage buildTerrainPNGFromZIP(ZipFile zip) throws IOException {
+        BufferedImage img = null;
+        ZipEntry ze;
+        /* See if textures/blocks exists */
+        if((ze = zip.getEntry("textures/blocks")) != null) {
+            for(int i = 0; i < terrain_map.length; i++) {
+                BufferedImage tileimg = null;
+                if(terrain_map[i] == null) continue;
+                ze = zip.getEntry("textures/blocks/" + terrain_map[i] + ".png");
+                InputStream is = null;
+                if(ze == null) {
+                    is = new FileInputStream(STANDARDTP + "/textures/blocks/" + terrain_map[i] + ".png");
+                }
+                else {
+                    is = zip.getInputStream(ze);
+                }
+                if(is == null) continue;
+                try {
+                    ImageIO.setUseCache(false);
+                    tileimg = ImageIO.read(is);
+                } finally {
+                    try { is.close(); } catch (IOException iox) {}
+                }
+                if(tileimg != null) {   /* Read the image */
+                    if(img == null) {   /* If needed, allocate image, based on width of tile */
+                        /* Allocate image - just use width, since height can be bigger for animated */
+                        int w = 16 * tileimg.getWidth();
+                        img = DynmapBufferedImage.createBufferedImage(new int[w * w], w, w);
+                    }
+                    tileimg.flush();
+                }
+            }
+        }
+        return img;
+    }
     
     static {
         /*
