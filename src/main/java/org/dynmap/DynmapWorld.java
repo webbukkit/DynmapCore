@@ -589,8 +589,9 @@ public abstract class DynmapWorld {
         maps.clear();
         Log.verboseinfo("Loading maps of world '" + wname + "'...");
         for(MapType map : worldconfig.<MapType>createInstances("maps", new Class<?>[] { DynmapCore.class }, new Object[] { core })) {
-            if(map.getName() != null)
+            if(map.getName() != null) {
                 maps.add(map);
+            }
         }
         /* Rebuild map state list - match on indexes */
         mapstate.clear();

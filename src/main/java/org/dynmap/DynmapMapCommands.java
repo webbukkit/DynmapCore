@@ -444,7 +444,13 @@ public class DynmapMapCommands {
             ConfigurationNode cn = new ConfigurationNode();
             cn.put("name", mname);
             mt = new HDMap(core, cn);
-            w.maps.add(mt); /* Add to end, by default */
+            if(mt.getName() != null) {
+                w.maps.add(mt); /* Add to end, by default */
+            }
+            else {
+                sender.sendMessage("Map " + mname + " not valid");
+                return true;
+            }
         }
         else {
             if(mt == null) {
