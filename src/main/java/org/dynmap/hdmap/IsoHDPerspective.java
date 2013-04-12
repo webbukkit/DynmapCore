@@ -46,7 +46,6 @@ public class IsoHDPerspective implements HDPerspective {
     /* View angles */
     public double azimuth;  /* Angle in degrees from looking north (0), east (90), south (180), or west (270) */
     public double inclination;  /* Angle in degrees from horizontal (0) to vertical (90) */
-    public double scale;    /* Scale - tile pixel widths per block */
     public double maxheight;
     public double minheight;
     /* Coordinate space for tiles consists of a plane (X, Y), corresponding to the projection of each tile on to the
@@ -61,8 +60,11 @@ public class IsoHDPerspective implements HDPerspective {
     private Matrix3D map_to_world;
     
     /* Scaled models for non-cube blocks */
-    private HDBlockModels.HDScaledBlockModels scalemodels;
-    private int modscale;
+    private HDBlockModels.HDScaledBlockModels basescalemodels;
+    private int basemodscale;
+    /* Boosted scale models for non-cuble blocks */
+    private HDBlockModels.HDScaledBlockModels boostedscalemodels;
+    private int boostedmodscale;
     
     /* dimensions of a map tile */
     public static final int tileWidth = 128;
@@ -73,8 +75,8 @@ public class IsoHDPerspective implements HDPerspective {
     public static final double MIN_INCLINATION = 20.0;
     
     /* Maximum and minimum scale */
-    public static final double MAX_SCALE = 64;
-    public static final double MIN_SCALE = 1;
+    public static final int MAX_SCALE = 64;
+    public static final int MIN_SCALE = 1;
     
     private boolean need_biomedata = false;
     private boolean need_rawbiomedata = false;
@@ -97,6 +99,10 @@ public class IsoHDPerspective implements HDPerspective {
         BlockStep laststep = BlockStep.Y_MINUS;
         
         BlockStep stepx, stepy, stepz;
+
+        /* Scaled models for non-cube blocks */
+        private final HDBlockModels.HDScaledBlockModels scalemodels;
+        private final int modscale;
 
         /* Section-level raytrace variables */
         int sx, sy, sz;
@@ -147,7 +153,7 @@ public class IsoHDPerspective implements HDPerspective {
         /* Cache for custom model patch lists */
         private DynLongHashMap custom_meshes;
 
-        public OurPerspectiveState(MapIterator mi, boolean isnether) {
+        public OurPerspectiveState(MapIterator mi, boolean isnether, boolean boosted) {
             mapiter = mi;
             this.isnether = isnether;
             worldheight = mapiter.getWorldHeight();
@@ -158,6 +164,14 @@ public class IsoHDPerspective implements HDPerspective {
             for(int i = 0; i < llcache.length; i++)
                 llcache[i] = new LightLevels();
             custom_meshes = new DynLongHashMap();
+            if(boosted) {
+                modscale = boostedmodscale;
+                scalemodels = boostedscalemodels;
+            }
+            else {
+                modscale = basemodscale;
+                scalemodels = basescalemodels;
+            }
         }
         private final void updateSemitransparentLight(LightLevels ll) {
         	int emitted = 0, sky = 0;
@@ -252,7 +266,7 @@ public class IsoHDPerspective implements HDPerspective {
         /**
          * Get perspective scale
          */
-        public final double getScale() { return scale; }
+        public final double getScale() { return modscale; }
         /**
          * Get start of current ray, in world coordinates
          */
@@ -845,12 +859,12 @@ public class IsoHDPerspective implements HDPerspective {
                     subalpha = -1;
                     for(int i = 0; i < shaderstate.length; i++) {
                         if(!shaderdone[i]) {
-                            try {
+//                            try {
                                 shaderdone[i] = shaderstate[i].processBlock(this);
-                            } catch (Exception ex) {
-                                Log.severe("Error while shading tile: perspective=" + IsoHDPerspective.this.name + ", shader=" + shaderstate[i].getShader().getName() + ", coord=" + mapiter.getX() + "," + mapiter.getY() + "," + mapiter.getZ() + ", blockid=" + mapiter.getBlockTypeID() + ":" + mapiter.getBlockData() + ", lighting=" + mapiter.getBlockSkyLight() + ":" + mapiter.getBlockEmittedLight() + ", biome=" + mapiter.getBiome().toString(), ex);
-                                shaderdone[i] = true;
-                            }
+//                            } catch (Exception ex) {
+//                                Log.severe("Error while shading tile: perspective=" + IsoHDPerspective.this.name + ", shader=" + shaderstate[i].getShader().getName() + ", coord=" + mapiter.getX() + "," + mapiter.getY() + "," + mapiter.getZ() + ", blockid=" + mapiter.getBlockTypeID() + ":" + mapiter.getBlockData() + ", lighting=" + mapiter.getBlockSkyLight() + ":" + mapiter.getBlockEmittedLight() + ", biome=" + mapiter.getBiome().toString(), ex);
+//                                shaderdone[i] = true;
+//                            }
                         }
                         done = done && shaderdone[i];
                     }
@@ -1142,9 +1156,9 @@ public class IsoHDPerspective implements HDPerspective {
         inclination = configuration.getDouble("inclination", 60.0);
         if(inclination > MAX_INCLINATION) inclination = MAX_INCLINATION;
         if(inclination < MIN_INCLINATION) inclination = MIN_INCLINATION;
-        scale = configuration.getDouble("scale", MIN_SCALE);
-        if(scale < MIN_SCALE) scale = MIN_SCALE;
-        if(scale > MAX_SCALE) scale = MAX_SCALE;
+        basemodscale = (int)Math.ceil(configuration.getDouble("scale", MIN_SCALE));
+        if(basemodscale < MIN_SCALE) basemodscale = MIN_SCALE;
+        if(basemodscale > MAX_SCALE) basemodscale = MAX_SCALE;
         /* Get max and min height */
         maxheight = configuration.getInteger("maximumheight", -1);
         minheight = configuration.getInteger("minimumheight", 0);
@@ -1162,11 +1176,11 @@ public class IsoHDPerspective implements HDPerspective {
         /* Finally, shear along Z axis to normalize Z to be height above map plane */
         transform.shearZ(0, Math.tan(Math.toRadians(90.0-inclination)));
         /* And scale Z to be same scale as world coordinates, and scale X and Y based on setting */
-        transform.scale(scale, scale, Math.sin(Math.toRadians(inclination)));
+        transform.scale(basemodscale, basemodscale, Math.sin(Math.toRadians(inclination)));
         world_to_map = transform;
         /* Now, generate map to world tranform, by doing opposite actions in reverse order */
         transform = new Matrix3D();
-        transform.scale(1.0/scale, 1.0/scale, 1/Math.sin(Math.toRadians(inclination)));
+        transform.scale(1.0/basemodscale, 1.0/basemodscale, 1/Math.sin(Math.toRadians(inclination)));
         transform.shearZ(0, -Math.tan(Math.toRadians(90.0-inclination)));
         transform.rotateYZ(-(90.0-inclination));
         transform.rotateXY(-180+azimuth);
@@ -1174,8 +1188,9 @@ public class IsoHDPerspective implements HDPerspective {
         transform.multiply(coordswap);
         map_to_world = transform;
         /* Scaled models for non-cube blocks */
-        modscale = (int)Math.ceil(scale);
-        scalemodels = HDBlockModels.getModelsForScale(modscale);;
+        basescalemodels = HDBlockModels.getModelsForScale(basemodscale);;
+        boostedmodscale = basemodscale * 4;
+        boostedscalemodels = HDBlockModels.getModelsForScale(boostedmodscale);;
     }   
 
     @Override
@@ -1349,9 +1364,9 @@ public class IsoHDPerspective implements HDPerspective {
         /* Make corners for volume: 0 = bottom-lower-left, 1 = top-lower-left, 2=bottom-upper-left, 3=top-upper-left
          * 4 = bottom-lower-right, 5 = top-lower-right, 6 = bottom-upper-right, 7 = top-upper-right */  
         Vector3D corners[] = new Vector3D[8];
-        double dx = -scale, dy = -scale;    /* Add 1 block on each axis */
+        double dx = -basemodscale, dy = -basemodscale;    /* Add 1 block on each axis */
         for(int x = t.tx, idx = 0; x <= (t.tx+1); x++) {
-            dy = -scale;
+            dy = -basemodscale;
             for(int y = t.ty; y <= (t.ty+1); y++) {
                 for(int z = 0; z <= 1; z++) {
                     corners[idx] = new Vector3D();
@@ -1367,9 +1382,9 @@ public class IsoHDPerspective implements HDPerspective {
                     if(max_chunk_z < cz) max_chunk_z = cz;
                     idx++;
                 }
-                dy = scale;
+                dy = basemodscale;
             }
-            dx = scale;
+            dx = basemodscale;
         }
         /* Make rectangles of X-Z projection of each side of the tile volume, 0 = top, 1 = bottom, 2 = left, 3 = right,
          * 4 = upper, 5 = lower */
@@ -1407,8 +1422,12 @@ public class IsoHDPerspective implements HDPerspective {
     public boolean render(MapChunkCache cache, HDMapTile tile, String mapname) {
         Color rslt = new Color();
         MapIterator mapiter = cache.getIterator(0, 0, 0);
+
+        int sizescale = 1;
+        if((tile.tx > -10) && (tile.tx < 10) && (tile.ty > -10) && (tile.ty < 10))
+            sizescale = this.boostedmodscale / this.basemodscale;
         /* Build shader state object for each shader */
-        HDShaderState[] shaderstate = MapManager.mapman.hdmapman.getShaderStateForTile(tile, cache, mapiter, mapname);
+        HDShaderState[] shaderstate = MapManager.mapman.hdmapman.getShaderStateForTile(tile, cache, mapiter, mapname, sizescale * this.basemodscale);
         int numshaders = shaderstate.length;
         if(numshaders == 0)
             return false;
@@ -1425,10 +1444,10 @@ public class IsoHDPerspective implements HDPerspective {
         
         for(int i = 0; i < numshaders; i++) {
             HDLighting lighting = shaderstate[i].getLighting();
-            im[i] = DynmapBufferedImage.allocateBufferedImage(tileWidth, tileHeight);
+            im[i] = DynmapBufferedImage.allocateBufferedImage(tileWidth * sizescale, tileHeight * sizescale);
             argb_buf[i] = im[i].argb_buf;
             if(lighting.isNightAndDayEnabled()) {
-                dayim[i] = DynmapBufferedImage.allocateBufferedImage(tileWidth, tileHeight);
+                dayim[i] = DynmapBufferedImage.allocateBufferedImage(tileWidth * sizescale, tileHeight * sizescale);
                 day_argb_buf[i] = dayim[i].argb_buf;
             }
             isjpg[i] = shaderstate[i].getMap().getImageFormat() != ImageFormat.FORMAT_PNG;
@@ -1437,7 +1456,7 @@ public class IsoHDPerspective implements HDPerspective {
         }
         
         /* Create perspective state object */
-        OurPerspectiveState ps = new OurPerspectiveState(mapiter, isnether);        
+        OurPerspectiveState ps = new OurPerspectiveState(mapiter, isnether, sizescale > 1);        
         
         ps.top = new Vector3D();
         ps.bottom = new Vector3D();
@@ -1454,17 +1473,17 @@ public class IsoHDPerspective implements HDPerspective {
                 height = tile.getDynmapWorld().worldheight - 1;
         }
         
-        for(int x = 0; x < tileWidth; x++) {
+        for(int x = 0; x < tileWidth * sizescale; x++) {
             ps.px = x;
-            for(int y = 0; y < tileHeight; y++) {
-                ps.top.x = ps.bottom.x = xbase + x + 0.5;    /* Start at center of pixel at Y=height+0.5, bottom at Y=-0.5 */
-                ps.top.y = ps.bottom.y = ybase + y + 0.5;
+            for(int y = 0; y < tileHeight * sizescale; y++) {
+                ps.top.x = ps.bottom.x = xbase + ((double)x)/sizescale + 0.5;    /* Start at center of pixel at Y=height+0.5, bottom at Y=-0.5 */
+                ps.top.y = ps.bottom.y = ybase + ((double)y)/sizescale + 0.5;
                 ps.top.z = height + 0.5; ps.bottom.z = minheight - 0.5;
                 map_to_world.transform(ps.top);            /* Transform to world coordinates */
                 map_to_world.transform(ps.bottom);
                 ps.direction.set(ps.bottom);
                 ps.direction.subtract(ps.top);
-                ps.py = y;
+                ps.py = y / sizescale;
                 for(int i = 0; i < numshaders; i++) {
                     shaderstate[i].reset(ps);
                 }
@@ -1485,19 +1504,19 @@ public class IsoHDPerspective implements HDPerspective {
                     int c_argb = rslt.getARGB();
                     if(c_argb != 0) rendered[i] = true;
                     if(isjpg[i] && (c_argb == 0)) {
-                        argb_buf[i][(tileHeight-y-1)*tileWidth + x] = bgnight[i];
+                        argb_buf[i][(tileHeight*sizescale-y-1)*tileWidth*sizescale + x] = bgnight[i];
                     }
                     else {
-                        argb_buf[i][(tileHeight-y-1)*tileWidth + x] = c_argb;
+                        argb_buf[i][(tileHeight*sizescale-y-1)*tileWidth*sizescale + x] = c_argb;
                     }
                     if(day_argb_buf[i] != null) {
                         shaderstate[i].getRayColor(rslt, 1);
                         c_argb = rslt.getARGB();
                         if(isjpg[i] && (c_argb == 0)) {
-                            day_argb_buf[i][(tileHeight-y-1)*tileWidth + x] = bgday[i];
+                            day_argb_buf[i][(tileHeight*sizescale-y-1)*tileWidth*sizescale + x] = bgday[i];
                         }
                         else {
-                            day_argb_buf[i][(tileHeight-y-1)*tileWidth + x] = c_argb;
+                            day_argb_buf[i][(tileHeight*sizescale-y-1)*tileWidth*sizescale + x] = c_argb;
                         }
                     }
                 }
@@ -1620,11 +1639,11 @@ public class IsoHDPerspective implements HDPerspective {
     }
     
     public double getScale() {
-        return scale;
+        return basemodscale;
     }
 
     public int getModelScale() {
-        return modscale;
+        return basemodscale;
     }
 
     @Override
@@ -1638,7 +1657,7 @@ public class IsoHDPerspective implements HDPerspective {
         s(mapObject, "perspective", name);
         s(mapObject, "azimuth", azimuth);
         s(mapObject, "inclination", inclination);
-        s(mapObject, "scale", scale);
+        s(mapObject, "scale", basemodscale);
         s(mapObject, "worldtomap", world_to_map.toJSON());
         s(mapObject, "maptoworld", map_to_world.toJSON());
         int dir = ((360 + (int)(22.5+azimuth)) / 45) % 8;

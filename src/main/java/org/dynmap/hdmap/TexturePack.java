@@ -1399,7 +1399,7 @@ public class TexturePack {
         /* Special case - some textures are used as masks - need pure alpha (00 or FF) */
         makeAlphaPure(tp.terrain_argb[TILEINDEX_GRASSMASK]); /* Grass side mask */
     }
-    private static void scaleTerrainPNGSubImage(int srcscale, int destscale, int[] src_argb, int[] dest_argb) {
+    public static void scaleTerrainPNGSubImage(int srcscale, int destscale, int[] src_argb, int[] dest_argb) {
         int nativeres = srcscale;
         int res = destscale;
         Color c = new Color();

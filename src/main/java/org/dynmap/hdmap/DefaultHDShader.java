@@ -259,9 +259,11 @@ public class DefaultHDShader implements HDShader {
      * @param map - map being rendered
      * @param cache - chunk cache containing data for tile to be rendered
      * @param mapiter - iterator used when traversing rays in tile
+     * @param scale - scale of the perspecitve
      * @return state object to use for all rays in tile
      */
-    public HDShaderState getStateInstance(HDMap map, MapChunkCache cache, MapIterator mapiter) {
+    @Override
+    public HDShaderState getStateInstance(HDMap map, MapChunkCache cache, MapIterator mapiter, int scale) {
         switch(biomecolored) {
             case NONE:
                 return new OurShaderState(mapiter, map);

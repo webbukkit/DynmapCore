@@ -16,8 +16,8 @@ public class TexturePackHDCaveShader extends TexturePackHDShader {
         private boolean ready;
         private LightLevels ll = new LightLevels();
         
-        protected CaveShaderState(MapIterator mapiter, HDMap map, MapChunkCache cache) {
-            super(mapiter, map, cache);
+        protected CaveShaderState(MapIterator mapiter, HDMap map, MapChunkCache cache, int scale) {
+            super(mapiter, map, cache, scale);
         }
         @Override
         public void reset(HDPerspectiveState ps) {
@@ -45,7 +45,8 @@ public class TexturePackHDCaveShader extends TexturePackHDShader {
         maxskylevel = configuration.getInteger("max-sky-light", 0);
         minemittedlevel = configuration.getInteger("min-emitted-light", 1);
     }
-    public HDShaderState getStateInstance(HDMap map, MapChunkCache cache, MapIterator mapiter) {
-        return new CaveShaderState(mapiter, map, cache);
+    @Override
+    public HDShaderState getStateInstance(HDMap map, MapChunkCache cache, MapIterator mapiter, int scale) {
+        return new CaveShaderState(mapiter, map, cache, scale);
     }
 }
