@@ -27,7 +27,6 @@ import org.dynmap.Log;
 import org.dynmap.MapManager;
 import org.dynmap.common.BiomeMap;
 import org.dynmap.renderer.CustomColorMultiplier;
-import org.dynmap.utils.DynmapBufferedImage;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.ForgeConfigFile;
 import org.dynmap.utils.MapIterator;
@@ -165,7 +164,7 @@ public class TexturePack {
 
     private static final int BLOCKTABLELEN = 256;  /* Enough for normal block IDs */
 
-    private static enum TileFileFormat {
+    public static enum TileFileFormat {
         GRID,
         CHEST,
         BIGCHEST,
@@ -249,8 +248,13 @@ public class TexturePack {
         /* Now, load entries for vanilla v1.5 files */
         for(int i = 0; i < terrain_map.length; i++) {
             String fn = getBlockFileName(i);
-            if (fn != null)
-                findOrAddDynamicTileFile(fn, 1, 1, TileFileFormat.GRID, new String[0]);
+            if (fn != null) {
+                int idx = findOrAddDynamicTileFile(fn, 1, 1, TileFileFormat.GRID, new String[0]);
+                DynamicTileFile dtf = addonfiles.get(idx);
+                if (dtf != null) {  // Fix mapping of tile ID to global table index
+                    dtf.tile_to_dyntile[0] = i;
+                }
+            }
         }
     }
     
@@ -263,6 +267,7 @@ public class TexturePack {
     private int[][]   terrain_argb;
     private int native_scale;
     private boolean use_terrain_png;
+    private CTMTexturePack ctp;
 
     private int water_toned_op = COLORMOD_WATERTONED;
     
@@ -535,294 +540,320 @@ public class TexturePack {
         }
         generateFire();
         generatePortal();
-        
+        // Get default texture directory
+        File stdtexture = new File(texturedir, STANDARDTP);
+        // Get texture pack
         File f = new File(texturedir, tpname);
-        try {
-            /* Try to open zip */
-            zf = new ZipFile(f);
-            
-            InputStream is;
-            ZipEntry ze;
-            
-            /* Loop through dynamic files */
-            for(int i = 0; i < addonfiles.size(); i++) {
-                DynamicTileFile dtf = addonfiles.get(i);
-                ze = zf.getEntry(dtf.filename);
+        // If texture pack is a file, needs to be ZIP
+        if(f.isFile()) {
+            try {
+                /* Try to open zip */
+                zf = new ZipFile(f);
+
+                InputStream is;
+                ZipEntry ze;
+
+                /* Loop through dynamic files */
+                for(int i = 0; i < addonfiles.size(); i++) {
+                    DynamicTileFile dtf = addonfiles.get(i);
+                    ze = zf.getEntry(dtf.filename);
+                    if(ze == null) {
+                        File ff = new File(stdtexture, dtf.filename);
+                        is = new FileInputStream(ff);
+                    }
+                    else {
+                        is = zf.getInputStream(ze);
+                    }
+                    loadImage(is, i+IMG_CNT); /* Load image file */
+                    is.close();
+                }
+
+                /* Find and load terrain.png */
+                ze = zf.getEntry(TERRAIN_PNG); /* Try to find terrain.png */
                 if(ze == null) {
-                    File ff = new File(texturedir, STANDARDTP + "/" + dtf.filename);
+                    /* Check for terrain.png under standard texture pack*/
+                    File ff = new File(stdtexture, TERRAIN_PNG);
+                    is = new FileInputStream(ff);
+                }
+                else {
+                    is = zf.getInputStream(ze); /* Get input stream for terrain.png */
+                }
+                loadTerrainPNG(is);
+                is.close();
+                /* If not generating water, load it */
+                if(!use_generate) {
+                    ze = zf.getEntry(WATER_PNG);
+                    if(ze == null) {
+                        File ff = new File(stdtexture, WATER_PNG);
+                        is = new FileInputStream(ff);
+                    }
+                    else {
+                        is = zf.getInputStream(ze);
+                    }
+                    loadImage(is, IMG_WATER);
+                    patchTextureWithImage(IMG_WATER, TILEINDEX_STATIONARYWATER);
+                    patchTextureWithImage(IMG_WATER, TILEINDEX_MOVINGWATER);
+                    is.close();                
+                }
+                else {
+                    patchTextureWithImage(IMG_WATER, TILEINDEX_STATIONARYWATER);
+                    patchTextureWithImage(IMG_WATERMOVING, TILEINDEX_MOVINGWATER);
+                    patchTextureWithImage(IMG_LAVA, TILEINDEX_STATIONARYLAVA);
+                    patchTextureWithImage(IMG_LAVAMOVING, TILEINDEX_MOVINGLAVA);
+                }
+                patchTextureWithImage(IMG_FIRE, TILEINDEX_FIRE);
+                patchTextureWithImage(IMG_PORTAL, TILEINDEX_PORTAL);
+
+                /* Try to find and load misc/grasscolor.png */
+                ze = zf.getEntry(GRASSCOLOR_PNG);
+                if(ze == null) {	/* Fall back to standard file */
+                    /* Check for misc/grasscolor.png under standard texture pack*/
+                    File ff = new File(stdtexture, GRASSCOLOR_PNG);
                     is = new FileInputStream(ff);
                 }
                 else {
                     is = zf.getInputStream(ze);
                 }
-                loadImage(is, i+IMG_CNT); /* Load image file */
+                loadBiomeShadingImage(is, IMG_GRASSCOLOR);
                 is.close();
-            }
-
-            /* Find and load terrain.png */
-            ze = zf.getEntry(TERRAIN_PNG); /* Try to find terrain.png */
-            if(ze == null) {
-                /* Check for terrain.png under standard texture pack*/
-                File ff = new File(texturedir, STANDARDTP + "/" + TERRAIN_PNG);
-                is = new FileInputStream(ff);
-            }
-            else {
-            	is = zf.getInputStream(ze); /* Get input stream for terrain.png */
-            }
-            loadTerrainPNG(is);
-            is.close();
-            /* If not generating water, load it */
-            if(!use_generate) {
-                ze = zf.getEntry(WATER_PNG);
+                /* Try to find and load misc/foliagecolor.png */
+                ze = zf.getEntry(FOLIAGECOLOR_PNG);
                 if(ze == null) {
-                    File ff = new File(texturedir, STANDARDTP + "/" + WATER_PNG);
+                    /* Check for misc/foliagecolor.png under standard texture pack*/
+                    File ff = new File(stdtexture, FOLIAGECOLOR_PNG);
                     is = new FileInputStream(ff);
                 }
                 else {
                     is = zf.getInputStream(ze);
                 }
-                loadImage(is, IMG_WATER);
-                patchTextureWithImage(IMG_WATER, TILEINDEX_STATIONARYWATER);
-                patchTextureWithImage(IMG_WATER, TILEINDEX_MOVINGWATER);
-                is.close();                
-            }
-            else {
-                patchTextureWithImage(IMG_WATER, TILEINDEX_STATIONARYWATER);
-                patchTextureWithImage(IMG_WATERMOVING, TILEINDEX_MOVINGWATER);
-                patchTextureWithImage(IMG_LAVA, TILEINDEX_STATIONARYLAVA);
-                patchTextureWithImage(IMG_LAVAMOVING, TILEINDEX_MOVINGLAVA);
-            }
-            patchTextureWithImage(IMG_FIRE, TILEINDEX_FIRE);
-            patchTextureWithImage(IMG_PORTAL, TILEINDEX_PORTAL);
-
-            /* Try to find and load misc/grasscolor.png */
-            ze = zf.getEntry(GRASSCOLOR_PNG);
-            if(ze == null) {	/* Fall back to standard file */
-                /* Check for misc/grasscolor.png under standard texture pack*/
-                File ff = new File(texturedir, STANDARDTP + "/" + GRASSCOLOR_PNG);
-                is = new FileInputStream(ff);
-            }
-            else {
-            	is = zf.getInputStream(ze);
-            }
-        	loadBiomeShadingImage(is, IMG_GRASSCOLOR);
-        	is.close();
-            /* Try to find and load misc/foliagecolor.png */
-            ze = zf.getEntry(FOLIAGECOLOR_PNG);
-            if(ze == null) {
-                /* Check for misc/foliagecolor.png under standard texture pack*/
-                File ff = new File(texturedir, STANDARDTP + "/" + FOLIAGECOLOR_PNG);
-                is = new FileInputStream(ff);
-            }
-            else {
-            	is = zf.getInputStream(ze);
-            }
-        	loadBiomeShadingImage(is, IMG_FOLIAGECOLOR);
-        	is.close();
-
-            /* Try to find and load misc/swampgrasscolor.png */
-            ze = zf.getEntry(SWAMPGRASSCOLOR_PNG);
-            if(ze != null) {
-                is = zf.getInputStream(ze);
-                loadBiomeShadingImage(is, IMG_SWAMPGRASSCOLOR);
+                loadBiomeShadingImage(is, IMG_FOLIAGECOLOR);
                 is.close();
-            }
-            /* Try to find and load misc/swampfoliagecolor.png */
-            ze = zf.getEntry(SWAMPFOLIAGECOLOR_PNG);
-            if(ze != null) {
-                is = zf.getInputStream(ze);
-                loadBiomeShadingImage(is, IMG_SWAMPFOLIAGECOLOR);
-                is.close();
-            }
-        	/* Try to find and load misc/watercolor.png */
-            ze = zf.getEntry(WATERCOLORX_PNG);
-            if(ze != null) {    /* Fall back to standard file */
-                is = zf.getInputStream(ze);
-                loadBiomeShadingImage(is, IMG_WATERCOLORX);
-                is.close();
-            }
 
-            /* Optional files - process if they exist */
-            ze = zf.getEntry(CUSTOMLAVASTILL_PNG);
-            if(ze == null)
-                ze = zf.getEntry("anim/" + CUSTOMLAVASTILL_PNG);
-            if(ze != null) {
-                is = zf.getInputStream(ze);
-                loadImage(is, IMG_CUSTOMLAVASTILL);
-                patchTextureWithImage(IMG_CUSTOMLAVASTILL, TILEINDEX_STATIONARYLAVA);
-                patchTextureWithImage(IMG_CUSTOMLAVASTILL, TILEINDEX_MOVINGLAVA);
-            }
-            ze = zf.getEntry(CUSTOMLAVAFLOWING_PNG);
-            if(ze == null)
-                ze = zf.getEntry("anim/" + CUSTOMLAVAFLOWING_PNG);
-            if(ze != null) {
-                is = zf.getInputStream(ze);
-                loadImage(is, IMG_CUSTOMLAVAMOVING);
-                patchTextureWithImage(IMG_CUSTOMLAVAMOVING, TILEINDEX_MOVINGLAVA);
-            }
-            ze = zf.getEntry(CUSTOMWATERSTILL_PNG);
-            if(ze == null)
-                ze = zf.getEntry("anim/" + CUSTOMWATERSTILL_PNG);
-            if(ze != null) {
-                is = zf.getInputStream(ze);
-                loadImage(is, IMG_CUSTOMWATERSTILL);
-                patchTextureWithImage(IMG_CUSTOMWATERSTILL, TILEINDEX_STATIONARYWATER);
-                patchTextureWithImage(IMG_CUSTOMWATERSTILL, TILEINDEX_MOVINGWATER);
-            }
-            ze = zf.getEntry(CUSTOMWATERFLOWING_PNG);
-            if(ze == null)
-                ze = zf.getEntry("anim/" + CUSTOMWATERFLOWING_PNG);
-            if(ze != null) {
-                is = zf.getInputStream(ze);
-                loadImage(is, IMG_CUSTOMWATERMOVING);
-                patchTextureWithImage(IMG_CUSTOMWATERMOVING, TILEINDEX_MOVINGWATER);
-            }
-            /* Loop through dynamic files */
-            for(int i = 0; i < addonfiles.size(); i++) {
-                DynamicTileFile dtf = addonfiles.get(i);
-                processDynamicImage(i, dtf.format);
-            }
-            
-            zf.close();
-            return;
-        } catch (IOException iox) {
-            if(zf != null) {
-                try { zf.close(); } catch (IOException io) {}
+                /* Try to find and load misc/swampgrasscolor.png */
+                ze = zf.getEntry(SWAMPGRASSCOLOR_PNG);
+                if(ze != null) {
+                    is = zf.getInputStream(ze);
+                    loadBiomeShadingImage(is, IMG_SWAMPGRASSCOLOR);
+                    is.close();
+                }
+                /* Try to find and load misc/swampfoliagecolor.png */
+                ze = zf.getEntry(SWAMPFOLIAGECOLOR_PNG);
+                if(ze != null) {
+                    is = zf.getInputStream(ze);
+                    loadBiomeShadingImage(is, IMG_SWAMPFOLIAGECOLOR);
+                    is.close();
+                }
+                /* Try to find and load misc/watercolor.png */
+                ze = zf.getEntry(WATERCOLORX_PNG);
+                if(ze != null) {    /* Fall back to standard file */
+                    is = zf.getInputStream(ze);
+                    loadBiomeShadingImage(is, IMG_WATERCOLORX);
+                    is.close();
+                }
+
+                /* Optional files - process if they exist */
+                ze = zf.getEntry(CUSTOMLAVASTILL_PNG);
+                if(ze == null)
+                    ze = zf.getEntry("anim/" + CUSTOMLAVASTILL_PNG);
+                if(ze != null) {
+                    is = zf.getInputStream(ze);
+                    loadImage(is, IMG_CUSTOMLAVASTILL);
+                    patchTextureWithImage(IMG_CUSTOMLAVASTILL, TILEINDEX_STATIONARYLAVA);
+                    patchTextureWithImage(IMG_CUSTOMLAVASTILL, TILEINDEX_MOVINGLAVA);
+                }
+                ze = zf.getEntry(CUSTOMLAVAFLOWING_PNG);
+                if(ze == null)
+                    ze = zf.getEntry("anim/" + CUSTOMLAVAFLOWING_PNG);
+                if(ze != null) {
+                    is = zf.getInputStream(ze);
+                    loadImage(is, IMG_CUSTOMLAVAMOVING);
+                    patchTextureWithImage(IMG_CUSTOMLAVAMOVING, TILEINDEX_MOVINGLAVA);
+                }
+                ze = zf.getEntry(CUSTOMWATERSTILL_PNG);
+                if(ze == null)
+                    ze = zf.getEntry("anim/" + CUSTOMWATERSTILL_PNG);
+                if(ze != null) {
+                    is = zf.getInputStream(ze);
+                    loadImage(is, IMG_CUSTOMWATERSTILL);
+                    patchTextureWithImage(IMG_CUSTOMWATERSTILL, TILEINDEX_STATIONARYWATER);
+                    patchTextureWithImage(IMG_CUSTOMWATERSTILL, TILEINDEX_MOVINGWATER);
+                }
+                ze = zf.getEntry(CUSTOMWATERFLOWING_PNG);
+                if(ze == null)
+                    ze = zf.getEntry("anim/" + CUSTOMWATERFLOWING_PNG);
+                if(ze != null) {
+                    is = zf.getInputStream(ze);
+                    loadImage(is, IMG_CUSTOMWATERMOVING);
+                    patchTextureWithImage(IMG_CUSTOMWATERMOVING, TILEINDEX_MOVINGWATER);
+                }
+                /* Loop through dynamic files */
+                for(int i = 0; i < addonfiles.size(); i++) {
+                    DynamicTileFile dtf = addonfiles.get(i);
+                    processDynamicImage(i, dtf.format);
+                }
+                if(core.isCTMSupportEnabled()) {
+                    Log.info("Load CTP info from ZIP");
+                    ctp = new CTMTexturePack(zf, this);
+                    if(ctp.isValid() == false) {
+                        ctp = null;
+                    }
+                }
+                zf.close();
+                return;
+            } catch (IOException iox) {
+                if(zf != null) {
+                    try { zf.close(); } catch (IOException io) {}
+                }
             }
         }
-        /* Try loading terrain.png from directory of name */
-        FileInputStream fis = null;
-        try {
-            /* Loop through dynamic files */
-            for(int i = 0; i < addonfiles.size(); i++) {
-                DynamicTileFile dtf = addonfiles.get(i);
-                f = new File(texturedir, tpname + "/" + dtf.filename);
+        else if(f.isDirectory()) {
+            File tpdir = f;
+            /* Try loading terrain.png from directory of name */
+            FileInputStream fis = null;
+            try {
+                /* Loop through dynamic files */
+                for(int i = 0; i < addonfiles.size(); i++) {
+                    DynamicTileFile dtf = addonfiles.get(i);
+                    f = new File(tpdir, dtf.filename);
+                    if(!f.canRead()) {
+                        f = new File(stdtexture, dtf.filename);             
+                    }
+                    fis = new FileInputStream(f);
+                    loadImage(fis, i+IMG_CNT); /* Load image file */
+                    fis.close();
+                }
+                /* Open and load terrain.png */
+                f = new File(tpdir, TERRAIN_PNG);
                 if(!f.canRead()) {
-                    f = new File(texturedir, STANDARDTP + "/" + dtf.filename);             
+                    f = new File(stdtexture, TERRAIN_PNG);            	
                 }
                 fis = new FileInputStream(f);
-                loadImage(fis, i+IMG_CNT); /* Load image file */
+                loadTerrainPNG(fis);
                 fis.close();
-            }
-            /* Open and load terrain.png */
-            f = new File(texturedir, tpname + "/" + TERRAIN_PNG);
-            if(!f.canRead()) {
-                f = new File(texturedir, STANDARDTP + "/" + TERRAIN_PNG);            	
-            }
-            fis = new FileInputStream(f);
-            loadTerrainPNG(fis);
-            fis.close();
 
-            if(use_generate == false) { /* Not using generated - load water */
-                /* Check for misc/water.png */
-                f = new File(texturedir, tpname + "/" + WATER_PNG);
+                if(use_generate == false) { /* Not using generated - load water */
+                    /* Check for misc/water.png */
+                    f = new File(tpdir, WATER_PNG);
+                    if(!f.canRead()) {
+                        f = new File(stdtexture, WATER_PNG);              
+                    }
+                    fis = new FileInputStream(f);
+                    loadImage(fis, IMG_WATER);
+                    patchTextureWithImage(IMG_WATER, TILEINDEX_STATIONARYWATER);
+                    patchTextureWithImage(IMG_WATER, TILEINDEX_MOVINGWATER);
+                    fis.close();
+                }
+                else {
+                    patchTextureWithImage(IMG_WATER, TILEINDEX_STATIONARYWATER);
+                    patchTextureWithImage(IMG_WATERMOVING, TILEINDEX_MOVINGWATER);
+                    patchTextureWithImage(IMG_LAVA, TILEINDEX_STATIONARYLAVA);
+                    patchTextureWithImage(IMG_LAVAMOVING, TILEINDEX_MOVINGLAVA);
+                }
+                /* Patch in generated value */
+                patchTextureWithImage(IMG_FIRE, TILEINDEX_FIRE);
+                patchTextureWithImage(IMG_PORTAL, TILEINDEX_PORTAL);
+
+                /* Check for misc/grasscolor.png */
+                f = new File(tpdir, GRASSCOLOR_PNG);
                 if(!f.canRead()) {
-                    f = new File(texturedir, STANDARDTP + "/" + WATER_PNG);              
+                    f = new File(stdtexture, GRASSCOLOR_PNG);            	
                 }
                 fis = new FileInputStream(f);
-                loadImage(fis, IMG_WATER);
-                patchTextureWithImage(IMG_WATER, TILEINDEX_STATIONARYWATER);
-                patchTextureWithImage(IMG_WATER, TILEINDEX_MOVINGWATER);
+                loadBiomeShadingImage(fis, IMG_GRASSCOLOR);
                 fis.close();
-            }
-            else {
-                patchTextureWithImage(IMG_WATER, TILEINDEX_STATIONARYWATER);
-                patchTextureWithImage(IMG_WATERMOVING, TILEINDEX_MOVINGWATER);
-                patchTextureWithImage(IMG_LAVA, TILEINDEX_STATIONARYLAVA);
-                patchTextureWithImage(IMG_LAVAMOVING, TILEINDEX_MOVINGLAVA);
-            }
-            /* Patch in generated value */
-            patchTextureWithImage(IMG_FIRE, TILEINDEX_FIRE);
-            patchTextureWithImage(IMG_PORTAL, TILEINDEX_PORTAL);
+                /* Check for misc/foliagecolor.png */
+                f = new File(tpdir, FOLIAGECOLOR_PNG);
+                if(!f.canRead()) {
+                    f = new File(stdtexture, FOLIAGECOLOR_PNG);            	
+                }
+                fis = new FileInputStream(f);
+                loadBiomeShadingImage(fis, IMG_FOLIAGECOLOR);
+                fis.close();
+                /* Check for misc/swampgrasscolor.png */
+                f = new File(tpdir, SWAMPGRASSCOLOR_PNG);
+                if(f.canRead()) {
+                    fis = new FileInputStream(f);
+                    loadBiomeShadingImage(fis, IMG_SWAMPGRASSCOLOR);
+                    fis.close();
+                }
+                /* Check for misc/swampfoliagecolor.png */
+                f = new File(tpdir, SWAMPFOLIAGECOLOR_PNG);
+                if(f.canRead()) {
+                    fis = new FileInputStream(f);
+                    loadBiomeShadingImage(fis, IMG_SWAMPFOLIAGECOLOR);
+                    fis.close();
+                }
+                /* Check for misc/watercolor.png */
+                f = new File(tpdir, WATERCOLORX_PNG);
+                if(f.canRead()) {
+                    fis = new FileInputStream(f);
+                    loadBiomeShadingImage(fis, IMG_WATERCOLORX);
+                    fis.close();
+                }
+                /* Optional files - process if they exist */
+                f = new File(tpdir, CUSTOMLAVASTILL_PNG);
+                if(!f.canRead())
+                    f = new File(texturedir, tpname + "/anim/" + CUSTOMLAVASTILL_PNG);
+                if(f.canRead()) {
+                    fis = new FileInputStream(f);
+                    loadImage(fis, IMG_CUSTOMLAVASTILL);
+                    patchTextureWithImage(IMG_CUSTOMLAVASTILL, TILEINDEX_STATIONARYLAVA);
+                    patchTextureWithImage(IMG_CUSTOMLAVASTILL, TILEINDEX_MOVINGLAVA);
+                    fis.close();
+                }
+                f = new File(tpdir, CUSTOMLAVAFLOWING_PNG);
+                if(!f.canRead()) {
+                    f = new File(tpdir ,"anim/" + CUSTOMLAVAFLOWING_PNG);
+                }
+                if(f.canRead()) {
+                    fis = new FileInputStream(f);
+                    loadImage(fis, IMG_CUSTOMLAVAMOVING);
+                    patchTextureWithImage(IMG_CUSTOMLAVAMOVING, TILEINDEX_MOVINGLAVA);
+                    fis.close();
+                }
+                f = new File(tpdir, CUSTOMWATERSTILL_PNG);
+                if(!f.canRead()) {
+                    f = new File(tpdir ,"anim/" + CUSTOMWATERSTILL_PNG);
+                }
+                if(f.canRead()) {
+                    fis = new FileInputStream(f);
+                    loadImage(fis, IMG_CUSTOMWATERSTILL);
+                    patchTextureWithImage(IMG_CUSTOMWATERSTILL, TILEINDEX_STATIONARYWATER);
+                    patchTextureWithImage(IMG_CUSTOMWATERSTILL, TILEINDEX_MOVINGWATER);
+                    fis.close();
+                }
+                f = new File(tpdir, CUSTOMWATERFLOWING_PNG);
+                if(!f.canRead()) {
+                    f = new File(tpdir, "anim/" + CUSTOMWATERFLOWING_PNG);
+                }
+                if(f.canRead()) {
+                    fis = new FileInputStream(f);
+                    loadImage(fis, IMG_CUSTOMWATERMOVING);
+                    patchTextureWithImage(IMG_CUSTOMWATERMOVING, TILEINDEX_MOVINGWATER);
+                    fis.close();
+                }
+                /* Loop through dynamic files */
+                for(int i = 0; i < addonfiles.size(); i++) {
+                    DynamicTileFile dtf = addonfiles.get(i);
+                    processDynamicImage(i, dtf.format);
+                }
+                
+                if(core.isCTMSupportEnabled()) {
+                    Log.info("Load CTP info");
+                    ctp = new CTMTexturePack(tpdir, this);
+                    if(ctp.isValid() == false) {
+                        ctp = null;
+                    }
+                }
 
-            /* Check for misc/grasscolor.png */
-            f = new File(texturedir, tpname + "/" + GRASSCOLOR_PNG);
-            if(!f.canRead()) {
-                f = new File(texturedir, STANDARDTP + "/" + GRASSCOLOR_PNG);            	
-            }
-            fis = new FileInputStream(f);
-            loadBiomeShadingImage(fis, IMG_GRASSCOLOR);
-            fis.close();
-            /* Check for misc/foliagecolor.png */
-            f = new File(texturedir, tpname + "/" + FOLIAGECOLOR_PNG);
-            if(!f.canRead()) {
-                f = new File(texturedir, STANDARDTP + "/" + FOLIAGECOLOR_PNG);            	
-            }
-            fis = new FileInputStream(f);
-            loadBiomeShadingImage(fis, IMG_FOLIAGECOLOR);
-            fis.close();
-            /* Check for misc/swampgrasscolor.png */
-            f = new File(texturedir, tpname + "/" + SWAMPGRASSCOLOR_PNG);
-            if(f.canRead()) {
-                fis = new FileInputStream(f);
-                loadBiomeShadingImage(fis, IMG_SWAMPGRASSCOLOR);
-                fis.close();
-            }
-            /* Check for misc/swampfoliagecolor.png */
-            f = new File(texturedir, tpname + "/" + SWAMPFOLIAGECOLOR_PNG);
-            if(f.canRead()) {
-                fis = new FileInputStream(f);
-                loadBiomeShadingImage(fis, IMG_SWAMPFOLIAGECOLOR);
-                fis.close();
-            }
-            /* Check for misc/watercolor.png */
-            f = new File(texturedir, tpname + "/" + WATERCOLORX_PNG);
-            if(f.canRead()) {
-                fis = new FileInputStream(f);
-                loadBiomeShadingImage(fis, IMG_WATERCOLORX);
-                fis.close();
-            }
-            /* Optional files - process if they exist */
-            f = new File(texturedir, tpname + "/" + CUSTOMLAVASTILL_PNG);
-            if(!f.canRead())
-                f = new File(texturedir, tpname + "/anim/" + CUSTOMLAVASTILL_PNG);
-            if(f.canRead()) {
-                fis = new FileInputStream(f);
-                loadImage(fis, IMG_CUSTOMLAVASTILL);
-                patchTextureWithImage(IMG_CUSTOMLAVASTILL, TILEINDEX_STATIONARYLAVA);
-                patchTextureWithImage(IMG_CUSTOMLAVASTILL, TILEINDEX_MOVINGLAVA);
-                fis.close();
-            }
-            f = new File(texturedir, tpname + "/" + CUSTOMLAVAFLOWING_PNG);
-            if(!f.canRead())
-                f = new File(texturedir, tpname + "/anim/" + CUSTOMLAVAFLOWING_PNG);
-            if(f.canRead()) {
-                fis = new FileInputStream(f);
-                loadImage(fis, IMG_CUSTOMLAVAMOVING);
-                patchTextureWithImage(IMG_CUSTOMLAVAMOVING, TILEINDEX_MOVINGLAVA);
-                fis.close();
-            }
-            f = new File(texturedir, tpname + "/" + IMG_CUSTOMWATERSTILL);
-            if(!f.canRead())
-                f = new File(texturedir, tpname + "/anim/" + CUSTOMWATERSTILL_PNG);
-            if(f.canRead()) {
-                fis = new FileInputStream(f);
-                loadImage(fis, IMG_CUSTOMWATERSTILL);
-                patchTextureWithImage(IMG_CUSTOMWATERSTILL, TILEINDEX_STATIONARYWATER);
-                patchTextureWithImage(IMG_CUSTOMWATERSTILL, TILEINDEX_MOVINGWATER);
-                fis.close();
-            }
-            f = new File(texturedir, tpname + "/" + IMG_CUSTOMWATERMOVING);
-            if(!f.canRead())
-                f = new File(texturedir, tpname + "/anim/" + CUSTOMWATERFLOWING_PNG);
-            if(f.canRead()) {
-                fis = new FileInputStream(f);
-                loadImage(fis, IMG_CUSTOMWATERMOVING);
-                patchTextureWithImage(IMG_CUSTOMWATERMOVING, TILEINDEX_MOVINGWATER);
-                fis.close();
-            }
-            /* Loop through dynamic files */
-            for(int i = 0; i < addonfiles.size(); i++) {
-                DynamicTileFile dtf = addonfiles.get(i);
-                processDynamicImage(i, dtf.format);
-            }
-        } catch (IOException iox) {
-            if(fis != null) {
-                try { fis.close(); } catch (IOException io) {}
-            }
-            Log.info("Cannot process " + f.getPath() + " - " + iox);
+            } catch (IOException iox) {
+                if(fis != null) {
+                    try { fis.close(); } catch (IOException io) {}
+                }
+                Log.info("Cannot process " + f.getPath() + " - " + iox);
 
-            throw new FileNotFoundException();
+                throw new FileNotFoundException();
+            }
         }
     }
     /**
@@ -2413,6 +2444,23 @@ public class TexturePack {
     }
 
     /**
+     * Get tile index, based on tile file name and relative index within tile file
+     * @param fname - filename
+     * @param idx - tile index (= (y * xdim) + x)
+     * @return global tile index, or -1 if not found
+     */
+    public static int findDynamicTile(String fname, int idx) {
+        DynamicTileFile f;
+        /* Find existing, if already there */
+        f = addonfilesbyname.get(fname);
+        if (f != null) {
+            if ((idx >= 0) && (idx < f.tile_to_dyntile.length) && (f.tile_to_dyntile[idx] >= 0)) {
+                return f.tile_to_dyntile[idx];
+            }
+        }
+        return -1;
+    }
+    /**
      * Add new dynmaic file definition, or return existing
      * 
      * @param fname
@@ -2422,7 +2470,7 @@ public class TexturePack {
      * @param args
      * @return dynamic file index
      */
-    private static int findOrAddDynamicTileFile(String fname, int xdim, int ydim, TileFileFormat fmt, String[] args) {
+    public static int findOrAddDynamicTileFile(String fname, int xdim, int ydim, TileFileFormat fmt, String[] args) {
         DynamicTileFile f;
         /* Find existing, if already there */
         f = addonfilesbyname.get(fname);
@@ -2506,7 +2554,7 @@ public class TexturePack {
      * @param tile_id - ID of tile within file
      * @return global tile ID
      */
-    private static int findOrAddDynamicTile(int dynfile_idx, int tile_id) {
+    public static int findOrAddDynamicTile(int dynfile_idx, int tile_id) {
         DynamicTileFile f = addonfiles.get(dynfile_idx);
         if(f == null) {
             Log.warning("Invalid add-on file index: " + dynfile_idx);

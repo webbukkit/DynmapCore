@@ -90,6 +90,7 @@ public class DynmapCore implements DynmapCommonAPI {
     private DynmapMapCommands dmapcmds = new DynmapMapCommands();
     boolean bettergrass = false;
     boolean smoothlighting = false;
+    private boolean ctmsupport = false;
     private String def_image_format = "png";
     private HashSet<String> enabledTriggers = new HashSet<String>();
     public boolean disable_chat_to_web = false;
@@ -342,6 +343,7 @@ public class DynmapCore implements DynmapCommonAPI {
         DynmapWorld.doInitialScan(configuration.getBoolean("initial-zoomout-validate", true));
         
         smoothlighting = configuration.getBoolean("smooth-lighting", false);
+        ctmsupport = configuration.getBoolean("ctm-support", true);
         Log.verbose = configuration.getBoolean("verbose", true);
         deftemplatesuffix = configuration.getString("deftemplatesuffix", "");
         /* Get snapshot cache size */
@@ -596,6 +598,10 @@ public class DynmapCore implements DynmapCommonAPI {
 
     public boolean isLoginRequired() {
         return loginRequired;
+    }
+
+    public boolean isCTMSupportEnabled() {
+        return ctmsupport;
     }
 
     public Set<String> getIPBans() {
