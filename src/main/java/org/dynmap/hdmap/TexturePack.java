@@ -575,15 +575,7 @@ public class TexturePack {
                         else {
                             is = zf.getInputStream(ze);
                         }
-                        if (is != null) {
-                            loadImage(is, i+IMG_CNT); /* Load image file */
-                        }
-                        else {
-                            imgs[i + IMG_CNT] = new LoadedImage();
-                            imgs[i + IMG_CNT].width = 16;
-                            imgs[i + IMG_CNT].height = 16;
-                            imgs[i + IMG_CNT].argb = new int[256];
-                        }
+                        loadImage(is, i+IMG_CNT); /* Load image file */
                     } finally {
                         if (is != null) {
                             try { is.close(); } catch (IOException iox) {}
@@ -746,14 +738,8 @@ public class TexturePack {
                     try {
                         if (f.canRead()) {
                             fis = new FileInputStream(f);
-                            loadImage(fis, i+IMG_CNT); /* Load image file */
                         }
-                        else {
-                            imgs[i + IMG_CNT] = new LoadedImage();
-                            imgs[i + IMG_CNT].width = 16;
-                            imgs[i + IMG_CNT].height = 16;
-                            imgs[i + IMG_CNT].argb = new int[256];
-                        }
+                        loadImage(fis, i+IMG_CNT); /* Load image file */
                     } finally {
                         if (fis != null) {
                             try { fis.close(); } catch (IOException iox) {}
@@ -1213,23 +1199,33 @@ public class TexturePack {
     
     /* Load image into image array */
     private void loadImage(InputStream is, int idx) throws IOException {
-        if (is == null) { throw new FileNotFoundException(); }
+        BufferedImage img = null;
         /* Load image */
-    	ImageIO.setUseCache(false);
-        BufferedImage img = ImageIO.read(is);
-        if(img == null) { throw new FileNotFoundException(); }
+        if(is != null) {
+            ImageIO.setUseCache(false);
+            img = ImageIO.read(is);
+            if(img == null) { throw new FileNotFoundException(); }
+        }
         if(idx >= imgs.length) {
             LoadedImage[] newimgs = new LoadedImage[idx+1];
             System.arraycopy(imgs, 0, newimgs, 0, imgs.length);
             imgs = newimgs;
         }
         imgs[idx] = new LoadedImage();
-        imgs[idx].width = img.getWidth();
-        imgs[idx].height = img.getHeight();
-        imgs[idx].argb = new int[imgs[idx].width * imgs[idx].height];
-        img.getRGB(0, 0, imgs[idx].width, imgs[idx].height, imgs[idx].argb, 0, imgs[idx].width);
-        img.flush();
+        if (img != null) {
+            imgs[idx].width = img.getWidth();
+            imgs[idx].height = img.getHeight();
+            imgs[idx].argb = new int[imgs[idx].width * imgs[idx].height];
+            img.getRGB(0, 0, imgs[idx].width, imgs[idx].height, imgs[idx].argb, 0, imgs[idx].width);
+            img.flush();
+        }
+        else {
+            imgs[idx].width = 16;
+            imgs[idx].height = 16;
+            imgs[idx].argb = new int[imgs[idx].width * imgs[idx].height];
+        }
     }
+        
 
     /* Process dynamic texture files, and patch into terrain_argb */
     private void processDynamicImage(int idx, TileFileFormat format) {
