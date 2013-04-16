@@ -266,8 +266,7 @@ public class TexturePack {
     
     private int[][]   terrain_argb;
     private int native_scale;
-    private boolean use_terrain_png;
-    private CTMTexturePack ctp;
+    private CTMTexturePack ctm;
 
     private int water_toned_op = COLORMOD_WATERTONED;
     
@@ -553,19 +552,44 @@ public class TexturePack {
                 InputStream is;
                 ZipEntry ze;
 
+                /* Load CTM support, if enabled */
+                if(core.isCTMSupportEnabled()) {
+                    ctm = new CTMTexturePack(zf, this);
+                    if(ctm.isValid() == false) {
+                        ctm = null;
+                    }
+                }
+
                 /* Loop through dynamic files */
                 for(int i = 0; i < addonfiles.size(); i++) {
                     DynamicTileFile dtf = addonfiles.get(i);
                     ze = zf.getEntry(dtf.filename);
-                    if(ze == null) {
-                        File ff = new File(stdtexture, dtf.filename);
-                        is = new FileInputStream(ff);
+                    is = null;
+                    try {
+                        if(ze == null) {
+                            File ff = new File(stdtexture, dtf.filename);
+                            if (ff.canRead()) {
+                                is = new FileInputStream(ff);
+                            }
+                        }
+                        else {
+                            is = zf.getInputStream(ze);
+                        }
+                        if (is != null) {
+                            loadImage(is, i+IMG_CNT); /* Load image file */
+                        }
+                        else {
+                            imgs[i + IMG_CNT] = new LoadedImage();
+                            imgs[i + IMG_CNT].width = 16;
+                            imgs[i + IMG_CNT].height = 16;
+                            imgs[i + IMG_CNT].argb = new int[256];
+                        }
+                    } finally {
+                        if (is != null) {
+                            try { is.close(); } catch (IOException iox) {}
+                            is = null;
+                        }
                     }
-                    else {
-                        is = zf.getInputStream(ze);
-                    }
-                    loadImage(is, i+IMG_CNT); /* Load image file */
-                    is.close();
                 }
 
                 /* Find and load terrain.png */
@@ -691,13 +715,6 @@ public class TexturePack {
                     DynamicTileFile dtf = addonfiles.get(i);
                     processDynamicImage(i, dtf.format);
                 }
-                if(core.isCTMSupportEnabled()) {
-                    Log.info("Load CTP info from ZIP");
-                    ctp = new CTMTexturePack(zf, this);
-                    if(ctp.isValid() == false) {
-                        ctp = null;
-                    }
-                }
                 zf.close();
                 return;
             } catch (IOException iox) {
@@ -711,16 +728,38 @@ public class TexturePack {
             /* Try loading terrain.png from directory of name */
             FileInputStream fis = null;
             try {
+                if(core.isCTMSupportEnabled()) {
+                    ctm = new CTMTexturePack(tpdir, this);
+                    if(ctm.isValid() == false) {
+                        ctm = null;
+                    }
+                }
+
                 /* Loop through dynamic files */
                 for(int i = 0; i < addonfiles.size(); i++) {
                     DynamicTileFile dtf = addonfiles.get(i);
                     f = new File(tpdir, dtf.filename);
-                    if(!f.canRead()) {
+                    if (!f.canRead()) {
                         f = new File(stdtexture, dtf.filename);             
                     }
-                    fis = new FileInputStream(f);
-                    loadImage(fis, i+IMG_CNT); /* Load image file */
-                    fis.close();
+                    fis = null;
+                    try {
+                        if (f.canRead()) {
+                            fis = new FileInputStream(f);
+                            loadImage(fis, i+IMG_CNT); /* Load image file */
+                        }
+                        else {
+                            imgs[i + IMG_CNT] = new LoadedImage();
+                            imgs[i + IMG_CNT].width = 16;
+                            imgs[i + IMG_CNT].height = 16;
+                            imgs[i + IMG_CNT].argb = new int[256];
+                        }
+                    } finally {
+                        if (fis != null) {
+                            try { fis.close(); } catch (IOException iox) {}
+                            fis = null;
+                        }
+                    }
                 }
                 /* Open and load terrain.png */
                 f = new File(tpdir, TERRAIN_PNG);
@@ -838,14 +877,6 @@ public class TexturePack {
                     processDynamicImage(i, dtf.format);
                 }
                 
-                if(core.isCTMSupportEnabled()) {
-                    Log.info("Load CTP info");
-                    ctp = new CTMTexturePack(tpdir, this);
-                    if(ctp.isValid() == false) {
-                        ctp = null;
-                    }
-                }
-
             } catch (IOException iox) {
                 if(fis != null) {
                     try { fis.close(); } catch (IOException io) {}
@@ -1054,7 +1085,7 @@ public class TexturePack {
         System.arraycopy(tp.terrain_argb, 0, this.terrain_argb, 0, this.terrain_argb.length);
         this.native_scale = tp.native_scale;
         this.water_toned_op = tp.water_toned_op;
-
+        this.ctm = tp.ctm;
         this.imgs = tp.imgs;
     }
     
@@ -1069,7 +1100,6 @@ public class TexturePack {
         int[] blank;
         /* If we're using pre 1.5 terrain.png */
         if(img.getWidth() >= 256) {
-            use_terrain_png = true;
             native_scale = img.getWidth() / 16;
             blank = new int[native_scale*native_scale];
             for(i = 0; i < 256; i++) {
@@ -1092,7 +1122,6 @@ public class TexturePack {
         }
         else {  /* Else, use v1.5 tile files */
             native_scale = 16;
-            use_terrain_png = false;
             /* Loop through textures - find biggest one */
             for(i = 0; i < terrain_map.length; i++) {
                 String fn = getBlockFileName(i);
@@ -1184,10 +1213,16 @@ public class TexturePack {
     
     /* Load image into image array */
     private void loadImage(InputStream is, int idx) throws IOException {
+        if (is == null) { throw new FileNotFoundException(); }
         /* Load image */
     	ImageIO.setUseCache(false);
         BufferedImage img = ImageIO.read(is);
         if(img == null) { throw new FileNotFoundException(); }
+        if(idx >= imgs.length) {
+            LoadedImage[] newimgs = new LoadedImage[idx+1];
+            System.arraycopy(imgs, 0, newimgs, 0, imgs.length);
+            imgs = newimgs;
+        }
         imgs[idx] = new LoadedImage();
         imgs[idx].width = img.getWidth();
         imgs[idx].height = img.getHeight();
@@ -1200,6 +1235,8 @@ public class TexturePack {
     private void processDynamicImage(int idx, TileFileFormat format) {
         DynamicTileFile dtf = addonfiles.get(idx);  /* Get tile file definition */
         LoadedImage li = imgs[idx+IMG_CNT];
+        if (li == null) return;
+        
         switch(format) {
             case GRID:  /* If grid format tile file */
                 int dim = li.width / dtf.tilecnt_x; /* Dimension of each tile */
@@ -1233,6 +1270,11 @@ public class TexturePack {
                 break;
             case CUSTOM:
                 patchCustomImages(idx+IMG_CNT, dtf.tile_to_dyntile, dtf.cust, dtf.tilecnt_x, dtf.tilecnt_y);
+                break;
+            case TILESET:
+                // TODO
+                break;
+            default:
                 break;
         }
     }
@@ -1852,7 +1894,6 @@ public class TexturePack {
                 else if(line.startsWith("texturemap:")) {
                     ArrayList<Integer> blkids = new ArrayList<Integer>();
                     int databits = -1;
-                    int srctxtid = -1;
                     String mapid = null;
                     line = line.substring(line.indexOf(':') + 1);
                     BlockTransparency trans = BlockTransparency.OPAQUE;
@@ -2123,6 +2164,14 @@ public class TexturePack {
             faceindex = laststep.ordinal();
         }
         textid = map.faces[faceindex];
+        if (ctm != null) {
+            int mod = 0;
+            if(textid >= COLORMOD_MULT_INTERNAL) {
+                mod = (textid / COLORMOD_MULT_INTERNAL) * COLORMOD_MULT_INTERNAL;
+                textid -= mod;
+            }
+            textid = mod + ctm.mapTexture(mapiter, blkid, blkdata, laststep, textid);
+        }
         readColor(ps, mapiter, rslt, blkid, lastblocktype, ss, blkdata, map, laststep, patchid, textid);
         if(map.layers != null) {    /* If layered */
             /* While transparent and more layers */
@@ -2540,6 +2589,11 @@ public class TexturePack {
                 break;
             case SKIN:
                 f.tile_to_dyntile = new int[TILEINDEX_SKIN_COUNT]; /* 6 images for skin tile */
+                break;
+            case TILESET:
+                //TODO
+                break;
+            default:
                 break;
         }
         f.idx = addonfiles.size();

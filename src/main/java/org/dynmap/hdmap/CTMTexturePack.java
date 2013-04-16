@@ -14,6 +14,8 @@ import java.util.zip.ZipFile;
 
 import org.dynmap.Log;
 import org.dynmap.hdmap.TexturePack.TileFileFormat;
+import org.dynmap.utils.BlockStep;
+import org.dynmap.utils.MapIterator;
 
 /**
  * Connected Texture Mod (CTM) handler
@@ -22,7 +24,9 @@ public class CTMTexturePack {
     private String[] ctpfiles;
     private File basedir;
     private ZipFile texturezip;
-    
+    private CTMProps[][] bytilelist;
+    private CTMProps[][] byblocklist;
+
     public enum CTMMethod {
         NONE, CTM, HORIZONTAL, TOP, RANDOM, REPEAT, VERTICAL, FIXED
     }
@@ -533,15 +537,9 @@ public class CTMTexturePack {
         private void registerTiles() {
             if (this.matchTiles != null) {  // If any matching tiles, register them
                 this.matchTileIcons = registerTiles(this.matchTiles);
-                for(int i = 0; i < this.matchTiles.length; i++) {
-                    Log.info("matchTile[" + i + "]=" + matchTiles[i] + "(idx=" + matchTileIcons[i] + ")");
-                }
             }
             if (this.tiles != null) { // If any result tiles, register them
                 this.tileIcons = registerTiles(this.tiles);
-                for(int i = 0; i < this.tiles.length; i++) {
-                    Log.info("tiles[" + i + "]=" + tiles[i] + "(idx=" + tileIcons[i] + ")");
-                }
             }
         }
         private int[] registerTiles(String[] tilenames) {
@@ -624,10 +622,33 @@ public class CTMTexturePack {
     public boolean isValid() {
         return (ctpfiles.length > 0);
     }
+    
+    private CTMProps[][] addToList(CTMProps[][] list, int[] keys, CTMProps p) {
+        if (keys == null) return list;
+        for (int k : keys) {
+            if (k < 0) continue;
+            if (k >= list.length) {
+                list = Arrays.copyOf(list, k+1);
+            }
+            if (list[k] == null) {
+                list[k] = new CTMProps[] { p };
+            }
+            else {
+                int end = list[k].length;
+                list[k] = Arrays.copyOf(list[k],  end + 1);
+                list[k][end] = p;
+            }
+        }
+        return list;
+    }
+    
     /**
      * Process property files
      */
-    private void processFiles() {
+    private void processFiles() {        
+        bytilelist = new CTMProps[256][];
+        byblocklist = new CTMProps[256][];
+        
         for(String f : ctpfiles) {
             InputStream is = null;
             try {
@@ -647,8 +668,9 @@ public class CTMTexturePack {
                     
                     CTMProps ctmp = new CTMProps(p, f);
                     if(ctmp.isValid(f)) {
-                        Log.info("File " + f + " is valid");
                         ctmp.registerTiles();
+                        bytilelist = addToList(bytilelist, ctmp.matchTileIcons, ctmp);
+                        byblocklist = addToList(byblocklist, ctmp.matchBlocks, ctmp);
                     }
                 }
             } catch (IOException iox) {
@@ -659,5 +681,243 @@ public class CTMTexturePack {
                 }
             }
         }
+    }
+    
+    public int mapTexture(MapIterator mapiter, int blkid, int blkdata, BlockStep laststep, int textid) {
+        int newtext = -1;
+        if ((textid >= 0) && (textid < bytilelist.length)) {
+            newtext = mapTextureByList(bytilelist[textid], mapiter, blkid, blkdata, laststep, textid);
+        }
+        if ((blkid > 0) && (blkid < byblocklist.length)) {
+            newtext = mapTextureByList(byblocklist[blkid], mapiter, blkid, blkdata, laststep, textid);
+        }
+        if (newtext >= 0) {
+            textid = newtext;
+        }
+        return textid;
+    }
+    
+    private int mapTextureByList(CTMProps[] lst, MapIterator mapiter, int blkid, int blkdata, BlockStep laststep, int textid) {
+        if (lst == null) return -1;
+        for (CTMProps p : lst) {
+            if (p == null) continue;
+            int newtxt = mapTextureByProp(p, mapiter, blkid, blkdata, laststep, textid);
+            if (newtxt >= 0) {
+                return newtxt;
+            }
+        }
+        return -1;
+    }
+    // Adjust side for facing of a log
+    private int fixWoodSide(int face, int meta) {
+        int dir = (meta & 0xC) >> 2;
+        switch (dir) {
+            case 0: // No adjustement needed
+                return face;
+            case 1:
+                switch (face) {
+                    case 0:
+                        return 4;
+                    case 1:
+                        return 5;
+                    case 4:
+                        return 1;
+                    case 5:
+                        return 0;
+                    default:
+                        return face;
+                }
+            case 2:
+                switch (face) {
+                    case 0:
+                        return 2;
+                    case 1:
+                        return 3;
+                    case 2:
+                        return 1;
+                    case 3:
+                        return 0;
+                    default:
+                        return face;
+                }
+            case 3:
+                return 2;
+            default:
+                return face;
+        }
+    }
+
+    private int mapTextureByProp(CTMProps p, MapIterator mapiter, int blkid, int blkdata, BlockStep laststep, int textid) {
+        //TODO - need way to know if log (to rotate textures)
+        boolean islog = (blkid == 17);
+        
+        // Test if right face
+        if ((laststep != null) && (p.faces != FACE_ALL)) {
+            int face = laststep.getFaceEntered();
+            if (islog) {
+                face = fixWoodSide(face, blkdata);
+            }
+            // If not handled side
+            if ((p.faces & (1 << face)) == 0) {
+                return -1;
+            }
+        }
+        // Test if right metadata
+        if (p.metadatas != null) {
+            int meta = blkdata;
+            if (islog) {
+                meta = meta & 0x3;
+            }
+            boolean match = false;
+            for (int m : p.metadatas) {
+                if (m == meta) {
+                    match = true;
+                    break;
+                }
+            }
+            if (!match) {
+                return -1;
+            }
+        }
+        // Rest of it is based on method
+        switch (p.method) {
+            case CTM:
+                return mapTextureCtm(p, mapiter, blkid, blkdata, laststep, textid);
+
+            case HORIZONTAL:
+                return mapTextureHorizontal(p, mapiter, blkid, blkdata, laststep, textid);
+
+            case TOP:
+                return mapTextureTop(p, mapiter, blkid, blkdata, laststep, textid);
+
+            case RANDOM:
+                return mapTextureRandom(p, mapiter, blkid, blkdata, laststep, textid);
+
+            case REPEAT:
+                return mapTextureRepeat(p, mapiter, blkid, blkdata, laststep, textid);
+
+            case VERTICAL:
+                return mapTextureVertical(p, mapiter, blkid, blkdata, laststep, textid);
+
+            case FIXED:
+                return mapTextureFixed(p, mapiter, blkid, blkdata, laststep, textid);
+
+            default:
+                return -1;
+        }
+    }
+    // Map texture using CTM method
+    private int mapTextureCtm(CTMProps p, MapIterator mapiter, int blkid, int blkdata, BlockStep laststep, int textid) {
+        return -1;
+    }
+    // Map texture using horizontal method
+    private int mapTextureHorizontal(CTMProps p, MapIterator mapiter, int blkid, int blkdata, BlockStep laststep, int textid) {
+        return -1;
+    }
+    // Map texture using top method
+    private int mapTextureTop(CTMProps p, MapIterator mapiter, int blkid, int blkdata, BlockStep laststep, int textid) {
+        return -1;
+    }
+    // Map texture using random method
+    private int mapTextureRandom(CTMProps p, MapIterator mapiter, int blkid, int blkdata, BlockStep laststep, int textid) {
+        if (p.tileIcons.length == 1) { // Only one?
+            return p.tileIcons[0];
+        }
+        int face = laststep.getFaceEntered();
+        // Apply symmetry
+        int facesym = (face / p.symmetry.shift) * p.symmetry.shift;
+        int rnd = getRandom(mapiter.getX(), mapiter.getY(), mapiter.getZ(), facesym) & Integer.MAX_VALUE;
+        int index = 0;
+        // If no weights, consistent weight
+        if (p.weights == null) {
+            index = rnd % p.tileIcons.length;
+        }
+        else {
+            rnd = rnd % p.sumAllWeights;
+            int[] w = p.sumWeights;
+            // Find which range matches
+            for (int i = 0; i < w.length; ++i) {
+                if (rnd < w[i]) {
+                    index = i;
+                    break;
+                }
+            }
+        }
+        return p.tileIcons[index];
+    }
+    // Map texture using repeat method
+    private int mapTextureRepeat(CTMProps p, MapIterator mapiter, int blkid, int blkdata, BlockStep laststep, int textid) {
+        if (p.tileIcons.length == 1) {  // Only one icon
+            return p.tileIcons[0];
+        }
+        else {
+            int xx = 0;
+            int yy = 0;
+
+            switch (laststep.getFaceEntered()) {
+                case 0:
+                    xx = mapiter.getX();
+                    yy = mapiter.getZ();
+                    break;
+                case 1:
+                    xx = mapiter.getX();
+                    yy = mapiter.getZ();
+                    break;
+                case 2:
+                    xx = -mapiter.getX() - 1;
+                    yy = -mapiter.getY();
+                    break;
+                case 3:
+                    xx = mapiter.getX();
+                    yy = -mapiter.getY();
+                    break;
+                case 4:
+                    xx = mapiter.getZ();
+                    yy = -mapiter.getY();
+                    break;
+                case 5:
+                    xx = -mapiter.getZ() - 1;
+                    yy = -mapiter.getY();
+                    break;
+            }
+            // Compute wrap
+            xx %= p.width;
+            yy %= p.height;
+            if (xx < 0) {
+                xx += p.width;
+            }
+            if (yy < 0) {
+                yy += p.height;
+            }
+            int index = yy * p.width + xx;
+            return p.tileIcons[index];
+        }
+    }
+    // Map texture using vertical method
+    private int mapTextureVertical(CTMProps p, MapIterator mapiter, int blkid, int blkdata, BlockStep laststep, int textid) {
+        return -1;
+    }
+    // Map texture using fixed method
+    private int mapTextureFixed(CTMProps p, MapIterator mapiter, int blkid, int blkdata, BlockStep laststep, int textid) {
+        return p.tileIcons[0];
+    }
+
+    // Compute pseudorandom value from coords
+    private static final int intHash(int v)
+    {
+        v = v ^ 61 ^ v >> 16;
+        v += v << 3;
+        v ^= v >> 4;
+        v *= 668265261;
+        v ^= v >> 15;
+        return v;
+    }
+    private static final int getRandom(int x, int y, int z, int face)
+    {
+        int v = intHash(face + 37);
+        v = intHash(v + x);
+        v = intHash(v + z);
+        v = intHash(v + y);
+        return v;
     }
 }
