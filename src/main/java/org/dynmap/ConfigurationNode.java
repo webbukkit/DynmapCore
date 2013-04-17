@@ -17,6 +17,7 @@ import java.util.Set;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
+import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.introspector.Property;
 import org.yaml.snakeyaml.nodes.CollectionNode;
 import org.yaml.snakeyaml.nodes.MappingNode;
@@ -86,6 +87,10 @@ public class ConfigurationNode implements Map<String, Object> {
             if((o != null) && (o instanceof Map))
                 entries = (Map<String, Object>)o;
             fis.close();
+        }
+        catch (YAMLException e) {
+            Log.severe("Error parsing " + f.getPath() + ". Use http://yamllint.com to debug the YAML syntax." );
+            throw e;
         } catch(IOException iox) {
             Log.severe("Error reading " + f.getPath());
             return false;
