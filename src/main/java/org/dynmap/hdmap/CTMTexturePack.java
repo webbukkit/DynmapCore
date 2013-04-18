@@ -7,12 +7,18 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.dynmap.DynmapCore;
 import org.dynmap.Log;
+import org.dynmap.common.BiomeMap;
 import org.dynmap.hdmap.TexturePack.TileFileFormat;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.MapIterator;
@@ -26,6 +32,122 @@ public class CTMTexturePack {
     private ZipFile texturezip;
     private CTMProps[][] bytilelist;
     private CTMProps[][] byblocklist;
+    private String[] blocknames;
+    private String[] biomenames;
+    private static final int MAX_RECURSE = 4;
+
+    static final int BOTTOM_FACE = 0; // 0, -1, 0
+    static final int TOP_FACE = 1; // 0, 1, 0
+    static final int NORTH_FACE = 2; // 0, 0, -1
+    static final int SOUTH_FACE = 3; // 0, 0, 1
+    static final int WEST_FACE = 4; // -1, 0, 0
+    static final int EAST_FACE = 5; // 1, 0, 0
+
+    private static final int META_MASK = 0xffff;
+    private static final int ORIENTATION_U_D = 0;
+    private static final int ORIENTATION_E_W = 1 << 16;
+    private static final int ORIENTATION_N_S = 2 << 16;
+    private static final int ORIENTATION_E_W_2 = 3 << 16;
+    private static final int ORIENTATION_N_S_2 = 4 << 16;
+
+    private static final int[][] ROTATE_UV_MAP = new int[][]{
+        {WEST_FACE, EAST_FACE, NORTH_FACE, SOUTH_FACE, TOP_FACE, BOTTOM_FACE, 2, -2, 2, -2, 0, 0},
+        {NORTH_FACE, SOUTH_FACE, TOP_FACE, BOTTOM_FACE, WEST_FACE, EAST_FACE, 0, 0, 0, 0, -2, 2},
+        {WEST_FACE, EAST_FACE, NORTH_FACE, SOUTH_FACE, TOP_FACE, BOTTOM_FACE, 2, -2, -2, -2, 0, 0},
+        {NORTH_FACE, SOUTH_FACE, TOP_FACE, BOTTOM_FACE, WEST_FACE, EAST_FACE, 0, 0, 0, 0, -2, -2},
+    };
+
+    private static final int[] GO_DOWN = new int[]{0, -1, 0};
+    private static final int[] GO_UP = new int[]{0, 1, 0};
+    private static final int[] GO_NORTH = new int[]{0, 0, -1};
+    private static final int[] GO_SOUTH = new int[]{0, 0, 1};
+    private static final int[] GO_WEST = new int[]{-1, 0, 0};
+    private static final int[] GO_EAST = new int[]{1, 0, 0};
+
+    private static final int[][] NORMALS = new int[][]{
+        GO_DOWN,
+        GO_UP,
+        GO_NORTH,
+        GO_SOUTH,
+        GO_WEST,
+        GO_EAST,
+    };
+
+    // NEIGHBOR_OFFSETS[a][b][c] = offset from starting block
+    // a: face 0-5
+    // b: neighbor 0-7
+    //    7   6   5
+    //    0   *   4
+    //    1   2   3
+    // c: coordinate (x,y,z) 0-2
+    protected static final int[][][] NEIGHBOR_OFFSET = new int[][][]{
+        // BOTTOM_FACE
+        {
+            GO_WEST,
+            add(GO_WEST, GO_SOUTH),
+            GO_SOUTH,
+            add(GO_EAST, GO_SOUTH),
+            GO_EAST,
+            add(GO_EAST, GO_NORTH),
+            GO_NORTH,
+            add(GO_WEST, GO_NORTH),
+        },
+        // TOP_FACE
+        {
+            GO_WEST,
+            add(GO_WEST, GO_SOUTH),
+            GO_SOUTH,
+            add(GO_EAST, GO_SOUTH),
+            GO_EAST,
+            add(GO_EAST, GO_NORTH),
+            GO_NORTH,
+            add(GO_WEST, GO_NORTH),
+        },
+        // NORTH_FACE
+        {
+            GO_EAST,
+            add(GO_EAST, GO_DOWN),
+            GO_DOWN,
+            add(GO_WEST, GO_DOWN),
+            GO_WEST,
+            add(GO_WEST, GO_UP),
+            GO_UP,
+            add(GO_EAST, GO_UP),
+        },
+        // SOUTH_FACE
+        {
+            GO_WEST,
+            add(GO_WEST, GO_DOWN),
+            GO_DOWN,
+            add(GO_EAST, GO_DOWN),
+            GO_EAST,
+            add(GO_EAST, GO_UP),
+            GO_UP,
+            add(GO_WEST, GO_UP),
+        },
+        // WEST_FACE
+        {
+            GO_NORTH,
+            add(GO_NORTH, GO_DOWN),
+            GO_DOWN,
+            add(GO_SOUTH, GO_DOWN),
+            GO_SOUTH,
+            add(GO_SOUTH, GO_UP),
+            GO_UP,
+            add(GO_NORTH, GO_UP),
+        },
+        // EAST_FACE
+        {
+            GO_SOUTH,
+            add(GO_SOUTH, GO_DOWN),
+            GO_DOWN,
+            add(GO_NORTH, GO_DOWN),
+            GO_NORTH,
+            add(GO_NORTH, GO_UP),
+            GO_UP,
+            add(GO_SOUTH, GO_UP),
+        },
+    };
 
     public enum CTMMethod {
         NONE, CTM, HORIZONTAL, TOP, RANDOM, REPEAT, VERTICAL, FIXED
@@ -46,8 +168,7 @@ public class CTMTexturePack {
     public enum CTMSymmetry {
         NONE(1),
         OPPOSITE(2),
-        ALL(6),
-        UNKNOWN(128);
+        ALL(6);
         
         public final int shift;
         
@@ -66,7 +187,7 @@ public class CTMTexturePack {
         public String[] tiles = null;
         public CTMConnect connect = CTMConnect.NONE;
         public int faces = FACE_ALL;
-        public int[] metadatas = null;
+        public int metadata = -1;
         public int[] biomes = null;
         public int minY = 0;
         public int maxY = 1024;
@@ -93,42 +214,38 @@ public class CTMTexturePack {
         }
 
         private void getFaces(Properties p) {
-            String v = p.getProperty("faces");
-            if(v == null) {
-                this.faces = FACE_ALL;
-            }
-            else {
-                this.faces = 0;
-                String[] tok = tokenize(v, " ,");
-                for(String t : tok) {
-                    if (t.equals("bottom")) {
-                        this.faces |= FACE_BOTTOM;
-                    }
-                    else if (t.equals("top")) {
-                        this.faces |= FACE_TOP;
-                    }
-                    else if (t.equals("north")) {
-                        this.faces |= FACE_NORTH;
-                    }
-                    else if (t.equals("south")) {
-                        this.faces |= FACE_SOUTH;
-                    }
-                    else if (t.equals("east")) {
-                        this.faces |= FACE_EAST;
-                    }
-                    else if (t.equals("west")) {
-                        this.faces |= FACE_WEST;
-                    }
-                    else if (t.equals("sides")) {
-                        this.faces |= FACE_SIDES;
-                    }
-                    else if (t.equals("all")) {
-                        this.faces |= FACE_ALL;
-                    }
-                    else {
-                        Log.info("Unknown face in CTM file: " + t);
-                        this.faces |= FACE_UNKNOWN;
-                    }
+            String v = p.getProperty("faces", "all").trim().toLowerCase();
+            this.faces = 0;
+            String[] tok = v.split("\\s+");
+            for(String t : tok) {
+                t = t.toLowerCase();
+                if (t.equals("bottom")) {
+                    this.faces |= FACE_BOTTOM;
+                }
+                else if (t.equals("top")) {
+                    this.faces |= FACE_TOP;
+                }
+                else if (t.equals("north")) {
+                    this.faces |= FACE_NORTH;
+                }
+                else if (t.equals("south")) {
+                    this.faces |= FACE_SOUTH;
+                }
+                else if (t.equals("east")) {
+                    this.faces |= FACE_EAST;
+                }
+                else if (t.equals("west")) {
+                    this.faces |= FACE_WEST;
+                }
+                else if (t.equals("sides") || t.equals("side")) {
+                    this.faces |= FACE_SIDES;
+                }
+                else if (t.equals("all")) {
+                    this.faces |= FACE_ALL;
+                }
+                else {
+                    Log.info("Unknown face in CTM file: " + t);
+                    this.faces |= FACE_UNKNOWN;
                 }
             }
         }
@@ -175,27 +292,70 @@ public class CTMTexturePack {
             }
             return out;
         }
+        
+        private int[] getIDList(Properties properties, String key, String type, String[] mappings) {
+            Set<Integer> list = new HashSet<Integer>();
+            String property = properties.getProperty(key, "");
+            for (String token : property.split("\\s+")) {
+                if (token.equals("")) {
+                } else if (token.matches("\\d+")) {
+                    try {
+                        int id = Integer.parseInt(token);
+                        list.add(id);
+                    } catch (NumberFormatException e) {
+                        Log.info("Bad ID token: " + token);
+                    }
+                } else { // String mapping - look for block name
+                    for (int i = 0; i < mappings.length; i++) {
+                        if (token.equals(mappings[i])) {
+                            list.add(i);
+                            break;
+                        }
+                    }
+                }
+            }
+            if (list.isEmpty()) {
+                Matcher m = Pattern.compile(type + "(\\d+)").matcher(name);
+                if (m.find()) {
+                    try {
+                        list.add(Integer.parseInt(m.group(1)));
+                    } catch (NumberFormatException e) {
+                        Log.info("Bad block number: " + name);
+                    }
+                }
+            }
+            /* Make set into list */
+            int[] rslt = new int[list.size()];
+            int i = 0;
+            for(Integer v : list) {
+                rslt[i] = v;
+                i++;
+            }
+            
+            return rslt;
+        }
+
         private void getMethod(Properties p) {
-            String v = p.getProperty("method");
-            if ((v == null) || (v.equals("ctm"))) {
+            String v = p.getProperty("method", "default").trim().toLowerCase();
+            if (v.equals("ctm") || v.equals("glass") || v.equals("default")) {
                 method = CTMMethod.CTM;
             }
-            else if (v.equals("horizontal")) {
+            else if (v.equals("horizontal") || v.equals("bookshelf")) {
                 method = CTMMethod.HORIZONTAL;
             }
             else if (v.equals("vertical")) {
                 method = CTMMethod.VERTICAL;
             }
-            else if (v.equals("top")) {
+            else if (v.equals("top") || v.equals("sandstone")) {
                 method = CTMMethod.TOP;
             }
             else if (v.equals("random")) {
                 method = CTMMethod.RANDOM;
             }
-            else if (v.equals("repeat")) {
+            else if (v.equals("repeat") || v.equals("pattern")) {
                 method = CTMMethod.REPEAT;
             }
-            else if (v.equals("fixed")) {
+            else if (v.equals("fixed") || v.equals("static")) {
                 method = CTMMethod.FIXED;
             }
             else {
@@ -222,9 +382,35 @@ public class CTMTexturePack {
                 this.connect = CTMConnect.UNKNOWN;
             }
         }
+        private void getBiomes(Properties p, CTMTexturePack tp) {
+            String v = p.getProperty("biomes", "").trim().toLowerCase();
+            if (!v.equals("")) {
+                ArrayList<Integer> ids = new ArrayList<Integer>();
+                String[] biomenames = tp.biomenames;
+                for(String s : v.split("\\s+")) {
+                    for(int i = 0; i < biomenames.length; i++) {
+                        if(s.equals(biomenames[i])) {
+                            ids.add(i);
+                            s = null;
+                            break;
+                        }
+                    }
+                    if(s != null) {
+                        Log.info("CTP Biome not matched: " + s);
+                    }
+                }
+                this.biomes = new int[ids.size()];
+                for(int i = 0; i < this.biomes.length; i++) {
+                    this.biomes[i] = ids.get(i);
+                }
+            }
+            else {
+                this.biomes = null;
+            }
+        }
         private void getSymmetry(Properties p) {
-            String v = p.getProperty("symmetry");
-            if (v == null) {
+            String v = p.getProperty("symmetry", "none").trim().toLowerCase();
+            if (v.equals("none")) {
                 this.symmetry = CTMSymmetry.NONE;
             }
             else if (v.equals("opposite")) {
@@ -322,15 +508,8 @@ public class CTMTexturePack {
                 }
             }
         }
-        // Compute match tiles, based on name
-        private void getMatchTiles() {
-            this.matchTiles = null;
-            if(TexturePack.findDynamicTile("textures/blocks/" + this.name + ".png", 0) >= 0) {
-                this.matchTiles = new String[] { this.name };
-            }
-        }
         
-        public CTMProps(Properties p, String fname) {
+        public CTMProps(Properties p, String fname, CTMTexturePack tp) {
             String v;
             int last_sep = fname.lastIndexOf('/');
             this.name = fname;
@@ -343,19 +522,24 @@ public class CTMTexturePack {
             if(last_dot > 0) {
                 this.name = this.name.substring(0, last_dot);
             }
-            this.matchBlocks = parseInts(p, "matchBlocks");
-            
+            this.matchBlocks = getIDList(p, "matchBlocks", "block", tp.blocknames); 
             getMatchTiles(p);
             getMethod(p);
             this.tiles = parseTileNames(p.getProperty("tiles"));
             getConnect(p);
             getFaces(p);
             getSymmetry(p);
-            //TODO: see if biomes are actually handled - this.biomes = parseBiomes(p,getProperty("biomes"));
+            getBiomes(p, tp);
 
-            this.metadatas = parseInts(p, "metadata");
+            int[] md = parseInts(p, "metadata");
+            if (md != null) {
+                this.metadata = 0;
+                for(int m : md) {
+                    this.metadata |= (1 << m);
+                }
+            }
             this.minY = parseInt(p, "minHeight", -1);
-            this.maxY = parseInt(p, "maxHeight", -1);
+            this.maxY = parseInt(p, "maxHeight", Integer.MAX_VALUE);
             this.renderPass = parseInt(p, "renderPass", -1);
             this.width = parseInt(p, "width", -1);
             this.height = parseInt(p, "height", -1);
@@ -376,14 +560,9 @@ public class CTMTexturePack {
             if (this.matchBlocks == null) {
                 getMatchBlocks();
             }
-            // If no match tiles, detect value from name
-            if (this.matchTiles == null) {
-                getMatchTiles();
-            }
-            // If no match blocks nor tiles, nothing to match
+            // If no match blocks nor tiles, assume name is tile
             if ((this.matchBlocks == null) && (this.matchTiles == null)) {
-                Log.info("No matching tiles or blocks: " + fname);
-                return false;
+                this.matchTiles = new String[] { name };
             }
             if (this.method == CTMMethod.NONE) {
                 Log.info("No matching method: " + fname);
@@ -414,10 +593,6 @@ public class CTMTexturePack {
             }
             if ((this.faces & FACE_UNKNOWN) > 0) {
                 Log.info("Invalid face: " + fname);
-                return false;
-            }
-            if (this.symmetry == CTMSymmetry.UNKNOWN) {
-                Log.info("Invalid symmetry: " + fname);
                 return false;
             }
             switch (this.method) {
@@ -567,9 +742,11 @@ public class CTMTexturePack {
      * @param zf - zip file
      * @param tp - texture pack
      */
-    public CTMTexturePack(ZipFile zf, TexturePack tp) {
+    public CTMTexturePack(ZipFile zf, TexturePack tp, DynmapCore core) {
         ArrayList<String> files = new ArrayList<String>();
         texturezip = zf;
+        blocknames = core.getBlockNames();
+        biomenames = core.getBiomeNames();
         @SuppressWarnings("unchecked")
         Enumeration<ZipEntry> iter = (Enumeration<ZipEntry>) zf.entries();
         while (iter.hasMoreElements()) {
@@ -581,23 +758,25 @@ public class CTMTexturePack {
         }
         ctpfiles = files.toArray(new String[files.size()]);
         Arrays.sort(ctpfiles);
-        processFiles();
+        processFiles(core);
     }
     /**
      * Constructor for CTP support, using directory-based texture pack
      * @param dir - base directory
      * @param tp - texture pack
      */
-    public CTMTexturePack(File dir, TexturePack tp) {
+    public CTMTexturePack(File dir, TexturePack tp, DynmapCore core) {
         ArrayList<String> files = new ArrayList<String>();
         basedir = dir;
+        blocknames = core.getBlockNames();
+        biomenames = core.getBiomeNames();
         File ctpdir = new File(dir, "ctm");
         if(ctpdir.isDirectory()) {
             addFiles(files, ctpdir, "ctm/");
         }
         ctpfiles = files.toArray(new String[files.size()]);
         Arrays.sort(ctpfiles);
-        processFiles();
+        processFiles(core);
     }
     
     private void addFiles(ArrayList<String> files, File dir, String path) {
@@ -645,9 +824,19 @@ public class CTMTexturePack {
     /**
      * Process property files
      */
-    private void processFiles() {        
+    private void processFiles(DynmapCore core) {        
         bytilelist = new CTMProps[256][];
         byblocklist = new CTMProps[256][];
+
+        /* Fix biome names - all lower case, and strip spaces */
+        String[] newbiomes = new String[biomenames.length];
+        for(int i = 0; i < biomenames.length; i++) {
+            if(biomenames[i] != null)
+                newbiomes[i] = biomenames[i].toLowerCase().replace(" ", "");
+            else
+                biomenames[i] = "";
+        }
+        biomenames = newbiomes;
         
         for(String f : ctpfiles) {
             InputStream is = null;
@@ -666,7 +855,7 @@ public class CTMTexturePack {
                 if(is != null) {
                     p.load(is);
                     
-                    CTMProps ctmp = new CTMProps(p, f);
+                    CTMProps ctmp = new CTMProps(p, f, this);
                     if(ctmp.isValid(f)) {
                         ctmp.registerTiles();
                         bytilelist = addToList(bytilelist, ctmp.matchTileIcons, ctmp);
@@ -763,19 +952,34 @@ public class CTMTexturePack {
             }
         }
         // Test if right metadata
-        if (p.metadatas != null) {
+        if (p.metadata != -1) {
             int meta = blkdata;
             if (islog) {
                 meta = meta & 0x3;
             }
-            boolean match = false;
-            for (int m : p.metadatas) {
-                if (m == meta) {
-                    match = true;
+            if ((p.metadata & (1 << meta)) == 0) {
+                return -1;
+            }
+        }
+        // Test if Y coordinate is valid
+        int y = mapiter.getY();
+        if ((y < p.minY) || (y > p.maxY)) {
+            return -1;
+        }
+        // Test if biome is valid
+        if (p.biomes != null) {
+            int ord = -1; 
+            BiomeMap bio = mapiter.getBiome();
+            if (bio != null) {
+                ord = bio.ordinal();
+            }
+            for(int i = 0; i < p.biomes.length; i++) {
+                if (p.biomes[i] == ord) {
+                    ord = -2;
                     break;
                 }
             }
-            if (!match) {
+            if(ord != -2) {
                 return -1;
             }
         }
@@ -825,15 +1029,14 @@ public class CTMTexturePack {
         }
         int face = laststep.getFaceEntered();
         // Apply symmetry
-        int facesym = (face / p.symmetry.shift) * p.symmetry.shift;
-        int rnd = getRandom(mapiter.getX(), mapiter.getY(), mapiter.getZ(), facesym) & Integer.MAX_VALUE;
+        int facesym = face / p.symmetry.shift;
         int index = 0;
         // If no weights, consistent weight
         if (p.weights == null) {
-            index = rnd % p.tileIcons.length;
+            index = getRandom(mapiter.getX(), mapiter.getY(), mapiter.getZ(), facesym, p.tileIcons.length);
         }
         else {
-            rnd = rnd % p.sumAllWeights;
+            int rnd = getRandom(mapiter.getX(), mapiter.getY(), mapiter.getZ(), facesym, p.sumAllWeights);
             int[] w = p.sumWeights;
             // Find which range matches
             for (int i = 0; i < w.length; ++i) {
@@ -902,22 +1105,29 @@ public class CTMTexturePack {
         return p.tileIcons[0];
     }
 
-    // Compute pseudorandom value from coords
-    private static final int intHash(int v)
+    private static final long P1 = 0x1c3764a30115L;
+    private static final long P2 = 0x227c1adccd1dL;
+    private static final long P3 = 0xe0d251c03ba5L;
+    private static final long P4 = 0xa2fb1377aeb3L;
+    private static final long MULTIPLIER = 0x5deece66dL;
+    private static final long ADDEND = 0xbL;
+
+    private static final int getRandom(int x, int y, int z, int face, int modulus)
     {
-        v = v ^ 61 ^ v >> 16;
-        v += v << 3;
-        v ^= v >> 4;
-        v *= 668265261;
-        v ^= v >> 15;
-        return v;
+        long n = P1 * x * (x + ADDEND) + P2 * y * (y + ADDEND) + P3 * z * (z + ADDEND) + P4 * face * (face + ADDEND);
+        n = MULTIPLIER * (n + x + y + z + face) + ADDEND;
+        return (int) (((n >> 32) ^ n) & 0x7fffffff) % modulus;
     }
-    private static final int getRandom(int x, int y, int z, int face)
-    {
-        int v = intHash(face + 37);
-        v = intHash(v + x);
-        v = intHash(v + z);
-        v = intHash(v + y);
-        return v;
+    
+    private static int[] add(int[] a, int[] b) {
+        if (a.length != b.length) {
+            throw new RuntimeException("arrays to add are not same length");
+        }
+        int[] c = new int[a.length];
+        for (int i = 0; i < c.length; i++) {
+            c[i] = a[i] + b[i];
+        }
+        return c;
     }
+
 }

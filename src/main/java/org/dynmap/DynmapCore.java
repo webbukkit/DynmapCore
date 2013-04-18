@@ -105,6 +105,8 @@ public class DynmapCore implements DynmapCommonAPI {
     private Map<String, LinkedList<String>> ids_by_ip = new HashMap<String, LinkedList<String>>();
     private boolean persist_ids_by_ip = false;
     private int snapshotcachesize;
+    private String[] blocknames = new String[0];
+    private String[] biomenames = new String[0];
     
     private boolean loginRequired;
     
@@ -164,6 +166,38 @@ public class DynmapCore implements DynmapCommonAPI {
     }
     public final DynmapServerInterface getServer() { return server; }
     
+    public final void setBlockNames(String[] names) {
+        blocknames = names;
+    }
+
+    public final String getBlockName(int blkid) {
+        String n = null;
+        if ((blkid >= 0) && (blkid < blocknames.length)) {
+            n = blocknames[blkid];
+        }
+        if(n == null) n = "block" + blkid;
+        return n;
+    }
+    public final String[] getBlockNames() {
+        return blocknames;
+    }
+
+    public final void setBiomeNames(String[] names) {
+        biomenames = names;
+    }
+
+    public final String getBiomeName(int biomeid) {
+        String n = null;
+        if ((biomeid >= 0) && (biomeid < biomenames.length)) {
+            n = biomenames[biomeid];
+        }
+        if(n == null) n = "biome" + biomeid;
+        return n;
+    }
+    public final String[] getBiomeNames() {
+        return biomenames;
+    }
+
     public final MapManager getMapManager() {
         return mapManager;
     }

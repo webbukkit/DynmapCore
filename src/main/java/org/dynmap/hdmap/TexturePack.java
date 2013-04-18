@@ -554,7 +554,7 @@ public class TexturePack {
 
                 /* Load CTM support, if enabled */
                 if(core.isCTMSupportEnabled()) {
-                    ctm = new CTMTexturePack(zf, this);
+                    ctm = new CTMTexturePack(zf, this, core);
                     if(ctm.isValid() == false) {
                         ctm = null;
                     }
@@ -721,7 +721,7 @@ public class TexturePack {
             FileInputStream fis = null;
             try {
                 if(core.isCTMSupportEnabled()) {
-                    ctm = new CTMTexturePack(tpdir, this);
+                    ctm = new CTMTexturePack(tpdir, this, core);
                     if(ctm.isValid() == false) {
                         ctm = null;
                     }
