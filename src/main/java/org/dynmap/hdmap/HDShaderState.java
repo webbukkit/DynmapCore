@@ -1,6 +1,7 @@
 package org.dynmap.hdmap;
 
 import org.dynmap.Color;
+import org.dynmap.utils.DynLongHashMap;
 
 /**
  * This interface is used to define the operational state of a renderer during raytracing
@@ -42,4 +43,8 @@ public interface HDShaderState {
      * Clean up state object - called after last ray completed
      */
     void cleanup();
+    /**
+     * Get CTM texture cache
+     */
+    DynLongHashMap getCTMTextureCache();
 }

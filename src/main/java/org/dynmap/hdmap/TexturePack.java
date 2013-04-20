@@ -2166,7 +2166,7 @@ public class TexturePack {
                 mod = (textid / COLORMOD_MULT_INTERNAL) * COLORMOD_MULT_INTERNAL;
                 textid -= mod;
             }
-            textid = mod + ctm.mapTexture(mapiter, blkid, blkdata, laststep, textid);
+            textid = mod + ctm.mapTexture(mapiter, blkid, blkdata, laststep, textid, ss);
         }
         readColor(ps, mapiter, rslt, blkid, lastblocktype, ss, blkdata, map, laststep, patchid, textid);
         if(map.layers != null) {    /* If layered */
@@ -3076,6 +3076,22 @@ public class TexturePack {
     }
     private static final int[] smooth_water_mult = new int[10];
     
+    public static int getTextureIDAt(MapIterator mapiter, int blkdata, int blkmeta, BlockStep face) {
+        HDTextureMap map = HDTextureMap.getMap(blkdata, blkmeta, blkmeta);
+        int idx = -1;
+        if (map != null) {
+            int sideidx = face.ordinal();
+            if (map.faces != null) {
+                if (sideidx < map.faces.length)
+                    idx = map.faces[sideidx];
+                else 
+                    idx = map.faces[0];
+            }
+        }
+        if(idx > 0)
+            idx = idx % COLORMOD_MULT_INTERNAL;
+        return idx;
+    }
     
     static {
         /*

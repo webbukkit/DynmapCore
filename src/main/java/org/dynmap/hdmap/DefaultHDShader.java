@@ -6,6 +6,7 @@ import org.dynmap.ColorScheme;
 import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapCore;
 import org.dynmap.common.BiomeMap;
+import org.dynmap.utils.DynLongHashMap;
 import org.dynmap.utils.MapChunkCache;
 import org.dynmap.utils.MapIterator;
 import org.json.simple.JSONObject;
@@ -217,6 +218,10 @@ public class DefaultHDShader implements HDShader {
          * Clean up state object - called after last ray completed
          */
         public void cleanup() {
+        }
+        @Override
+        public DynLongHashMap getCTMTextureCache() {
+            return null;
         }
     }
 

@@ -7,6 +7,7 @@ import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapCore;
 import org.dynmap.Log;
 import org.dynmap.MapManager;
+import org.dynmap.utils.DynLongHashMap;
 import org.dynmap.utils.MapChunkCache;
 import org.dynmap.utils.MapIterator;
 import org.json.simple.JSONObject;
@@ -77,6 +78,7 @@ public class TexturePackHDShader implements HDShader {
         private int lastblkid;
         final boolean do_biome_shading;
         final boolean do_better_grass;
+        DynLongHashMap ctm_cache;
         
         protected ShaderState(MapIterator mapiter, HDMap map, MapChunkCache cache) {
             this.mapiter = mapiter;
@@ -217,6 +219,17 @@ public class TexturePackHDShader implements HDShader {
          * Clean up state object - called after last ray completed
          */
         public void cleanup() {
+            if (ctm_cache != null) {
+                ctm_cache.clear();
+                ctm_cache = null;
+            }
+        }
+        @Override
+        public DynLongHashMap getCTMTextureCache() {
+            if (ctm_cache == null) {
+                ctm_cache = new DynLongHashMap();
+            }
+            return ctm_cache;
         }
     }
 

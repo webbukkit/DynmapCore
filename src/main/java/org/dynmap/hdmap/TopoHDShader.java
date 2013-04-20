@@ -8,6 +8,7 @@ import org.dynmap.Color;
 import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapCore;
 import org.dynmap.Log;
+import org.dynmap.utils.DynLongHashMap;
 import org.dynmap.utils.MapChunkCache;
 import org.dynmap.utils.MapIterator;
 import org.dynmap.utils.BlockStep;
@@ -244,6 +245,10 @@ public class TopoHDShader implements HDShader {
          * Clean up state object - called after last ray completed
          */
         public void cleanup() {
+        }
+        @Override
+        public DynLongHashMap getCTMTextureCache() {
+            return null;
         }
     }
 
