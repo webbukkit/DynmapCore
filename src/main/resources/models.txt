@@ -215,82 +215,13 @@ layer:2,3
 ****
 ****
 # Snow
-block:id=78,data=0,data=8,scale=8
-layer:0
-********
-********
-********
-********
-********
-********
-********
-********
-# Snow
-block:id=78,data=1,data=9,scale=8
-layer:0,1
-********
-********
-********
-********
-********
-********
-********
-********
-# Snow
-block:id=78,data=2,data=10,scale=8
-layer:0,1,2
-********
-********
-********
-********
-********
-********
-********
-********
-# Snow
-block:id=78,data=3,data=11,scale=8
-layer:0,1,2,3
-********
-********
-********
-********
-********
-********
-********
-********
-# Snow
-block:id=78,data=4,data=12,scale=8
-layer:0,1,2,3,4
-********
-********
-********
-********
-********
-********
-********
-********
-# Snow
-block:id=78,data=5,data=13,scale=8
-layer:0,1,2,3,4,5
-********
-********
-********
-********
-********
-********
-********
-********
-# Snow
-block:id=78,data=6,data=14,scale=8
-layer:0,1,2,3,4,5,6
-********
-********
-********
-********
-********
-********
-********
-********
+boxblock:id=78,data=0,data=8,ymax=0.125
+boxblock:id=78,data=1,data=9,ymax=0.25
+boxblock:id=78,data=2,data=10,ymax=0.375
+boxblock:id=78,data=3,data=11,ymax=0.5
+boxblock:id=78,data=4,data=12,ymax=0.625
+boxblock:id=78,data=5,data=13,ymax=0.75
+boxblock:id=78,data=6,data=14,ymax=0.875
 # Torch - up
 # Redstone torch on - up
 # Redstone torch off - up
@@ -321,99 +252,35 @@ customblock:id=85,id=113,data=*,class=org.dynmap.hdmap.renderer.FenceWallBlockRe
 # Wooden pressure plate
 # Light weighted pressure plate
 # Heavy weighted pressure plate
-block:id=72,id=70,id=147,id=148,data=*,scale=16
-layer:0
-----------------
--**************-
--**************-
--**************-
--**************-
--**************-
--**************-
--**************-
--**************-
--**************-
--**************-
--**************-
--**************-
--**************-
--**************-
-----------------
+boxblock:id=72,id=70,id=147,id=148,data=*,xmin=0.0625,xmax=0.9275,ymax=0.0625,zmin=0.0625,zmax=0.9275
 # Trapdoor (closed)
-block:id=96,data=0,data=1,data=2,data=3,scale=16
-layer:0,1,2
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
+boxblock:id=96,data=0,data=1,data=2,data=3,ymax=0.1875
 # Trapdoor (open: west attach)
-block:id=96,data=4,scale=16
-layer:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
-***-------------
-***-------------
-***-------------
-***-------------
-***-------------
-***-------------
-***-------------
-***-------------
-***-------------
-***-------------
-***-------------
-***-------------
-***-------------
-***-------------
-***-------------
-***-------------
+boxblock:id=96,data=4,data=12,zmin=0.8125
 # Trapdoor (open: east attach)
-block:id=96,data=5,scale=16
-rotate:id=96,data=4,rot=180
+boxblock:id=96,data=5,data=13,zmax=0.1875
 # Trapdoor (open: south attach)
-block:id=96,data=6,scale=16
-rotate:id=96,data=4,rot=270
+boxblock:id=96,data=6,data=14,xmin=0.8125
 # Trapdoor (open: north attach)
-block:id=96,data=7,scale=16
-rotate:id=96,data=4,rot=90
+boxblock:id=96,data=7,data=15,xmax=0.1875
+# Trapdoor (closed - top)
+boxblock:id=96,data=8,data=9,data=10,data=11,ymin=0.8125
 # Crops
 # Carrot
 # Potatoes
 patchblock:id=59,id=141,id=142,data=*,patch0=VertX075,patch1=VertX075@90,patch2=VertX025,patch3=VertX025@90
 # Stone Button - facing south
 # Wooden Button - facing south
-block:id=77,id=143,data=1,data=9,scale=8
-layer:3,4
----**---
----**---
---------
---------
---------
---------
---------
---------
+boxblock:id=77,id=143,data=1,data=9,xmax=0.125,ymin=0.375,ymax=0.625,zmin=0.3125,zmax=0.6875
 # Stone Button - facing north
 # Wooden Button - facing north
-block:id=77,id=143,data=2,data=10,scale=8
-rotate:id=77,data=1,rot=180
+boxblock:id=77,id=143,data=2,data=10,xmin=0.875,ymin=0.375,ymax=0.625,zmin=0.3125,zmax=0.6875
 # Stone Button - facing west
 # Wooden Button - facing west
-block:id=77,id=143,data=3,data=11,scale=8
-rotate:id=77,data=1,rot=90
+boxblock:id=77,id=143,data=3,data=11,zmax=0.125,ymin=0.375,ymax=0.625,xmin=0.3125,xmax=0.6875
 # Stone Button - facing east
 # Wooden Button - facing east
-block:id=77,id=143,data=4,data=12,scale=8
-rotate:id=77,data=1,rot=270
+boxblock:id=77,id=143,data=4,data=12,zmin=0.875,ymin=0.375,ymax=0.625,xmin=0.3125,xmax=0.6875
 # Rails - flat - east/west
 # Powered rails - flat - east/west
 # Detector rails - flat - east/west
@@ -1080,173 +947,29 @@ layer:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
 ----------------
 # Lily pad
 patchblock:id=111,data=*,patch0=HorizY001ZTop
-# Water (full)
-# Lava (full)
-#block:id=8,id=9,id=10,id=11,data=0,scale=16
-#layer:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14
-#****************
-#****************
-#****************
-#****************
-#****************
-#****************
-#****************
-#****************
-#****************
-#****************
-#****************
-#****************
-#****************
-#****************
-#****************
-#****************
 # Water (1 down)
 # Lava (1 down)
-block:id=8,id=9,id=10,id=11,data=1,scale=16
-layer:0,1,2,3,4,5,6,7,8,9,10,11,12,13
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
+boxblock:id=8,id=9,id=10,id=11,data=1,ymax=0.875
 # Water (2 down)
 # Lava (2 down)
-block:id=8,id=9,id=10,id=11,data=2,scale=16
-layer:0,1,2,3,4,5,6,7,8,9,10,11
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
+boxblock:id=8,id=9,id=10,id=11,data=2,ymax=0.75
 # Water (3 down)
 # Lava (3 down)
-block:id=8,id=9,id=10,id=11,data=3,scale=16
-layer:0,1,2,3,4,5,6,7,8,9
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
+boxblock:id=8,id=9,id=10,id=11,data=3,ymax=0.625
 # Water (4 down)
 # Lava (4 down)
-block:id=8,id=9,id=10,id=11,data=4,scale=16
-layer:0,1,2,3,4,5,6,7
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
+boxblock:id=8,id=9,id=10,id=11,data=4,ymax=0.5
 # Water (5 down)
 # Lava (5 down)
-block:id=8,id=9,id=10,id=11,data=5,scale=16
-layer:0,1,2,3,4,5
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
+boxblock:id=8,id=9,id=10,id=11,data=5,ymax=0.375
 # Water (6 down)
 # Lava (6 down)
-block:id=8,id=9,id=10,id=11,data=6,scale=16
-layer:0,1,2,3
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
+boxblock:id=8,id=9,id=10,id=11,data=6,ymax=0.25
 # Water (7 down)
 # Lava (7 down)
-block:id=8,id=9,id=10,id=11,data=7,scale=16
-layer:0,1
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
-****************
+boxblock:id=8,id=9,id=10,id=11,data=7,ymax=0.125
 # Enchantment Table
-block:id=116,data=*,scale=4
-layer:0,1,2
-****
-****
-****
-****
+boxblock:id=116,data=*,ymax=0.75
 
 # Brewing Stand
 patchblock:id=117,data=*,patch0=HorizY001ZTop,patch1=StandSide,patch2=StandSide@90,patch3=StandSide@180,patch4=StandSide@270,patch5=StandArm,patch6=StandArm@120,patch7=StandArm@240
@@ -1611,16 +1334,7 @@ patchblock:id=145,data=3,data=7,data=11,data=15
 patchrotate:id=145,data=1,rot=180
 
 # (151) Daylight Sensor
-block:id=151,data=*,scale=8
-layer:0,1,2
-********
-********
-********
-********
-********
-********
-********
-********
+boxblock:id=151,data=*,ymax=0.75
 
 # (149) Redstone Comparator (inactive)
 # (150) Redstone Comparator (active)

@@ -1239,7 +1239,8 @@ public class TexturePack {
                 int old_argb[] = new int[dim*dim];
                 for(int x = 0; x < dtf.tilecnt_x; x++) {
                     for(int y = 0; y < dtf.tilecnt_y; y++) {
-                        if(dtf.tile_to_dyntile[y*dtf.tilecnt_x + x] > 0) {    /* dynamic ID? */
+                        int tileidx = dtf.tile_to_dyntile[y*dtf.tilecnt_x + x];
+                        if(tileidx >= terrain_map.length) {    /* dynamic ID? */
                             /* Copy source tile */
                             for(int j = 0; j < dim; j++) {
                                 System.arraycopy(li.argb, (y*dim+j)*li.width + (x*dim), old_argb, j*dim, dim); 
@@ -1247,7 +1248,7 @@ public class TexturePack {
                             /* Rescale to match rest of terrain PNG */
                             int new_argb[] = new int[native_scale*native_scale];
                             scaleTerrainPNGSubImage(dim, native_scale, old_argb, new_argb);
-                            terrain_argb[dtf.tile_to_dyntile[y*dtf.tilecnt_x + x]] = new_argb;
+                            terrain_argb[tileidx] = new_argb;
                         }
                     }
                 }
@@ -2527,7 +2528,6 @@ public class TexturePack {
         f.filename = fname;
         f.tilecnt_x = xdim;
         f.tilecnt_y = ydim;
-        f.tile_to_dyntile = new int[xdim*ydim];
         f.format = fmt;
         switch(fmt) {
             case GRID:
@@ -2587,11 +2587,13 @@ public class TexturePack {
                 f.tile_to_dyntile = new int[TILEINDEX_SKIN_COUNT]; /* 6 images for skin tile */
                 break;
             case TILESET:
-                //TODO
+                f.tile_to_dyntile = new int[xdim*ydim];
                 break;
             default:
+                f.tile_to_dyntile = new int[xdim*ydim];
                 break;
         }
+        Arrays.fill(f.tile_to_dyntile,  -1);
         f.idx = addonfiles.size();
         addonfiles.add(f);
         addonfilesbyname.put(f.filename, f);
@@ -2610,7 +2612,7 @@ public class TexturePack {
             Log.warning("Invalid add-on file index: " + dynfile_idx);
             return 0;
         }
-        if(f.tile_to_dyntile[tile_id] == 0) {   /* Not assigned yet? */
+        if(f.tile_to_dyntile[tile_id] < 0) {   /* Not assigned yet? */
             f.tile_to_dyntile[tile_id] = next_dynamic_tile;
             next_dynamic_tile++;    /* Allocate next ID */
         }

@@ -69,9 +69,9 @@ block:id=8,allfaces=12258,transparency=SEMITRANSPARENT
 block:id=9,data=0,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,topbottom=12257,allsides=12258,transparency=SEMITRANSPARENT
 block:id=9,data=1,data=2,data=3,data=4,data=5,data=6,data=7,allfaces=12258,transparency=SEMITRANSPARENT
 # Lava
-block:id=10,allsides=260,topbottom=6260,transparency=SEMITRANSPARENT
+block:id=10,allfaces=260,transparency=SEMITRANSPARENT
 # Stationary Lava
-block:id=11,topbottom=6259,allsides=260,transparency=SEMITRANSPARENT
+block:id=11,allfaces=260,transparency=SEMITRANSPARENT
 # Sand
 block:id=12,allsides=18,topbottom=6018
 # Gravel
@@ -472,7 +472,7 @@ block:id=68,patch0=288,patch1=289,patch2=290,patch3=291,patch4=292,patch5=293,tr
 # Lever
 block:id=69,patch0=16,patch1=16,patch2=16,patch3=16,patch4=16,patch5=96,patch6=96,patch7=96,patch8=96,transparency=TRANSPARENT
 # Stone pressure plate
-block:id=70,allsides=1,topbottom=6001,transparency=TRANSPARENT
+block:id=70,allfaces=1,transparency=TRANSPARENT
 # Iron Door - bottom (left hinge)
 block:id=71,data=0,data=1,patch0=98,patch1=7098,patch2=7098,patch3=98,patch4=4098,patch5=4098,transparency=TRANSPARENT,userenderdata=true
 block:id=71,data=2,data=3,patch0=7098,patch1=98,patch2=7098,patch3=98,patch4=4098,patch5=4098,transparency=TRANSPARENT,userenderdata=true
@@ -486,7 +486,7 @@ block:id=71,data=10,data=11,patch0=7082,patch1=82,patch2=7082,patch3=82,patch4=4
 block:id=71,data=12,data=13,patch0=7082,patch1=82,patch2=7082,patch3=82,patch4=4082,patch5=4082,transparency=TRANSPARENT,userenderdata=true
 block:id=71,data=14,data=15,patch0=82,patch1=7082,patch2=7082,patch3=82,patch4=4082,patch5=4082,transparency=TRANSPARENT,userenderdata=true
 # Wooden pressure plate
-block:id=72,allsides=4,topbottom=6004,transparency=TRANSPARENT
+block:id=72,allfaces=4,transparency=TRANSPARENT
 # Redstone Ore
 block:id=73,id=74,allfaces=51
 # Redstone Torch - unlit - inclined
@@ -498,9 +498,9 @@ block:id=76,data=1,data=2,data=3,data=4,patch0=99,transparency=TRANSPARENT
 # Redstone Torch - lit - up
 block:id=76,data=5,patch0=99,transparency=TRANSPARENT
 # Stone button
-block:id=77,allsides=1,topbottom=6001,transparency=TRANSPARENT
+block:id=77,allfaces=1,transparency=TRANSPARENT
 # Snow
-block:id=78,allsides=66,topbottom=6066,transparency=TRANSPARENT
+block:id=78,allfaces=66,transparency=TRANSPARENT
 # Ice
 block:id=79,allfaces=12067,transparency=TRANSPARENT
 # Snow block
@@ -553,8 +553,8 @@ block:id=94,data=2,data=6,data=10,data=14,top=4147,allsides=1,bottom=1,transpare
 block:id=94,data=3,data=7,data=11,data=15,top=147,allsides=1,bottom=1,transparency=TRANSPARENT
 # Locked Chest
 block:id=95,top=25,south=27,north=27,east=26,west=26
-# Trap door
-block:id=96,allsides=84,topbottom=6084,transparency=TRANSPARENT
+# Trapdoor
+block:id=96,allfaces=84,transparency=TRANSPARENT
 # Stone w/ silverfish inside
 block:id=97,data=0,allsides=1,topbottom=6001
 # Cobblestone w/ silverfish inside
@@ -759,7 +759,7 @@ block:id=142,data=2,data=3,patch0-3=201,transparency=TRANSPARENT
 block:id=142,data=4,data=5,data=6,patch0-3=202,transparency=TRANSPARENT
 block:id=142,data=7,patch0-3=204,transparency=TRANSPARENT
 # Wooden button
-block:id=143,allsides=4,topbottom=6004,transparency=TRANSPARENT
+block:id=143,allfaces=4,transparency=TRANSPARENT
 # Head
 block:id=144,data=*,patch0=5:skeleton,patch1=4:skeleton,patch2=1:skeleton,patch3=0:skeleton,patch4=2:skeleton,patch5=3:skeleton,patch6=5:wither,patch7=4:wither,patch8=1:wither,patch9=0:wither,patch10=2:wither,patch11=3:wither,patch12=5:zombie,patch13=4:zombie,patch14=1:zombie,patch15=0:zombie,patch16=2:zombie,patch17=3:zombie,patch18=5:char,patch19=4:char,patch20=1:char,patch21=0:char,patch22=2:char,patch23=3:char,patch24=5:creeper,patch25=4:creeper,patch26=1:creeper,patch27=0:creeper,patch28=2:creeper,patch29=3:creeper,transparency=TRANSPARENT
 # Anvil (normal)
@@ -784,9 +784,9 @@ block:id=146,data=10,top=4001,bottom=4009,south=4,north=5,east=3,west=7,userende
 block:id=146,data=11,top=5001,bottom=5009,south=7,north=3,east=4,west=5,userenderdata=true,txtid=bigtrapchest
 
 # Light weighted pressure plate
-block:id=147,allsides=23,topbottom=6023
+block:id=147,allfaces=23,transparency=TRANSPARENT
 # Heavy weighted pressure plate
-block:id=148,allsides=22,topbottom=6022
+block:id=148,allfaces=22,transparency=TRANSPARENT
 
 # (149) Redstone Comparator (inactive)
 block:id=149,data=0,data=4,data=8,data=12,top=6000:comparator,allsides=1,bottom=1,transparency=TRANSPARENT
@@ -800,7 +800,7 @@ block:id=150,data=2,data=6,data=10,data=14,top=4000:comparatorlit,allsides=1,bot
 block:id=150,data=3,data=7,data=11,data=15,top=0:comparatorlit,allsides=1,bottom=1,transparency=TRANSPARENT
 
 # (151) Daylight Sensor
-block:id=151,data=*,allsides=0:dayside,bottom=6000:dayside,top=6000:daytop
+block:id=151,data=*,allsides=0:dayside,bottom=0:dayside,top=0:daytop
 
 # (152) Block of Redstone
 block:id=152,data=*,allsides=0,topbottom=6000,txtid=blkred

@@ -604,6 +604,10 @@ public class HDBlockModels {
             return Integer.valueOf(val);
         }
     }
+    
+    // Patch index ordering, corresponding to BlockStep ordinal order
+    private static final int boxPatchList[] = { 1, 4, 2, 5, 0, 3 };
+
     /**
      * Load models from file
      * @param core 
@@ -1024,6 +1028,66 @@ public class HDBlockModels {
                     }
                     else {
                         Log.severe("Patch block model missing required parameters = line " + rdr.getLineNumber() + " of " + fname);
+                    }
+                }
+                // Shortcut for defining a patchblock that is a simple rectangular prism, with sidex corresponding to full block sides
+                else if(line.startsWith("boxblock:")) {
+                    ArrayList<Integer> blkids = new ArrayList<Integer>();
+                    int databits = 0;
+                    line = line.substring(9);
+                    String[] args = line.split(",");
+                    double xmin = 0.0, xmax = 1.0, ymin = 0.0, ymax = 1.0, zmin = 0.0, zmax = 1.0;
+                    for(String a : args) {
+                        String[] av = a.split("=");
+                        if(av.length < 2) continue;
+                        if(av[0].equals("id")) {
+                            blkids.add(getIntValue(varvals,av[1]));
+                        }
+                        else if(av[0].equals("data")) {
+                            if(av[1].equals("*"))
+                                databits = 0xFFFF;
+                            else
+                                databits |= (1 << getIntValue(varvals,av[1]));
+                        }
+                        else if(av[0].equals("xmin")) {
+                            xmin = Double.parseDouble(av[1]);
+                        }
+                        else if(av[0].equals("xmax")) {
+                            xmax = Double.parseDouble(av[1]);
+                        }
+                        else if(av[0].equals("ymin")) {
+                            ymin = Double.parseDouble(av[1]);
+                        }
+                        else if(av[0].equals("ymax")) {
+                            ymax = Double.parseDouble(av[1]);
+                        }
+                        else if(av[0].equals("zmin")) {
+                            zmin = Double.parseDouble(av[1]);
+                        }
+                        else if(av[0].equals("zmax")) {
+                            zmax = Double.parseDouble(av[1]);
+                        }
+                    }
+                    /* If we have everything, build block */
+                    pmodlist.clear();
+                    if((blkids.size() > 0) && (databits != 0)) {
+                        ArrayList<RenderPatch> pd = new ArrayList<RenderPatch>();
+                        CustomRenderer.addBox(pdf, pd, xmin, xmax, ymin, ymax, zmin, zmax, boxPatchList);
+                        PatchDefinition[] patcharray = new PatchDefinition[pd.size()];
+                        for (int i = 0; i < patcharray.length; i++) {
+                            patcharray[i] = (PatchDefinition) pd.get(i);
+                        }
+                        if(patcharray.length > max_patches)
+                            max_patches = patcharray.length;
+                        for(Integer id : blkids) {
+                            if(id > 0) {
+                                pmodlist.add(new HDBlockPatchModel(id.intValue(), databits, patcharray, blockset));
+                                cnt++;
+                            }
+                        }
+                    }
+                    else {
+                        Log.severe("Box block model missing required parameters = line " + rdr.getLineNumber() + " of " + fname);
                     }
                 }
                 else if(line.startsWith("customblock:")) {
