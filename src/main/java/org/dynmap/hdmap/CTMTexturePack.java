@@ -332,6 +332,9 @@ public class CTMTexturePack {
                 }
             }
             /* Make set into list */
+            if (list.isEmpty())
+                return null;
+            
             int[] rslt = new int[list.size()];
             int i = 0;
             for(Integer v : list) {
@@ -756,6 +759,9 @@ public class CTMTexturePack {
         
         final boolean shouldConnect(Context ctx, int[] offset) {
             int neighborID = ctx.mapiter.getBlockTypeIDAt(offset[0], offset[1], offset[2]);
+            if(neighborID == 0) {   // Always exclude air...
+                return false;
+            }
             int neighborMeta = ctx.mapiter.getBlockDataAt(offset[0], offset[1], offset[2]);
             if (exclude(neighborID, ctx.face, neighborMeta, ctx)) {
                 return false;
@@ -774,7 +780,8 @@ public class CTMTexturePack {
                     return neighborID == ctx.blkid;
 
                 case TILE:
-                    return TexturePack.getTextureIDAt(ctx.mapiter, neighborID, neighborMeta, ctx.laststep) == ctx.textid;
+                    int txt = TexturePack.getTextureIDAt(ctx.mapiter, neighborID, neighborMeta, ctx.laststep);
+                    return (txt == ctx.textid);
 
                 case MATERIAL:
                     //TODO: need block material map
@@ -1002,6 +1009,7 @@ public class CTMTexturePack {
     
     public int mapTexture(MapIterator mapiter, int blkid, int blkdata, BlockStep laststep, int textid, HDShaderState ss) {
         int newtext = -1;
+        int origtext = textid;
         if ((!this.mappedblocks.get(blkid)) && ((textid < 0) || (!this.mappedtiles.get(textid)))) {
             return textid;
         }
@@ -1018,7 +1026,7 @@ public class CTMTexturePack {
         if ((textid >= 0) && (textid < bytilelist.length)) {
             newtext = mapTextureByList(bytilelist[textid], ctx);
         }
-        if ((blkid > 0) && (blkid < byblocklist.length)) {
+        if ((newtext < 0) && (blkid > 0) && (blkid < byblocklist.length)) {
             newtext = mapTextureByList(byblocklist[blkid], ctx);
         }
         /* If matched, check for second match */
@@ -1028,7 +1036,7 @@ public class CTMTexturePack {
             if ((textid >= 0) && (textid < bytilelist.length)) {
                 newtext = mapTextureByList(bytilelist[textid], ctx);
             }
-            if ((blkid > 0) && (blkid < byblocklist.length)) {
+            if ((newtext < 0) && (blkid > 0) && (blkid < byblocklist.length)) {
                 newtext = mapTextureByList(byblocklist[blkid], ctx);
             }
             /* If matched, check for third match */
@@ -1038,7 +1046,7 @@ public class CTMTexturePack {
                 if ((textid >= 0) && (textid < bytilelist.length)) {
                     newtext = mapTextureByList(bytilelist[textid], ctx);
                 }
-                if ((blkid > 0) && (blkid < byblocklist.length)) {
+                if ((newtext < 0) && (blkid > 0) && (blkid < byblocklist.length)) {
                     newtext = mapTextureByList(byblocklist[blkid], ctx);
                 }
                 /* If matched, check for last match */
@@ -1048,7 +1056,7 @@ public class CTMTexturePack {
                     if ((textid >= 0) && (textid < bytilelist.length)) {
                         newtext = mapTextureByList(bytilelist[textid], ctx);
                     }
-                    if ((blkid > 0) && (blkid < byblocklist.length)) {
+                    if ((newtext < 0) && (blkid > 0) && (blkid < byblocklist.length)) {
                         newtext = mapTextureByList(byblocklist[blkid], ctx);
                     }
                     if (newtext >= 0) {

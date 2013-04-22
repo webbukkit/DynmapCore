@@ -307,6 +307,7 @@ public class TexturePack {
         private String blockset;
         private int colorMult;
         private CustomColorMultiplier custColorMult;
+        private boolean stdrotate; // Marked for corrected to proper : stdrot=true
         private static HDTextureMap[] texmaps;
         private static BlockTransparency transp[];
         private static boolean userenderdata[];
@@ -351,9 +352,10 @@ public class TexturePack {
             custColorMult = null;
             faces = new int[] { TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK };
             layers = null;
+            stdrotate = false;
         }
         
-        public HDTextureMap(List<Integer> blockids, int databits, int[] faces, byte[] layers, BlockTransparency trans, boolean userender, int colorMult, CustomColorMultiplier custColorMult, String blockset) {
+        public HDTextureMap(List<Integer> blockids, int databits, int[] faces, byte[] layers, BlockTransparency trans, boolean userender, int colorMult, CustomColorMultiplier custColorMult, String blockset, boolean stdrot) {
             this.faces = faces;
             this.layers = layers;
             this.blockids = blockids;
@@ -363,6 +365,7 @@ public class TexturePack {
             this.custColorMult = custColorMult;
             this.userender = userender;
             this.blockset = blockset;
+            this.stdrotate = stdrot;
         }
         
         public void addToTable() {
@@ -477,7 +480,7 @@ public class TexturePack {
             for(int i = 0; i < txtids.length; i++) {
                 txtids[i] = ti.texture_ids.get(i).intValue();
             }
-            HDTextureMap map = new HDTextureMap(ti.blockids, ti.databits, txtids, null, ti.trans, ti.userender, ti.colorMult, ti.custColorMult, ti.blockset);
+            HDTextureMap map = new HDTextureMap(ti.blockids, ti.databits, txtids, null, ti.trans, ti.userender, ti.colorMult, ti.custColorMult, ti.blockset, true);
             map.addToTable();
         }
     }
@@ -1699,6 +1702,7 @@ public class TexturePack {
                     line = line.substring(6);
                     BlockTransparency trans = BlockTransparency.OPAQUE;
                     int colorMult = 0;
+                    boolean stdrot = false; // Legacy top/bottom rotation
                     CustomColorMultiplier custColorMult = null;
                     String[] args = line.split(",");
                     for(String a : args) {
@@ -1823,6 +1827,9 @@ public class TexturePack {
                                 Log.severe("Error loading custom color multiplier - " + av[1] + ": " + x.getMessage());
                             }
                         }
+                        else if(av[0].equals("stdrot")) {
+                            stdrot = av[1].equals("true");
+                        }
                     }
                     for(String a : args) {
                         String[] av = a.split("=");
@@ -1848,7 +1855,7 @@ public class TexturePack {
                     if(databits < 0) databits = 0xFFFF;
                     /* If we have everything, build block */
                     if(blkids.size() > 0) {
-                        HDTextureMap map = new HDTextureMap(blkids, databits, faces, layers, trans, userenderdata, colorMult, custColorMult, blockset);
+                        HDTextureMap map = new HDTextureMap(blkids, databits, faces, layers, trans, userenderdata, colorMult, custColorMult, blockset, stdrot);
                         map.addToTable();
                         cnt++;
                     }
@@ -2169,13 +2176,13 @@ public class TexturePack {
             }
             textid = mod + ctm.mapTexture(mapiter, blkid, blkdata, laststep, textid, ss);
         }
-        readColor(ps, mapiter, rslt, blkid, lastblocktype, ss, blkdata, map, laststep, patchid, textid);
+        readColor(ps, mapiter, rslt, blkid, lastblocktype, ss, blkdata, map, laststep, patchid, textid, map.stdrotate);
         if(map.layers != null) {    /* If layered */
             /* While transparent and more layers */
             while(rslt.isTransparent() && (map.layers[faceindex] >= 0)) {
                 faceindex = map.layers[faceindex];
                 textid = map.faces[faceindex];
-                readColor(ps, mapiter, rslt, blkid, lastblocktype, ss, blkdata, map, laststep, patchid, textid);
+                readColor(ps, mapiter, rslt, blkid, lastblocktype, ss, blkdata, map, laststep, patchid, textid, map.stdrotate);
             }
         }
     }
@@ -2183,7 +2190,7 @@ public class TexturePack {
      * Read color for given subblock coordinate, with given block id and data and face
      */
     private final void readColor(final HDPerspectiveState ps, final MapIterator mapiter, final Color rslt, final int blkid, final int lastblocktype,
-                final TexturePackHDShader.ShaderState ss, int blkdata, HDTextureMap map, BlockStep laststep, int patchid, int textid) {
+                final TexturePackHDShader.ShaderState ss, int blkdata, HDTextureMap map, BlockStep laststep, int patchid, int textid, boolean stdrot) {
         if(textid < 0) {
             rslt.setTransparent();
             return;
@@ -2210,8 +2217,20 @@ public class TexturePack {
                         u = native_scale-xyz[0]-1; v = native_scale-xyz[1]-1;
                         break;
                     case Y_MINUS:   /* U = East(Z-), V = South(X+) */
+                        if(stdrot) {
+                            u = xyz[0]; v = xyz[2];
+                        }
+                        else {
+                            u = native_scale-xyz[2]-1; v = xyz[0];
+                        }
+                        break;
                     case Y_PLUS:
-                        u = native_scale-xyz[2]-1; v = xyz[0];
+                        if(stdrot) {
+                            u = native_scale-xyz[0]-1; v = xyz[2];
+                        }
+                        else {
+                            u = xyz[2]; v = xyz[0];
+                        }
                         break;
                 }
             }
@@ -2274,8 +2293,20 @@ public class TexturePack {
                     u = native_scale-xyz[0]-1; v = native_scale-xyz[1]-1;
                     break;
                 case Y_MINUS:   /* U = East(Z-), V = South(X+) */
+                    if(stdrot) {
+                        u = xyz[0]; v = xyz[2];
+                    }
+                    else {
+                        u = native_scale-xyz[2]-1; v = xyz[0];
+                    }
+                    break;
                 case Y_PLUS:
-                    u = native_scale-xyz[2]-1; v = xyz[0];
+                    if(stdrot) {
+                        u = native_scale-xyz[0]-1; v = xyz[2];
+                    }
+                    else {
+                        u = xyz[2]; v = xyz[0];
+                    }
                     break;
             }
         }
