@@ -741,6 +741,9 @@ public class MapManager {
                     return 0;
                 }
             });
+            if (f == null) {
+                return;
+            }
             try {
                 f.get();
             } catch (CancellationException cx) {
