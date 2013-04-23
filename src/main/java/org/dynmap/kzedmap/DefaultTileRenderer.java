@@ -504,10 +504,10 @@ public class DefaultTileRenderer implements MapTileRenderer {
                         bio = mapiter.getBiome();
                         break;
                     case RAINFALL:
-                        rain = mapiter.getRawBiomeRainfall();
+                        rain = mapiter.getBiome().getRainfall();
                         break;
                     case TEMPERATURE:
-                        temp = mapiter.getRawBiomeTemperature();
+                        temp = mapiter.getBiome().getTemperature();
                         break;
                 }
                 if((shadowscale != null) && (mapiter.getY() < (mapiter.getWorldHeight()-1))) {

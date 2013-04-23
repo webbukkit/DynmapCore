@@ -32,11 +32,11 @@ public interface MapIterator extends MapDataContext {
     /**
      * Get smoothed grass color multiplier
      */
-    public int getSmoothGrassColorMultiplier(int[] colormap, int width);
+    public int getSmoothGrassColorMultiplier(int[] colormap);
     /**
      * Get smoothed foliage color multiplier
      */
-    public int getSmoothFoliageColorMultiplier(int[] colormap, int width);
+    public int getSmoothFoliageColorMultiplier(int[] colormap);
     /**
      * get smoothed water color multiplier
      */
@@ -44,19 +44,11 @@ public interface MapIterator extends MapDataContext {
     /**
      * get smoothed water color multiplier
      */
-    public int getSmoothWaterColorMultiplier(int[] colormap, int width);
+    public int getSmoothWaterColorMultiplier(int[] colormap);
     /**
      * Get smoothed color multiplier, given normal and swamp color map
      */
-    public int getSmoothColorMultiplier(int[] colormap, int width, int[] swampcolormap, int swampwidth);
-    /**
-     * Get raw temperature data (0.0-1.0)
-     */
-    public double getRawBiomeTemperature();
-    /**
-     * Get raw rainfall data (0.0-1.0)
-     */
-    public double getRawBiomeRainfall();
+    public int getSmoothColorMultiplier(int[] colormap, int[] swampcolormap);
     /**
      * Step current position in given direction
      */

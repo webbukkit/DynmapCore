@@ -38,6 +38,7 @@ public class BiomeMap {
     private int foliagemult;
     private final String id;
     private final int index;
+    private int biomeindex256; // Standard biome mapping index (for 256 x 256)
     
     private static boolean isUniqueID(String id) {
         for(int i = 0; i < biome_by_index.length; i++) {
@@ -83,11 +84,15 @@ public class BiomeMap {
         this(idx, id, tmp, rain, 0xFFFFFF, 0, 0);
     }
     
-    public final int biomeLookup(int width) {
+    private final int biomeLookup(int width) {
         int w = width-1;
         int t = (int)((1.0-tmp)*w);
         int h = (int)((1.0 - (tmp*rain))*w);
         return width*h + t;
+    }
+
+    public final int biomeLookup() {
+        return this.biomeindex256;
     }
     
     public final int getModifiedGrassMultiplier(int rawgrassmult) {
@@ -144,5 +149,12 @@ public class BiomeMap {
         if(rain < 0.0) rain = 0.0;
         if(rain > 1.0) rain = 1.0;
         this.rain = rain;
+        this.biomeindex256 = this.biomeLookup(256);
+    }
+    public final double getTemperature() {
+        return this.tmp;
+    }
+    public final double getRainfall() {
+        return this.rain;
     }
 }

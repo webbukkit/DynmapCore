@@ -10,10 +10,12 @@ import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Random;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -28,6 +30,7 @@ import org.dynmap.MapManager;
 import org.dynmap.common.BiomeMap;
 import org.dynmap.renderer.CustomColorMultiplier;
 import org.dynmap.utils.BlockStep;
+import org.dynmap.utils.DynIntHashMap;
 import org.dynmap.utils.ForgeConfigFile;
 import org.dynmap.utils.MapIterator;
 
@@ -171,7 +174,8 @@ public class TexturePack {
         SIGN,
         SKIN,
         CUSTOM,
-        TILESET
+        TILESET,
+        BIOME
     };
     
     /* Map of 1.5 texture files to 0-255 texture indices */
@@ -267,6 +271,8 @@ public class TexturePack {
     private int[][]   terrain_argb;
     private int native_scale;
     private CTMTexturePack ctm;
+    private BitSet hasBlockColoring = new BitSet(); // Quick lookup - (blockID << 4) + blockMeta - set if custom colorizer
+    private DynIntHashMap blockColoring = new DynIntHashMap();  // Map - index by (blockID << 4) + blockMeta - Index of image for color map
 
     private int water_toned_op = COLORMOD_WATERTONED;
     
@@ -562,6 +568,21 @@ public class TexturePack {
                         ctm = null;
                     }
                 }
+                /* Load custom colors support, if enabled */
+                if(core.isCustomColorsSupportEnabled()) {
+                    ze = zf.getEntry("color.properties");
+                    Properties p;
+                    if (ze != null) {
+                        p = new Properties();
+                        is = zf.getInputStream(ze);
+                        try {
+                            p.load(is);
+                        } finally {
+                            is.close();
+                        }
+                        processCustomColors(p);
+                    }
+                }
 
                 /* Loop through dynamic files */
                 for(int i = 0; i < addonfiles.size(); i++) {
@@ -578,7 +599,10 @@ public class TexturePack {
                         else {
                             is = zf.getInputStream(ze);
                         }
-                        loadImage(is, i+IMG_CNT); /* Load image file */
+                        if(dtf.format == TileFileFormat.BIOME)
+                            loadBiomeShadingImage(is, i+IMG_CNT); /* Load image file */
+                        else
+                            loadImage(is, i+IMG_CNT); /* Load image file */
                     } finally {
                         if (is != null) {
                             try { is.close(); } catch (IOException iox) {}
@@ -729,6 +753,21 @@ public class TexturePack {
                         ctm = null;
                     }
                 }
+                /* Load custom colors support, if enabled */
+                if(core.isCustomColorsSupportEnabled()) {
+                    f = new File(tpdir, "color.properties");
+                    Properties p;
+                    if (f.canRead()) {
+                        p = new Properties();
+                        fis = new FileInputStream(f);
+                        try {
+                            p.load(fis);
+                        } finally {
+                            fis.close();
+                        }
+                        processCustomColors(p);
+                    }
+                }
 
                 /* Loop through dynamic files */
                 for(int i = 0; i < addonfiles.size(); i++) {
@@ -742,7 +781,10 @@ public class TexturePack {
                         if (f.canRead()) {
                             fis = new FileInputStream(f);
                         }
-                        loadImage(fis, i+IMG_CNT); /* Load image file */
+                        if(dtf.format == TileFileFormat.BIOME)
+                            loadBiomeShadingImage(fis, i+IMG_CNT); /* Load image file */
+                        else
+                            loadImage(fis, i+IMG_CNT); /* Load image file */
                     } finally {
                         if (fis != null) {
                             try { fis.close(); } catch (IOException iox) {}
@@ -1076,6 +1118,8 @@ public class TexturePack {
         this.water_toned_op = tp.water_toned_op;
         this.ctm = tp.ctm;
         this.imgs = tp.imgs;
+        this.hasBlockColoring = tp.hasBlockColoring;
+        this.blockColoring = tp.blockColoring;
     }
     
     /* Load terrain.png */
@@ -1281,8 +1325,14 @@ public class TexturePack {
     /* Load biome shading image into image array */
     private void loadBiomeShadingImage(InputStream is, int idx) throws IOException {
         loadImage(is, idx); /* Get image */
-        
         LoadedImage li = imgs[idx];
+        if (li.width != 256) {  /* Required to be 256 x 256 */
+            int[] scaled = new int[256*256];
+            scaleTerrainPNGSubImage(li.width, 256, li.argb, scaled);
+            li.argb = scaled;
+            li.width = 256;
+            li.height = 256;
+        }
         /* Get trivial color for biome-shading image */
         int clr = li.argb[li.height*li.width*3/4 + li.width/2];
         boolean same = true;
@@ -2195,7 +2245,12 @@ public class TexturePack {
             rslt.setTransparent();
             return;
         }
-        else if(textid < COLORMOD_MULT_INTERNAL) {    /* If simple mapping */
+        int blkindex = indexByIDMeta(blkid, blkdata);
+        boolean hasblockcoloring = ss.do_biome_shading && hasBlockColoring.get(blkindex);
+        // Test if we have no texture modifications
+        boolean simplemap = (textid < COLORMOD_MULT_INTERNAL) && (!hasblockcoloring);
+        
+        if (simplemap) {    /* If simple mapping */
             int[] texture = terrain_argb[textid];
             /* Get texture coordinates (U=horizontal(left=0),V=vertical(top=0)) */
             int u = 0, v = 0;
@@ -2423,85 +2478,98 @@ public class TexturePack {
 
         int clrmult = -1;
         int clralpha = 0xFF000000;
-        /* Switch based on texture modifier */
-        switch(textop) {
-            case COLORMOD_GRASSTONED:
-            case COLORMOD_GRASSTONED270:
-                if(ss.do_biome_shading) {
-                    if(imgs[IMG_SWAMPGRASSCOLOR] != null)
-                        clrmult = mapiter.getSmoothColorMultiplier(imgs[IMG_GRASSCOLOR].argb, imgs[IMG_GRASSCOLOR].width, imgs[IMG_SWAMPGRASSCOLOR].argb, imgs[IMG_SWAMPGRASSCOLOR].width);
-                    else
-                        clrmult = mapiter.getSmoothGrassColorMultiplier(imgs[IMG_GRASSCOLOR].argb, imgs[IMG_GRASSCOLOR].width);
-                }
-                else {
-                    clrmult = imgs[IMG_GRASSCOLOR].trivial_color;
-                }
-                break;
-            case COLORMOD_FOLIAGETONED:
-            case COLORMOD_FOLIAGETONED270:
-                if(ss.do_biome_shading) {
-                    if(imgs[IMG_SWAMPFOLIAGECOLOR] != null)
-                        clrmult = mapiter.getSmoothColorMultiplier(imgs[IMG_FOLIAGECOLOR].argb, imgs[IMG_FOLIAGECOLOR].width, imgs[IMG_SWAMPFOLIAGECOLOR].argb, imgs[IMG_SWAMPFOLIAGECOLOR].width);
-                    else
-                        clrmult = mapiter.getSmoothFoliageColorMultiplier(imgs[IMG_FOLIAGECOLOR].argb, imgs[IMG_FOLIAGECOLOR].width);
-                }
-                else {
-                    clrmult = imgs[IMG_FOLIAGECOLOR].trivial_color;
-                }
-                break;
-            case COLORMOD_FOLIAGEMULTTONED:
-                if(ss.do_biome_shading) {
-                    if(imgs[IMG_SWAMPFOLIAGECOLOR] != null)
-                        clrmult = mapiter.getSmoothColorMultiplier(imgs[IMG_FOLIAGECOLOR].argb, imgs[IMG_FOLIAGECOLOR].width, imgs[IMG_SWAMPFOLIAGECOLOR].argb, imgs[IMG_SWAMPFOLIAGECOLOR].width);
-                    else
-                        clrmult = mapiter.getSmoothFoliageColorMultiplier(imgs[IMG_FOLIAGECOLOR].argb, imgs[IMG_FOLIAGECOLOR].width);
-                }
-                else {
-                    clrmult = imgs[IMG_FOLIAGECOLOR].trivial_color;
-                }
-                if(map.custColorMult != null) {
-                    clrmult = ((clrmult & 0xFEFEFE) + map.custColorMult.getColorMultiplier(mapiter)) / 2;
-                }
-                else {
-                    clrmult = ((clrmult & 0xFEFEFE) + map.colorMult) / 2;
-                }
-                break;
-                
-            case COLORMOD_WATERTONED:
-            case COLORMOD_WATERTONED270:
-                if(imgs[IMG_WATERCOLORX] != null) {
+        // If block has custom coloring
+        if (hasblockcoloring) {
+            Integer idx = (Integer) this.blockColoring.get(blkindex);
+            LoadedImage img = imgs[idx];
+            if (img.argb != null) {
+                clrmult = mapiter.getSmoothWaterColorMultiplier(img.argb);
+            }
+            else {
+                hasblockcoloring = false;
+            }
+        }
+        if (!hasblockcoloring) {
+            // Switch based on texture modifier
+            switch(textop) {
+                case COLORMOD_GRASSTONED:
+                case COLORMOD_GRASSTONED270:
                     if(ss.do_biome_shading) {
-                        clrmult = mapiter.getSmoothWaterColorMultiplier(imgs[IMG_WATERCOLORX].argb, imgs[IMG_WATERCOLORX].width);
+                        if(imgs[IMG_SWAMPGRASSCOLOR] != null)
+                            clrmult = mapiter.getSmoothColorMultiplier(imgs[IMG_GRASSCOLOR].argb, imgs[IMG_SWAMPGRASSCOLOR].argb);
+                        else
+                            clrmult = mapiter.getSmoothGrassColorMultiplier(imgs[IMG_GRASSCOLOR].argb);
                     }
                     else {
-                        clrmult = imgs[IMG_WATERCOLORX].trivial_color;
+                        clrmult = imgs[IMG_GRASSCOLOR].trivial_color;
                     }
-                }
-                else {
-                    if(ss.do_biome_shading)
-                        clrmult = mapiter.getSmoothWaterColorMultiplier();
-                }
-                break;
-            case COLORMOD_BIRCHTONED:
-                clrmult = 0x80a755;    /* From ColorizerFoliage.java in MCP */
-                break;
-            case COLORMOD_PINETONED:
-                clrmult = 0x619961;    /* From ColorizerFoliage.java in MCP */
-                break;
-            case COLORMOD_LILYTONED:
-                clrmult =  0x208030; /* from BlockLilyPad.java in MCP */
-                break;
-            case COLORMOD_MULTTONED:    /* Use color multiplier */
-                if(map.custColorMult != null) {
-                    clrmult = map.custColorMult.getColorMultiplier(mapiter);
-                }
-                else {
-                    clrmult = map.colorMult;
-                }
-                if((clrmult & 0xFF000000) != 0) {
-                    clralpha = clrmult;
-                }
-                break;
+                    break;
+                case COLORMOD_FOLIAGETONED:
+                case COLORMOD_FOLIAGETONED270:
+                    if(ss.do_biome_shading) {
+                        if(imgs[IMG_SWAMPFOLIAGECOLOR] != null)
+                            clrmult = mapiter.getSmoothColorMultiplier(imgs[IMG_FOLIAGECOLOR].argb, imgs[IMG_SWAMPFOLIAGECOLOR].argb);
+                        else
+                            clrmult = mapiter.getSmoothFoliageColorMultiplier(imgs[IMG_FOLIAGECOLOR].argb);
+                    }
+                    else {
+                        clrmult = imgs[IMG_FOLIAGECOLOR].trivial_color;
+                    }
+                    break;
+                case COLORMOD_FOLIAGEMULTTONED:
+                    if(ss.do_biome_shading) {
+                        if(imgs[IMG_SWAMPFOLIAGECOLOR] != null)
+                            clrmult = mapiter.getSmoothColorMultiplier(imgs[IMG_FOLIAGECOLOR].argb, imgs[IMG_SWAMPFOLIAGECOLOR].argb);
+                        else
+                            clrmult = mapiter.getSmoothFoliageColorMultiplier(imgs[IMG_FOLIAGECOLOR].argb);
+                    }
+                    else {
+                        clrmult = imgs[IMG_FOLIAGECOLOR].trivial_color;
+                    }
+                    if(map.custColorMult != null) {
+                        clrmult = ((clrmult & 0xFEFEFE) + map.custColorMult.getColorMultiplier(mapiter)) / 2;
+                    }
+                    else {
+                        clrmult = ((clrmult & 0xFEFEFE) + map.colorMult) / 2;
+                    }
+                    break;
+
+                case COLORMOD_WATERTONED:
+                case COLORMOD_WATERTONED270:
+                    if(imgs[IMG_WATERCOLORX] != null) {
+                        if(ss.do_biome_shading) {
+                            clrmult = mapiter.getSmoothWaterColorMultiplier(imgs[IMG_WATERCOLORX].argb);
+                        }
+                        else {
+                            clrmult = imgs[IMG_WATERCOLORX].trivial_color;
+                        }
+                    }
+                    else {
+                        if(ss.do_biome_shading)
+                            clrmult = mapiter.getSmoothWaterColorMultiplier();
+                    }
+                    break;
+                case COLORMOD_BIRCHTONED:
+                    clrmult = 0x80a755;    /* From ColorizerFoliage.java in MCP */
+                    break;
+                case COLORMOD_PINETONED:
+                    clrmult = 0x619961;    /* From ColorizerFoliage.java in MCP */
+                    break;
+                case COLORMOD_LILYTONED:
+                    clrmult =  0x208030; /* from BlockLilyPad.java in MCP */
+                    break;
+                case COLORMOD_MULTTONED:    /* Use color multiplier */
+                    if(map.custColorMult != null) {
+                        clrmult = map.custColorMult.getColorMultiplier(mapiter);
+                    }
+                    else {
+                        clrmult = map.colorMult;
+                    }
+                    if((clrmult & 0xFF000000) != 0) {
+                        clralpha = clrmult;
+                    }
+                    break;
+            }
         }
         
         if((clrmult != -1) && (clrmult != 0)) {
@@ -3124,6 +3192,72 @@ public class TexturePack {
         if(idx > 0)
             idx = idx % COLORMOD_MULT_INTERNAL;
         return idx;
+    }
+    
+    private static final String PALETTE_BLOCK_KEY = "palette.block.";
+
+    private void processCustomColorMap(String fname, String ids) {
+        // Register file name
+        int idx = findOrAddDynamicTileFile(fname, 1, 1, TileFileFormat.BIOME, new String[0]);
+        if(idx < 0) {
+            Log.info("Error registering custom color file: " + fname);
+            return;
+        }
+        Integer index = idx + IMG_CNT;
+        // Now, parse block ID list
+        for (String id : ids.split("\\s+")) {
+            String[] tok = id.split(":");
+            int meta = -1;
+            int blkid = -1;
+            if (tok.length == 1) {  /* Only ID */
+                try {
+                    blkid = Integer.parseInt(tok[0]);
+                } catch (NumberFormatException nfx) {
+                    Log.info("Bad custom color block ID: " + tok[0]);
+                }
+            }
+            else if (tok.length == 2) { /* ID : meta */
+                try {
+                    blkid = Integer.parseInt(tok[0]);
+                } catch (NumberFormatException nfx) {
+                    Log.info("Bad custom color block ID: " + tok[0]);
+                }
+                try {
+                    meta = Integer.parseInt(tok[1]);
+                } catch (NumberFormatException nfx) {
+                    Log.info("Bad custom color meta ID: " + tok[1]);
+                }
+            }
+            /* Add mappings for values */
+            if ((blkid > 0) && (blkid < 4096)) {
+                if ((meta >= 0) && (meta < 16)) {
+                    int idm = indexByIDMeta(blkid, meta);
+                    this.hasBlockColoring.set(idm);
+                    this.blockColoring.put(idm, index);
+                }
+                else if (meta == -1) {  /* All meta IDs */
+                    for (meta = 0; meta < 16; meta++) {
+                        int idm = indexByIDMeta(blkid, meta);
+                        this.hasBlockColoring.set(idm);
+                        this.blockColoring.put(idm, index);
+                    }
+                }
+            }
+        }
+    }
+    private void processCustomColors(Properties p) {
+        // Loop through keys
+        for(String pname : p.stringPropertyNames()) {
+            if(!pname.startsWith(PALETTE_BLOCK_KEY))
+                continue;
+            String v = p.getProperty(pname);
+            String fname = pname.substring(PALETTE_BLOCK_KEY.length()).trim(); // Get filename of color map
+            if(fname.charAt(0) == '/') fname = fname.substring(1); // Strip leading /
+            processCustomColorMap(fname, v);
+        }
+    }
+    private static final int indexByIDMeta(int blkid, int meta) {
+        return ((blkid << 4) | meta);
     }
     
     static {

@@ -91,6 +91,7 @@ public class DynmapCore implements DynmapCommonAPI {
     boolean bettergrass = false;
     boolean smoothlighting = false;
     private boolean ctmsupport = false;
+    private boolean customcolorssupport = false;
     private String def_image_format = "png";
     private HashSet<String> enabledTriggers = new HashSet<String>();
     public boolean disable_chat_to_web = false;
@@ -378,6 +379,7 @@ public class DynmapCore implements DynmapCommonAPI {
         
         smoothlighting = configuration.getBoolean("smooth-lighting", false);
         ctmsupport = configuration.getBoolean("ctm-support", true);
+        customcolorssupport = configuration.getBoolean("custom-colors-support", true);
         Log.verbose = configuration.getBoolean("verbose", true);
         deftemplatesuffix = configuration.getString("deftemplatesuffix", "");
         /* Get snapshot cache size */
@@ -636,6 +638,10 @@ public class DynmapCore implements DynmapCommonAPI {
 
     public boolean isCTMSupportEnabled() {
         return ctmsupport;
+    }
+
+    public boolean isCustomColorsSupportEnabled() {
+        return customcolorssupport;
     }
 
     public Set<String> getIPBans() {

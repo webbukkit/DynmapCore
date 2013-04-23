@@ -242,7 +242,7 @@ public class DefaultHDShader implements HDShader {
             super(mapiter, map);
         }
         protected Color[] getBlockColors(int blocktype, int blockdata) {
-            return colorScheme.getRainColor(mapiter.getRawBiomeRainfall());
+            return colorScheme.getRainColor(mapiter.getBiome().getRainfall());
         }
     }
 
@@ -251,7 +251,7 @@ public class DefaultHDShader implements HDShader {
             super(mapiter, map);
         }
         protected Color[] getBlockColors(int blocktype, int blockdata) {
-            return colorScheme.getTempColor(mapiter.getRawBiomeTemperature());
+            return colorScheme.getTempColor(mapiter.getBiome().getTemperature());
         }
     }
     /**
