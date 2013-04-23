@@ -226,79 +226,13 @@ layer:0
 ********
 ********
 # Snow
-#boxblock:id=78,data=0,data=8,ymax=0.125
-#boxblock:id=78,data=1,data=9,ymax=0.25
-#boxblock:id=78,data=2,data=10,ymax=0.375
-#boxblock:id=78,data=3,data=11,ymax=0.5
-#boxblock:id=78,data=4,data=12,ymax=0.625
-#boxblock:id=78,data=5,data=13,ymax=0.75
-#boxblock:id=78,data=6,data=14,ymax=0.875
-# Snow
-block:id=78,data=1,data=9,scale=8
-layer:0,1
-********
-********
-********
-********
-********
-********
-********
-********
-# Snow
-block:id=78,data=2,data=10,scale=8
-layer:0,1,2
-********
-********
-********
-********
-********
-********
-********
-********
-# Snow
-block:id=78,data=3,data=11,scale=8
-layer:0,1,2,3
-********
-********
-********
-********
-********
-********
-********
-********
-# Snow
-block:id=78,data=4,data=12,scale=8
-layer:0,1,2,3,4
-********
-********
-********
-********
-********
-********
-********
-********
-# Snow
-block:id=78,data=5,data=13,scale=8
-layer:0,1,2,3,4,5
-********
-********
-********
-********
-********
-********
-********
-********
-# Snow
-block:id=78,data=6,data=14,scale=8
-layer:0,1,2,3,4,5,6
-********
-********
-********
-********
-********
-********
-********
-********
+boxblock:id=78,data=0,data=8,ymax=0.125
+boxblock:id=78,data=1,data=9,ymax=0.25
+boxblock:id=78,data=2,data=10,ymax=0.375
+boxblock:id=78,data=3,data=11,ymax=0.5
+boxblock:id=78,data=4,data=12,ymax=0.625
+boxblock:id=78,data=5,data=13,ymax=0.75
+boxblock:id=78,data=6,data=14,ymax=0.875
 
 # Torch - up
 # Redstone torch on - up

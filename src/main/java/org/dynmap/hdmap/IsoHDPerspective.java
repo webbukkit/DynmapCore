@@ -134,6 +134,7 @@ public class IsoHDPerspective implements HDPerspective {
         int cur_patch = -1;
         double cur_patch_u;
         double cur_patch_v;
+        double cur_patch_t;
         
         int[] subblock_xyz = new int[3];
         MapIterator mapiter;
@@ -753,6 +754,7 @@ public class IsoHDPerspective implements HDPerspective {
                 cur_patch_u = patch_u[best_patch];
                 cur_patch_v = patch_v[best_patch];
                 laststep = patch_step[best_patch];
+                cur_patch_t = best_t;
                 /* Process the shaders */
                 boolean done = true;
                 for(int j = 0; j < shaderstate.length; j++) {
@@ -1061,7 +1063,7 @@ public class IsoHDPerspective implements HDPerspective {
         }
         public final int[] getSubblockCoord() {
             if(cur_patch >= 0) {    /* If patch hit */
-                double tt = patch_t[cur_patch];
+                double tt = cur_patch_t;
                 double xx = top.x + tt * direction.x;  
                 double yy = top.y + tt * direction.y;  
                 double zz = top.z + tt * direction.z;
