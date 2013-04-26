@@ -40,6 +40,7 @@ import org.dynmap.markers.MarkerIcon.MarkerSize;
 import org.dynmap.markers.MarkerSet;
 import org.dynmap.markers.PlayerSet;
 import org.dynmap.markers.PolyLineMarker;
+import org.dynmap.utils.Matrix3D;
 import org.dynmap.web.Json;
 
 /**
@@ -2484,5 +2485,18 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             }
         }
         return pset;
+    }
+    /**
+     * Test if any markers with 'boost=true' intersect given map tile
+     * @param w - world
+     * @param world_to_map - transform matrix for mapping from world coordinates to map coordinates
+     * @param tile_x - X coordinate of tile corner, in map coords
+     * @param tile_y - Y coordinate of tile corner, in map coords
+     * @return true if intersected, false if not
+     */
+    public static boolean testTileForBoostMarkers(DynmapWorld w, Matrix3D world_to_map, double tile_x, double tile_y) {
+        if (api == null) return false;
+        
+        return false;
     }
 }

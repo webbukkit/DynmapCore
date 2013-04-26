@@ -23,6 +23,7 @@ import org.dynmap.MapType;
 import org.dynmap.MapType.ImageFormat;
 import org.dynmap.TileHashManager;
 import org.dynmap.debug.Debug;
+import org.dynmap.markers.impl.MarkerAPIImpl;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory.SideVisible;
 import org.dynmap.utils.BlockStep;
@@ -1159,6 +1160,13 @@ public class IsoHDPerspective implements HDPerspective {
         basemodscale = (int)Math.ceil(configuration.getDouble("scale", MIN_SCALE));
         if(basemodscale < MIN_SCALE) basemodscale = MIN_SCALE;
         if(basemodscale > MAX_SCALE) basemodscale = MAX_SCALE;
+        /* Get boost factor - must be power of 2 integer >= 1 */
+        int boostfactor = configuration.getInteger("boostfactor", 2);
+        if ((boostfactor != 1) && (boostfactor != 2) && (boostfactor != 4) && (boostfactor != 8)) {
+            Log.severe("Invalid boostfactor: must be 1, 2, 4, or 8");
+            return;
+        }
+        boostedmodscale = basemodscale * boostfactor;
         /* Get max and min height */
         maxheight = configuration.getInteger("maximumheight", -1);
         minheight = configuration.getInteger("minimumheight", 0);
@@ -1189,7 +1197,6 @@ public class IsoHDPerspective implements HDPerspective {
         map_to_world = transform;
         /* Scaled models for non-cube blocks */
         basescalemodels = HDBlockModels.getModelsForScale(basemodscale);;
-        boostedmodscale = basemodscale * 4;
         boostedscalemodels = HDBlockModels.getModelsForScale(boostedmodscale);;
     }   
 
@@ -1424,7 +1431,7 @@ public class IsoHDPerspective implements HDPerspective {
         MapIterator mapiter = cache.getIterator(0, 0, 0);
 
         int sizescale = 1;
-        if((tile.tx > -10) && (tile.tx < 10) && (tile.ty > -10) && (tile.ty < 10))
+        if (MarkerAPIImpl.testTileForBoostMarkers(cache.getWorld(), this.world_to_map, tile.tx, tile.ty))
             sizescale = this.boostedmodscale / this.basemodscale;
         /* Build shader state object for each shader */
         HDShaderState[] shaderstate = MapManager.mapman.hdmapman.getShaderStateForTile(tile, cache, mapiter, mapname, sizescale * this.basemodscale);
