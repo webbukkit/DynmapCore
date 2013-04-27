@@ -144,15 +144,15 @@ public class IsoHDPerspective implements HDPerspective {
         double cur_patch_t;
         
         int[] subblock_xyz = new int[3];
-        MapIterator mapiter;
-        boolean isnether;
+        final MapIterator mapiter;
+        final boolean isnether;
         boolean skiptoair;
-        int worldheight;
-        int heightmask;
-        LightLevels llcache[];
+        final int worldheight;
+        final int heightmask;
+        final LightLevels llcache[];
         
         /* Cache for custom model patch lists */
-        private DynLongHashMap custom_meshes;
+        private final DynLongHashMap custom_meshes;
 
         public OurPerspectiveState(MapIterator mi, boolean isnether, boolean boosted) {
             mapiter = mi;
@@ -394,7 +394,7 @@ public class IsoHDPerspective implements HDPerspective {
             nonairhit = false;
             skiptoair = isnether;
         }
-        private int generateFenceBlockData(MapIterator mapiter, int blkid) {
+        private int generateFenceBlockData(int blkid) {
             int blockdata = 0;
             int id;
             /* Check north */
@@ -437,10 +437,9 @@ public class IsoHDPerspective implements HDPerspective {
          *   9 = right side facing south
          *   10 = right side facing east
          *   11 = right side facing north
-         * @param mapiter
          * @return
          */
-        private int generateChestBlockData(MapIterator mapiter, int blktype) {
+        private int generateChestBlockData(int blktype) {
             int blkdata = mapiter.getBlockData();   /* Get block data */
             ChestData cd = ChestData.SINGLE_WEST;   /* Default to single facing west */
             switch(blkdata) {   /* First, use orientation data */
@@ -506,10 +505,9 @@ public class IsoHDPerspective implements HDPerspective {
          *   9 = NEW wire
          *   10 = SEW wire
          *   11 = none
-         * @param mapiter
          * @return
          */
-        private int generateRedstoneWireBlockData(MapIterator mapiter) {
+        private int generateRedstoneWireBlockData() {
             /* Check adjacent block IDs */
             int ids[] = { mapiter.getBlockTypeIDAt(BlockStep.Z_PLUS),  /* To west */
                 mapiter.getBlockTypeIDAt(BlockStep.X_PLUS),            /* To south */
@@ -558,11 +556,10 @@ public class IsoHDPerspective implements HDPerspective {
          *  - bit 2 = X-plus axis
          *  - bit 3 = Z-plus axis
          *  
-         * @param mapiter - iterator
          * @param typeid - ID of our material (test is for adjacent material OR nontransparent)
          * @return
          */
-        private int generateIronFenceGlassBlockData(MapIterator mapiter, int typeid) {
+        private int generateIronFenceGlassBlockData(int typeid) {
             int blockdata = 0;
             int id;
             /* Check north */
@@ -592,11 +589,10 @@ public class IsoHDPerspective implements HDPerspective {
          *  - bit 3 = top half (1) or bottom half (0)
          *  - bit 2 = right hinge (0), left hinge (1)
          *  - bit 1,0 = 00=west,01=north,10=east,11=south
-         * @param mapiter - iterator
          * @param typeid - ID of our material
          * @return
          */
-        private int generateDoorBlockData(MapIterator mapiter, int typeid) {
+        private int generateDoorBlockData(int typeid) {
             int blockdata = 0;
             int topdata = mapiter.getBlockData();   /* Get block data */
             int bottomdata = 0;
@@ -636,7 +632,7 @@ public class IsoHDPerspective implements HDPerspective {
                     return true;
             return false;
         }
-        private int generateWireBlockData(MapIterator mapiter, int[] linkids) {
+        private int generateWireBlockData(int[] linkids) {
             int blockdata = 0;
             int id;
             /* Check north */
@@ -801,7 +797,7 @@ public class IsoHDPerspective implements HDPerspective {
         /**
          * Process visit of ray to block
          */
-        private final boolean visit_block(MapIterator mapiter, HDShaderState[] shaderstate, boolean[] shaderdone) {
+        private final boolean visit_block(HDShaderState[] shaderstate, boolean[] shaderdone) {
             lastblocktypeid = blocktypeid;
             blocktypeid = mapiter.getBlockTypeID();
             if(skiptoair) {	/* If skipping until we see air */
@@ -813,22 +809,22 @@ public class IsoHDPerspective implements HDPerspective {
                 blockdata = mapiter.getBlockData();            	
                 switch(HDBlockModels.getLinkAlgID(blocktypeid)) {
                     case FENCE_ALGORITHM:   /* Fence algorithm */
-                        blockrenderdata = generateFenceBlockData(mapiter, blocktypeid);
+                        blockrenderdata = generateFenceBlockData(blocktypeid);
                         break;
                     case CHEST_ALGORITHM:
-                        blockrenderdata = generateChestBlockData(mapiter, blocktypeid);
+                        blockrenderdata = generateChestBlockData(blocktypeid);
                         break;
                     case REDSTONE_ALGORITHM:
-                        blockrenderdata = generateRedstoneWireBlockData(mapiter);
+                        blockrenderdata = generateRedstoneWireBlockData();
                         break;
                     case GLASS_IRONFENCE_ALG:
-                        blockrenderdata = generateIronFenceGlassBlockData(mapiter, blocktypeid);
+                        blockrenderdata = generateIronFenceGlassBlockData(blocktypeid);
                         break;
                     case WIRE_ALGORITHM:
-                        blockrenderdata = generateWireBlockData(mapiter, HDBlockModels.getLinkIDs(blocktypeid));
+                        blockrenderdata = generateWireBlockData(HDBlockModels.getLinkIDs(blocktypeid));
                         break;
                     case DOOR_ALGORITHM:
-                        blockrenderdata = generateDoorBlockData(mapiter, blocktypeid);
+                        blockrenderdata = generateDoorBlockData(blocktypeid);
                         break;
                     case 0:
                     default:
@@ -860,12 +856,7 @@ public class IsoHDPerspective implements HDPerspective {
                     subalpha = -1;
                     for(int i = 0; i < shaderstate.length; i++) {
                         if(!shaderdone[i]) {
-//                            try {
-                                shaderdone[i] = shaderstate[i].processBlock(this);
-//                            } catch (Exception ex) {
-//                                Log.severe("Error while shading tile: perspective=" + IsoHDPerspective.this.name + ", shader=" + shaderstate[i].getShader().getName() + ", coord=" + mapiter.getX() + "," + mapiter.getY() + "," + mapiter.getZ() + ", blockid=" + mapiter.getBlockTypeID() + ":" + mapiter.getBlockData() + ", lighting=" + mapiter.getBlockSkyLight() + ":" + mapiter.getBlockEmittedLight() + ", biome=" + mapiter.getBiome().toString(), ex);
-//                                shaderdone[i] = true;
-//                            }
+                            shaderdone[i] = shaderstate[i].processBlock(this);
                         }
                         done = done && shaderdone[i];
                     }
@@ -877,14 +868,8 @@ public class IsoHDPerspective implements HDPerspective {
             }
             return false;
         }
-        /**
-         * Trace ray, based on "Voxel Tranversal along a 3D line"
-         */
-        private void raytrace(MapChunkCache cache, MapIterator mapiter, HDShaderState[] shaderstate, boolean[] shaderdone) {
-            /* Initialize raytrace state variables */
-            raytrace_init();
-
-            /* Skip sections until we hit a non-empty one */
+        /* Skip empty : return false if exited */
+        private final boolean raytraceSkipEmpty(MapChunkCache cache) {
             while(cache.isEmptySection(sx, sy, sz)) {
                 /* If Y step is next best */
                 if((st_next_y <= st_next_x) && (st_next_y <= st_next_z)) {
@@ -893,7 +878,7 @@ public class IsoHDPerspective implements HDPerspective {
                     st_next_y += sdt_dy;
                     laststep = stepy;
                     if(sy < 0)
-                        return;
+                        return false;
                 }
                 /* If X step is next best */
                 else if((st_next_x <= st_next_y) && (st_next_x <= st_next_z)) {
@@ -910,49 +895,71 @@ public class IsoHDPerspective implements HDPerspective {
                     laststep = stepz;
                 }
             }
+            return true;
+        }
+        /**
+         * Step block iterator: false if done
+         */
+        private final boolean raytraceStepIterator() {
+            /* If Y step is next best */
+            if ((t_next_y <= t_next_x) && (t_next_y <= t_next_z)) {
+                y += y_inc;
+                t = t_next_y;
+                t_next_y += dt_dy;
+                laststep = stepy;
+                mapiter.stepPosition(laststep);
+                /* If outside 0-(height-1) range */
+                if((y & (~heightmask)) != 0) {
+                    return false;
+                }
+            }
+            /* If X step is next best */
+            else if ((t_next_x <= t_next_y) && (t_next_x <= t_next_z)) {
+                x += x_inc;
+                t = t_next_x;
+                t_next_x += dt_dx;
+                laststep = stepx;
+                mapiter.stepPosition(laststep);
+            }
+            /* Else, Z step is next best */
+            else {
+                z += z_inc;
+                t = t_next_z;
+                t_next_z += dt_dz;
+                laststep = stepz;
+                mapiter.stepPosition(laststep);
+            }
+            return true;
+        }
+        /**
+         * Trace ray, based on "Voxel Tranversal along a 3D line"
+         */
+        private final void raytrace(MapChunkCache cache, HDShaderState[] shaderstate, boolean[] shaderdone) {
+            /* Initialize raytrace state variables */
+            raytrace_init();
+
+            /* Skip sections until we hit a non-empty one */
+            if (!raytraceSkipEmpty(cache))
+                return;
+            
             raytrace_section_init();
             
-            if(y < 0)
+            if (y < 0)
                 return;
             
             mapiter.initialize(x, y, z);
             
-//            System.out.println("xyz=" + x + ',' + y +',' + z + " t=" + t + ", tnext=" + t_next_x + ","+ t_next_y + "," + t_next_z);
-            
             for (; n > 0; --n) {
-        		if(visit_block(mapiter, shaderstate, shaderdone)) {
+        		if (visit_block(shaderstate, shaderdone)) {
                     return;
                 }
-                /* If Y step is next best */
-                if((t_next_y <= t_next_x) && (t_next_y <= t_next_z)) {
-                    y += y_inc;
-                    t = t_next_y;
-                    t_next_y += dt_dy;
-                    laststep = stepy;
-                    mapiter.stepPosition(laststep);
-                    /* If outside 0-(height-1) range */
-                    if((y & (~heightmask)) != 0) return;
-                }
-                /* If X step is next best */
-                else if((t_next_x <= t_next_y) && (t_next_x <= t_next_z)) {
-                    x += x_inc;
-                    t = t_next_x;
-                    t_next_x += dt_dx;
-                    laststep = stepx;
-                    mapiter.stepPosition(laststep);
-                }
-                /* Else, Z step is next best */
-                else {
-                    z += z_inc;
-                    t = t_next_z;
-                    t_next_z += dt_dz;
-                    laststep = stepz;
-                    mapiter.stepPosition(laststep);
-                }
+        		if (!raytraceStepIterator()) {
+        		    return;
+        		}
             }
         }
 
-        private void raytrace_section_init() {
+        private final void raytrace_section_init() {
             t = t - 0.000001;
             double xx = top.x + t * direction.x;
             double yy = top.y + t * direction.y;
@@ -996,7 +1003,7 @@ public class IsoHDPerspective implements HDPerspective {
             }
         }
 
-        private boolean raytraceSubblock(short[] model, boolean firsttime) {
+        private final boolean raytraceSubblock(short[] model, boolean firsttime) {
             if(firsttime) {
             	mt = t + 0.00000001;
             	xx = top.x + mt * direction.x;  
@@ -1495,7 +1502,7 @@ public class IsoHDPerspective implements HDPerspective {
                     shaderstate[i].reset(ps);
                 }
                 try {
-                    ps.raytrace(cache, mapiter, shaderstate, shaderdone);
+                    ps.raytrace(cache, shaderstate, shaderdone);
                 } catch (Exception ex) {
                     Log.severe("Error while raytracing tile: perspective=" + this.name + ", coord=" + mapiter.getX() + "," + mapiter.getY() + "," + mapiter.getZ() + ", blockid=" + mapiter.getBlockTypeID() + ":" + mapiter.getBlockData() + ", lighting=" + mapiter.getBlockSkyLight() + ":" + mapiter.getBlockEmittedLight() + ", biome=" + mapiter.getBiome().toString(), ex);
                 }
