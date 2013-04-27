@@ -1287,7 +1287,7 @@ public class TexturePack {
                 for(int x = 0; x < dtf.tilecnt_x; x++) {
                     for(int y = 0; y < dtf.tilecnt_y; y++) {
                         int tileidx = dtf.tile_to_dyntile[y*dtf.tilecnt_x + x];
-                        if(tileidx >= terrain_map.length) {    /* dynamic ID? */
+                        if((tileidx >= terrain_map.length) || (terrain_map[tileidx] == null)) {    /* dynamic ID? */
                             /* Copy source tile */
                             for(int j = 0; j < dim; j++) {
                                 System.arraycopy(li.argb, (y*dim+j)*li.width + (x*dim), old_argb, j*dim, dim); 
