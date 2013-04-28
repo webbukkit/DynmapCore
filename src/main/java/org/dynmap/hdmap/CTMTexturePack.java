@@ -1108,7 +1108,7 @@ public class CTMTexturePack {
             int ord = -1; 
             BiomeMap bio = ctx.mapiter.getBiome();
             if (bio != null) {
-                ord = bio.ordinal();
+                ord = bio.getBiomeID();
             }
             for(int i = 0; i < p.biomes.length; i++) {
                 if (p.biomes[i] == ord) {

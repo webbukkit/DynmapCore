@@ -125,6 +125,9 @@ public class BiomeMap {
         else
             return NULL;
     }
+    public int getBiomeID() {
+        return index - 1;   // Index of biome in MC biome table
+    }
     public final String toString() {
         return id;
     }
