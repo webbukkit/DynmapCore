@@ -405,7 +405,7 @@ public class CTMTexturePack {
                         }
                     }
                     if(s != null) {
-                        Log.info("CTP Biome not matched: " + s);
+                        Log.info("CTM Biome not matched: " + s);
                     }
                 }
                 this.biomes = new int[ids.size()];
@@ -794,7 +794,7 @@ public class CTMTexturePack {
     }
     
     /**
-     * Constructor for CTP support, using ZIP based texture pack
+     * Constructor for CTM support, using ZIP based texture pack
      * @param zf - zip file
      * @param tp - texture pack
      */
@@ -817,7 +817,7 @@ public class CTMTexturePack {
         processFiles(core);
     }
     /**
-     * Constructor for CTP support, using directory-based texture pack
+     * Constructor for CTM support, using directory-based texture pack
      * @param dir - base directory
      * @param tp - texture pack
      */

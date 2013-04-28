@@ -468,7 +468,7 @@ block:id=66,data=6,data=7,data=8,data=9,patch0=112,transparency=TRANSPARENT
 # Cobblestone Stairs
 block:id=67,data=*,patch0-2=16,transparency=SEMITRANSPARENT
 # Wall sign
-block:id=68,patch0=288,patch1=289,patch2=290,patch3=291,patch4=292,patch5=293,transparency=TRANSPARENT
+block:id=68,patch0=0,patch1=1,patch2=2,patch3=3,patch4=4,patch5=5,transparency=TRANSPARENT,txtid=sign
 # Lever
 block:id=69,patch0=16,patch1=16,patch2=16,patch3=16,patch4=16,patch5=96,patch6=96,patch7=96,patch8=96,transparency=TRANSPARENT
 # Stone pressure plate
