@@ -107,6 +107,7 @@ public class DynmapCore implements DynmapCommonAPI {
     private boolean persist_ids_by_ip = false;
     private int snapshotcachesize;
     private String[] blocknames = new String[0];
+    private int[] blockmaterialmap = new int[0];
     private String[] biomenames = new String[0];
     
     private boolean loginRequired;
@@ -181,6 +182,13 @@ public class DynmapCore implements DynmapCommonAPI {
     }
     public final String[] getBlockNames() {
         return blocknames;
+    }
+
+    public final void setBlockMaterialMap(int[] materials) {
+        blockmaterialmap = materials;
+    }
+    public final int[] getBlockMaterialMap() {
+        return blockmaterialmap;
     }
 
     public final void setBiomeNames(String[] names) {

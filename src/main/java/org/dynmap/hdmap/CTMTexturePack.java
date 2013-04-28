@@ -37,6 +37,7 @@ public class CTMTexturePack {
     private BitSet mappedtiles;
     private BitSet mappedblocks;
     private String[] blocknames;
+    private int[] blockmaterials;
     private String[] biomenames;
     private static final int MAX_RECURSE = 4;
 
@@ -783,9 +784,7 @@ public class CTMTexturePack {
                     return (txt == ctx.textid);
 
                 case MATERIAL:
-                    //TODO: need block material map
-                    //return block.blockMaterial == neighbor.blockMaterial;
-                    return neighborID == ctx.blkid;
+                    return ctx.checkMaterialMatch(neighborID);
 
                 default:
                     return false;
@@ -802,6 +801,7 @@ public class CTMTexturePack {
         ArrayList<String> files = new ArrayList<String>();
         texturezip = zf;
         blocknames = core.getBlockNames();
+        blockmaterials = core.getBlockMaterialMap();
         biomenames = core.getBiomeNames();
         @SuppressWarnings("unchecked")
         Enumeration<ZipEntry> iter = (Enumeration<ZipEntry>) zf.entries();
@@ -825,6 +825,7 @@ public class CTMTexturePack {
         ArrayList<String> files = new ArrayList<String>();
         basedir = dir;
         blocknames = core.getBlockNames();
+        blockmaterials = core.getBlockMaterialMap();
         biomenames = core.getBiomeNames();
         File ctpdir = new File(dir, "ctm");
         if(ctpdir.isDirectory()) {
@@ -931,7 +932,7 @@ public class CTMTexturePack {
         }
     }
     
-    private static class Context {
+    private class Context {
         final MapIterator mapiter;
         final int blkid;
         final int blkdata;
@@ -1003,6 +1004,16 @@ public class CTMTexturePack {
                 prev2 = p;
             else if (prev3 == null)
                 prev3 = p;
+        }
+        final boolean checkMaterialMatch(int neighborID) {
+            if (blkid == neighborID)
+                return true;
+            else if ((blkid < blockmaterials.length) && (neighborID < blockmaterials.length)) {
+                return blockmaterials[blkid] == blockmaterials[neighborID];
+            }
+            else {
+                return false;
+            }
         }
     }
     
