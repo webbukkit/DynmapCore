@@ -362,7 +362,6 @@ public class DynmapCore implements DynmapCommonAPI {
             authmgr = new WebAuthManager(this);
 
         /* Add options to avoid 0.29 re-render (fixes very inconsistent with previous maps) */
-        HDMapManager.usegeneratedtextures = configuration.getBoolean("use-generated-textures", false);
         HDMapManager.waterlightingfix = configuration.getBoolean("correct-water-lighting", false);
         HDMapManager.biomeshadingfix = configuration.getBoolean("correct-biome-shading", false);
         /* Load control for leaf transparency (spout lighting bug workaround) */

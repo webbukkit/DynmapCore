@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Random;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -53,12 +52,12 @@ import org.dynmap.utils.MapIterator;
 public class TexturePack {
     /* Loaded texture packs */
     private static HashMap<String, TexturePack> packs = new HashMap<String, TexturePack>();
+    private static Object packlock = new Object();
     
     private static final String TERRAIN_PNG = "terrain.png";
     private static final String GRASSCOLOR_PNG = "misc/grasscolor.png";
     private static final String FOLIAGECOLOR_PNG = "misc/foliagecolor.png";
     private static final String WATERCOLORX_PNG = "misc/watercolorX.png";
-    private static final String WATER_PNG = "misc/water.png";
     private static final String CUSTOMLAVASTILL_PNG = "custom_lava_still.png";
     private static final String CUSTOMLAVAFLOWING_PNG = "custom_lava_flowing.png";
     private static final String CUSTOMWATERSTILL_PNG = "custom_water_still.png";
@@ -214,7 +213,7 @@ public class TexturePack {
         "destroy_8", "destroy_9", null, null, null, null, null, null,
         /* Extra 1.5-based textures: starting at 256 (corresponds to TILEINDEX_ values) */
         null, "water", "water_flow", "lava", "lava_flow", null, null, null, 
-        null, "fire_0", "portal", null, null, null, null, null
+        null, "fire_0", "portal"
     };
 
     private static class CustomTileRec {
@@ -245,7 +244,9 @@ public class TexturePack {
     
     /* Reset add-on tile data */
     private static void resetFiles() {
-        packs.clear();
+        synchronized(packlock) {
+            packs.clear();
+        }
         addonfiles.clear();
         addonfilesbyname.clear();
         next_dynamic_tile = MAX_TILEINDEX+1;
@@ -278,24 +279,19 @@ public class TexturePack {
     
     private static final int IMG_GRASSCOLOR = 0;
     private static final int IMG_FOLIAGECOLOR = 1;
-    private static final int IMG_WATER = 2;
-    private static final int IMG_CUSTOMWATERMOVING = 3;
-    private static final int IMG_CUSTOMWATERSTILL = 4;
-    private static final int IMG_CUSTOMLAVAMOVING = 5;
-    private static final int IMG_CUSTOMLAVASTILL = 6;
-    private static final int IMG_WATERCOLORX = 7;
-    private static final int IMG_WATERMOVING = 8;
-    private static final int IMG_LAVA = 9;
-    private static final int IMG_LAVAMOVING = 10;
-    private static final int IMG_FIRE = 11;
-    private static final int IMG_SWAMPGRASSCOLOR = 12;
-    private static final int IMG_SWAMPFOLIAGECOLOR = 13;
-    private static final int IMG_PORTAL = 14;
-    private static final int IMG_CNT = 15;
+    private static final int IMG_CUSTOMWATERMOVING = 2;
+    private static final int IMG_CUSTOMWATERSTILL = 3;
+    private static final int IMG_CUSTOMLAVAMOVING = 4;
+    private static final int IMG_CUSTOMLAVASTILL = 5;
+    private static final int IMG_WATERCOLORX = 6;
+    private static final int IMG_SWAMPGRASSCOLOR = 7;
+    private static final int IMG_SWAMPFOLIAGECOLOR = 8;
+    private static final int IMG_CNT = 9;
     /* 0-(IMG_CNT-1) are fixed, IMG_CNT+x is dynamic file x */
     private LoadedImage[] imgs;
 
     private HashMap<Integer, TexturePack> scaled_textures;
+    private Object scaledlock = new Object();
     
     public enum BlockTransparency {
         OPAQUE, /* Block is opaque - blocks light - lit by light from adjacent blocks */
@@ -516,17 +512,19 @@ public class TexturePack {
     }
     /** Get or load texture pack */
     public static TexturePack getTexturePack(DynmapCore core, String tpname) {
-        TexturePack tp = packs.get(tpname);
-        if(tp != null)
-            return tp;
-        try {
-            tp = new TexturePack(core, tpname);   /* Attempt to load pack */
-            packs.put(tpname, tp);
-            return tp;
-        } catch (FileNotFoundException fnfx) {
-            Log.severe("Error loading texture pack '" + tpname + "' - not found");
+        synchronized(packlock) {
+            TexturePack tp = packs.get(tpname);
+            if(tp != null)
+                return tp;
+            try {
+                tp = new TexturePack(core, tpname);   /* Attempt to load pack */
+                packs.put(tpname, tp);
+                return tp;
+            } catch (FileNotFoundException fnfx) {
+                Log.severe("Error loading texture pack '" + tpname + "' - not found");
+            }
+            return null;
         }
-        return null;
     }
     /**
      * Constructor for texture pack, by name
@@ -534,20 +532,10 @@ public class TexturePack {
     private TexturePack(DynmapCore core, String tpname) throws FileNotFoundException {
         ZipFile zf = null;
         File texturedir = getTexturePackDirectory(core);
-        boolean use_generate = HDMapManager.usegeneratedtextures;
 
         /* Set up for enough files */
         imgs = new LoadedImage[IMG_CNT + addonfiles.size()];
 
-        /* Generate still and flowing water defaults */
-        if(use_generate) {
-            generateWater();
-            generateWaterFlowing();
-            generateLava();
-            generateLavaFlow();
-        }
-        generateFire();
-        generatePortal();
         // Get default texture directory
         File stdtexture = new File(texturedir, STANDARDTP);
         // Get texture pack
@@ -623,29 +611,6 @@ public class TexturePack {
                 }
                 loadTerrainPNG(is);
                 is.close();
-                /* If not generating water, load it */
-                if(!use_generate) {
-                    ze = zf.getEntry(WATER_PNG);
-                    if(ze == null) {
-                        File ff = new File(stdtexture, WATER_PNG);
-                        is = new FileInputStream(ff);
-                    }
-                    else {
-                        is = zf.getInputStream(ze);
-                    }
-                    loadImage(is, IMG_WATER);
-                    patchTextureWithImage(IMG_WATER, TILEINDEX_STATIONARYWATER);
-                    patchTextureWithImage(IMG_WATER, TILEINDEX_MOVINGWATER);
-                    is.close();                
-                }
-                else {
-                    patchTextureWithImage(IMG_WATER, TILEINDEX_STATIONARYWATER);
-                    patchTextureWithImage(IMG_WATERMOVING, TILEINDEX_MOVINGWATER);
-                    patchTextureWithImage(IMG_LAVA, TILEINDEX_STATIONARYLAVA);
-                    patchTextureWithImage(IMG_LAVAMOVING, TILEINDEX_MOVINGLAVA);
-                }
-                patchTextureWithImage(IMG_FIRE, TILEINDEX_FIRE);
-                patchTextureWithImage(IMG_PORTAL, TILEINDEX_PORTAL);
 
                 /* Try to find and load misc/grasscolor.png */
                 ze = zf.getEntry(GRASSCOLOR_PNG);
@@ -800,28 +765,6 @@ public class TexturePack {
                 fis = new FileInputStream(f);
                 loadTerrainPNG(fis);
                 fis.close();
-
-                if(use_generate == false) { /* Not using generated - load water */
-                    /* Check for misc/water.png */
-                    f = new File(tpdir, WATER_PNG);
-                    if(!f.canRead()) {
-                        f = new File(stdtexture, WATER_PNG);              
-                    }
-                    fis = new FileInputStream(f);
-                    loadImage(fis, IMG_WATER);
-                    patchTextureWithImage(IMG_WATER, TILEINDEX_STATIONARYWATER);
-                    patchTextureWithImage(IMG_WATER, TILEINDEX_MOVINGWATER);
-                    fis.close();
-                }
-                else {
-                    patchTextureWithImage(IMG_WATER, TILEINDEX_STATIONARYWATER);
-                    patchTextureWithImage(IMG_WATERMOVING, TILEINDEX_MOVINGWATER);
-                    patchTextureWithImage(IMG_LAVA, TILEINDEX_STATIONARYLAVA);
-                    patchTextureWithImage(IMG_LAVAMOVING, TILEINDEX_MOVINGLAVA);
-                }
-                /* Patch in generated value */
-                patchTextureWithImage(IMG_FIRE, TILEINDEX_FIRE);
-                patchTextureWithImage(IMG_PORTAL, TILEINDEX_PORTAL);
 
                 /* Check for misc/grasscolor.png */
                 f = new File(tpdir, GRASSCOLOR_PNG);
@@ -1287,6 +1230,7 @@ public class TexturePack {
                 for(int x = 0; x < dtf.tilecnt_x; x++) {
                     for(int y = 0; y < dtf.tilecnt_y; y++) {
                         int tileidx = dtf.tile_to_dyntile[y*dtf.tilecnt_x + x];
+                        if (tileidx < 0) continue;
                         if((tileidx >= terrain_map.length) || (terrain_map[tileidx] == null)) {    /* dynamic ID? */
                             /* Copy source tile */
                             for(int j = 0; j < dim; j++) {
@@ -1371,19 +1315,21 @@ public class TexturePack {
      * Resample terrain pack for given scale, and return copy using that scale
      */
     public TexturePack resampleTexturePack(int scale) {
-        if(scaled_textures == null) scaled_textures = new HashMap<Integer, TexturePack>();
-        TexturePack stp = scaled_textures.get(scale);
-        if(stp != null)
+        synchronized(scaledlock) {
+            if(scaled_textures == null) scaled_textures = new HashMap<Integer, TexturePack>();
+            TexturePack stp = scaled_textures.get(scale);
+            if(stp != null)
+                return stp;
+            stp = new TexturePack(this);    /* Make copy */
+            /* Scale terrain.png, if needed */
+            if(stp.native_scale != scale) {
+                stp.native_scale = scale;
+                scaleTerrainPNG(stp);
+            }
+            /* Remember it */
+            scaled_textures.put(scale, stp);
             return stp;
-        stp = new TexturePack(this);    /* Make copy */
-        /* Scale terrain.png, if needed */
-        if(stp.native_scale != scale) {
-            stp.native_scale = scale;
-            scaleTerrainPNG(stp);
         }
-        /* Remember it */
-        scaled_textures.put(scale, stp);
-        return stp;
     }
     /**
      * Scale out terrain_argb into the terrain_argb of the provided destination, matching the scale of that destination
@@ -2696,7 +2642,7 @@ public class TexturePack {
         f.idx = addonfiles.size();
         addonfiles.add(f);
         addonfilesbyname.put(f.filename, f);
-        
+        //Log.info("File " + fname + "(" + f.idx + ")=" + fmt.toString());
         return f.idx;
     }
     /**
@@ -2717,464 +2663,7 @@ public class TexturePack {
         }
         return f.tile_to_dyntile[tile_id];
     }
-    
-    /* Based on TextureWaterFX.java in MCP */
-    private void generateWater() {
-        imgs[IMG_WATER] = new LoadedImage();
-        imgs[IMG_WATER].width = 16;
-        imgs[IMG_WATER].height = 16;
-        imgs[IMG_WATER].argb = new int[256];
 
-        float[] g = new float[256];
-        float[] h = new float[256];
-        float[] n = new float[256];
-        float[] m = new float[256];
-        Color c = new Color();
-        Random r = new Random(1234);    /* Need to be deterministic */
-        int kk;
-
-        for(kk = 0; kk < 200; kk++) {
-            for(int i = 0; i < 16; i++)
-            {
-                for(int k = 0; k < 16; k++)
-                {
-                    float f = 0.0F;
-                    for(int j1 = i - 1; j1 <= i + 1; j1++)
-                    {
-                        int k1 = j1 & 0xf;
-                        int i2 = k & 0xf;
-                        f += g[k1 + i2 * 16];
-                    }
-
-                    h[i + k * 16] = f / 3.3F + n[i + k * 16] * 0.8F;
-                }
-
-            }
-
-            for(int j = 0; j < 16; j++)
-            {
-                for(int l = 0; l < 16; l++)
-                {
-                    n[j + l * 16] += m[j + l * 16] * 0.05F;
-                    if(n[j + l * 16] < 0.0F)
-                    {
-                        n[j + l * 16] = 0.0F;
-                    }
-                    m[j + l * 16] -= 0.1F;
-                    if(r.nextDouble() < 0.050000000000000003D)
-                    {
-                        m[j + l * 16] = 0.5F;
-                    }
-                }
-
-            }
-
-            float af[] = h;
-            h = g;
-            g = af;
-        }
-        for(int i1 = 0; i1 < 256; i1++)
-        {
-            float f1 = g[i1];
-            if(f1 > 1.0F)
-            {
-                f1 = 1.0F;
-            }
-            if(f1 < 0.0F)
-            {
-                f1 = 0.0F;
-            }
-            float f2 = f1 * f1;
-            int l1 = (int)(32F + f2 * 32F);
-            int j2 = (int)(50F + f2 * 64F);
-            int k2 = 255;
-            int l2 = (int)(146F + f2 * 50F);
-
-            c.setRGBA(l1, j2, k2, l2);
-            imgs[IMG_WATER].argb[i1] = c.getARGB();
-        }
-    }
-
-    /* Based on TextureWaterFlowingFX.java in MCP */
-    private void generateWaterFlowing() {
-        
-        imgs[IMG_WATERMOVING] = new LoadedImage();
-        imgs[IMG_WATERMOVING].width = 16;
-        imgs[IMG_WATERMOVING].height = 16;
-        imgs[IMG_WATERMOVING].argb = new int[256];
-        
-        float[] g = new float[256];
-        float[] h = new float[256];
-        float[] n = new float[256];
-        float[] m = new float[256];
-        Color c = new Color();
-        Random r = new Random(1234);    /* Need to be deterministic */
-        
-        int kk;
-        for(kk = 0; kk < 200; kk++) {
-            for(int i = 0; i < 16; i++)
-            {
-                for(int k = 0; k < 16; k++)
-                {
-                    float f = 0.0F;
-                    for(int j1 = k - 2; j1 <= k; j1++)
-                    {
-                        int k1 = i & 0xf;
-                        int i2 = j1 & 0xf;
-                        f += g[k1 + i2 * 16];
-                    }
-
-                    h[i + k * 16] = f / 3.2F + n[i + k * 16] * 0.8F;
-                }
-
-            }
-
-            for(int j = 0; j < 16; j++)
-            {
-                for(int l = 0; l < 16; l++)
-                {
-                    n[j + l * 16] += m[j + l * 16] * 0.05F;
-                    if(n[j + l * 16] < 0.0F)
-                    {
-                        n[j + l * 16] = 0.0F;
-                    }
-                    m[j + l * 16] -= 0.3F;
-                    if(r.nextDouble() < 0.20000000000000001D)
-                    {
-                        m[j + l * 16] = 0.5F;
-                    }
-                }
-
-            }
-
-            float af[] = h;
-            h = g;
-            g = af;
-        }
-        for(int i1 = 0; i1 < 256; i1++)
-        {
-            float f1 = g[i1 - kk * 16 & 0xff];
-            if(f1 > 1.0F)
-            {
-                f1 = 1.0F;
-            }
-            if(f1 < 0.0F)
-            {
-                f1 = 0.0F;
-            }
-            float f2 = f1 * f1;
-            int l1 = (int)(32F + f2 * 32F);
-            int j2 = (int)(50F + f2 * 64F);
-            int k2 = 255;
-            int l2 = (int)(146F + f2 * 50F);
-
-            c.setRGBA(l1, j2, k2, l2);
-            imgs[IMG_WATERMOVING].argb[i1] = c.getARGB();
-        }
-    }
-    
-    /* Based on TextureLavaFX.java in MCP */
-    private void generateLava() {
-        imgs[IMG_LAVA] = new LoadedImage();
-        imgs[IMG_LAVA].width = 16;
-        imgs[IMG_LAVA].height = 16;
-        imgs[IMG_LAVA].argb = new int[256];
-        
-        float[] g = new float[256];
-        float[] h = new float[256];
-        float[] n = new float[256];
-        float[] m = new float[256];
-        Color c = new Color();
-        Random r = new Random(1234);    /* Need to be deterministic */
-        
-        int kk;
-        for(kk = 0; kk < 200; kk++) {
-            for(int i = 0; i < 16; i++)
-            {
-                for(int j = 0; j < 16; j++)
-                {
-                    float f = 0.0F;
-                    int l = (int)(Math.sin(((float)j * 3.141593F * 2.0F) / 16F) * 1.2F);
-                    int i1 = (int)(Math.sin(((float)i * 3.141593F * 2.0F) / 16F) * 1.2F);
-                    for(int k1 = i - 1; k1 <= i + 1; k1++)
-                    {
-                        for(int i2 = j - 1; i2 <= j + 1; i2++)
-                        {
-                            int k2 = k1 + l & 0xf;
-                            int i3 = i2 + i1 & 0xf;
-                            f += g[k2 + i3 * 16];
-                        }
-
-                    }
-
-                    h[i + j * 16] = f / 10F + ((n[(i + 0 & 0xf) + (j + 0 & 0xf) * 16] + n[(i + 1 & 0xf) + (j + 0 & 0xf) * 16] + n[(i + 1 & 0xf) + (j + 1 & 0xf) * 16] + n[(i + 0 & 0xf) + (j + 1 & 0xf) * 16]) / 4F) * 0.8F;
-                    n[i + j * 16] += m[i + j * 16] * 0.01F;
-                    if(n[i + j * 16] < 0.0F)
-                    {
-                        n[i + j * 16] = 0.0F;
-                    }
-                    m[i + j * 16] -= 0.06F;
-                    if(r.nextDouble() < 0.005D)
-                    {
-                        m[i + j * 16] = 1.5F;
-                    }
-                }
-
-            }
-
-            float af[] = h;
-            h = g;
-            g = af;
-        }
-        for(int k = 0; k < 256; k++)
-        {
-            float f1 = g[k] * 2.0F;
-            if(f1 > 1.0F)
-            {
-                f1 = 1.0F;
-            }
-            if(f1 < 0.0F)
-            {
-                f1 = 0.0F;
-            }
-            float f2 = f1;
-            int j1 = (int)(f2 * 100F + 155F);
-            int l1 = (int)(f2 * f2 * 255F);
-            int j2 = (int)(f2 * f2 * f2 * f2 * 128F);
-
-            c.setRGBA(j1, l1, j2, 255);
-            imgs[IMG_LAVA].argb[k] = c.getARGB();
-        }
-    }
-
-    /* Based on TextureLavaFlowFX.java in MCP */
-    private void generateLavaFlow() {
-        imgs[IMG_LAVAMOVING] = new LoadedImage();
-        imgs[IMG_LAVAMOVING].width = 16;
-        imgs[IMG_LAVAMOVING].height = 16;
-        imgs[IMG_LAVAMOVING].argb = new int[256];
-        
-        float[] g = new float[256];
-        float[] h = new float[256];
-        float[] n = new float[256];
-        float[] m = new float[256];
-        Color c = new Color();
-        Random r = new Random(1234);    /* Need to be deterministic */
-        
-        int kk;
-        for(kk = 0; kk < 200; kk++) {
-        for(int i = 0; i < 16; i++)
-        {
-            for(int j = 0; j < 16; j++)
-            {
-                float f = 0.0F;
-                int l = (int)(Math.sin(((float)j * 3.141593F * 2.0F) / 16F) * 1.2F);
-                int i1 = (int)(Math.sin(((float)i * 3.141593F * 2.0F) / 16F) * 1.2F);
-                for(int k1 = i - 1; k1 <= i + 1; k1++)
-                {
-                    for(int i2 = j - 1; i2 <= j + 1; i2++)
-                    {
-                        int k2 = k1 + l & 0xf;
-                        int i3 = i2 + i1 & 0xf;
-                        f += g[k2 + i3 * 16];
-                    }
-
-                }
-
-                h[i + j * 16] = f / 10F + ((n[(i + 0 & 0xf) + (j + 0 & 0xf) * 16] + n[(i + 1 & 0xf) + (j + 0 & 0xf) * 16] + n[(i + 1 & 0xf) + (j + 1 & 0xf) * 16] + n[(i + 0 & 0xf) + (j + 1 & 0xf) * 16]) / 4F) * 0.8F;
-                n[i + j * 16] += m[i + j * 16] * 0.01F;
-                if(n[i + j * 16] < 0.0F)
-                {
-                    n[i + j * 16] = 0.0F;
-                }
-                m[i + j * 16] -= 0.06F;
-                if(r.nextDouble() < 0.005D)
-                {
-                    m[i + j * 16] = 1.5F;
-                }
-            }
-
-        }
-
-        float af[] = h;
-        h = g;
-        g = af;
-        }
-        for(int k = 0; k < 256; k++)
-        {
-            float f1 = g[k - (kk / 3) * 16 & 0xff] * 2.0F;
-            if(f1 > 1.0F)
-            {
-                f1 = 1.0F;
-            }
-            if(f1 < 0.0F)
-            {
-                f1 = 0.0F;
-            }
-            float f2 = f1;
-            int j1 = (int)(f2 * 100F + 155F);
-            int l1 = (int)(f2 * f2 * 255F);
-            int j2 = (int)(f2 * f2 * f2 * f2 * 128F);
-
-            c.setRGBA(j1, l1, j2, 255);
-            imgs[IMG_LAVAMOVING].argb[k] = c.getARGB();
-        }
-
-    }
-    /* Adapted from TextureFlamesFX.java in MCP */
-    private void generateFire() {
-        imgs[IMG_FIRE] = new LoadedImage();
-        imgs[IMG_FIRE].width = 16;
-        imgs[IMG_FIRE].height = 16;
-        imgs[IMG_FIRE].argb = new int[256];
-
-        float[] g = new float[320];
-        float[] h = new float[320];
-        Random r = new Random(666);
-        Color cc = new Color();
-
-        for(int kk = 0; kk < 200; kk++) {
-            for(int i = 0; i < 16; i++)
-            {
-                for(int j = 0; j < 20; j++)
-                {
-                    int l = 18;
-                    float f1 = g[i + ((j + 1) % 20) * 16] * (float)l;
-                    for(int i1 = i - 1; i1 <= i + 1; i1++)
-                    {
-                        for(int k1 = j; k1 <= j + 1; k1++)
-                        {
-                            int i2 = i1;
-                            int k2 = k1;
-                            if(i2 >= 0 && k2 >= 0 && i2 < 16 && k2 < 20)
-                            {
-                                f1 += g[i2 + k2 * 16];
-                            }
-                            l++;
-                        }
-
-                    }
-
-                    h[i + j * 16] = f1 / ((float)l * 1.06F);
-                    if(j >= 19)
-                    {
-                        h[i + j * 16] = (float)(r.nextDouble() * r.nextDouble() * r.nextDouble() * 4D + r.nextDouble() * 0.10000000149011612D + 0.20000000298023224D);
-                    }
-                }
-            }
-
-            float af[] = h;
-            h = g;
-            g = af;
-        }
-        for(int k = 0; k < 256; k++)
-        {
-            float f = g[k] * 1.8F;
-            if(f > 1.0F)
-            {
-                f = 1.0F;
-            }
-            if(f < 0.0F)
-            {
-                f = 0.0F;
-            }
-            float f2 = f;
-            int j1 = (int)(f2 * 155F + 100F);
-            int l1 = (int)(f2 * f2 * 255F);
-            int j2 = (int)(f2 * f2 * f2 * f2 * f2 * f2 * f2 * f2 * f2 * f2 * 255F);
-            int c = 255;
-            if(f2 < 0.5F)
-            {
-                c = 0;
-            }
-            f2 = (f2 - 0.5F) * 2.0F;
-            cc.setRGBA(j1, l1, j2, c);
-            imgs[IMG_FIRE].argb[k] = cc.getARGB();
-
-        }
-    }
-    /* Adapted from TexturePortalFX.java in MCP */
-    private void generatePortal() {
-        imgs[IMG_PORTAL] = new LoadedImage();
-        imgs[IMG_PORTAL].width = 16;
-        imgs[IMG_PORTAL].height = 16;
-        imgs[IMG_PORTAL].argb = new int[256];
-
-        byte[][] portalTextureData = new byte[32][256 << 4];
-        Random var1 = new Random(100L);
-        int tileSizeBase = 16;
-
-        for (int var2 = 0; var2 < 32; ++var2)
-        {
-            for (int var3 = 0; var3 < tileSizeBase; ++var3)
-            {
-                for (int var4 = 0; var4 < tileSizeBase; ++var4)
-                {
-                    float var5 = 0.0F;
-                    int var6;
-
-                    for (var6 = 0; var6 < 2; ++var6)
-                    {
-                        float var7 = (float)(var6 * tileSizeBase) * 0.5F;
-                        float var8 = (float)(var6 * tileSizeBase) * 0.5F;
-                        float var9 = ((float)var3 - var7) / (float)tileSizeBase * 2.0F;
-                        float var10 = ((float)var4 - var8) / (float)tileSizeBase * 2.0F;
-
-                        if (var9 < -1.0F)
-                        {
-                            var9 += 2.0F;
-                        }
-
-                        if (var9 >= 1.0F)
-                        {
-                            var9 -= 2.0F;
-                        }
-
-                        if (var10 < -1.0F)
-                        {
-                            var10 += 2.0F;
-                        }
-
-                        if (var10 >= 1.0F)
-                        {
-                            var10 -= 2.0F;
-                        }
-
-                        float var11 = var9 * var9 + var10 * var10;
-                        float var12 = (float)Math.atan2((double)var10, (double)var9) + ((float)var2 / 32.0F * (float)Math.PI * 2.0F - var11 * 10.0F + (float)(var6 * 2)) * (float)(var6 * 2 - 1);
-                        var12 = ((float)Math.sin(var12) + 1.0F) / 2.0F;
-                        var12 /= var11 + 1.0F;
-                        var5 += var12 * 0.5F;
-                    }
-
-                    var5 += var1.nextFloat() * 0.1F;
-                    var6 = (int)(var5 * 100.0F + 155.0F);
-                    int var13 = (int)(var5 * var5 * 200.0F + 55.0F);
-                    int var14 = (int)(var5 * var5 * var5 * var5 * 255.0F);
-                    int var15 = (int)(var5 * 100.0F + 155.0F);
-                    int var16 = var4 * tileSizeBase + var3;
-                    portalTextureData[var2][var16 * 4 + 0] = (byte)var13;
-                    portalTextureData[var2][var16 * 4 + 1] = (byte)var14;
-                    portalTextureData[var2][var16 * 4 + 2] = (byte)var6;
-                    portalTextureData[var2][var16 * 4 + 3] = (byte)var15;
-                }
-            }
-        }
-        byte[] txt = portalTextureData[0];
-        Color cc = new Color();
-        
-        for (int var2 = 0; var2 < 256; ++var2)
-        {
-            int var3 = txt[var2 * 4 + 0] & 255;
-            int var4 = txt[var2 * 4 + 1] & 255;
-            int var5 = txt[var2 * 4 + 2] & 255;
-            int var6 = txt[var2 * 4 + 3] & 255;
-
-            cc.setRGBA(var3, var4, var5, var6);
-
-            imgs[IMG_PORTAL].argb[var2] = cc.getARGB();
-        }
-    }
     private static final int[] smooth_water_mult = new int[10];
     
     public static int getTextureIDAt(MapIterator mapiter, int blkdata, int blkmeta, BlockStep face) {
