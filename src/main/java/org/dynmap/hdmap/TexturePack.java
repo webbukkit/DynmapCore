@@ -358,7 +358,7 @@ public class TexturePack {
             custColorMult = null;
             faces = new int[] { TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK };
             layers = null;
-            stdrotate = false;
+            stdrotate = true;
         }
         
         public HDTextureMap(List<Integer> blockids, int databits, int[] faces, byte[] layers, BlockTransparency trans, boolean userender, int colorMult, CustomColorMultiplier custColorMult, String blockset, boolean stdrot) {

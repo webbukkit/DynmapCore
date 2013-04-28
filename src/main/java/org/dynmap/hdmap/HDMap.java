@@ -39,6 +39,7 @@ public class HDMap extends MapType {
     private String bg_night_cfg;
     private String append_to_world;
     private int mapzoomin;
+    private int boostzoom;
     public DynmapCore core;
 
     public static final String IMGFORMAT_PNG = "png";
@@ -93,7 +94,6 @@ public class HDMap extends MapType {
             }
         }
         prefix = configuration.getString("prefix", name);
-//        this.configuration = configuration;
         
         /* Compute extra zoom outs needed for this map */
         double scale = perspective.getScale();
@@ -136,6 +136,11 @@ public class HDMap extends MapType {
         this.bg_day_cfg = configuration.getString("backgroundday");
         this.bg_night_cfg = configuration.getString("backgroundnight");
         this.mapzoomin = configuration.getInteger("mapzoomin", 2);
+        this.boostzoom = configuration.getInteger("boostzoom", 1);
+        // Map zoom in must be at least as big as boost zoom
+        if (this.boostzoom > this.mapzoomin) {
+            this.mapzoomin = this.boostzoom;
+        }
         this.append_to_world = configuration.getString("append_to_world", "");
         setProtected(configuration.getBoolean("protected", false));
         setTileUpdateDelay(configuration.getInteger("tileupdatedelay", -1));
@@ -155,6 +160,7 @@ public class HDMap extends MapType {
             cn.put("lighting", lighting.getName());
         cn.put("image-format", imgfmtstring);
         cn.put("mapzoomin", mapzoomin);
+        cn.put("boostzoom", boostzoom);
         if(bg_cfg != null)
             cn.put("background", bg_cfg);
         if(bg_day_cfg != null)
@@ -169,9 +175,10 @@ public class HDMap extends MapType {
         return cn;
     }
     
-    public HDShader getShader() { return shader; }
-    public HDPerspective getPerspective() { return perspective; }
-    public HDLighting getLighting() { return lighting; }
+    public final HDShader getShader() { return shader; }
+    public final HDPerspective getPerspective() { return perspective; }
+    public final HDLighting getLighting() { return lighting; }
+    public final int getBoostZoom() { return boostzoom; }
     
     @Override
     public List<TileFlags.TileCoord> getTileCoords(DynmapWorld w, int x, int y, int z) {
@@ -238,7 +245,7 @@ public class HDMap extends MapType {
         for(MapType mt : w.maps) {
             if(mt instanceof HDMap) {
                 HDMap hdmt = (HDMap)mt;
-                if(hdmt.perspective == this.perspective) {  /* Same perspective */
+                if((hdmt.perspective == this.perspective) && (hdmt.boostzoom == this.boostzoom)) {  /* Same perspective */
                     maps.add(hdmt);
                 }
             }
@@ -252,7 +259,7 @@ public class HDMap extends MapType {
         for(MapType mt : w.maps) {
             if(mt instanceof HDMap) {
                 HDMap hdmt = (HDMap)mt;
-                if(hdmt.perspective == this.perspective) {  /* Same perspective */
+                if((hdmt.perspective == this.perspective)  && (hdmt.boostzoom == this.boostzoom)) {  /* Same perspective */
                     if(hdmt.lighting.isNightAndDayEnabled())
                         lst.add(hdmt.getName() + "(night/day)");
                     else
@@ -280,6 +287,7 @@ public class HDMap extends MapType {
         s(o, "bigmap", true);
         s(o, "mapzoomout", (world.getExtraZoomOutLevels()+mapzoomout));
         s(o, "mapzoomin", mapzoomin);
+        s(o, "boostzoom", boostzoom);
         s(o, "protected", isProtected());
         s(o, "image-format", imgformat.getFileExt());
         if(append_to_world.length() > 0)
@@ -338,7 +346,7 @@ public class HDMap extends MapType {
         } catch (NumberFormatException nfx) {
             return null;
         }
-        return new HDMapTile(world, perspective, xx, zz);
+        return new HDMapTile(world, perspective, xx, zz, 0);
     }
     
     public void purgeOldTiles(final DynmapWorld world, final TileFlags rendered) {
@@ -472,6 +480,6 @@ public class HDMap extends MapType {
 
     @Override
     public void addMapTiles(List<MapTile> list, DynmapWorld w, int tx, int ty) {
-        list.add(new HDMapTile(w, this.perspective, tx, ty));
+        list.add(new HDMapTile(w, this.perspective, tx, ty, boostzoom));
     }
 }

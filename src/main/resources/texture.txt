@@ -817,9 +817,9 @@ block:id=155,data=1,top=0:qbchistop,bottom=0:qbbot,allsides=0:qbchis,stdrot=true
 #  (155:2) Pillar Quartz Block (vertical)
 block:id=155,data=2,top=0:qblinetop,bottom=0:qblinetop,allsides=0:qbline,stdrot=true
 #  (155:3) Pillar Quartz Block (north-south)
-block:id=155,data=3,top=0:qbline,bottom=0:qbline,east=6000:qbline,west=6000:qbline,north=0:qblinetop,south=0:qblinetop
+block:id=155,data=3,top=4000:qbline,bottom=4000:qbline,east=6000:qbline,west=6000:qbline,north=0:qblinetop,south=0:qblinetop,stdrot=true
 #  (155:4) Pillar Quartz Block (east-west)
-block:id=155,data=4,top=6000:qbline,bottom=6000:qbline,north=6000:qbline,south=6000:qbline,east=0:qblinetop,west=0:qblinetop
+block:id=155,data=4,top=0:qbline,bottom=0:qbline,north=6000:qbline,south=6000:qbline,east=0:qblinetop,west=0:qblinetop,stdrot=true
 
 # (156)	Quartz Stairs
 block:id=156,data=*,patch0=0:qbside,patch1=0:qbtop,patch2=0:qbbot,transparency=SEMITRANSPARENT

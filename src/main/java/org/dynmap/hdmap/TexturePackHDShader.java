@@ -15,21 +15,31 @@ import org.json.simple.JSONObject;
 public class TexturePackHDShader implements HDShader {
     private final String tpname;
     private final String name;
-    private final TexturePack tp;
+    private TexturePack tp;
+    private boolean did_tp_load = false;
     private final boolean biome_shaded;
     private final boolean bettergrass;
     private final int gridscale;
+    private final DynmapCore core;
     
     public TexturePackHDShader(DynmapCore core, ConfigurationNode configuration) {
         tpname = configuration.getString("texturepack", "minecraft");
         name = configuration.getString("name", tpname);
-        tp = TexturePack.getTexturePack(core, tpname);
+        this.core = core;
         biome_shaded = configuration.getBoolean("biomeshaded", true);
         bettergrass = configuration.getBoolean("better-grass", MapManager.mapman.getBetterGrass());
         gridscale = configuration.getInteger("grid-scale", 0);
-        if(tp == null) {
-            Log.severe("Error: shader '" + name + "' cannot load texture pack '" + tpname + "'");
+    }
+    
+    private final TexturePack getTexturePack() {
+        if (!did_tp_load) {
+            tp = TexturePack.getTexturePack(this.core, this.tpname);
+            if(tp == null) {
+                Log.severe("Error: shader '" + name + "' cannot load texture pack '" + tpname + "'");
+            }
+            did_tp_load = true;
         }
+        return tp;
     }
     
     @Override
@@ -93,7 +103,11 @@ public class TexturePackHDShader implements HDShader {
                 tmpcolor = new Color[] { new Color() };
             }
             c = new Color();
-            scaledtp = tp.resampleTexturePack(scale);
+            TexturePack tp = getTexturePack();
+            if (tp != null)
+                scaledtp = tp.resampleTexturePack(scale);
+            else
+                scaledtp = null;
             /* Biome raw data only works on normal worlds at this point */
             do_biome_shading = biome_shaded; // && (cache.getWorld().getEnvironment() == Environment.NORMAL);
             do_better_grass = bettergrass;
@@ -142,7 +156,9 @@ public class TexturePackHDShader implements HDShader {
             }
             
             /* Get color from textures */
-            scaledtp.readColor(ps, mapiter, c, blocktype, lastblocktype, ShaderState.this);
+            if (scaledtp != null) {
+                scaledtp.readColor(ps, mapiter, c, blocktype, lastblocktype, ShaderState.this);
+            }
 
             if (c.getAlpha() > 0) {
                 /* Scale brightness depending upon face */

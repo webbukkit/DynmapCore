@@ -225,7 +225,6 @@ public class CTMTexturePack {
             this.faces = 0;
             String[] tok = v.split("\\s+");
             for(String t : tok) {
-                t = t.toLowerCase();
                 if (t.equals("bottom")) {
                     this.faces |= FACE_BOTTOM;
                 }
@@ -1020,8 +1019,9 @@ public class CTMTexturePack {
         if (val != null) {
             return val.intValue();
         }
-        
+            
         Context ctx = new Context(mapiter, blkid, blkdata, laststep, textid);
+
         /* Check for first match */
         if ((textid >= 0) && (textid < bytilelist.length)) {
             newtext = mapTextureByList(bytilelist[textid], ctx);
@@ -1033,11 +1033,9 @@ public class CTMTexturePack {
         if (newtext >= 0) {
             textid = newtext;   // Switch to new texture
             ctx.textid = newtext;
+            // Only do tiles for recursive checks
             if ((textid >= 0) && (textid < bytilelist.length)) {
                 newtext = mapTextureByList(bytilelist[textid], ctx);
-            }
-            if ((newtext < 0) && (blkid > 0) && (blkid < byblocklist.length)) {
-                newtext = mapTextureByList(byblocklist[blkid], ctx);
             }
             /* If matched, check for third match */
             if (newtext >= 0) {
@@ -1046,18 +1044,12 @@ public class CTMTexturePack {
                 if ((textid >= 0) && (textid < bytilelist.length)) {
                     newtext = mapTextureByList(bytilelist[textid], ctx);
                 }
-                if ((newtext < 0) && (blkid > 0) && (blkid < byblocklist.length)) {
-                    newtext = mapTextureByList(byblocklist[blkid], ctx);
-                }
                 /* If matched, check for last match */
                 if (newtext >= 0) {
                     textid = newtext;   // Switch to new texture
                     ctx.textid = newtext;
                     if ((textid >= 0) && (textid < bytilelist.length)) {
                         newtext = mapTextureByList(bytilelist[textid], ctx);
-                    }
-                    if ((newtext < 0) && (blkid > 0) && (blkid < byblocklist.length)) {
-                        newtext = mapTextureByList(byblocklist[blkid], ctx);
                     }
                     if (newtext >= 0) {
                         textid = newtext;   // Switch to new texture
@@ -1254,7 +1246,7 @@ public class CTMTexturePack {
         if (face < 0) {
             face = 0;
         }
-        face = face / p.symmetry.shift;
+        //face = face / p.symmetry.shift; // MCPatcher version does nothing with this
         int x;
         int y;
         switch (face) {

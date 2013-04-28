@@ -10,14 +10,16 @@ import org.dynmap.MapTile;
 import org.dynmap.utils.MapChunkCache;
 
 public class HDMapTile extends MapTile {
-    public HDPerspective perspective;
-    public int tx, ty;  /* Tile X and Tile Y are in tile coordinates (pixels/tile-size) */
+    public final HDPerspective perspective;
+    public final int tx, ty;  /* Tile X and Tile Y are in tile coordinates (pixels/tile-size) */
+    public final int boostzoom;
     
-    public HDMapTile(DynmapWorld world, HDPerspective perspective, int tx, int ty) {
+    public HDMapTile(DynmapWorld world, HDPerspective perspective, int tx, int ty, int boostzoom) {
         super(world);
         this.perspective = perspective;
         this.tx = tx;
         this.ty = ty;
+        this.boostzoom = boostzoom;
     }
 
     public HDMapTile(DynmapWorld world, String parm) throws Exception {
@@ -29,11 +31,15 @@ public class HDMapTile extends MapTile {
         this.ty = Integer.parseInt(parms[1]);
         this.perspective = MapManager.mapman.hdmapman.perspectives.get(parms[2]);
         if(this.perspective == null) throw new Exception("invalid perspective");
+        if(parms.length > 3) 
+            this.boostzoom = Integer.parseInt(parms[3]);
+        else
+            this.boostzoom = 2;
     }
     
     @Override
     protected String saveTileData() {
-        return String.format("%d,%d,%s", tx, ty, perspective.getName());
+        return String.format("%d,%d,%s,%d", tx, ty, perspective.getName(), boostzoom);
     }
 
     @Override

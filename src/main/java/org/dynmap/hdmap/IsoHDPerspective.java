@@ -60,12 +60,8 @@ public class IsoHDPerspective implements HDPerspective {
     private Matrix3D world_to_map;
     private Matrix3D map_to_world;
     
-    /* Scaled models for non-cube blocks */
-    private HDBlockModels.HDScaledBlockModels basescalemodels;
+    /* Scale for default tiles */
     private int basemodscale;
-    /* Boosted scale models for non-cuble blocks */
-    private HDBlockModels.HDScaledBlockModels boostedscalemodels;
-    private int boostedmodscale;
     
     /* dimensions of a map tile */
     public static final int tileWidth = 128;
@@ -154,7 +150,7 @@ public class IsoHDPerspective implements HDPerspective {
         /* Cache for custom model patch lists */
         private final DynLongHashMap custom_meshes;
 
-        public OurPerspectiveState(MapIterator mi, boolean isnether, boolean boosted) {
+        public OurPerspectiveState(MapIterator mi, boolean isnether, int scaled) {
             mapiter = mi;
             this.isnether = isnether;
             worldheight = mapiter.getWorldHeight();
@@ -165,15 +161,10 @@ public class IsoHDPerspective implements HDPerspective {
             for(int i = 0; i < llcache.length; i++)
                 llcache[i] = new LightLevels();
             custom_meshes = new DynLongHashMap();
-            if(boosted) {
-                modscale = boostedmodscale;
-                scalemodels = boostedscalemodels;
-            }
-            else {
-                modscale = basemodscale;
-                scalemodels = basescalemodels;
-            }
+            modscale = basemodscale << scaled;
+            scalemodels = HDBlockModels.getModelsForScale(basemodscale << scaled);
         }
+        
         private final void updateSemitransparentLight(LightLevels ll) {
         	int emitted = 0, sky = 0;
         	for(int i = 0; i < semi_steps.length; i++) {
@@ -1167,13 +1158,6 @@ public class IsoHDPerspective implements HDPerspective {
         basemodscale = (int)Math.ceil(configuration.getDouble("scale", MIN_SCALE));
         if(basemodscale < MIN_SCALE) basemodscale = MIN_SCALE;
         if(basemodscale > MAX_SCALE) basemodscale = MAX_SCALE;
-        /* Get boost factor - must be power of 2 integer >= 1 */
-        int boostfactor = configuration.getInteger("boostfactor", 2);
-        if ((boostfactor != 1) && (boostfactor != 2) && (boostfactor != 4) && (boostfactor != 8)) {
-            Log.severe("Invalid boostfactor: must be 1, 2, 4, or 8");
-            return;
-        }
-        boostedmodscale = basemodscale * boostfactor;
         /* Get max and min height */
         maxheight = configuration.getInteger("maximumheight", -1);
         minheight = configuration.getInteger("minimumheight", 0);
@@ -1202,9 +1186,6 @@ public class IsoHDPerspective implements HDPerspective {
         Matrix3D coordswap = new Matrix3D(0.0, -1.0, 0.0, 0.0, 0.0, 1.0, -1.0, 0.0, 0.0);
         transform.multiply(coordswap);
         map_to_world = transform;
-        /* Scaled models for non-cube blocks */
-        basescalemodels = HDBlockModels.getModelsForScale(basemodscale);;
-        boostedscalemodels = HDBlockModels.getModelsForScale(boostedmodscale);;
     }   
 
     @Override
@@ -1284,14 +1265,14 @@ public class IsoHDPerspective implements HDPerspective {
         int x = t.tx;
         int y = t.ty;
         return new MapTile[] {
-            new HDMapTile(w, this, x - 1, y - 1),
-            new HDMapTile(w, this, x + 1, y - 1),
-            new HDMapTile(w, this, x - 1, y + 1),
-            new HDMapTile(w, this, x + 1, y + 1),
-            new HDMapTile(w, this, x, y - 1),
-            new HDMapTile(w, this, x + 1, y),
-            new HDMapTile(w, this, x, y + 1),
-            new HDMapTile(w, this, x - 1, y) };
+            new HDMapTile(w, this, x - 1, y - 1, t.boostzoom),
+            new HDMapTile(w, this, x + 1, y - 1, t.boostzoom),
+            new HDMapTile(w, this, x - 1, y + 1, t.boostzoom),
+            new HDMapTile(w, this, x + 1, y + 1, t.boostzoom),
+            new HDMapTile(w, this, x, y - 1, t.boostzoom),
+            new HDMapTile(w, this, x + 1, y, t.boostzoom),
+            new HDMapTile(w, this, x, y + 1, t.boostzoom),
+            new HDMapTile(w, this, x - 1, y, t.boostzoom) };
     }
 
     private static class Rectangle {
@@ -1437,9 +1418,12 @@ public class IsoHDPerspective implements HDPerspective {
         Color rslt = new Color();
         MapIterator mapiter = cache.getIterator(0, 0, 0);
 
-        int sizescale = 1;
-        if (MarkerAPIImpl.testTileForBoostMarkers(cache.getWorld(), this.world_to_map, tile.tx, tile.ty))
-            sizescale = this.boostedmodscale / this.basemodscale;
+        int scaled = 0;
+        if ((tile.boostzoom > 0) && MarkerAPIImpl.testTileForBoostMarkers(cache.getWorld(), this.world_to_map, tile.tx, tile.ty)) {
+            scaled = tile.boostzoom;
+        }
+        int sizescale = 1 << scaled;
+
         /* Build shader state object for each shader */
         HDShaderState[] shaderstate = MapManager.mapman.hdmapman.getShaderStateForTile(tile, cache, mapiter, mapname, sizescale * this.basemodscale);
         int numshaders = shaderstate.length;
@@ -1470,7 +1454,7 @@ public class IsoHDPerspective implements HDPerspective {
         }
         
         /* Create perspective state object */
-        OurPerspectiveState ps = new OurPerspectiveState(mapiter, isnether, sizescale > 1);        
+        OurPerspectiveState ps = new OurPerspectiveState(mapiter, isnether, scaled);        
         
         ps.top = new Vector3D();
         ps.bottom = new Vector3D();
