@@ -5,9 +5,11 @@ import java.util.Map;
 
 import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapWorld;
+import org.dynmap.hdmap.HDPerspective;
 import org.dynmap.markers.CircleMarker;
 import org.dynmap.markers.MarkerSet;
 import org.dynmap.markers.impl.MarkerAPIImpl.MarkerUpdate;
+import org.dynmap.utils.Matrix3D;
 
 class CircleMarkerImpl implements CircleMarker {
     private String markerid;
@@ -28,6 +30,7 @@ class CircleMarkerImpl implements CircleMarker {
     private int linecolor = 0xFF0000;
     private double fillopacity = 0.35;
     private int fillcolor = 0xFF0000;
+    private boolean boostflag = false;
     
     /** 
      * Create circle marker
@@ -97,6 +100,7 @@ class CircleMarkerImpl implements CircleMarker {
         linecolor = node.getInteger("strokeColor", 0xFF0000);
         fillopacity = node.getDouble("fillOpacity", 0.35);
         fillcolor = node.getInteger("fillColor", 0xFF0000);
+        boostflag = node.getBoolean("boostFlag", false);
         ispersistent = true;    /* Loaded from config, so must be */
         
         return true;
@@ -170,7 +174,9 @@ class CircleMarkerImpl implements CircleMarker {
         node.put("strokeColor", linecolor);
         node.put("fillOpacity", fillopacity);
         node.put("fillColor", fillcolor);
-
+        if(boostflag) {
+            node.put("boostFlag", true);
+        }
         return node;
     }
     @Override
@@ -305,5 +311,24 @@ class CircleMarkerImpl implements CircleMarker {
         }
         markerset = (MarkerSetImpl)newset;
         markerset.insertCircleMarker(this);
+    }
+    @Override
+    public void setBoostFlag(boolean bflag) {
+        if (this.boostflag != bflag) {
+            this.boostflag = bflag;
+            if (markerset != null) {
+                setMarkerSet(markerset);
+            }
+            if(ispersistent)
+                MarkerAPIImpl.saveMarkers();
+        }
+    }
+    @Override
+    public boolean getBoostFlag() {
+        return boostflag;
+    }
+
+    final boolean testTileForBoostMarkers(DynmapWorld w, HDPerspective perspective, double tile_x, double tile_y) {
+        return false;
     }
 }

@@ -8,9 +8,11 @@ import java.util.Map;
 import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapWorld;
 import org.dynmap.MapManager;
+import org.dynmap.hdmap.HDPerspective;
 import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.MarkerSet;
 import org.dynmap.markers.impl.MarkerAPIImpl.MarkerUpdate;
+import org.dynmap.utils.Matrix3D;
 
 class AreaMarkerImpl implements AreaMarker {
     private String markerid;
@@ -29,6 +31,7 @@ class AreaMarkerImpl implements AreaMarker {
     private int fillcolor = 0xFF0000;
     private double ytop = 64.0;
     private double ybottom = 64.0;
+    private boolean boostflag = false;
     
     private static class Coord {
         double x, z;
@@ -112,6 +115,7 @@ class AreaMarkerImpl implements AreaMarker {
         linecolor = node.getInteger("strokeColor", 0xFF0000);
         fillopacity = node.getDouble("fillOpacity", 0.35);
         fillcolor = node.getInteger("fillColor", 0xFF0000);
+        boostflag = node.getBoolean("boostFlag",  false);
         ispersistent = true;    /* Loaded from config, so must be */
         
         return true;
@@ -192,7 +196,9 @@ class AreaMarkerImpl implements AreaMarker {
         node.put("strokeColor", linecolor);
         node.put("fillOpacity", fillopacity);
         node.put("fillColor", fillcolor);
-
+        if (boostflag) {
+            node.put("boostFlag", true);
+        }
         return node;
     }
     @Override
@@ -364,5 +370,23 @@ class AreaMarkerImpl implements AreaMarker {
         markerset = (MarkerSetImpl)newset;
         markerset.insertAreaMarker(this);
     }
+    @Override
+    public void setBoostFlag(boolean bflag) {
+        if (this.boostflag != bflag) {
+            this.boostflag = bflag;
+            if (markerset != null) {
+                setMarkerSet(markerset);
+            }
+            if(ispersistent)
+                MarkerAPIImpl.saveMarkers();
+        }
+    }
+    @Override
+    public boolean getBoostFlag() {
+        return boostflag;
+    }
 
+    final boolean testTileForBoostMarkers(DynmapWorld w, HDPerspective perspective, double tile_x, double tile_y) {
+        return false;
+    }
 }

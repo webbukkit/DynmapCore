@@ -1419,7 +1419,7 @@ public class IsoHDPerspective implements HDPerspective {
         MapIterator mapiter = cache.getIterator(0, 0, 0);
 
         int scaled = 0;
-        if ((tile.boostzoom > 0) && MarkerAPIImpl.testTileForBoostMarkers(cache.getWorld(), this.world_to_map, tile.tx, tile.ty)) {
+        if ((tile.boostzoom > 0) && MarkerAPIImpl.testTileForBoostMarkers(cache.getWorld(), this, tile.tx, tile.ty)) {
             scaled = tile.boostzoom;
         }
         int sizescale = 1 << scaled;
@@ -1667,5 +1667,10 @@ public class IsoHDPerspective implements HDPerspective {
     
     private static final int fastFloor(double f) {
         return ((int)(f + 1000000000.0)) - 1000000000;
+    }
+    
+    @Override
+    public void transformWorldToMapCoord(Vector3D input, Vector3D rslt) {
+        world_to_map.transform(input,  rslt);
     }
 }

@@ -6,9 +6,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.dynmap.ConfigurationNode;
+import org.dynmap.DynmapWorld;
 import org.dynmap.Log;
+import org.dynmap.hdmap.HDPerspective;
 import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.CircleMarker;
 import org.dynmap.markers.PolyLineMarker;
@@ -16,12 +19,15 @@ import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerIcon;
 import org.dynmap.markers.MarkerSet;
 import org.dynmap.markers.impl.MarkerAPIImpl.MarkerUpdate;
+import org.dynmap.utils.Matrix3D;
 
 class MarkerSetImpl implements MarkerSet {
     private HashMap<String, MarkerImpl> markers = new HashMap<String, MarkerImpl>();
     private HashMap<String, AreaMarkerImpl> areamarkers = new HashMap<String, AreaMarkerImpl>();
     private HashMap<String, PolyLineMarkerImpl> linemarkers = new HashMap<String, PolyLineMarkerImpl>();
     private HashMap<String, CircleMarkerImpl> circlemarkers = new HashMap<String, CircleMarkerImpl>();
+    private ConcurrentHashMap<String, AreaMarkerImpl> boostingareamarkers = null;
+    private ConcurrentHashMap<String, CircleMarkerImpl> boostingcirclemarkers = null;
     private String setid;
     private String label;
     private HashMap<String, MarkerIconImpl> allowedicons = null;
@@ -66,6 +72,14 @@ class MarkerSetImpl implements MarkerSet {
         for(CircleMarkerImpl m : circlemarkers.values())
             m.cleanup();
         markers.clear();
+        if (boostingareamarkers != null) {
+            boostingareamarkers.clear();
+            boostingareamarkers = null;
+        }
+        if (boostingcirclemarkers != null) {
+            boostingcirclemarkers.clear();
+            boostingcirclemarkers = null;
+        }
         deficon = null;
     }
     
@@ -248,6 +262,12 @@ class MarkerSetImpl implements MarkerSet {
      */
     void insertAreaMarker(AreaMarkerImpl marker) {
         areamarkers.put(marker.getMarkerID(),marker);   /* Add to set */
+        if (marker.getBoostFlag()) {
+            if (boostingareamarkers == null) {
+                boostingareamarkers = new ConcurrentHashMap<String, AreaMarkerImpl>();
+            }
+            boostingareamarkers.put(marker.getMarkerID(), marker);
+        }
         if(ispersistent && marker.isPersistentMarker()) {   /* If persistent */
             MarkerAPIImpl.saveMarkers();        /* Drive save */
         }
@@ -260,6 +280,12 @@ class MarkerSetImpl implements MarkerSet {
      */
     void removeAreaMarker(AreaMarkerImpl marker) {
         areamarkers.remove(marker.getMarkerID());   /* Remove from set */
+        if (boostingareamarkers != null) {
+            boostingareamarkers.remove(marker.getMarkerID());
+            if (boostingareamarkers.isEmpty()) {
+                boostingareamarkers = null;
+            }
+        }
         if(ispersistent && marker.isPersistentMarker()) {   /* If persistent */
             MarkerAPIImpl.saveMarkers();        /* Drive save */
         }
@@ -296,6 +322,12 @@ class MarkerSetImpl implements MarkerSet {
      */
     void insertCircleMarker(CircleMarkerImpl marker) {
         circlemarkers.put(marker.getMarkerID(), marker);   /* Insert to set */
+        if (marker.getBoostFlag()) {
+            if (boostingcirclemarkers == null) {
+                boostingcirclemarkers = new ConcurrentHashMap<String, CircleMarkerImpl>();
+            }
+            boostingcirclemarkers.put(marker.getMarkerID(), marker);
+        }
         if(ispersistent && marker.isPersistentMarker()) {   /* If persistent */
             MarkerAPIImpl.saveMarkers();        /* Drive save */
         }
@@ -308,6 +340,12 @@ class MarkerSetImpl implements MarkerSet {
      */
     void removeCircleMarker(CircleMarkerImpl marker) {
         circlemarkers.remove(marker.getMarkerID());   /* Remove from set */
+        if (boostingcirclemarkers != null) {
+            boostingcirclemarkers.remove(marker.getMarkerID());
+            if (boostingcirclemarkers.isEmpty()) {
+                boostingcirclemarkers = null;
+            }
+        }
         if(ispersistent && marker.isPersistentMarker()) {   /* If persistent */
             MarkerAPIImpl.saveMarkers();        /* Drive save */
         }
@@ -657,4 +695,23 @@ class MarkerSetImpl implements MarkerSet {
     public MarkerIcon getDefaultMarkerIcon() {
         return deficon;
     }
+    
+    final boolean testTileForBoostMarkers(DynmapWorld w, HDPerspective perspective, double tile_x, double tile_y) {
+        if (boostingareamarkers != null) {
+            for (AreaMarkerImpl am : boostingareamarkers.values()) {
+                if (am.testTileForBoostMarkers(w, perspective, tile_x, tile_y)) {
+                    return true;
+                }
+            }
+        }
+        if (boostingcirclemarkers != null) {
+            for (CircleMarkerImpl cm : boostingcirclemarkers.values()) {
+                if (cm.testTileForBoostMarkers(w, perspective, tile_x, tile_y)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 }

@@ -7,6 +7,7 @@ import org.dynmap.DynmapWorld;
 import org.dynmap.MapTile;
 import org.dynmap.utils.MapChunkCache;
 import org.dynmap.utils.TileFlags;
+import org.dynmap.utils.Vector3D;
 import org.json.simple.JSONObject;
 
 public interface HDPerspective {
@@ -32,4 +33,7 @@ public interface HDPerspective {
     int getModelScale();
 
     public void addClientConfiguration(JSONObject mapObject);
+    
+    public void transformWorldToMapCoord(Vector3D input, Vector3D rslt);
+
 }
