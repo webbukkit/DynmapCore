@@ -77,17 +77,21 @@ componentconstructors['chatbox'] = function(dynmap, configuration) {
 	};
 	
 	$(dynmap).bind('playerjoin', function(event, playername) {
-		addrow($('<div/>')
-			.addClass('messagerow')
-			.text(dynmap.options.joinmessage.replace('%playername%', playername))
-			);
+		if (dynmap.options.joinmessage.length > 0) {
+			addrow($('<div/>')
+				.addClass('messagerow')
+				.text(dynmap.options.joinmessage.replace('%playername%', playername))
+				);
+		}
 	});
 	
 	$(dynmap).bind('playerquit', function(event, playername) {
-		addrow($('<div/>')
-			.addClass('messagerow')
-			.text(dynmap.options.quitmessage.replace('%playername%', playername))
-			);
+		if (dynmap.options.quitmessage.length > 0) {
+			addrow($('<div/>')
+				.addClass('messagerow')
+				.text(dynmap.options.quitmessage.replace('%playername%', playername))
+				);
+		}
 	});
 	
 	$(dynmap).bind('chat', function(event, message) {
