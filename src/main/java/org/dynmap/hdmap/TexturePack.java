@@ -1127,9 +1127,6 @@ public class TexturePack {
         for(i = terrain_map.length; i < TILETABLE_LEN; i++) {
             terrain_argb[i] = blank;
         }
-        /* Fallbacks */
-        terrain_argb[TILEINDEX_STATIONARYLAVA] = terrain_argb[255];
-        terrain_argb[TILEINDEX_MOVINGLAVA] = terrain_argb[255];
         /* Now, build redstone textures with active wire color (since we're not messing with that) */
         Color tc = new Color();
         for(i = 0; i < native_scale*native_scale; i++) {
