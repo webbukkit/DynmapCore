@@ -44,6 +44,8 @@ class AreaMarkerImpl implements AreaMarker {
     private static class BoundingBox {
         double xmin, xmax;
         double ymin, ymax;
+        double xp[];
+        double yp[];
     }
     private Map<String, BoundingBox> bb_cache = null;
     
@@ -398,7 +400,7 @@ class AreaMarkerImpl implements AreaMarker {
         return boostflag;
     }
 
-    final boolean testTileForBoostMarkers(DynmapWorld w, HDPerspective perspective, double tile_x, double tile_y, double tile_dim) {
+    final boolean testTileForBoostMarkers(DynmapWorld w, HDPerspective perspective, final double tile_x, final double tile_y, final double tile_dim) {
         Map<String, BoundingBox> bbc = bb_cache;
         if(bbc == null) {
             bbc = new ConcurrentHashMap<String, BoundingBox>();
@@ -413,33 +415,60 @@ class AreaMarkerImpl implements AreaMarker {
             bb.ymin = Double.MAX_VALUE;
             bb.ymax = -Double.MAX_VALUE;
             if(corners != null) {
-                for(int i = 0; i < corners.size(); i++) {
+                int cnt = corners.size();
+                bb.xp = new double[cnt];
+                bb.yp = new double[cnt];
+                double ymid = (this.ytop + this.ybottom) / 2.0; 
+                for(int i = 0; i < cnt; i++) {
                     Coord c = corners.get(i);
-                    v.x = c.x; v.y = this.ybottom; v.z = c.z; // get coords of point, in world coord
+                    v.x = c.x; v.y = ymid; v.z = c.z; // get coords of point, in world coord
                     perspective.transformWorldToMapCoord(v,  v2);   // Transform to map coord
                     if(v2.x < bb.xmin) bb.xmin = v2.x;
                     if(v2.y < bb.ymin) bb.ymin = v2.y;
                     if(v2.x > bb.xmax) bb.xmax = v2.x;
                     if(v2.y > bb.ymax) bb.ymax = v2.y;
-                    if (this.ybottom != this.ytop) {    // Top different than bottom?
-                        v.y = this.ytop;
-                        perspective.transformWorldToMapCoord(v,  v2);   // Transform to map coord
-                        if(v2.x < bb.xmin) bb.xmin = v2.x;
-                        if(v2.y < bb.ymin) bb.ymin = v2.y;
-                        if(v2.x > bb.xmax) bb.xmax = v2.x;
-                        if(v2.y > bb.ymax) bb.ymax = v2.y;
-                    }
+                    bb.xp[i] = v2.x;
+                    bb.yp[i] = v2.y;
                 }
             }
             //System.out.println("x=" + bb.xmin + " - " + bb.xmax + ",  y=" + bb.ymin + " - " + bb.ymax);
             bbc.put(perspective.getName(), bb);
             bb_cache = bbc;
         }
-        if ((bb.xmin > (tile_x + tile_dim)) || (bb.xmax < tile_x) || (bb.ymin > (tile_y + tile_dim)) || (bb.ymax < tile_y)) {
+        final double tile_x2 = tile_x + tile_dim;
+        final double tile_y2 = tile_y + tile_dim;
+        if ((bb.xmin > tile_x2) || (bb.xmax < tile_x) || (bb.ymin > tile_y2) || (bb.ymax < tile_y)) {
             //System.out.println("tile: " + tile_x + " / " + tile_y + " - miss");
             return false;
         }
+        final int cnt = bb.xp.length;
+        final double[] px = bb.xp;
+        final double[] py = bb.yp;
+        /* Now see if tile square intersects polygon - start with seeing if any point inside */
+        if(MarkerImpl.testPointInPolygon(tile_x, tile_y, px, py)) { 
+            return true; // If tile corner inside, we intersect
+        }
+        if(MarkerImpl.testPointInPolygon(tile_x2, tile_y, px, py)) { 
+            return true; // If tile corner inside, we intersect
+        }
+        if(MarkerImpl.testPointInPolygon(tile_x, tile_y2, px, py)) { 
+            return true; // If tile corner inside, we intersect
+        }
+        if(MarkerImpl.testPointInPolygon(tile_x2, tile_y2, px, py)) { 
+            return true; // If tile corner inside, we intersect
+        }
+        /* Test if any polygon corners are inside square */
+        for(int i = 0; i < cnt; i++) { 
+            if((px[i] >= tile_x) && (px[i] <= tile_x2) && (py[i] >= tile_y) && (py[i] <= tile_y2)) {
+                return true; // If poly corner inside tile, we intersect
+            }
+        }
+        // Otherwise, only intersects if at least one edge crosses
+        //for (int i = 0, j = cnt-1; i < cnt; j = i++) {
+        //    // Test for X=tile_x side
+        //    if ((px[i] < tile_x) && (px[j] >= tile_x) && ()
+        // }
         //System.out.println("tile: " + tile_x + " / " + tile_y + " - hit");
-        return true;
+        return false;
     }
 }

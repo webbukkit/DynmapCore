@@ -236,4 +236,17 @@ class MarkerImpl implements Marker {
         markerset = (MarkerSetImpl)newset;
         markerset.insertMarker(this);
     }
+    
+    static boolean testPointInPolygon(double x, double y, double[] polyx, double[] polyy) {
+        int nvert = polyx.length;
+        int i, j;
+        boolean c = false;
+        for (i = 0, j = nvert-1; i < nvert; j = i++) {
+            if ( ((polyy[i] > y) != (polyy[j] > y)) &&
+                    (x < (polyx[j] - polyx[i]) * (y - polyy[i]) / (polyy[j] - polyy[i]) + polyx[i]) ) {
+                c = !c;
+            }
+        }
+        return c;
+    }
 }
