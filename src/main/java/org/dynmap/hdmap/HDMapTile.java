@@ -34,7 +34,7 @@ public class HDMapTile extends MapTile {
         if(parms.length > 3) 
             this.boostzoom = Integer.parseInt(parms[3]);
         else
-            this.boostzoom = 2;
+            this.boostzoom = 0;
     }
     
     @Override
