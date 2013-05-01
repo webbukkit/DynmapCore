@@ -328,7 +328,7 @@ class CircleMarkerImpl implements CircleMarker {
         return boostflag;
     }
 
-    final boolean testTileForBoostMarkers(DynmapWorld w, HDPerspective perspective, double tile_x, double tile_y) {
+    final boolean testTileForBoostMarkers(DynmapWorld w, HDPerspective perspective, double tile_x, double tile_y, double tile_dim) {
         return false;
     }
 }

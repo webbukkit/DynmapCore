@@ -437,6 +437,12 @@ class MarkerSetImpl implements MarkerSet {
                 AreaMarkerImpl marker = new AreaMarkerImpl(id, this);   /* Make and load marker */
                 if(marker.loadPersistentData(areamarkernode.getNode(id))) {
                     areamarkers.put(id, marker);
+                    if(marker.getBoostFlag()) {
+                        if(boostingareamarkers == null) {
+                            boostingareamarkers = new ConcurrentHashMap<String, AreaMarkerImpl>();
+                        }
+                        boostingareamarkers.put(id,  marker);
+                    }
                 }
                 else {
                     Log.info("Error loading area marker '" + id + "' for set '" + setid + "'");
@@ -463,6 +469,12 @@ class MarkerSetImpl implements MarkerSet {
                 CircleMarkerImpl marker = new CircleMarkerImpl(id, this);   /* Make and load marker */
                 if(marker.loadPersistentData(circlemarkernode.getNode(id))) {
                     circlemarkers.put(id, marker);
+                    if(marker.getBoostFlag()) {
+                        if(boostingcirclemarkers == null) {
+                            boostingcirclemarkers = new ConcurrentHashMap<String, CircleMarkerImpl>();
+                        }
+                        boostingcirclemarkers.put(id,  marker);
+                    }
                 }
                 else {
                     Log.info("Error loading circle marker '" + id + "' for set '" + setid + "'");
@@ -696,17 +708,17 @@ class MarkerSetImpl implements MarkerSet {
         return deficon;
     }
     
-    final boolean testTileForBoostMarkers(DynmapWorld w, HDPerspective perspective, double tile_x, double tile_y) {
+    final boolean testTileForBoostMarkers(DynmapWorld w, HDPerspective perspective, double tile_x, double tile_y, double tile_dim) {
         if (boostingareamarkers != null) {
             for (AreaMarkerImpl am : boostingareamarkers.values()) {
-                if (am.testTileForBoostMarkers(w, perspective, tile_x, tile_y)) {
+                if (am.testTileForBoostMarkers(w, perspective, tile_x, tile_y, tile_dim)) {
                     return true;
                 }
             }
         }
         if (boostingcirclemarkers != null) {
             for (CircleMarkerImpl cm : boostingcirclemarkers.values()) {
-                if (cm.testTileForBoostMarkers(w, perspective, tile_x, tile_y)) {
+                if (cm.testTileForBoostMarkers(w, perspective, tile_x, tile_y, tile_dim)) {
                     return true;
                 }
             }

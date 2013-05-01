@@ -2684,12 +2684,13 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
      * @param perspective - perspective for transforming world to tile coordinates
      * @param tile_x - X coordinate of tile corner, in map coords
      * @param tile_y - Y coordinate of tile corner, in map coords
+     * @param tile_dim - Tile dimension, in map units
      * @return true if intersected, false if not
      */
-    public static boolean testTileForBoostMarkers(DynmapWorld w, HDPerspective perspective, double tile_x, double tile_y) {
+    public static boolean testTileForBoostMarkers(DynmapWorld w, HDPerspective perspective, double tile_x, double tile_y, double tile_dim) {
         if (api == null) return false;
         for(MarkerSetImpl ms : api.markersets.values()) {
-            if(ms.testTileForBoostMarkers(w, perspective, tile_x, tile_y)) {
+            if(ms.testTileForBoostMarkers(w, perspective, tile_x, tile_y, tile_dim)) {
                 return true;
             }
         }

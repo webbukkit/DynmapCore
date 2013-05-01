@@ -279,10 +279,13 @@ public class DynmapCore implements DynmapCommonAPI {
         }
     }
     /* Table of default templates - all are resources in dynmap.jar unnder templates/, and go in templates directory when needed */
-    private static final String[] stdtemplates = { "normal.txt", "nether.txt", "skylands.txt", "normal-lowres.txt", 
-        "nether-lowres.txt", "skylands-lowres.txt", "normal-hires.txt", "nether-hires.txt", "skylands-hires.txt",
-        "normal-vlowres.txt", "skylands-vlowres.txt", "nether-vlowres.txt", "the_end.txt", "the_end-vlowres.txt",
-        "the_end-lowres.txt", "the_end-hires.txt"
+    private static final String[] stdtemplates = { "normal.txt", "nether.txt", "normal-lowres.txt", 
+        "nether-lowres.txt", "normal-hires.txt", "nether-hires.txt",
+        "normal-vlowres.txt", "nether-vlowres.txt", "the_end.txt", "the_end-vlowres.txt",
+        "the_end-lowres.txt", "the_end-hires.txt",
+        "normal-low_boost_hi.txt", "normal-hi_boost_vhi.txt", "normal-hi_boost_xhi.txt", 
+        "nether-low_boost_hi.txt", "nether-hi_boost_vhi.txt", "nether-hi_boost_xhi.txt",
+        "the_end-low_boost_hi.txt", "the_end-hi_boost_vhi.txt", "the_end-hi_boost_xhi.txt"
     };
     
     private static final String CUSTOM_PREFIX = "custom-";

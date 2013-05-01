@@ -136,7 +136,9 @@ public class HDMap extends MapType {
         this.bg_day_cfg = configuration.getString("backgroundday");
         this.bg_night_cfg = configuration.getString("backgroundnight");
         this.mapzoomin = configuration.getInteger("mapzoomin", 2);
-        this.boostzoom = configuration.getInteger("boostzoom", 1);
+        this.boostzoom = configuration.getInteger("boostzoom", 0);
+        if(this.boostzoom < 0) this.boostzoom = 0;
+        if(this.boostzoom > 3) this.boostzoom = 3;
         // Map zoom in must be at least as big as boost zoom
         if (this.boostzoom > this.mapzoomin) {
             this.mapzoomin = this.boostzoom;

@@ -1419,7 +1419,7 @@ public class IsoHDPerspective implements HDPerspective {
         MapIterator mapiter = cache.getIterator(0, 0, 0);
 
         int scaled = 0;
-        if ((tile.boostzoom > 0) && MarkerAPIImpl.testTileForBoostMarkers(cache.getWorld(), this, tile.tx, tile.ty)) {
+        if ((tile.boostzoom > 0) && MarkerAPIImpl.testTileForBoostMarkers(cache.getWorld(), this, tile.tx * tileWidth, tile.ty * tileHeight, tileWidth)) {
             scaled = tile.boostzoom;
         }
         int sizescale = 1 << scaled;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapWorld;
@@ -13,6 +14,7 @@ import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.MarkerSet;
 import org.dynmap.markers.impl.MarkerAPIImpl.MarkerUpdate;
 import org.dynmap.utils.Matrix3D;
+import org.dynmap.utils.Vector3D;
 
 class AreaMarkerImpl implements AreaMarker {
     private String markerid;
@@ -39,6 +41,11 @@ class AreaMarkerImpl implements AreaMarker {
             this.x = x; this.z = z;
         }
     }
+    private static class BoundingBox {
+        double xmin, xmax;
+        double ymin, ymax;
+    }
+    private Map<String, BoundingBox> bb_cache = null;
     
     /** 
      * Create area marker
@@ -124,6 +131,7 @@ class AreaMarkerImpl implements AreaMarker {
     void cleanup() {
         corners.clear();
         markerset = null;
+        bb_cache = null;
     }
     
     @Override
@@ -247,6 +255,7 @@ class AreaMarkerImpl implements AreaMarker {
             MarkerAPIImpl.areaMarkerUpdated(this, MarkerUpdate.UPDATED);
             if(ispersistent)
                 MarkerAPIImpl.saveMarkers();
+            bb_cache = null;
         }
     }
     @Override
@@ -284,6 +293,7 @@ class AreaMarkerImpl implements AreaMarker {
         MarkerAPIImpl.areaMarkerUpdated(this, MarkerUpdate.UPDATED);
         if(ispersistent)
             MarkerAPIImpl.saveMarkers();
+        bb_cache = null;
     }
     @Override
     public void deleteCorner(int n) {
@@ -293,6 +303,7 @@ class AreaMarkerImpl implements AreaMarker {
             MarkerAPIImpl.areaMarkerUpdated(this, MarkerUpdate.UPDATED);
             if(ispersistent)
                 MarkerAPIImpl.saveMarkers();
+            bb_cache = null;
         }
     }
     @Override
@@ -318,6 +329,7 @@ class AreaMarkerImpl implements AreaMarker {
         MarkerAPIImpl.areaMarkerUpdated(this, MarkerUpdate.UPDATED);
         if(ispersistent)
             MarkerAPIImpl.saveMarkers();
+        bb_cache = null;
     }
     @Override
     public void setLineStyle(int weight, double opacity, int color) {
@@ -386,7 +398,48 @@ class AreaMarkerImpl implements AreaMarker {
         return boostflag;
     }
 
-    final boolean testTileForBoostMarkers(DynmapWorld w, HDPerspective perspective, double tile_x, double tile_y) {
-        return false;
+    final boolean testTileForBoostMarkers(DynmapWorld w, HDPerspective perspective, double tile_x, double tile_y, double tile_dim) {
+        Map<String, BoundingBox> bbc = bb_cache;
+        if(bbc == null) {
+            bbc = new ConcurrentHashMap<String, BoundingBox>();
+        }
+        BoundingBox bb = bbc.get(perspective.getName());
+        if (bb == null) { // No cached bounding box, so generate it
+            bb = new BoundingBox();
+            Vector3D v = new Vector3D();
+            Vector3D v2 = new Vector3D();
+            bb.xmin = Double.MAX_VALUE;
+            bb.xmax = -Double.MAX_VALUE;
+            bb.ymin = Double.MAX_VALUE;
+            bb.ymax = -Double.MAX_VALUE;
+            if(corners != null) {
+                for(int i = 0; i < corners.size(); i++) {
+                    Coord c = corners.get(i);
+                    v.x = c.x; v.y = this.ybottom; v.z = c.z; // get coords of point, in world coord
+                    perspective.transformWorldToMapCoord(v,  v2);   // Transform to map coord
+                    if(v2.x < bb.xmin) bb.xmin = v2.x;
+                    if(v2.y < bb.ymin) bb.ymin = v2.y;
+                    if(v2.x > bb.xmax) bb.xmax = v2.x;
+                    if(v2.y > bb.ymax) bb.ymax = v2.y;
+                    if (this.ybottom != this.ytop) {    // Top different than bottom?
+                        v.y = this.ytop;
+                        perspective.transformWorldToMapCoord(v,  v2);   // Transform to map coord
+                        if(v2.x < bb.xmin) bb.xmin = v2.x;
+                        if(v2.y < bb.ymin) bb.ymin = v2.y;
+                        if(v2.x > bb.xmax) bb.xmax = v2.x;
+                        if(v2.y > bb.ymax) bb.ymax = v2.y;
+                    }
+                }
+            }
+            //System.out.println("x=" + bb.xmin + " - " + bb.xmax + ",  y=" + bb.ymin + " - " + bb.ymax);
+            bbc.put(perspective.getName(), bb);
+            bb_cache = bbc;
+        }
+        if ((bb.xmin > (tile_x + tile_dim)) || (bb.xmax < tile_x) || (bb.ymin > (tile_y + tile_dim)) || (bb.ymax < tile_y)) {
+            //System.out.println("tile: " + tile_x + " / " + tile_y + " - miss");
+            return false;
+        }
+        //System.out.println("tile: " + tile_x + " / " + tile_y + " - hit");
+        return true;
     }
 }
