@@ -43,12 +43,13 @@ import org.dynmap.utils.Vector3D;
 import org.json.simple.JSONObject;
 
 public class IsoHDPerspective implements HDPerspective {
-    private String name;
+    private final String name;
+    private final int hashcode;
     /* View angles */
-    public double azimuth;  /* Angle in degrees from looking north (0), east (90), south (180), or west (270) */
-    public double inclination;  /* Angle in degrees from horizontal (0) to vertical (90) */
-    public double maxheight;
-    public double minheight;
+    public final double azimuth;  /* Angle in degrees from looking north (0), east (90), south (180), or west (270) */
+    public final double inclination;  /* Angle in degrees from horizontal (0) to vertical (90) */
+    public final double maxheight;
+    public final double minheight;
     /* Coordinate space for tiles consists of a plane (X, Y), corresponding to the projection of each tile on to the
      * plane of the bottom of the world (X positive to the right, Y positive to the top), with Z+ corresponding to the
      * height above this plane on a vector towards the viewer).  Logically, this makes the parallelogram representing the
@@ -57,11 +58,11 @@ public class IsoHDPerspective implements HDPerspective {
      * (X+ is south, Y+ is up, Z+ is east). 
      */
     /* Transformation matrix for taking coordinate in world-space (x, y, z) and finding coordinate in tile space (x, y, z) */
-    private Matrix3D world_to_map;
-    private Matrix3D map_to_world;
+    private final Matrix3D world_to_map;
+    private final Matrix3D map_to_world;
     
     /* Scale for default tiles */
-    private int basemodscale;
+    private final int basemodscale;
     
     /* dimensions of a map tile */
     public static final int tileWidth = 128;
@@ -1145,24 +1146,35 @@ public class IsoHDPerspective implements HDPerspective {
         name = configuration.getString("name", null);
         if(name == null) {
             Log.severe("Perspective definition missing name - must be defined and unique");
-            return;
+            hashcode = 0;
         }
-        azimuth = configuration.getDouble("azimuth", 135.0);    /* Get azimuth (default to classic kzed POV */
+        else {
+            hashcode = name.hashCode();
+        }
+        double az = configuration.getDouble("azimuth", 135.0);    /* Get azimuth (default to classic kzed POV */
         /* Fix azimuth so that we respect new north, if that is requested (newnorth = oldeast) */
         if(MapManager.mapman.getCompassMode() == CompassMode.NEWNORTH) {
-            azimuth = (azimuth + 90.0); if(azimuth >= 360.0) azimuth = azimuth - 360.0;
+            az = (az + 90.0);
+            if(az >= 360.0) {
+                az = az - 360.0;
+            }
         }
-        inclination = configuration.getDouble("inclination", 60.0);
-        if(inclination > MAX_INCLINATION) inclination = MAX_INCLINATION;
-        if(inclination < MIN_INCLINATION) inclination = MIN_INCLINATION;
-        basemodscale = (int)Math.ceil(configuration.getDouble("scale", MIN_SCALE));
-        if(basemodscale < MIN_SCALE) basemodscale = MIN_SCALE;
-        if(basemodscale > MAX_SCALE) basemodscale = MAX_SCALE;
+        azimuth = az;
+        double inc;
+        inc = configuration.getDouble("inclination", 60.0);
+        if(inc > MAX_INCLINATION) inc = MAX_INCLINATION;
+        if(inc < MIN_INCLINATION) inc = MIN_INCLINATION;
+        inclination = inc;
+        int mscale = (int)Math.ceil(configuration.getDouble("scale", MIN_SCALE));
+        if(mscale < MIN_SCALE) mscale = MIN_SCALE;
+        if(mscale > MAX_SCALE) mscale = MAX_SCALE;
+        basemodscale = mscale;
         /* Get max and min height */
         maxheight = configuration.getInteger("maximumheight", -1);
-        minheight = configuration.getInteger("minimumheight", 0);
-        if(minheight < 0) minheight = 0;
-
+        
+        int minh = configuration.getInteger("minimumheight", 0);
+        if(minh < 0) minh = 0;
+        minheight = minh;
         /* Generate transform matrix for world-to-tile coordinate mapping */
         /* First, need to fix basic coordinate mismatches before rotation - we want zero azimuth to have north to top
          * (world -X -> tile +Y) and east to right (world -Z to tile +X), with height being up (world +Y -> tile +Z)
@@ -1673,4 +1685,10 @@ public class IsoHDPerspective implements HDPerspective {
     public void transformWorldToMapCoord(Vector3D input, Vector3D rslt) {
         world_to_map.transform(input,  rslt);
     }
+
+    @Override
+    public int hashCode() {
+        return hashcode;
+    }
+
 }

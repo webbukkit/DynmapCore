@@ -435,6 +435,13 @@ public class HDMap extends MapType {
         }
         return false;
     }
+    public boolean setBoostZoom(int mzi) {
+        if(mzi != this.boostzoom) {
+            this.boostzoom = mzi;
+            return true;
+        }
+        return false;
+    }
     public boolean setPerspective(HDPerspective p) {
         if(perspective != p) {
             perspective = p;

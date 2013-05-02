@@ -62,7 +62,7 @@ public class HDMapTile extends MapTile {
     
     @Override
     public int hashCode() {
-        return tx ^ ty ^ perspective.getName().hashCode() ^ world.hashCode();
+        return tx ^ ty ^ perspective.hashCode() ^ world.hashCode() ^ boostzoom;
     }
 
     @Override
@@ -74,7 +74,7 @@ public class HDMapTile extends MapTile {
     }
 
     public boolean equals(HDMapTile o) {
-        return o.tx == tx && o.ty == ty && (perspective == o.perspective) && (o.world == world);
+        return o.tx == tx && o.ty == ty && (perspective == o.perspective) && (o.world == world) && (o.boostzoom == boostzoom);
     }
 
     public String getKey(String prefix) {

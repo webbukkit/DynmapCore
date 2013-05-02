@@ -46,8 +46,9 @@ public abstract class DynmapWorld {
     private HashSet<String> zoomoutupdates[] = new HashSet[0];
     private boolean checkts = do_init_scan;	/* Check timestamps on first run with new configuration */
     private boolean cancelled;
-    private String wname;
-    private String raw_wname;
+    private final String wname;
+    private final int hashcode;
+    private final String raw_wname;
     private String title;
     public int tileupdatedelay;
     private boolean is_enabled;
@@ -62,6 +63,7 @@ public abstract class DynmapWorld {
     protected DynmapWorld(String wname, int worldheight, int sealevel) {
         this.raw_wname = wname;
         this.wname = normalizeWorldName(wname);
+        this.hashcode = this.wname.hashCode();
         this.title = wname;
         this.worldheight = worldheight;
         this.sealevel = sealevel;
@@ -544,7 +546,7 @@ public abstract class DynmapWorld {
     public abstract DynmapLocation getSpawnLocation();
     
     public int hashCode() {
-        return wname.hashCode();
+        return this.hashcode;
     }
     /* Get world time */
     public abstract long getTime();
