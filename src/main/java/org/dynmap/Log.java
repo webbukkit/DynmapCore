@@ -4,8 +4,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Log {
-    protected static Logger log = Logger.getLogger("Dynmap");
-    protected static String prefix = "";
+    private static Logger log = Logger.getLogger("Dynmap");
+    private static String prefix = "";
     public static boolean verbose = false;
     public static void setLogger(Logger logger, String pre) {
         log = logger;
@@ -13,6 +13,9 @@ public class Log {
             prefix = pre + " ";
         else
             prefix = "";
+    }
+    public static void setLoggerParent(Logger parent) {
+        log.setParent(parent);
     }
     public static void info(String msg) {
         log.log(Level.INFO, prefix + msg);
