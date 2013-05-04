@@ -4,5 +4,4 @@ modname:ObsidiPlates
 cfgfile:config/ObsidiPlates.cfg
 
 # Blocks
-block:id=obsidianPlate,data=*,scale=16
-rotate:id=72,data=0,rot=0
+boxblock:id=obsidianPlate,data=*,xmin=0.0625,xmax=0.9275,ymax=0.0625,zmin=0.0625,zmax=0.9275

@@ -4,4 +4,4 @@ modname:ObsidiPlates
 cfgfile:config/ObsidiPlates.cfg
 
 # Blocks
-block:id=obsidianPlate,data=*,allsides=37,topbottom=6037
+block:id=obsidianPlate,data=*,allfaces=37,stdrot=true,transparency=TRANSPARENT
