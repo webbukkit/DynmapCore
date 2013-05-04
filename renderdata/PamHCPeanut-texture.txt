@@ -1,4 +1,5 @@
 # Pam's Harvestcraft Peanut Block mapping
+version:-1.4.7
 modname:PamHCPeanut
 # configuration file
 cfgfile:config/PamHCPeanut.cfg

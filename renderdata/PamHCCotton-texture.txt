@@ -1,4 +1,5 @@
 # Pam's Harvestcraft Cotton Block mapping
+version:-1.4.7
 modname:PamHCCotton
 # configuration file
 cfgfile:config/PamHCCotton.cfg

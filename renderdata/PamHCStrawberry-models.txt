@@ -1,4 +1,5 @@
 # Pam's Harvestcraft Strawberry Block mapping
+version:-1.4.7
 modname:PamHCStrawberry
 # configuration file
 cfgfile:config/PamHCStrawberry.cfg

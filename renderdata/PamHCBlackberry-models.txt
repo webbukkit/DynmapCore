@@ -1,4 +1,5 @@
 # Pam's Harvestcraft Blackberry Block mapping
+version:-1.4.7
 modname:PamHCBlackberry
 # configuration file
 cfgfile:config/PamHCBlackberry.cfg

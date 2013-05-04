@@ -1,4 +1,5 @@
 # Pam's Harvestcraft Rice Block mapping
+version:-1.4.7
 modname:PamHCRice
 # configuration file
 cfgfile:config/PamHCRice.cfg

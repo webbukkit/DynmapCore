@@ -1,4 +1,5 @@
 # Pam's Harvestcraft Lemon Block mapping
+version:-1.4.7
 modname:PamHCLemon
 # configuration file
 cfgfile:config/PamHCLemon.cfg

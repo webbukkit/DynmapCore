@@ -1,4 +1,5 @@
 # Pam's Harvestcraft Apple Block mapping
+version:-1.4.7
 modname:PamHCApple
 # configuration file
 cfgfile:config/PamHCApple.cfg

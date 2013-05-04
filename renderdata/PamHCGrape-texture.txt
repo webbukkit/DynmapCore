@@ -1,4 +1,5 @@
 # Pam's Harvestcraft Grape Block mapping
+version:-1.4.7
 modname:PamHCGrape
 # configuration file
 cfgfile:config/PamHCGrape.cfg

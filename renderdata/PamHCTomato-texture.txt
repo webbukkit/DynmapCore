@@ -1,4 +1,5 @@
 # Pam's Harvestcraft Tomato Block mapping
+version:-1.4.7
 modname:PamHCTomato
 # configuration file
 cfgfile:config/PamHCTomato.cfg

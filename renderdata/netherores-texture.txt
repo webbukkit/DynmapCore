@@ -2,6 +2,7 @@
 modname:mod_NetherOres,NetherOres
 # configuration file
 cfgfile:config/NetherOres.cfg
+cfgfile:config/powercrystals/netherores/common.cfg
 
 # Files
 texturefile:id=blk0,filename=powercrystals/netherores/textures/terrain_0.png,xcount=16,ycount=16

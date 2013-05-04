@@ -1,4 +1,5 @@
 # Pam's Harvestcraft Chili Pepper Block mapping
+version:-1.4.7
 modname:PamHCChilipepper
 # configuration file
 cfgfile:config/PamHCChilipepper.cfg

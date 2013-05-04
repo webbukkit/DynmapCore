@@ -1,4 +1,5 @@
 # Pam's Harvestcraft Cucumber Block mapping
+version:-1.4.7
 modname:PamHCCucumber
 # configuration file
 cfgfile:config/PamHCCucumber.cfg

@@ -1,4 +1,5 @@
 # Pam's Harvestcraft Kiwi Block mapping
+version:-1.4.7
 modname:PamHCKiwi
 # configuration file
 cfgfile:config/PamHCKiwi.cfg

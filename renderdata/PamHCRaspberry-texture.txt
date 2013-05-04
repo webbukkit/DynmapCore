@@ -1,4 +1,5 @@
 # Pam's Harvestcraft Raspberry Block mapping
+version:-1.4.7
 modname:PamHCRaspberry
 # configuration file
 cfgfile:config/PamHCRaspberry.cfg

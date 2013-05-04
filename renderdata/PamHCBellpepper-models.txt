@@ -1,4 +1,5 @@
 # Pam's Harvestcraft Bell Pepper Block mapping
+version:-1.4.7
 modname:PamHCBellpepper
 # configuration file
 cfgfile:config/PamHCBellpepper.cfg

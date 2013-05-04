@@ -1465,7 +1465,25 @@ public class TexturePack {
             }
         }
     }
-
+    private static void addFiles(List<String> tsfiles, List<String> txfiles, File dir, String path) {
+        File[] listfiles = dir.listFiles();
+        if(listfiles == null) return;
+        for(File f : listfiles) {
+            String fn = f.getName();
+            if(fn.equals(".") || (fn.equals(".."))) continue;
+            if(f.isFile()) {
+                if(fn.endsWith("-texture.txt")) {
+                    txfiles.add(path + fn);
+                }
+                if(fn.endsWith("-tilesets.txt")) {
+                    tsfiles.add(path + fn);
+                }
+            }
+            else if(f.isDirectory()) {
+                addFiles(tsfiles, txfiles, f, path + f.getName() + "/");
+            }
+        }
+    }
     /**
      * Load texture pack mappings
      */
@@ -1485,36 +1503,32 @@ public class TexturePack {
             Log.severe("Error loading texture.txt");
         
         File renderdir = new File(datadir, "renderdata");
-        String[] files = renderdir.list();
-        if(files != null) {
-            for(String fname : files) {
-                if(fname.endsWith("-tilesets.txt")) {    /* If tileset definition - used for building resources for textures */
-                    File custom = new File(renderdir, fname);
-                    if(custom.canRead()) {
-                        try {
-                            in = new FileInputStream(custom);
-                            loadTileSetsFile(in, custom.getPath(), config, core, fname.substring(0,  fname.indexOf("-tilesets.txt")));
-                        } catch (IOException iox) {
-                            Log.severe("Error loading " + custom.getPath() + " - " + iox);
-                        } finally {
-                            if(in != null) { try { in.close(); } catch (IOException x) {} in = null; }
-                        }
-                    }
+        ArrayList<String> tsfiles = new ArrayList<String>();
+        ArrayList<String> txfiles = new ArrayList<String>();
+        addFiles(tsfiles, txfiles, renderdir, "");
+        for(String fname : tsfiles) {
+            File custom = new File(renderdir, fname);
+            if(custom.canRead()) {
+                try {
+                    in = new FileInputStream(custom);
+                    loadTileSetsFile(in, custom.getPath(), config, core, fname.substring(0,  fname.indexOf("-tilesets.txt")));
+                } catch (IOException iox) {
+                    Log.severe("Error loading " + custom.getPath() + " - " + iox);
+                } finally {
+                    if(in != null) { try { in.close(); } catch (IOException x) {} in = null; }
                 }
             }
-            for(String fname : files) {
-                if(fname.endsWith("-texture.txt")) {
-                    File custom = new File(renderdir, fname);
-                    if(custom.canRead()) {
-                        try {
-                            in = new FileInputStream(custom);
-                            loadTextureFile(in, custom.getPath(), config, core, fname.substring(0,  fname.indexOf("-texture.txt")));
-                        } catch (IOException iox) {
-                            Log.severe("Error loading " + custom.getPath() + " - " + iox);
-                        } finally {
-                            if(in != null) { try { in.close(); } catch (IOException x) {} in = null; }
-                        }
-                    }
+        }
+        for(String fname : txfiles) {
+            File custom = new File(renderdir, fname);
+            if(custom.canRead()) {
+                try {
+                    in = new FileInputStream(custom);
+                    loadTextureFile(in, custom.getPath(), config, core, fname.substring(0,  fname.indexOf("-texture.txt")));
+                } catch (IOException iox) {
+                    Log.severe("Error loading " + custom.getPath() + " - " + iox);
+                } finally {
+                    if(in != null) { try { in.close(); } catch (IOException x) {} in = null; }
                 }
             }
         }
@@ -2104,6 +2118,28 @@ public class TexturePack {
                             if(rain != -1.0)
                                 b.setRainfall(rain);
                         }
+                    }
+                }
+                else if(line.startsWith("version:")) {
+                    line = line.substring(line.indexOf(':')+1);
+                    String mcver = core.getDynmapPluginPlatformVersion();
+                    String[] split = line.split("-");
+                    if(split.length == 1) { /* Only one */
+                        if(!mcver.equals(split[0])) { // If not match
+                            return;
+                        }
+                    }
+                    else if(split.length == 2) {    /* Two : range */
+                        if( (split[0].equals("") || (split[0].compareTo(mcver) <= 0)) &&
+                                (split[1].equals("") || (split[1].compareTo(mcver) >= 0))) {
+                            Log.info("" + split[0] + "<" + mcver + "<" + split[1]);
+                        }
+                        else {
+                            return;
+                        }
+                    }
+                    else {
+                        Log.severe("Format error - line " + rdr.getLineNumber() + " of " + txtname + ": " + line);
                     }
                 }
             }

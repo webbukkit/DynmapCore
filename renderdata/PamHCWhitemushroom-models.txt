@@ -1,4 +1,5 @@
 # Pam's Harvestcraft White Mushroom Block mapping
+version:-1.4.7
 modname:PamHCWhitemushroom
 # configuration file
 cfgfile:config/PamHCWhitemushroom.cfg

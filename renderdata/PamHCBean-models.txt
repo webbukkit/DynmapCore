@@ -1,4 +1,5 @@
 # Pam's Harvestcraft Bean Block mapping
+version:-1.4.7
 modname:PamHCBean
 # configuration file
 cfgfile:config/PamHCBean.cfg

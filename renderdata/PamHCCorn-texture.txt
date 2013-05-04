@@ -1,4 +1,5 @@
 # Pam's Harvestcraft Corn Block mapping
+version:-1.4.7
 modname:PamHCCorn
 # configuration file
 cfgfile:config/PamHCCorn.cfg

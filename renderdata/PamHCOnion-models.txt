@@ -1,4 +1,5 @@
 # Pam's Harvestcraft Onion Block mapping
+version:-1.4.7
 modname:PamHCOnion
 # configuration file
 cfgfile:config/PamHCOnion.cfg

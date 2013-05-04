@@ -1,4 +1,5 @@
 # Pam's Harvestcraft Cranberry Block mapping
+version:-1.4.7
 modname:PamHCCranberry
 # configuration file
 cfgfile:config/PamHCCranberry.cfg

@@ -1,4 +1,5 @@
 # Pam's Harvestcraft Lettuce Block mapping
+version:-1.4.7
 modname:PamHCLettuce
 # configuration file
 cfgfile:config/PamHCLettuce.cfg

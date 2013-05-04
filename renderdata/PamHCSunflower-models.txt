@@ -1,4 +1,5 @@
 # Pam's Harvestcraft Sunflower Block mapping
+version:-1.4.7
 modname:PamHCSunflower
 # configuration file
 cfgfile:config/PamHCSunflower.cfg

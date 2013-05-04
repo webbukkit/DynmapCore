@@ -1,4 +1,5 @@
 # Pam's Harvestcraft Spiceleaf Block mapping
+version:-1.4.7
 modname:PamHCSpiceleaf
 # configuration file
 cfgfile:config/PamHCSpiceleaf.cfg

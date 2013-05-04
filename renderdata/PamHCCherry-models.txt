@@ -1,4 +1,5 @@
 # Pam's Harvestcraft Cherr Block mapping
+version:-1.4.7
 modname:PamHCCherry
 # configuration file
 cfgfile:config/PamHCCherry.cfg

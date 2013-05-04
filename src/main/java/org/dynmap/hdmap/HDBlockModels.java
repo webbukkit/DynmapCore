@@ -543,6 +543,22 @@ public class HDBlockModels {
         }
         return model;
     }
+    private static void addFiles(ArrayList<String> files, File dir, String path) {
+        File[] listfiles = dir.listFiles();
+        if(listfiles == null) return;
+        for(File f : listfiles) {
+            String fn = f.getName();
+            if(fn.equals(".") || (fn.equals(".."))) continue;
+            if(f.isFile()) {
+                if(fn.endsWith("-models.txt")) {
+                    files.add(path + fn);
+                }
+            }
+            else if(f.isDirectory()) {
+                addFiles(files, f, path + f.getName() + "/");
+            }
+        }
+    }
     /**
      * Load models 
      */
@@ -562,24 +578,21 @@ public class HDBlockModels {
             loadModelFile(in, "models.txt", config, core, "core");
             try { in.close(); } catch (IOException iox) {} in = null;
         }
+        ArrayList<String> files = new ArrayList<String>();
         File customdir = new File(datadir, "renderdata");
-        String[] files = customdir.list();
-        if(files != null) {
-            for(String fn : files) {
-                if(fn.endsWith("-models.txt") == false)
-                    continue;
-                File custom = new File(customdir, fn);
-                if(custom.canRead()) {
-                    try {
-                        in = new FileInputStream(custom);
-                        loadModelFile(in, custom.getPath(), config, core, fn.substring(0, fn.indexOf("-models.txt")));
-                    } catch (IOException iox) {
-                        Log.severe("Error loading " + custom.getPath());
-                    } finally {
-                        if(in != null) { 
-                            try { in.close(); } catch (IOException iox) {}
-                            in = null;
-                        }
+        addFiles(files, customdir, "");
+        for(String fn : files) {
+            File custom = new File(customdir, fn);
+            if(custom.canRead()) {
+                try {
+                in = new FileInputStream(custom);
+                    loadModelFile(in, custom.getPath(), config, core, fn.substring(0, fn.indexOf("-models.txt")));
+                } catch (IOException iox) {
+                    Log.severe("Error loading " + custom.getPath());
+                } finally {
+                    if(in != null) { 
+                        try { in.close(); } catch (IOException iox) {}
+                        in = null;
                     }
                 }
             }
@@ -1158,6 +1171,27 @@ public class HDBlockModels {
                         }
                     }
                     if(!found) return;
+                }
+                else if(line.startsWith("version:")) {
+                    line = line.substring(line.indexOf(':')+1);
+                    String mcver = core.getDynmapPluginPlatformVersion();
+                    String[] split = line.split("-");
+                    if(split.length == 1) { /* Only one */
+                        if(!mcver.equals(split[0])) { // If not match
+                            return;
+                        }
+                    }
+                    else if(split.length == 2) {    /* Two : range */
+                        if( (split[0].equals("") || (split[0].compareTo(mcver) <= 0)) &&
+                                (split[1].equals("") || (split[1].compareTo(mcver) >= 0))) {
+                        }
+                        else {
+                            return;
+                        }
+                    }
+                    else {
+                        Log.severe("Format error - line " + rdr.getLineNumber() + " of " + fname + ": " + line);
+                    }
                 }
                 else if(layerbits != 0) {   /* If we're working pattern lines */
                     /* Layerbits determine Y, rows count from North to South (X=0 to X=N-1), columns Z are West to East (N-1 to 0) */

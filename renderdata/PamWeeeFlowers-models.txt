@@ -1,4 +1,5 @@
 # Pam's Harvestcraft Wee Flowers Block mapping
+version:-1.4.7
 modname:PamWeeeFlowers
 # configuration file
 cfgfile:config/PamWeeeFlowers.cfg

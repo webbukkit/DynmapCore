@@ -1,4 +1,5 @@
 # Pam's Harvestcraft Blueberry Block mapping
+version:-1.4.7
 modname:PamHCBlueberry
 # configuration file
 cfgfile:config/PamHCBlueberry.cfg
