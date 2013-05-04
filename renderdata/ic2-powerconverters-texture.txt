@@ -5,6 +5,7 @@ var:ID.BlockBuildcraft=0,ID.BlockCommon=0,ID.BlockIndustrialCraft=0,ID.BlockStea
 var:ID.PowerConverter=0
 # Configuration file
 cfgfile:config/PowerConverters.cfg
+cfgfile:config/powercrystals/powerconverters/common.cfg
 
 # Files
 texturefile:id=blk0,filename=powercrystals/powerconverters/textures/terrain_0.png,xcount=16,ycount=16
