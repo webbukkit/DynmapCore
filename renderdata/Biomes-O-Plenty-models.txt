@@ -1,4 +1,5 @@
 # Biomes O Plenty Block mapping
+version:-1.5.1
 modname:BiomesOPlenty
 
 var:terrain_block_ids/Crag_Rock_ID=0,terrain_block_ids/Hard_Dirt_ID=0,terrain_block_ids/Hard_Sand_ID=0
