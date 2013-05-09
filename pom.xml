@@ -21,6 +21,7 @@
 				<includes>
 					<include>*.yml</include>
 					<include>*.txt</include>
+					<include>extracted/web/version.js</include>
 				</includes>
 			</resource>
 			<resource>
@@ -29,6 +30,7 @@
 				<excludes>
 					<exclude>*.yml</exclude>
 					<exclude>*.txt</exclude>
+					<exclude>extracted/web/version.js</exclude>
 				</excludes>
 			</resource>
 		</resources>
@@ -93,29 +95,6 @@
 </filters>
 							
 						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<descriptors>
-						<descriptor>src/main/assembly/package.xml</descriptor>
-					</descriptors>
-					<!-- Hack for bug in maven-assembly: http://jira.codehaus.org/browse/MASSEMBLY-449 -->
-					<archiverConfig>
-						<fileMode>420</fileMode> <!-- 420(dec) = 644(oct) -->
-						<directoryMode>493</directoryMode> <!-- 493(dec) = 755(oct) -->
-						<defaultDirectoryMode>493</defaultDirectoryMode>
-					</archiverConfig>
-				</configuration>
-				<executions>
-					<execution>
-						<id>build</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
 					</execution>
 				</executions>
 			</plugin>

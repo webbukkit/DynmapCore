@@ -30,8 +30,7 @@ import org.dynmap.utils.MapIterator;
  */
 public class CTMTexturePack {
     private String[] ctpfiles;
-    private File basedir;
-    private ZipFile texturezip;
+    private TexturePackLoader tpl;
     private CTMProps[][] bytilelist;
     private CTMProps[][] byblocklist;
     private BitSet mappedtiles;
@@ -793,21 +792,18 @@ public class CTMTexturePack {
     }
     
     /**
-     * Constructor for CTM support, using ZIP based texture pack
-     * @param zf - zip file
+     * Constructor for CTM support, using texture pack loader
+     * @param tpl - texture pack loader
      * @param tp - texture pack
      */
-    public CTMTexturePack(ZipFile zf, TexturePack tp, DynmapCore core) {
+    public CTMTexturePack(TexturePackLoader tpl, TexturePack tp, DynmapCore core) {
         ArrayList<String> files = new ArrayList<String>();
-        texturezip = zf;
+        this.tpl = tpl;
         blocknames = core.getBlockNames();
         blockmaterials = core.getBlockMaterialMap();
         biomenames = core.getBiomeNames();
-        @SuppressWarnings("unchecked")
-        Enumeration<ZipEntry> iter = (Enumeration<ZipEntry>) zf.entries();
-        while (iter.hasMoreElements()) {
-            ZipEntry ze = iter.nextElement();
-            String name = ze.getName(); /* Get file name */
+        Set<String> ent = tpl.getEntries();
+        for (String name : ent) {
             if(name.startsWith("ctm/") && name.endsWith(".properties")) {
                 files.add(name);
             }
@@ -815,42 +811,6 @@ public class CTMTexturePack {
         ctpfiles = files.toArray(new String[files.size()]);
         Arrays.sort(ctpfiles);
         processFiles(core);
-    }
-    /**
-     * Constructor for CTM support, using directory-based texture pack
-     * @param dir - base directory
-     * @param tp - texture pack
-     */
-    public CTMTexturePack(File dir, TexturePack tp, DynmapCore core) {
-        ArrayList<String> files = new ArrayList<String>();
-        basedir = dir;
-        blocknames = core.getBlockNames();
-        blockmaterials = core.getBlockMaterialMap();
-        biomenames = core.getBiomeNames();
-        File ctpdir = new File(dir, "ctm");
-        if(ctpdir.isDirectory()) {
-            addFiles(files, ctpdir, "ctm/");
-        }
-        ctpfiles = files.toArray(new String[files.size()]);
-        Arrays.sort(ctpfiles);
-        processFiles(core);
-    }
-    
-    private void addFiles(ArrayList<String> files, File dir, String path) {
-        File[] listfiles = dir.listFiles();
-        if(listfiles == null) return;
-        for(File f : listfiles) {
-            String fn = f.getName();
-            if(fn.equals(".") || (fn.equals(".."))) continue;
-            if(f.isFile()) {
-                if(fn.endsWith(".properties")) {
-                    files.add(path + fn);
-                }
-            }
-            else if(f.isDirectory()) {
-                addFiles(files, f, path + f.getName() + "/");
-            }
-        }
     }
     /**
      * Test if enabled properly
@@ -901,16 +861,7 @@ public class CTMTexturePack {
         for(String f : ctpfiles) {
             InputStream is = null;
             try {
-                if(texturezip != null) {
-                    ZipEntry ze = texturezip.getEntry(f);
-                    if(ze != null) {
-                        is = texturezip.getInputStream(ze);
-                    }
-                }
-                else if (basedir != null) {
-                    File pf = new File(basedir, f);
-                    is = new FileInputStream(pf);
-                }
+                is = tpl.openTPResource(f);
                 Properties p = new Properties();
                 if(is != null) {
                     p.load(is);

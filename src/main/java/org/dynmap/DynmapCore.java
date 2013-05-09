@@ -2,8 +2,12 @@ package org.dynmap;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -13,6 +17,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -23,6 +28,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.common.DynmapListenerManager;
@@ -69,7 +76,7 @@ public class DynmapCore implements DynmapCommonAPI {
          */
         public abstract void configurationLoaded();
     }
-    
+    private File jarfile;
     private DynmapServerInterface server;
     private String version;
     private String platform = null;
@@ -140,6 +147,14 @@ public class DynmapCore implements DynmapCommonAPI {
         markerapi = null;
     }
     
+    // Set plugin jar file
+    public void setPluginJarFile(File f) {
+        jarfile = f;
+    }
+    // Get plugin jar file
+    public File getPluginJarFile() {
+        return jarfile;
+    }
     /* Dependencies - need to be supplied by plugin wrapper */
     public void setPluginVersion(String pluginver, String platform) {
         this.plugin_ver = pluginver;
@@ -368,6 +383,8 @@ public class DynmapCore implements DynmapCommonAPI {
     }
 
     public boolean enableCore(EnableCoreCallbacks cb) {
+        /* Update extracted files, if needed */
+        updateExtractedFiles();
         /* Initialize authorization manager */
         if(configuration.getBoolean("login-enabled", false))
             authmgr = new WebAuthManager(this);
@@ -1362,7 +1379,7 @@ public class DynmapCore implements DynmapCommonAPI {
     public boolean createDefaultFileFromResource(String resourcename, File deffile) {
         if(deffile.canRead())
             return true;
-        Log.info(deffile.getPath() + " not found - creating default");
+        Debug.debug(deffile.getPath() + " not found - creating default");
         InputStream in = getClass().getResourceAsStream(resourcename);
         if(in == null) {
             Log.severe("Unable to find default resource - " + resourcename);
@@ -1900,5 +1917,113 @@ public class DynmapCore implements DynmapCommonAPI {
     }
     public String getDynmapPluginPlatformVersion() {
         return platformVersion;
+    }
+    
+    private static boolean deleteDirectory(File dir) {
+        File[] files = dir.listFiles();
+        if (files != null) {
+            for (File f : files) {
+                if (f.getName().equals(".") || f.getName().equals("..")) continue;
+                if (f.isDirectory()) {
+                    deleteDirectory(f);
+                }
+                else if(f.isFile()) {
+                    f.delete();
+                }
+            }
+        }
+        return dir.delete();
+    }
+    private void updateExtractedFiles() {
+        if(jarfile == null) return;
+        File df = this.getDataFolder();
+        if(df.exists() == false) df.mkdirs();
+        File ver = new File(df, "version.txt");
+        String prevver = "1.6";
+        if(ver.exists()) {
+            Reader ir = null;
+            try {
+                ir = new FileReader(ver);
+                prevver = "";
+                int c;
+                while((c = ir.read()) >= 0) {
+                    prevver += (char)c;
+                }
+            } catch (IOException iox) {
+            } finally {
+                if(ir != null) {
+                    try { ir.close(); } catch (IOException iox) {}
+                }
+            }
+        }
+        else {  // First time, delete old external texture pack
+            deleteDirectory(new File(df, "texturepacks/standard"));
+        }
+        /* If not dev build, and matched, we're good */
+        if ((!prevver.endsWith("-Dev")) && prevver.equals(this.getDynmapPluginVersion())) {
+            return;
+        }
+        /* Open JAR as ZIP */
+        ZipFile zf = null;
+        FileOutputStream fos = null;
+        InputStream ins = null;
+        byte[] buf = new byte[2048];
+        String n = null;
+        try {
+            File f;
+            zf = new ZipFile(jarfile);
+            Enumeration<? extends ZipEntry> e = zf.entries();
+            while (e.hasMoreElements()) {
+                ZipEntry ze = e.nextElement();
+                n = ze.getName();
+                if(!n.startsWith("extracted/")) continue;
+                n = n.substring("extracted/".length());
+                f = new File(df, n);
+                if(ze.isDirectory()) {
+                    f.mkdirs();
+                }
+                else {
+                    f.getParentFile().mkdirs();
+                    fos = new FileOutputStream(f);
+                    ins = zf.getInputStream(ze);
+                    int len;
+                    while ((len = ins.read(buf)) >= 0) {
+                        fos.write(buf,  0,  len);
+                    }
+                    ins.close();
+                    ins = null;
+                    fos.close();
+                    fos = null;
+                }
+            }
+        } catch (IOException iox) {
+            Log.severe("Error extracting file - " + n);
+        } finally {
+            if (ins != null) {
+                try { ins.close(); } catch (IOException iox) {}
+                ins = null;
+            }
+            if (fos != null) {
+                try { fos.close(); } catch (IOException iox) {}
+                fos = null;
+            }
+            if (zf != null) {
+                try { zf.close(); } catch (IOException iox) {}
+                zf = null;
+            }
+        }
+        
+        /* Finally, write new version cookie */
+        Writer out = null;
+        try {
+            out = new FileWriter(ver);
+            out.write(this.getDynmapPluginVersion());
+        } catch (IOException iox) {
+        } finally {
+            if(out != null) {
+                try { out.close(); } catch (IOException iox) {}
+            }
+        }
+        Log.info("Extracted files upgraded");
     }
 }
