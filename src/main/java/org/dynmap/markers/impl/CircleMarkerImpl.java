@@ -2,6 +2,7 @@ package org.dynmap.markers.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapWorld;
@@ -10,6 +11,7 @@ import org.dynmap.markers.CircleMarker;
 import org.dynmap.markers.MarkerSet;
 import org.dynmap.markers.impl.MarkerAPIImpl.MarkerUpdate;
 import org.dynmap.utils.Matrix3D;
+import org.dynmap.utils.Vector3D;
 
 class CircleMarkerImpl implements CircleMarker {
     private String markerid;
@@ -31,7 +33,15 @@ class CircleMarkerImpl implements CircleMarker {
     private double fillopacity = 0.35;
     private int fillcolor = 0xFF0000;
     private boolean boostflag = false;
-    
+
+    private static class BoundingBox {
+        double xmin, xmax;
+        double ymin, ymax;
+        double xp[];
+        double yp[];
+    }
+    private Map<String, BoundingBox> bb_cache = null;
+
     /** 
      * Create circle marker
      * @param id - marker ID
@@ -108,6 +118,7 @@ class CircleMarkerImpl implements CircleMarker {
     
     void cleanup() {
         markerset = null;
+        bb_cache = null;
     }
     
     @Override
@@ -284,6 +295,7 @@ class CircleMarkerImpl implements CircleMarker {
             MarkerAPIImpl.circleMarkerUpdated(this, MarkerUpdate.UPDATED);
             if(ispersistent)
                 MarkerAPIImpl.saveMarkers();
+            bb_cache = null;
         }
     }
     @Override
@@ -302,6 +314,7 @@ class CircleMarkerImpl implements CircleMarker {
             MarkerAPIImpl.circleMarkerUpdated(this, MarkerUpdate.UPDATED);
             if(ispersistent)
                 MarkerAPIImpl.saveMarkers();
+            bb_cache = null;
         }
     }
     @Override
@@ -329,6 +342,72 @@ class CircleMarkerImpl implements CircleMarker {
     }
 
     final boolean testTileForBoostMarkers(DynmapWorld w, HDPerspective perspective, double tile_x, double tile_y, double tile_dim) {
+        Map<String, BoundingBox> bbc = bb_cache;
+        if(bbc == null) {
+            bbc = new ConcurrentHashMap<String, BoundingBox>();
+        }
+        BoundingBox bb = bbc.get(perspective.getName());
+        if (bb == null) { // No cached bounding box, so generate it
+            bb = new BoundingBox();
+            Vector3D v = new Vector3D();
+            Vector3D v2 = new Vector3D();
+            bb.xmin = Double.MAX_VALUE;
+            bb.xmax = -Double.MAX_VALUE;
+            bb.ymin = Double.MAX_VALUE;
+            bb.ymax = -Double.MAX_VALUE;
+            int cnt = 16; // Just do 16 points for now
+            bb.xp = new double[cnt];
+            bb.yp = new double[cnt];
+            for(int i = 0; i < cnt; i++) {
+                v.x = this.x + (this.xr * Math.cos(2.0*Math.PI*i/cnt));
+                v.y = this.y;
+                v.z = this.z + (this.zr * Math.sin(2.0*Math.PI*i/cnt));
+                perspective.transformWorldToMapCoord(v,  v2);   // Transform to map coord
+                if(v2.x < bb.xmin) bb.xmin = v2.x;
+                if(v2.y < bb.ymin) bb.ymin = v2.y;
+                if(v2.x > bb.xmax) bb.xmax = v2.x;
+                if(v2.y > bb.ymax) bb.ymax = v2.y;
+                bb.xp[i] = v2.x;
+                bb.yp[i] = v2.y;
+            }
+            //System.out.println("x=" + bb.xmin + " - " + bb.xmax + ",  y=" + bb.ymin + " - " + bb.ymax);
+            bbc.put(perspective.getName(), bb);
+            bb_cache = bbc;
+        }
+        final double tile_x2 = tile_x + tile_dim;
+        final double tile_y2 = tile_y + tile_dim;
+        if ((bb.xmin > tile_x2) || (bb.xmax < tile_x) || (bb.ymin > tile_y2) || (bb.ymax < tile_y)) {
+            //System.out.println("tile: " + tile_x + " / " + tile_y + " - miss");
+            return false;
+        }
+        final int cnt = bb.xp.length;
+        final double[] px = bb.xp;
+        final double[] py = bb.yp;
+        /* Now see if tile square intersects polygon - start with seeing if any point inside */
+        if(MarkerImpl.testPointInPolygon(tile_x, tile_y, px, py)) { 
+            return true; // If tile corner inside, we intersect
+        }
+        if(MarkerImpl.testPointInPolygon(tile_x2, tile_y, px, py)) { 
+            return true; // If tile corner inside, we intersect
+        }
+        if(MarkerImpl.testPointInPolygon(tile_x, tile_y2, px, py)) { 
+            return true; // If tile corner inside, we intersect
+        }
+        if(MarkerImpl.testPointInPolygon(tile_x2, tile_y2, px, py)) { 
+            return true; // If tile corner inside, we intersect
+        }
+        /* Test if any polygon corners are inside square */
+        for(int i = 0; i < cnt; i++) { 
+            if((px[i] >= tile_x) && (px[i] <= tile_x2) && (py[i] >= tile_y) && (py[i] <= tile_y2)) {
+                return true; // If poly corner inside tile, we intersect
+            }
+        }
+        // Otherwise, only intersects if at least one edge crosses
+        //for (int i = 0, j = cnt-1; i < cnt; j = i++) {
+        //    // Test for X=tile_x side
+        //    if ((px[i] < tile_x) && (px[j] >= tile_x) && ()
+        // }
+        //System.out.println("tile: " + tile_x + " / " + tile_y + " - hit");
         return false;
     }
 }
