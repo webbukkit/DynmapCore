@@ -1936,7 +1936,6 @@ public class TexturePack {
                     else if(split.length == 2) {    /* Two : range */
                         if( (split[0].equals("") || (split[0].compareTo(mcver) <= 0)) &&
                                 (split[1].equals("") || (split[1].compareTo(mcver) >= 0))) {
-                            Log.info("" + split[0] + "<" + mcver + "<" + split[1]);
                         }
                         else {
                             return;
