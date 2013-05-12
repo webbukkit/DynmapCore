@@ -1938,22 +1938,21 @@ public class TexturePack {
                 else if(line.startsWith("version:")) {
                     line = line.substring(line.indexOf(':')+1);
                     String mcver = core.getDynmapPluginPlatformVersion();
-                    String[] split = line.split("-");
-                    if(split.length == 1) { /* Only one */
-                        if(!mcver.equals(split[0])) { // If not match
-                            return;
-                        }
-                    }
-                    else if(split.length == 2) {    /* Two : range */
-                        if( (split[0].equals("") || (split[0].compareTo(mcver) <= 0)) &&
-                                (split[1].equals("") || (split[1].compareTo(mcver) >= 0))) {
-                        }
-                        else {
+                    int dash = line.indexOf('-');
+                    if(dash < 0) {
+                        if(!mcver.equals(line.trim())) { // If not match
                             return;
                         }
                     }
                     else {
-                        Log.severe("Format error - line " + rdr.getLineNumber() + " of " + txtname + ": " + line);
+                        String s1 = line.substring(0, dash).trim();
+                        String s2 = line.substring(dash+1).trim();
+                        if( (s1.equals("") || (s1.compareTo(mcver) <= 0)) &&
+                                (s2.equals("") || (s2.compareTo(mcver) >= 0))) {
+                        }
+                        else {
+                            return;
+                        }
                     }
                 }
             }

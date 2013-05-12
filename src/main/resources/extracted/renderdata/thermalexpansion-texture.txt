@@ -1,4 +1,5 @@
 # Thermal Expansion mapping
+version:-1.4.7
 modname:mod_ThermalExpansion,ThermalExpansion
 # Configuration file
 cfgfile:config/cofh/thermalexpansion.cfg
