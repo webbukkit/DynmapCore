@@ -270,9 +270,9 @@ block:id=terrain_block_ids/Hard_Ice_ID,data=*,allfaces=0:hardice,stdrot=true
 #  "Hard Sand ID"
 block:id=terrain_block_ids/Hard_Sand_ID,data=*,allfaces=0:hardsand,stdrot=true
 #  "Holy Grass ID"
-block:id=terrain_block_ids/Holy_Grass_ID,data=0,allsides=11000:holygrass_side,top=1000:holygrass_top,bottom=0:holystone,stdrot=true
+block:id=terrain_block_ids/Holy_Grass_ID,data=0,allsides=0:holygrass_side,top=1000:holygrass_top,bottom=0:holystone,stdrot=true
 #  "Smoldering Grass ID"
-block:id=terrain_block_ids/Holy_Grass_ID,data=1,allsides=11000:smolderinggrass_side,top=1000:smolderinggrass_top,bottom=0:smolderinggrass_bottom,stdrot=true
+block:id=terrain_block_ids/Holy_Grass_ID,data=1,allsides=0:smolderinggrass_side,top=1000:smolderinggrass_top,bottom=0:smolderinggrass_bottom,stdrot=true
 #  "Holy Stone ID"
 block:id=terrain_block_ids/Holy_Stone_ID,data=*,allfaces=0:holystone,stdrot=true
 #  "Mud ID"

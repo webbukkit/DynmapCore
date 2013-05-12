@@ -33,17 +33,14 @@ block:id=block.factory.machine,data=8,allfaces=16,west=56,bottom=0,txtid=blk0
 
 # Engines
 # Steam
-#block:id=block.energy.engine,data=0,north=8004,east=8005,south=8006,west=8007,top=1,bottom=2,txtid=steam
 block:id=block.energy.engine,data=0,patch0=0,patch1=1,patch2=2,patch3=3,patch4=4,patch5=5,patch6=7,patch7=8,patch8=9,patch9=10,patch10=11,patch11=12,patch12=13,patch13=14,patch14=15,patch15=6,txtid=steam,transparency=TRANSPARENT
 
 # Magmatic
 #block:id=block.energy.engine,data=1,north=8004,east=8005,south=8006,west=8007,top=1,bottom=2,txtid=magmatic
 block:id=block.energy.engine,data=1,patch0=0,patch1=1,patch2=2,patch3=3,patch4=4,patch5=5,patch6=7,patch7=8,patch8=9,patch9=10,patch10=11,patch11=12,patch12=13,patch13=14,patch14=15,patch15=6,txtid=magmatic,transparency=TRANSPARENT
 
-# Tank
-# block.factory.machine - Tank
-#block:id=block.factory.tank,top=1,bottom=2,allsides=,txtid=tank
-# not sure can be done as they don't use a uniform grid for their texture
+# Tank (Just do as glass for now)
+block:id=block.factory.tank,allfaces=12224,stdrot=true,transparency=TRANSPARENT,txtid=blk0
 
 #Liquiducts
 # not sure can be done as they don't use a uniform grid for their texture
@@ -84,3 +81,12 @@ block:id=block.factory.rockwool,data=13,allfaces=145,txtid=terrain
 block:id=block.factory.rockwool,data=14,allfaces=129,txtid=terrain
 # block.factory.rockwool:15 - Black
 block:id=block.factory.rockwool,data=15,allfaces=113,txtid=terrain
+
+# Ore
+block:id=block.core.ore,data=0,allfaces=240,stdrot=true,txtid=blk0
+block:id=block.core.ore,data=1,allfaces=241,stdrot=true,txtid=blk0
+block:id=block.core.ore,data=2,allfaces=242,stdrot=true,txtid=blk0
+block:id=block.core.ore,data=3,allfaces=243,stdrot=true,txtid=blk0
+block:id=block.core.ore,data=4,allfaces=244,stdrot=true,txtid=blk0
+# Hardened Glass
+block:id=block.factory.glass,allfaces=224,stdrot=true,transparency=TRANSPARENT,txtid=blk0
