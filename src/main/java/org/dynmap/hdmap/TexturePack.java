@@ -1775,19 +1775,28 @@ public class TexturePack {
                         Log.severe("Texture map missing required parameters = line " + rdr.getLineNumber() + " of " + txtname);
                     }
                 }
-                else if(line.startsWith("texturefile:")) {
+                else if(line.startsWith("texturefile:") || line.startsWith("texture:")) {
+                    boolean istxt = line.startsWith("texture:");
                     line = line.substring(line.indexOf(':')+1);
                     String[] args = line.split(",");
                     int xdim = 16, ydim = 16;
                     String fname = null;
                     String id = null;
                     TileFileFormat fmt = TileFileFormat.GRID;
+                    if(istxt) {
+                        xdim = ydim = 1;
+                        fmt = TileFileFormat.GRID;
+                    }
                     for(String arg : args) {
                         String[] aval = arg.split("=");
                         if(aval.length < 2)
                             continue;
-                        if(aval[0].equals("id"))
+                        if(aval[0].equals("id")) {
                             id = aval[1];
+                            if ((fname == null) && istxt && (modname != null)) {
+                                fname = "mods/" + modname + "/textures/blocks/" + id + ".png";
+                            }
+                        }
                         else if(aval[0].equals("filename"))
                             fname = aval[1];
                         else if(aval[0].equals("xcount"))
@@ -1880,6 +1889,7 @@ public class TexturePack {
                     int watercolormult = -1;
                     double rain = -1.0;
                     double tmp = -1.0;
+                    String idval = null;
                     for(int i = 0; i < args.length; i++) {
                         String[] v = args[i].split("=");
                         if(v.length < 2) {
@@ -1888,6 +1898,7 @@ public class TexturePack {
                         }
                         if(v[0].equals("id")) {
                             id = getIntValue(varvals, v[1]);   
+                            idval = v[1];
                         }
                         else if(v[0].equals("grassColorMult")) {
                             grasscolormult = Integer.valueOf(v[1], 16);
