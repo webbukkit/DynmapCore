@@ -414,19 +414,30 @@ class AreaMarkerImpl implements AreaMarker {
             bb.xmax = -Double.MAX_VALUE;
             bb.ymin = Double.MAX_VALUE;
             bb.ymax = -Double.MAX_VALUE;
-            if(corners != null) {
-                int cnt = corners.size();
+            if (corners != null) {
+                ArrayList<Coord> crn = corners;
+                int cnt = crn.size();
+                if (cnt == 2) { // Special case
+                    cnt = 4;
+                    crn = new ArrayList<Coord>();
+                    Coord c0 = corners.get(0);
+                    Coord c1 = corners.get(1);
+                    crn.add(c0);
+                    crn.add(new Coord(c0.x, c1.z));
+                    crn.add(c1);
+                    crn.add(new Coord(c1.x, c0.z));
+                }
+                double ymid = (this.ytop + this.ybottom) / 2.0; 
                 bb.xp = new double[cnt];
                 bb.yp = new double[cnt];
-                double ymid = (this.ytop + this.ybottom) / 2.0; 
-                for(int i = 0; i < cnt; i++) {
-                    Coord c = corners.get(i);
+                for (int i = 0; i < cnt; i++) {
+                    Coord c = crn.get(i);
                     v.x = c.x; v.y = ymid; v.z = c.z; // get coords of point, in world coord
                     perspective.transformWorldToMapCoord(v,  v2);   // Transform to map coord
-                    if(v2.x < bb.xmin) bb.xmin = v2.x;
-                    if(v2.y < bb.ymin) bb.ymin = v2.y;
-                    if(v2.x > bb.xmax) bb.xmax = v2.x;
-                    if(v2.y > bb.ymax) bb.ymax = v2.y;
+                    if (v2.x < bb.xmin) bb.xmin = v2.x;
+                    if (v2.y < bb.ymin) bb.ymin = v2.y;
+                    if (v2.x > bb.xmax) bb.xmax = v2.x;
+                    if (v2.y > bb.ymax) bb.ymax = v2.y;
                     bb.xp[i] = v2.x;
                     bb.yp[i] = v2.y;
                 }
