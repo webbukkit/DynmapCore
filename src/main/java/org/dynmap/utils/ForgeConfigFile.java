@@ -49,7 +49,7 @@ public class ForgeConfigFile {
                         }
                     }
                     else if(c == '"') {
-                        tok = "";
+                        //tok = "";
                         intok = instr = true;
                     }
                     else if(Character.isLetterOrDigit(line.charAt(i)) || ALLOWED_CHARS.indexOf(line.charAt(i)) != -1) {
