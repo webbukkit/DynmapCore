@@ -1,5 +1,5 @@
 # Thaumcraft 3 Block mapping
-version:-1.4.7
+version:1.5.1-
 modname:Thaumcraft
 
 # configuration file
@@ -25,41 +25,7 @@ patchblock:id=BlockArcaneDoor,data=3,data=7,data=11,data=15,patch0=DoorFront@180
 # BlockArcaneFurnace
 customblock:id=BlockArcaneFurnace,data=*,class=org.dynmap.hdmap.renderer.ThaumFurnaceRenderer
 # BlockCandle
-block:id=BlockCandle,data=*,scale=16
-layer:0,1,2,3,4,5,6,7
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-------****------
-------****------
-------****------
-------****------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-layer:8,9
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
--------**-------
--------**-------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
-----------------
+boxblock:id=BlockCandle,data=*,xmin=0.25,xmax=0.75,zmin=0.25,zmax=0.75,ymin=0.0,ymax=0.75
 
 # BlockCrucible
 block:id=BlockCrucible,data=*,scale=8

@@ -117,7 +117,8 @@ public class TexturePack {
     private static final int TILEINDEX_AIRFRAME_EYE = 264;
     private static final int TILEINDEX_FIRE = 265;
     private static final int TILEINDEX_PORTAL = 266;
-    private static final int MAX_TILEINDEX = 266;  /* Index of last static tile definition */
+    private static final int TILEINDEX_WHITE = 267; // Pure white tile
+    private static final int MAX_TILEINDEX = 267;  /* Index of last static tile definition */
     private static final int TILETABLE_LEN = 5000;  /* Leave room for dynmaic tiles */
 
     /* Indexes of faces in a CHEST format tile file */
@@ -984,6 +985,9 @@ public class TexturePack {
                 terrain_argb[TILEINDEX_AIRFRAME_EYE][native_scale*i + j] = terrain_argb[TILEINDEX_EYEOFENDER][native_scale*i + j];
             }
         }
+        /* Build white tile */
+        terrain_argb[TILEINDEX_WHITE] = new int[native_scale*native_scale];
+        Arrays.fill(terrain_argb[TILEINDEX_WHITE], 0xFFFFFFFF);
         
         img.flush();
     }
