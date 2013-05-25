@@ -2,6 +2,8 @@
 version:1.5.2-
 modname:BiomesOPlenty
 
+var:biome_ids/Promised_Land_ID=0,biome_ids/Majestic_Meadow_(Promised_Land)_ID=0,biome_ids/Wonderous_Woods_(Promised_Land)_ID=0,biome_ids/Blessed_Bog_(Promised_Land)_ID=0
+var:terrain_block_ids/Holy_Stone_ID=0,terrain_block_ids/Skystone_ID=0
 # configuration file
 cfgfile:config/BiomesOPlenty.cfg
 
@@ -43,6 +45,8 @@ texture:id=highgrasstop
 texture:id=holygrass_side
 texture:id=holygrass_top
 texture:id=holystone
+texture:id=holycobble
+texture:id=holybrick
 texture:id=holytallgrass
 texture:id=hydrangea
 texture:id=item_bamboo
@@ -154,6 +158,8 @@ texture:id=yucca
 biome:id=biome_ids/Bamboo_Forest_ID,grassColorMult=18FE564,foliageColorMult=18FE564
 #  Bayou
 biome:id=biome_ids/Bayou_ID,grassColorMult=18BAF6B,foliageColorMult=1BDED88,waterColorMult=FFD932
+#  Blessed Bog (Promised Land)
+biome:id=biome_ids/Blessed_Bog_(Promised_Land)_ID,foliageColorMult=145EFA3
 #  Bog
 biome:id=biome_ids/Bog_ID,grassColorMult=1746429,foliageColorMult=1919134,waterColorMult=AF9200
 #  Chaparral
@@ -192,6 +198,8 @@ biome:id=biome_ids/Heathland_ID,grassColorMult=1CEC577,foliageColorMult=1AEC681
 biome:id=biome_ids/Jade_Cliffs_ID,grassColorMult=17CA568,foliageColorMult=18ACC6A
 # Jungle (New)
 biome:id=biome_ids/Jungle_(New)_ID,grassColorMult=14FD65A,foliageColorMult=131D83F,waterColorMult=A3F5C9
+#  Majestic Meadow (Promised Land)
+biome:id=biome_ids/Majestic_Meadow_(Promised_Land)_ID,foliageColorMult=1ABEA67
 #  Meadow
 biome:id=biome_ids/Meadow_ID,grassColorMult=163B26D,foliageColorMult=163B26D
 #  Moor
@@ -236,6 +244,8 @@ biome:id=biome_ids/Tundra_ID,grassColorMult=1AA8A4E,foliageColorMult=1B5A353
 biome:id=biome_ids/Wasteland_ID,grassColorMult=19DA078,foliageColorMult=1999E55,waterColorMult=E5FF00
 #  Wetland
 biome:id=biome_ids/Wetland_ID,grassColorMult=15A935F,foliageColorMult=14F9657,waterColorMult=636084
+#  Wonderous Woods (Promised Land)
+biome:id=biome_ids/Wonderous_Woods_(Promised_Land)_ID,foliageColorMult=178ED85
 
 # Blocks
 
@@ -287,6 +297,10 @@ block:id=terrain_block_ids/Red_Rock_ID,data=0,allfaces=0:redrock,stdrot=true
 block:id=terrain_block_ids/Red_Rock_ID,data=1,allfaces=0:redcobble,stdrot=true
 #  "Red Rock Bricks ID"
 block:id=terrain_block_ids/Red_Rock_ID,data=2,allfaces=0:redbrick,stdrot=true
+#  "Skystone ID"
+block:id=terrain_block_ids/Skystone_ID,data=0,allfaces=0:holystone,stdrot=true
+block:id=terrain_block_ids/Skystone_ID,data=1,allfaces=0:holycobble,stdrot=true
+block:id=terrain_block_ids/Skystone_ID,data=2,allfaces=0:holybrick,stdrot=true
 
 # Flowers
 block:id=Flower_ID,data=0,patch0=0:clover,transparency=TRANSPARENT

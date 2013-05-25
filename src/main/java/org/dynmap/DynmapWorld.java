@@ -13,6 +13,7 @@ import org.dynmap.utils.FileLockManager;
 import org.dynmap.utils.MapChunkCache;
 import org.dynmap.utils.RectangleVisibilityLimit;
 import org.dynmap.utils.RoundVisibilityLimit;
+import org.dynmap.utils.TileFlags;
 import org.dynmap.utils.VisibilityLimit;
 
 import java.awt.image.BufferedImage;
@@ -831,5 +832,9 @@ public abstract class DynmapWorld {
         if(!doscan) {
             Log.info("Initial zoomout validate cancelled");
         }
+    }
+    // Return number of chunks found (-1 if not implemented)
+    public int getChunkMap(TileFlags map) {
+        return -1;
     }
 }

@@ -36,7 +36,7 @@ public class ForgeConfigFile {
                 boolean skip = false;
                 boolean instr = false;
                 boolean intok = false;
-
+                tok = "";
                 for (int i = 0; i < line.length() && !skip; ++i) {
                     char c = line.charAt(i);
                     if(instr) {
@@ -97,6 +97,7 @@ public class ForgeConfigFile {
                                 }
                                 propertyName = propertyName.replace(' ', '_');
                                 settings.put(propertyName, line.substring(i + 1).trim());
+                                skip = true;
                                 break;
                         }
                     }
