@@ -37,12 +37,12 @@ import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.CircleMarker;
 import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerAPI;
+import org.dynmap.markers.MarkerDescription;
 import org.dynmap.markers.MarkerIcon;
 import org.dynmap.markers.MarkerIcon.MarkerSize;
 import org.dynmap.markers.MarkerSet;
 import org.dynmap.markers.PlayerSet;
 import org.dynmap.markers.PolyLineMarker;
-import org.dynmap.utils.Matrix3D;
 import org.dynmap.web.Json;
 
 /**
@@ -460,8 +460,10 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         }
         if(in == null) {    /* Not found, use default marker */
             in = getClass().getResourceAsStream("/markers/marker.png");
-            if(in == null)
+            if(in == null) {
+                try { out.close(); } catch (IOException iox) {}
                 return;
+            }
         }
         /* Copy to destination */
         try {
@@ -946,10 +948,13 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     private static final Set<String> commands = new HashSet<String>(Arrays.asList(new String[] {
         "add", "movehere", "update", "delete", "list", "icons", "addset", "updateset", "deleteset", "listsets", "addicon", "updateicon",
         "deleteicon", "addcorner", "clearcorners", "addarea", "listareas", "deletearea", "updatearea",
-        "addline", "listlines", "deleteline", "updateline", "addcircle", "listcircles", "deletecircle", "updatecircle"
+        "addline", "listlines", "deleteline", "updateline", "addcircle", "listcircles", "deletecircle", "updatecircle",
+        "getdesc", "resetdesc", "appenddesc"
     }));
     private static final String ARG_LABEL = "label";
+    private static final String ARG_MARKUP = "markup";
     private static final String ARG_ID = "id";
+    private static final String ARG_TYPE = "type";
     private static final String ARG_NEWLABEL = "newlabel";
     private static final String ARG_FILE = "file";
     private static final String ARG_HIDE = "hide";
@@ -975,6 +980,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     private static final String ARG_Z = "z";
     private static final String ARG_WORLD = "world";
     private static final String ARG_BOOST = "boost";
+    private static final String ARG_DESC = "desc";
     
     /* Parse argument strings : handle 'attrib:value' and quoted strings */
     private static Map<String,String> parseArgs(String[] args, DynmapCommandSender snd) {
@@ -1149,13 +1155,25 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         else if(c.equals("updatecircle") && plugin.checkPlayerPermission(sender, "marker.updatecircle")) {
             return processUpdateCircle(plugin, sender, cmd, commandLabel, args);
         }
+        /* Get description for given item - must have ID and type parameter */
+        else if(c.equals("getdesc") && plugin.checkPlayerPermission(sender, "marker.getdesc")) {
+            return processGetDesc(plugin, sender, cmd, commandLabel, args);
+        }
+        /* Reset description for given item - must have ID and type parameter */
+        else if(c.equals("resetdesc") && plugin.checkPlayerPermission(sender, "marker.resetdesc")) {
+            return processResetDesc(plugin, sender, cmd, commandLabel, args);
+        }
+        /* Append to description for given item - must have ID and type parameter */
+        else if(c.equals("appenddesc") && plugin.checkPlayerPermission(sender, "marker.appenddesc")) {
+            return processAppendDesc(plugin, sender, cmd, commandLabel, args);
+        }
         else {
             return false;
         }
     }
 
     private static boolean processAddMarker(DynmapCore plugin, DynmapCommandSender sender, String cmd, String commandLabel, String[] args, DynmapPlayer player) {
-        String id, setid, label, iconid;
+        String id, setid, label, iconid, markup;
         String x, y, z, world, normalized_world;
 
         if(args.length > 1) {
@@ -1166,6 +1184,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             setid = parms.get(ARG_SET);
             id = parms.get(ARG_ID);
             label = parms.get(ARG_LABEL);
+            markup = parms.get(ARG_MARKUP);
             x = parms.get(ARG_X);
             y = parms.get(ARG_Y);
             z = parms.get(ARG_Z);
@@ -1221,7 +1240,8 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 sender.sendMessage("Error: invalid icon - " + iconid);
                 return true;
             }
-            Marker m = set.createMarker(id, label, 
+            boolean isMarkup = "true".equals(markup);
+            Marker m = set.createMarker(id, label, isMarkup,
                     loc.world, loc.x, loc.y, loc.z, ico, true);
             if(m == null) {
                 sender.sendMessage("Error creating marker");
@@ -1286,7 +1306,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     }
     
     private static boolean processUpdateMarker(DynmapCore plugin, DynmapCommandSender sender, String cmd, String commandLabel, String[] args) {
-        String id, setid, label, newlabel, iconid;
+        String id, setid, label, newlabel, iconid, markup;
         String x, y, z, world;
         String newset;
         if(args.length > 1) {
@@ -1295,6 +1315,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             if(parms == null) return true;
             id = parms.get(ARG_ID);
             label = parms.get(ARG_LABEL);
+            markup = parms.get(ARG_MARKUP);
             setid = parms.get(ARG_SET);
             newset = parms.get(ARG_NEWSET);
             x = parms.get(ARG_X);
@@ -1346,7 +1367,10 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             }
             newlabel = parms.get(ARG_NEWLABEL);
             if(newlabel != null) {    /* Label set? */
-                marker.setLabel(newlabel);
+                marker.setLabel(newlabel, "true".equals(markup));
+            }
+            else if(markup != null) {
+                marker.setLabel(marker.getLabel(), "true".equals(markup));
             }
             iconid = parms.get(ARG_ICON);
             if(iconid != null) {
@@ -1443,7 +1467,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             Marker m = sortmarkers.get(s);
             sender.sendMessage(m.getMarkerID() + ": label:\"" + m.getLabel() + "\", set:" + m.getMarkerSet().getMarkerSetID() + 
                                ", world:" + m.getWorld() + ", x:" + m.getX() + ", y:" + m.getY() + ", z:" + m.getZ() + 
-                               ", icon:" + m.getMarkerIcon().getMarkerIconID());
+                               ", icon:" + m.getMarkerIcon().getMarkerIconID() + ", markup:" + m.isLabelMarkup());
         }
         return true;
     }
@@ -1902,7 +1926,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     }
     
     private static boolean processAddArea(DynmapCore plugin, DynmapCommandSender sender, String cmd, String commandLabel, String[] args, DynmapPlayer player) {
-        String pid, setid, id, label;
+        String pid, setid, id, label, markup;
         if(player == null) {
             pid = "-console-";
         }
@@ -1920,6 +1944,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         setid = parms.get(ARG_SET);
         id = parms.get(ARG_ID);
         label = parms.get(ARG_LABEL);
+        markup = parms.get(ARG_MARKUP);
         /* Fill in defaults for missing parameters */
         if(setid == null) {
             setid = MarkerSet.DEFAULT;
@@ -1939,7 +1964,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             zz[i] = loc.z;
         }
         /* Make area marker */
-        AreaMarker m = set.createAreaMarker(id, label, false, ll.get(0).world, xx, zz, true);
+        AreaMarker m = set.createAreaMarker(id, label, "true".equals(markup), ll.get(0).world, xx, zz, true);
         if(m == null) {
             sender.sendMessage("Error creating area");
         }
@@ -1983,7 +2008,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                                ", world:" + m.getWorld() + ", corners:" + ptlist + 
                                ", weight: " + m.getLineWeight() + ", color:" + String.format("%06x", m.getLineColor()) +
                                ", opacity: " + m.getLineOpacity() + ", fillcolor: " + String.format("%06x", m.getFillColor()) +
-                               ", fillopacity: " + m.getFillOpacity() + ", boost:" + m.getBoostFlag());
+                               ", fillopacity: " + m.getFillOpacity() + ", boost:" + m.getBoostFlag() + ", markup:" + m.isLabelMarkup());
         }
         return true;
     }
@@ -2035,13 +2060,14 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     }
     
     private static boolean processUpdateArea(DynmapCore plugin, DynmapCommandSender sender, String cmd, String commandLabel, String[] args) {
-        String id, label, setid, newlabel;
+        String id, label, setid, newlabel, markup;
         if(args.length > 1) {
             /* Parse arguements */
             Map<String,String> parms = parseArgs(args, sender);
             if(parms == null) return true;
             id = parms.get(ARG_ID);
             label = parms.get(ARG_LABEL);
+            markup = parms.get(ARG_MARKUP);
             setid = parms.get(ARG_SET);
             if((id == null) && (label == null)) {
                 sender.sendMessage("<label> or id:<area-id> required");
@@ -2072,7 +2098,10 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             }
             newlabel = parms.get(ARG_NEWLABEL);
             if(newlabel != null) {    /* Label set? */
-                marker.setLabel(newlabel);
+                marker.setLabel(newlabel, "true".equals(markup));
+            }
+            else if(markup != null) {
+                marker.setLabel(marker.getLabel(), "true".equals(markup));
             }
             if(!processAreaArgs(sender,marker, parms))
                 return true;
@@ -2086,7 +2115,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     
     private static boolean processAddLine(DynmapCore plugin, DynmapCommandSender sender, String cmd, String commandLabel, String[] args, DynmapPlayer player) {
         String setid;
-        String pid, id, label;
+        String pid, id, label, markup;
         
         if(player == null) {
             pid = "-console-";
@@ -2105,6 +2134,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         setid = parms.get(ARG_SET);
         id = parms.get(ARG_ID);
         label = parms.get(ARG_LABEL);
+        markup = parms.get(ARG_MARKUP);
         /* Fill in defaults for missing parameters */
         if(setid == null) {
             setid = MarkerSet.DEFAULT;
@@ -2126,7 +2156,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             zz[i] = loc.z;
         }
         /* Make poly-line marker */
-        PolyLineMarker m = set.createPolyLineMarker(id, label, false, ll.get(0).world, xx, yy, zz, true);
+        PolyLineMarker m = set.createPolyLineMarker(id, label, "true".equals(markup), ll.get(0).world, xx, yy, zz, true);
         if(m == null) {
             sender.sendMessage("Error creating line");
         }
@@ -2170,7 +2200,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             sender.sendMessage(m.getMarkerID() + ": label:\"" + m.getLabel() + "\", set:" + m.getMarkerSet().getMarkerSetID() + 
                                ", world:" + m.getWorld() + ", corners:" + ptlist + 
                                ", weight: " + m.getLineWeight() + ", color:" + String.format("%06x", m.getLineColor()) +
-                               ", opacity: " + m.getLineOpacity());
+                               ", opacity: " + m.getLineOpacity() + ", markup:" + m.isLabelMarkup());
         }
         return true;
     }
@@ -2219,13 +2249,14 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         return true;
     }
     private static boolean processUpdateLine(DynmapCore plugin, DynmapCommandSender sender, String cmd, String commandLabel, String[] args) {
-        String id, setid, label, newlabel;
+        String id, setid, label, newlabel, markup;
         if(args.length > 1) {
             /* Parse arguements */
             Map<String,String> parms = parseArgs(args, sender);
             if(parms == null) return true;
             id = parms.get(ARG_ID);
             label = parms.get(ARG_LABEL);
+            markup = parms.get(ARG_MARKUP);
             setid = parms.get(ARG_SET);
             if((id == null) && (label == null)) {
                 sender.sendMessage("<label> or id:<line-id> required");
@@ -2256,7 +2287,10 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             }
             newlabel = parms.get(ARG_NEWLABEL);
             if(newlabel != null) {    /* Label set? */
-                marker.setLabel(newlabel);
+                marker.setLabel(newlabel, "true".equals(markup));
+            }
+            else if(markup != null) {
+                marker.setLabel(marker.getLabel(), "true".equals(markup));
             }
             if(!processPolyArgs(sender,marker, parms))
                 return true;
@@ -2270,7 +2304,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     }
     
     private static boolean processAddCircle(DynmapCore plugin, DynmapCommandSender sender, String cmd, String commandLabel, String[] args, DynmapPlayer player) {
-        String id, setid, label;
+        String id, setid, label, markup;
         String x, y, z, world;
         
         /* Parse arguements */
@@ -2279,6 +2313,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         setid = parms.get(ARG_SET);
         id = parms.get(ARG_ID);
         label = parms.get(ARG_LABEL);
+        markup = parms.get(ARG_MARKUP);
         x = parms.get(ARG_X);
         y = parms.get(ARG_Y);
         z = parms.get(ARG_Z);
@@ -2321,7 +2356,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         }
         
         /* Make circle marker */
-        CircleMarker m = set.createCircleMarker(id, label, false, loc.world, loc.x, loc.y, loc.z, 1, 1, true);
+        CircleMarker m = set.createCircleMarker(id, label, "true".equals(markup), loc.world, loc.x, loc.y, loc.z, 1, 1, true);
         if(m == null) {
             sender.sendMessage("Error creating circle");
         }
@@ -2362,7 +2397,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                                ", radius:" + m.getRadiusX() + "/" + m.getRadiusZ() +
                                ", weight: " + m.getLineWeight() + ", color:" + String.format("%06x", m.getLineColor()) +
                                ", opacity: " + m.getLineOpacity() + ", fillcolor: " + String.format("%06x", m.getFillColor()) +
-                               ", fillopacity: " + m.getFillOpacity() + ", boost:" + m.getBoostFlag());
+                               ", fillopacity: " + m.getFillOpacity() + ", boost:" + m.getBoostFlag() + ", markup:" + m.isLabelMarkup());
         }
         return true;
     }
@@ -2411,13 +2446,14 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         return true;
     }
     private static boolean processUpdateCircle(DynmapCore plugin, DynmapCommandSender sender, String cmd, String commandLabel, String[] args) {
-        String id, setid, label, newlabel;
+        String id, setid, label, newlabel, markup;
         if(args.length > 1) {
             /* Parse arguements */
             Map<String,String> parms = parseArgs(args, sender);
             if(parms == null) return true;
             id = parms.get(ARG_ID);
             label = parms.get(ARG_LABEL);
+            markup = parms.get(ARG_MARKUP);
             setid = parms.get(ARG_SET);
             if((id == null) && (label == null)) {
                 sender.sendMessage("<label> or id:<area-id> required");
@@ -2448,7 +2484,10 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             }
             newlabel = parms.get(ARG_NEWLABEL);
             if(newlabel != null) {    /* Label set? */
-                marker.setLabel(newlabel);
+                marker.setLabel(newlabel, "true".equals(markup));
+            }
+            else if(markup != null) {
+                marker.setLabel(marker.getLabel(), "true".equals(markup));
             }
             if(!processCircleArgs(sender,marker, parms))
                 return true;
@@ -2456,6 +2495,148 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         }
         else {
             sender.sendMessage("<label> or id:<circle-id> required");
+        }
+        return true;
+    }
+
+    private static MarkerDescription findMarkerDescription(DynmapCommandSender sender, Map<String, String> parms) {
+        MarkerDescription md = null;
+        String id, setid, label, type;
+        id = parms.get(ARG_ID);
+        label = parms.get(ARG_LABEL);
+        setid = parms.get(ARG_SET);
+        if((id == null) && (label == null)) {
+            sender.sendMessage("<label> or id:<area-id> required");
+            return null;
+        }
+        type = parms.get(ARG_TYPE);
+        if (type == null) type = "icon";            
+        if(setid == null) {
+            setid = MarkerSet.DEFAULT;
+        }
+        MarkerSet set = api.getMarkerSet(setid);
+        if(set == null) {
+            sender.sendMessage("Error: invalid set - " + setid);
+            return null;
+        }
+        if (id != null) {
+            if (type.equals("icon")) {
+                md = set.findMarker(id);
+            }
+            else if (type.equals("area")) {
+                md = set.findAreaMarker(id);
+            }
+            else if (type.equals("circle")) {
+                md = set.findCircleMarker(id);
+            }
+            else if (type.equals("line")) {
+                md = set.findPolyLineMarker(id);
+            }
+            else {
+                sender.sendMessage("Error: invalid type - " + type);
+                return null;
+            }
+            if(md == null) {    /* No marker */
+                sender.sendMessage("Error: marker not found - " + id);
+                return null;
+            }
+        }
+        else {
+            if (type.equals("icon")) {
+                md = set.findMarkerByLabel(label);
+            }
+            else if (type.equals("area")) {
+                md = set.findAreaMarkerByLabel(label);
+            }
+            else if (type.equals("circle")) {
+                md = set.findCircleMarkerByLabel(label);
+            }
+            else if (type.equals("line")) {
+                md = set.findPolyLineMarkerByLabel(label);
+            }
+            else {
+                sender.sendMessage("Error: invalid type - " + type);
+                return null;
+            }
+            if(md == null) {    /* No marker */
+                sender.sendMessage("Error: marker not found - " + label);
+                return null;
+            }
+        }
+        return md;
+    }
+    /** Process getdesc for given item */
+    private static boolean processGetDesc(DynmapCore plugin, DynmapCommandSender sender, String cmd, String commandLabel, String[] args) {
+        if(args.length > 1) {
+            /* Parse arguements */
+            Map<String,String> parms = parseArgs(args, sender);
+            if(parms == null) return true;
+            
+            MarkerDescription md = findMarkerDescription(sender, parms);
+            if (md == null) {
+                return true;
+            }
+            String desc = md.getDescription();
+            if (desc == null) {
+                sender.sendMessage("<null>");
+            }
+            else {
+                sender.sendMessage(desc);
+            }
+        }
+        else {
+            sender.sendMessage("<label> or id:<id> required");
+        }
+        return true;
+    }
+    /** Process resetdesc for given item */
+    private static boolean processResetDesc(DynmapCore plugin, DynmapCommandSender sender, String cmd, String commandLabel, String[] args) {
+        if(args.length > 1) {
+            /* Parse arguements */
+            Map<String,String> parms = parseArgs(args, sender);
+            if(parms == null) return true;
+            
+            MarkerDescription md = findMarkerDescription(sender, parms);
+            if (md == null) {
+                return true;
+            }
+            md.setDescription(null);
+            sender.sendMessage("Description cleared");
+        }
+        else {
+            sender.sendMessage("<label> or id:<id> required");
+        }
+        return true;
+    }
+    /** Process appenddesc for given item */
+    private static boolean processAppendDesc(DynmapCore plugin, DynmapCommandSender sender, String cmd, String commandLabel, String[] args) {
+        if(args.length > 1) {
+            /* Parse arguements */
+            Map<String,String> parms = parseArgs(args, sender);
+            if(parms == null) return true;
+            
+            MarkerDescription md = findMarkerDescription(sender, parms);
+            if (md == null) {
+                return true;
+            }
+            String desc = parms.get(ARG_DESC);
+            if (desc == null) {
+                sender.sendMessage("Error: no 'desc:' parameter");
+                return true;
+            }
+            String d = md.getDescription();
+            if (d == null) {
+                d = desc + "\n";
+            }
+            else {
+                d = d + desc + "\n";
+            }
+            md.setDescription(d);
+            
+            sender.sendMessage(md.getDescription());
+        }
+        else {
+            sender.sendMessage("<label> or id:<id> required");
         }
         return true;
     }
