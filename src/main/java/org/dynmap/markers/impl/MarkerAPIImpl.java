@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -949,7 +950,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         "add", "movehere", "update", "delete", "list", "icons", "addset", "updateset", "deleteset", "listsets", "addicon", "updateicon",
         "deleteicon", "addcorner", "clearcorners", "addarea", "listareas", "deletearea", "updatearea",
         "addline", "listlines", "deleteline", "updateline", "addcircle", "listcircles", "deletecircle", "updatecircle",
-        "getdesc", "resetdesc", "appenddesc"
+        "getdesc", "resetdesc", "appenddesc", "importdesc", "getlabel", "importlabel"
     }));
     private static final String ARG_LABEL = "label";
     private static final String ARG_MARKUP = "markup";
@@ -1166,6 +1167,18 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         /* Append to description for given item - must have ID and type parameter */
         else if(c.equals("appenddesc") && plugin.checkPlayerPermission(sender, "marker.appenddesc")) {
             return processAppendDesc(plugin, sender, cmd, commandLabel, args);
+        }
+        /* Import description for given item from file - must have ID and type parameter */
+        else if(c.equals("importdesc") && plugin.checkPlayerPermission(sender, "marker.importdesc")) {
+            return processImportDesc(plugin, sender, cmd, commandLabel, args);
+        }
+        /* Import description for given item from file - must have ID and type parameter */
+        else if(c.equals("importlabel") && plugin.checkPlayerPermission(sender, "marker.importlabel")) {
+            return processImportLabel(plugin, sender, cmd, commandLabel, args);
+        }
+        /* Get label for given item - must have ID and type parameter */
+        else if(c.equals("getlabel") && plugin.checkPlayerPermission(sender, "marker.getlabel")) {
+            return processGetLabel(plugin, sender, cmd, commandLabel, args);
         }
         else {
             return false;
@@ -2634,6 +2647,124 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             md.setDescription(d);
             
             sender.sendMessage(md.getDescription());
+        }
+        else {
+            sender.sendMessage("<label> or id:<id> required");
+        }
+        return true;
+    }
+    /** Process getlabel for given item */
+    private static boolean processGetLabel(DynmapCore plugin, DynmapCommandSender sender, String cmd, String commandLabel, String[] args) {
+        if(args.length > 1) {
+            /* Parse arguements */
+            Map<String,String> parms = parseArgs(args, sender);
+            if(parms == null) return true;
+            
+            MarkerDescription md = findMarkerDescription(sender, parms);
+            if (md == null) {
+                return true;
+            }
+            String desc = md.getLabel();
+            if (desc == null) {
+                sender.sendMessage("<null>");
+            }
+            else {
+                sender.sendMessage(desc);
+            }
+        }
+        else {
+            sender.sendMessage("<label> or id:<id> required");
+        }
+        return true;
+    }
+    /** Process importdesc for given item */
+    private static boolean processImportDesc(DynmapCore plugin, DynmapCommandSender sender, String cmd, String commandLabel, String[] args) {
+        if(args.length > 1) {
+            /* Parse arguements */
+            Map<String,String> parms = parseArgs(args, sender);
+            if(parms == null) return true;
+            
+            MarkerDescription md = findMarkerDescription(sender, parms);
+            if (md == null) {
+                return true;
+            }
+            String f = parms.get(ARG_FILE);
+            if (f == null) {
+                sender.sendMessage("Error: no '" + ARG_FILE + "' parameter");
+                return true;
+            }
+            FileReader fr = null;
+            String val = null;
+            try {
+                fr = new FileReader(f);
+                StringBuilder sb = new StringBuilder();
+                char[] buf = new char[512];
+                int len;
+                while ((len = fr.read(buf)) > 0) {
+                    sb.append(buf, 0, len);
+                }
+                val = sb.toString();
+            } catch (FileNotFoundException fnfx) {
+                sender.sendMessage("Error: file '" + f + "' not found");
+                return true;
+            } catch (IOException iox) {
+                sender.sendMessage("Error reading file '" + f + "'");
+                return true;
+            } finally {
+                if (fr != null) {
+                    try { fr.close(); } catch (IOException iox) {}
+                }
+            }
+            md.setDescription(val);
+            
+            sender.sendMessage("Description imported from '" + f + "'");
+        }
+        else {
+            sender.sendMessage("<label> or id:<id> required");
+        }
+        return true;
+    }
+    /** Process importlabel for given item */
+    private static boolean processImportLabel(DynmapCore plugin, DynmapCommandSender sender, String cmd, String commandLabel, String[] args) {
+        if(args.length > 1) {
+            /* Parse arguements */
+            Map<String,String> parms = parseArgs(args, sender);
+            if(parms == null) return true;
+            
+            MarkerDescription md = findMarkerDescription(sender, parms);
+            if (md == null) {
+                return true;
+            }
+            String f = parms.get(ARG_FILE);
+            if (f == null) {
+                sender.sendMessage("Error: no '" + ARG_FILE + "' parameter");
+                return true;
+            }
+            FileReader fr = null;
+            String val = null;
+            try {
+                fr = new FileReader(f);
+                StringBuilder sb = new StringBuilder();
+                char[] buf = new char[512];
+                int len;
+                while ((len = fr.read(buf)) > 0) {
+                    sb.append(buf, 0, len);
+                }
+                val = sb.toString();
+            } catch (FileNotFoundException fnfx) {
+                sender.sendMessage("Error: file '" + f + "' not found");
+                return true;
+            } catch (IOException iox) {
+                sender.sendMessage("Error reading file '" + f + "'");
+                return true;
+            } finally {
+                if (fr != null) {
+                    try { fr.close(); } catch (IOException iox) {}
+                }
+            }
+            md.setLabel(val, true);
+            
+            sender.sendMessage("Label with markup imported from '" + f + "'");
         }
         else {
             sender.sendMessage("<label> or id:<id> required");
