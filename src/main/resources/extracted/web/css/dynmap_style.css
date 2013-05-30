@@ -474,6 +474,9 @@
     -moz-border-radius: 3px;
 
     padding: 6px 2px;
+
+    width: -webkit-calc(100% - 6px);
+    width: calc(100% - 6px);
 }
 
 .dynmap .playerlist .player:hover .playericon {
@@ -755,6 +758,8 @@
     -webkit-border-radius: 3px 3px 0px 0px;
     -o-border-radius: 3px 3px 0px 0px;
     border-radius: 3px 3px 0px 0px;
+
+    margin-left: 10px;
 }
 
 .chatinput {
