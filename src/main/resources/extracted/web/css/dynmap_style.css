@@ -585,7 +585,7 @@
 
 .dynmap .playerName {
 	position: absolute;
-	top: -16px;
+	top: -19px;
 	left: 18px;
     z-index:20;
 
@@ -621,7 +621,7 @@
 .dynmap .healthContainer {
 	display: block;
 	position: absolute;
-	top: -2px;
+	top: 1px;
 	left: 18px;
 
 	width: 50px;
@@ -631,6 +631,8 @@
 
 	-moz-border-radius: 3px;
 	border-radius: 3px;
+
+	z-index: 21;
 }
 
 .dynmap .healthContainerSm {
