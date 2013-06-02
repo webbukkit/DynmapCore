@@ -109,7 +109,9 @@ public class DynmapCore implements DynmapCommonAPI {
     public CompassMode compassmode = CompassMode.PRE19;
     private int     config_hashcode;    /* Used to signal need to reload web configuration (world changes, config update, etc) */
     private int fullrenderplayerlimit;  /* Number of online players that will cause fullrender processing to pause */
+    private int updateplayerlimit;  /* Number of online players that will cause update processing to pause */
     private boolean didfullpause;
+    private boolean didupdatepause;
     private Map<String, LinkedList<String>> ids_by_ip = new HashMap<String, LinkedList<String>>();
     private boolean persist_ids_by_ip = false;
     private int snapshotcachesize;
@@ -423,6 +425,8 @@ public class DynmapCore implements DynmapCommonAPI {
         bettergrass = configuration.getBoolean("better-grass", false);
         /* Load full render processing player limit */
         fullrenderplayerlimit = configuration.getInteger("fullrenderplayerlimit", 0);
+        /* Load update render processing player limit */
+        updateplayerlimit = configuration.getInteger("updateplayerlimit", 0);
                         
         /* Load preupdate/postupdate commands */
         FileLockManager.preUpdateCommand = configuration.getString("custom-commands/image-updates/preupdatecommand", "");
@@ -516,12 +520,21 @@ public class DynmapCore implements DynmapCommonAPI {
 
     private void playerJoined(DynmapPlayer p) {
         playerList.updateOnlinePlayers(null);
-        if(fullrenderplayerlimit > 0) {
-            if(getServer().getOnlinePlayers().length >= fullrenderplayerlimit) {
+        if((fullrenderplayerlimit > 0) || (updateplayerlimit > 0)) {
+            int pcnt = getServer().getOnlinePlayers().length;
+            
+            if ((fullrenderplayerlimit > 0) && (pcnt >= fullrenderplayerlimit)) {
                 if(getPauseFullRadiusRenders() == false) {  /* If not paused, pause it */
                     setPauseFullRadiusRenders(true);
                     Log.info("Pause full/radius renders - player limit reached");
                     didfullpause = true;
+                }
+            }
+            if ((updateplayerlimit > 0) && (pcnt >= updateplayerlimit)) {
+                if(getPauseUpdateRenders() == false) {  /* If not paused, pause it */
+                    setPauseUpdateRenders(true);
+                    Log.info("Pause tile update renders - player limit reached");
+                    didupdatepause = true;
                 }
             }
         }
@@ -548,13 +561,21 @@ public class DynmapCore implements DynmapCommonAPI {
     /* Called by plugin each time a player quits the server */
     private void playerQuit(DynmapPlayer p) {
         playerList.updateOnlinePlayers(p.getName());
-        if(fullrenderplayerlimit > 0) {
+        if ((fullrenderplayerlimit > 0) || (updateplayerlimit > 0)) {
             /* Quitting player is still online at this moment, so discount count by 1 */
-            if((getServer().getOnlinePlayers().length - 1) < fullrenderplayerlimit) {
+            int pcnt = getServer().getOnlinePlayers().length - 1;
+            if ((fullrenderplayerlimit > 0) && (pcnt < fullrenderplayerlimit)) {
                 if(didfullpause) {  /* Only unpause if we did the pause */
                     setPauseFullRadiusRenders(false);
                     Log.info("Resume full/radius renders - below player limit");
                     didfullpause = false;
+                }
+            }
+            if ((updateplayerlimit > 0) && (pcnt < updateplayerlimit)) {
+                if(didupdatepause) {  /* Only unpause if we did the pause */
+                    setPauseUpdateRenders(false);
+                    Log.info("Resume tile update renders - below player limit");
+                    didupdatepause = false;
                 }
             }
         }
