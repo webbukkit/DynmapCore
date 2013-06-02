@@ -443,7 +443,16 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                     JSONObject o = (JSONObject) iter.next();
                     String ts = String.valueOf(o.get("timestamp"));
                     if(ts.equals("null")) ts = "0";
-                    long cts = Long.parseLong(ts);
+                    long cts;
+                    try {
+                        cts = Long.parseLong(ts);
+                    } catch (NumberFormatException nfx) {
+                        try {
+                            cts = (long) Double.parseDouble(ts);
+                        } catch (NumberFormatException nfx2) {
+                            cts = 0;
+                        }
+                    }
                     if (cts > lastChatTimestamp) {
                         String name = String.valueOf(o.get("name"));
                         String ip = String.valueOf(o.get("ip"));
