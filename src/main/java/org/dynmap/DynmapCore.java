@@ -1885,7 +1885,7 @@ public class DynmapCore implements DynmapCommonAPI {
         if(authmgr != null)
             return authmgr.getAccessPHP();
         else
-            return null;
+            return WebAuthManager.getDisabledAccessPHP(this);
     }
     
     boolean pendingRegisters() {

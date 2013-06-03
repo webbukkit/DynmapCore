@@ -391,24 +391,19 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
     protected void writeAccess() {
         File accessFile = getStandaloneFile("dynmap_access.php");
 
-        if(core.isLoginSupportEnabled()) {
-            String s = core.getAccessPHP();
-            if(s != null) {
-                byte[] bytes = s.getBytes(cs_utf8);
-                md.reset();
-                byte[] hash = md.digest(bytes);
-                if(Arrays.equals(hash, accesshash)) {
-                    return;
-                }
-                File accessNewFile = getStandaloneFile("dynmap_access.new.php");
-                File accessOldFile = getStandaloneFile("dynmap_access.old.php");
-
-                enqueueFileWrite(accessFile, accessNewFile, accessOldFile, bytes, false);
-                accesshash = hash;
+        String s = core.getAccessPHP();
+        if(s != null) {
+            byte[] bytes = s.getBytes(cs_utf8);
+            md.reset();
+            byte[] hash = md.digest(bytes);
+            if(Arrays.equals(hash, accesshash)) {
+                return;
             }
-        }
-        else {
-            accessFile.delete();
+            File accessNewFile = getStandaloneFile("dynmap_access.new.php");
+            File accessOldFile = getStandaloneFile("dynmap_access.old.php");
+
+            enqueueFileWrite(accessFile, accessNewFile, accessOldFile, bytes, false);
+            accesshash = hash;
         }
     }
 
