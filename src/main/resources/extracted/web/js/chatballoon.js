@@ -6,7 +6,7 @@ componentconstructors['chatballoon'] = function(dynmap, configuration) {
 	
 	me.chatpopups = {};
 	$(dynmap).bind('playerupdated', function(event, player) {
-		var popup = me.chatpopups[player.name];
+		var popup = me.chatpopups[player.account];
 		if (popup) {
 			var markerPosition = dynmap.getProjection().fromLocationToLatLng(player.location);
 			popup.layer.setLatLng(markerPosition);
@@ -21,16 +21,16 @@ componentconstructors['chatballoon'] = function(dynmap, configuration) {
 		if (message.source != 'player') {
 			return;
 		}
-		var player = dynmap.players[message.name];
+		var player = dynmap.players[message.account];
 		if (!player)
 			return;
 		if (dynmap.world !== player.location.world) {
 			return;
 		}
 		var popupPosition = dynmap.getProjection().fromLocationToLatLng(player.location);
-		var popup = me.chatpopups[message.name];
+		var popup = me.chatpopups[message.account];
 		if (!popup) {
-			me.chatpopups[message.name] = popup = {
+			me.chatpopups[message.account] = popup = {
 				layer: new L.Popup({autoPan: configuration.focuschatballoons, closeButton: false}),
 				content: $('<div/>').addClass('balloonmessages')[0]
 			};
@@ -39,7 +39,7 @@ componentconstructors['chatballoon'] = function(dynmap, configuration) {
 			popup.close = function() {
 				if (popup.timeout) { window.clearTimeout(popup.timeout); }
 				dynmap.map.removeLayer(popup.layer);
-				delete me.chatpopups[message.name];
+				delete me.chatpopups[message.account];
 			};
 			
 			popup.layer.setLatLng(popupPosition);

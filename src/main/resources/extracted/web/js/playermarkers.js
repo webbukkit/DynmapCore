@@ -22,7 +22,7 @@ componentconstructors['playermarkers'] = function(dynmap, configuration) {
 						.attr({ src: 'images/player.png' }))
 				.append(nm = $('<span/>')
 					.addClass(configuration.smallplayerfaces?'playerNameSm':'playerName')
-					.text(player.name));
+					.append(player.name));
 			
 			if (configuration.showplayerfaces) {
 				if(configuration.smallplayerfaces) {

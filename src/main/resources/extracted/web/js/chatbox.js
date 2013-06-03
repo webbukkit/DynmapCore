@@ -80,7 +80,7 @@ componentconstructors['chatbox'] = function(dynmap, configuration) {
 		if (dynmap.options.joinmessage.length > 0) {
 			addrow($('<div/>')
 				.addClass('messagerow')
-				.text(dynmap.options.joinmessage.replace('%playername%', playername))
+				.append(dynmap.options.joinmessage.replace('%playername%', playername))
 				);
 		}
 	});
@@ -89,7 +89,7 @@ componentconstructors['chatbox'] = function(dynmap, configuration) {
 		if (dynmap.options.quitmessage.length > 0) {
 			addrow($('<div/>')
 				.addClass('messagerow')
-				.text(dynmap.options.quitmessage.replace('%playername%', playername))
+				.append(dynmap.options.quitmessage.replace('%playername%', playername))
 				);
 		}
 	});
@@ -119,16 +119,16 @@ componentconstructors['chatbox'] = function(dynmap, configuration) {
 			.appendTo(messageRow);
 		}
 			
-		if (message.source === 'player' && configuration.showworld) {
+		if (message.source === 'player' && configuration.showworld && playerAccount) {
 			var playerWorldContainer = $('<span/>')
 			 .addClass('messagetext')
-			 .text('['+dynmap.players[message.name].location.world.name+']')
+			 .text('['+dynmap.players[playerAccount].location.world.name+']')
 			 .appendTo(messageRow);
 		}
 
 		var playerNameContainer = '';
 		if(message.name) {
-			playerNameContainer = $('<span/>').addClass('messagetext').text(' '+message.name+': ');
+			playerNameContainer = $('<span/>').addClass('messagetext').append(' '+message.name+': ');
 		}
 		
 		var playerMessageContainer = $('<span/>')

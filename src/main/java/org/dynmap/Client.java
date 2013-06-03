@@ -8,6 +8,7 @@ import org.json.simple.JSONStreamAware;
 import org.dynmap.common.DynmapChatColor;
 
 public class Client {
+    
     public static class Update implements JSONAware, JSONStreamAware {
         public long timestamp = System.currentTimeMillis();
 
@@ -32,7 +33,10 @@ public class Client {
         public String channel;
         public ChatMessage(String source, String channel, String playerName, String message, String playeraccount) {
             this.source = source;
-            this.playerName = Client.stripColor(playerName);
+            if (ClientUpdateComponent.usePlayerColors)
+                this.playerName = Client.encodeColorInHTML(playerName);
+            else
+                this.playerName = Client.stripColor(playerName);
             this.message = DynmapChatColor.stripColor(message);
             this.account = playeraccount;
             this.channel = channel;
@@ -56,7 +60,10 @@ public class Client {
         public String playerName;
         public String account;
         public PlayerJoinMessage(String playerName, String playeraccount) {
-            this.playerName = Client.stripColor(playerName);
+            if (ClientUpdateComponent.usePlayerColors)
+                this.playerName = Client.encodeColorInHTML(playerName);
+            else
+                this.playerName = Client.stripColor(playerName);
             this.account = playeraccount;
         }
         @Override
@@ -78,7 +85,10 @@ public class Client {
         public String playerName;
         public String account;
         public PlayerQuitMessage(String playerName, String playeraccount) {
-            this.playerName = Client.stripColor(playerName);
+            if (ClientUpdateComponent.usePlayerColors)
+                this.playerName = Client.encodeColorInHTML(playerName);
+            else
+                this.playerName = Client.stripColor(playerName);
             this.account = playeraccount;
         }
         @Override
@@ -156,5 +166,71 @@ public class Client {
             idx++;
         }
         return s;
+    }
+    private static String[][] codes = {
+        { "0", "<span style=\'color:#000000\'>" },
+        { "1", "<span style=\'color:#0000AA\'>" },
+        { "2", "<span style=\'color:#00AA00\'>" },
+        { "3", "<span style=\'color:#00AAAA\'>" },
+        { "4", "<span style=\'color:#AA0000\'>" },
+        { "5", "<span style=\'color:#AA00AA\'>" },
+        { "6", "<span style=\'color:#00AAAA\'>" },
+        { "7", "<span style=\'color:#AAAAAA\'>" },
+        { "8", "<span style=\'color:#555555\'>" },
+        { "9", "<span style=\'color:#5555FF\'>" },
+        { "a", "<span style=\'color:#55FF55\'>" },
+        { "b", "<span style=\'color:#55FFFF\'>" },
+        { "c", "<span style=\'color:#FF5555\'>" },
+        { "d", "<span style=\'color:#FF55FF\'>" },
+        { "e", "<span style=\'color:#FFFF55\'>" },
+        { "f", "<span style=\'color:#FFFFFF\'>" },
+        { "l", "<span style=\'font-weight:bold\'>" },
+        { "m", "<span style=\'text-decoration:line-through\'>" },
+        { "n", "<span style=\'text-decoration:underline\'>" },
+        { "o", "<span style=\'font-style:italic\'>" },
+        { "r", "<span style=\'font-style:normal,text-decoration:none,font-weight:normal\'>" }
+    };
+    // Replace color codes with corresponding <span 
+    public static String encodeColorInHTML(String s) {
+        StringBuilder sb = new StringBuilder();
+        int cnt = s.length();
+        int spancnt = 0;
+        for (int i = 0; i < cnt; i++) {
+            char c = s.charAt(i);
+            if (c == '\u00A7') { // Escape? 
+                i++;    // Move past it
+                c = s.charAt(i);
+                for (int j = 0; j < codes.length; j++) {
+                    if (codes[j][0].charAt(0) == c) {   // Matching code?
+                        sb.append(codes[j][1]); // Substitute
+                        spancnt++;
+                        break;
+                    }
+                }
+            }
+            else if (c == '&') {    // Essentials color code?
+                i++;    // Move past it
+                c = s.charAt(i);
+                if (c == '&') { // Amp?
+                    sb.append(c);
+                }
+                else {
+                    for (int j = 0; j < codes.length; j++) {
+                        if (codes[j][0].charAt(0) == c) {   // Matching code?
+                            sb.append(codes[j][1]); // Substitute
+                            spancnt++;
+                            break;
+                        }
+                    }
+                }
+            }
+            else {
+                sb.append(c);
+            }
+        }
+        for (int i = 0; i < spancnt; i++) {
+            sb.append("</span>");
+        }
+        return sb.toString();
     }
 }

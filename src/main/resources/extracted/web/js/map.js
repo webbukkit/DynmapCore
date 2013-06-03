@@ -629,23 +629,23 @@ DynMap.prototype = {
 
 				var newplayers = {};
 				$.each(update.players, function(index, playerUpdate) {
-					var name = playerUpdate.name;
-					var player = me.players[name];
+					var acct = playerUpdate.account;
+					var player = me.players[acct];
 					if (player) {
 						me.updatePlayer(player, playerUpdate);
 					} else {
 						me.addPlayer(playerUpdate);
-						if(me.initfollow && (me.initfollow == name)) {
-							me.followPlayer(me.players[name]);
+						if(me.initfollow && (me.initfollow == acct)) {
+							me.followPlayer(me.players[acct]);
 							me.initfollow = null;
 						}
 					}
-					newplayers[name] = player;
+					newplayers[acct] = player;
 				});
-				var name;
-				for(name in me.players) {
-					var player = me.players[name];
-					if(!(name in newplayers)) {
+				var acct;
+				for(acct in me.players) {
+					var player = me.players[acct];
+					if(!(acct in newplayers)) {
 						me.removePlayer(player);
 					}
 				}
@@ -718,7 +718,7 @@ DynMap.prototype = {
 	},
 	addPlayer: function(update) {
 		var me = this;
-		var player = me.players[update.name] = {
+		var player = me.players[update.account] = {
 				name: update.name,
 				location: new Location(me.worlds[update.world], parseFloat(update.x), parseFloat(update.y), parseFloat(update.z)),
 				health: update.health,
@@ -746,7 +746,7 @@ DynMap.prototype = {
 						href: '#',
 						title: 'Center on ' + player.name
 						})
-					.text(player.name)
+					.append(player.name)
 					)
 			.click(function(e) {
 				if (me.followingPlayer !== player) {
@@ -791,7 +791,7 @@ DynMap.prototype = {
 	removePlayer: function(player) {
 		var me = this;
 
-		delete me.players[player.name];
+		delete me.players[player.account];
 
 		$(me).trigger('playerremoved', [ player ]);
 

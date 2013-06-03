@@ -14,6 +14,7 @@ public class ClientUpdateComponent extends Component {
     private boolean hideifsneaking;
     private boolean hideifinvisiblepotion;
     private boolean is_protected;
+    public static boolean usePlayerColors;
     
     public ClientUpdateComponent(final DynmapCore core, ConfigurationNode configuration) {
         super(core, configuration);
@@ -23,6 +24,7 @@ public class ClientUpdateComponent extends Component {
         hideifsneaking = configuration.getBoolean("hideifsneaking", false);
         hideifinvisiblepotion = configuration.getBoolean("hide-if-invisiblity-potion", true);
         is_protected = configuration.getBoolean("protected-player-info", false);
+        usePlayerColors = configuration.getBoolean("use-name-colors", false);
         if(is_protected)
             core.player_info_protected = true;
         
@@ -70,7 +72,10 @@ public class ClientUpdateComponent extends Component {
             JSONObject jp = new JSONObject();
             
             s(jp, "type", "player");
-            s(jp, "name", Client.stripColor(p.getDisplayName()));
+            if (usePlayerColors)
+                s(jp, "name", Client.encodeColorInHTML(p.getDisplayName()));
+            else
+                s(jp, "name", Client.stripColor(p.getDisplayName()));
             s(jp, "account", p.getName());
             if((!hide) && (hideifshadow < 15)) {
                 if(pw.getLightLevel((int)pl.x, (int)pl.y, (int)pl.z) <= hideifshadow) {
@@ -136,7 +141,10 @@ public class ClientUpdateComponent extends Component {
             for(DynmapPlayer p : hidden) {
                 JSONObject jp = new JSONObject();
                 s(jp, "type", "player");
-                s(jp, "name", Client.stripColor(p.getDisplayName()));
+                if (usePlayerColors)
+                    s(jp, "name", Client.encodeColorInHTML(p.getDisplayName()));
+                else
+                    s(jp, "name", Client.stripColor(p.getDisplayName()));
                 s(jp, "account", p.getName());
                 s(jp, "world", "-hidden-player-");
                 s(jp, "x", 0.0);

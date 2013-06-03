@@ -22,6 +22,7 @@
 					<include>*.yml</include>
 					<include>*.txt</include>
 					<include>extracted/web/version.js</include>
+					<include>extracted/web/index.html</include>
 				</includes>
 			</resource>
 			<resource>
@@ -31,6 +32,7 @@
 					<exclude>*.yml</exclude>
 					<exclude>*.txt</exclude>
 					<exclude>extracted/web/version.js</exclude>
+					<exclude>extracted/web/index.html</exclude>
 				</excludes>
 			</resource>
 		</resources>
