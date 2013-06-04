@@ -2,6 +2,7 @@ package org.dynmap;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Random;
 
 import org.json.simple.JSONAware;
 import org.json.simple.JSONStreamAware;
@@ -190,16 +191,25 @@ public class Client {
         { "o", "<span style=\'font-style:italic\'>" },
         { "r", "<span style=\'font-style:normal,text-decoration:none,font-weight:normal\'>" }
     };
+    private static Random rnd = new Random();
+    private static String rndchars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     // Replace color codes with corresponding <span 
     public static String encodeColorInHTML(String s) {
         StringBuilder sb = new StringBuilder();
         int cnt = s.length();
         int spancnt = 0;
+        boolean magic = false;
         for (int i = 0; i < cnt; i++) {
             char c = s.charAt(i);
             if (c == '\u00A7') { // Escape? 
                 i++;    // Move past it
                 c = s.charAt(i);
+                if (c == 'k') { // Magic text?
+                    magic = true;
+                }
+                else if (c == 'r') { // reset
+                    magic = false;
+                }
                 for (int j = 0; j < codes.length; j++) {
                     if (codes[j][0].charAt(0) == c) {   // Matching code?
                         sb.append(codes[j][1]); // Substitute
@@ -215,6 +225,12 @@ public class Client {
                     sb.append(c);
                 }
                 else {
+                    if (c == 'k') { // Magic text?
+                        magic = true;
+                    }
+                    else if (c == 'r') { // reset
+                        magic = false;
+                    }
                     for (int j = 0; j < codes.length; j++) {
                         if (codes[j][0].charAt(0) == c) {   // Matching code?
                             sb.append(codes[j][1]); // Substitute
@@ -223,6 +239,9 @@ public class Client {
                         }
                     }
                 }
+            }
+            else if (magic) {
+                sb.append(rndchars.charAt(rnd.nextInt(rndchars.length())));
             }
             else {
                 sb.append(c);
