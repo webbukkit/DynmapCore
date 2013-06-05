@@ -15,10 +15,11 @@ import org.dynmap.utils.BlockStep;
 import org.json.simple.JSONObject;
 
 public class TopoHDShader implements HDShader {
-    private String name;
-    private Color linecolor;  /* Color for topo lines */
-    private Color fillcolor[];  /* Color for nontopo surfaces */
-    private Color watercolor;
+    private final String name;
+    private final Color linecolor;  /* Color for topo lines */
+    private final Color fillcolor[];  /* Color for nontopo surfaces */
+    private final Color watercolor;
+    private final boolean waterIsOpaque;
     private int[] hiddenids;
     
     private Color readColor(String id, ConfigurationNode cfg) {
@@ -43,6 +44,14 @@ public class TopoHDShader implements HDShader {
         }
         linecolor = readColor("linecolor",  configuration);
         watercolor = readColor("watercolor",  configuration);
+        float wateralpha = configuration.getFloat("wateralpha", 1.0F);
+        if (wateralpha < 1.0) {
+            watercolor.setAlpha((int)(255 * wateralpha));
+            waterIsOpaque = false;
+        }
+        else {
+            waterIsOpaque = true;
+        }
         /* Now, interpolate missing colors */
         if(fillcolor[0] == null) {
             fillcolor[0] = new Color(0, 0, 0);
@@ -122,6 +131,7 @@ public class TopoHDShader implements HDShader {
         private HDLighting lighting;
         private int scale;
         private int heightshift;    /* Divide to keep in 0-127 range of colors */
+        private boolean inWater;
         
         private OurShaderState(MapIterator mapiter, HDMap map, MapChunkCache cache, int scale) {
             this.mapiter = mapiter;
@@ -144,6 +154,7 @@ public class TopoHDShader implements HDShader {
                 heightshift++;
                 wh >>= 1;
             }
+            inWater = false;
         }
         /**
          * Get our shader
@@ -172,6 +183,7 @@ public class TopoHDShader implements HDShader {
         public void reset(HDPerspectiveState ps) {
             for(int i = 0; i < color.length; i++)
                 color[i].setTransparent();
+            inWater = false;
         }
         
         private final boolean isHidden(int id) {
@@ -192,6 +204,7 @@ public class TopoHDShader implements HDShader {
             }
             /* See if we're close to an edge */
             int[] xyz = ps.getSubblockCoord();
+            
             /* See which face we're on (only do lines on top face) */
             switch(ps.getLastBlockStep()) {
             case Y_MINUS:
@@ -202,31 +215,67 @@ public class TopoHDShader implements HDShader {
                         ((xyz[2] == 0) && (isHidden(mapiter.getBlockTypeIDAt(BlockStep.Z_MINUS)))) ||
                         ((xyz[2] == (scale-1)) && (isHidden(mapiter.getBlockTypeIDAt(BlockStep.Z_PLUS)))))) {
                     c.setColor(linecolor);
+                    inWater = false;
                 }
                 else if((watercolor != null) && ((blocktype == 8) || (blocktype == 9))) {
-                    c.setColor(watercolor);
+                    if (!inWater) {
+                        c.setColor(watercolor);
+                        inWater = true;
+                    }
+                    else {
+                        return false;
+                    }
                 }
                 else {
                     c.setColor(fillcolor[mapiter.getY() >> heightshift]);
+                    inWater = false;
                 }
                 break;
             default:
-                if((linecolor != null) && (xyz[1] == (scale-1)))
+                if((linecolor != null) && (xyz[1] == (scale-1))) {
                     c.setColor(linecolor);
-                else if((watercolor != null) && ((blocktype == 8) || (blocktype == 9))) {
-                    c.setColor(watercolor);
+                    inWater = false;
                 }
-                else
+                else if((watercolor != null) && ((blocktype == 8) || (blocktype == 9))) {
+                    if (!inWater) {
+                        c.setColor(watercolor);
+                        inWater = true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+                else {
                     c.setColor(fillcolor[mapiter.getY() >> heightshift]);
+                    inWater = false;
+                }
                 break;
             }
             /* Handle light level, if needed */
             lighting.applyLighting(ps, this, c, tmpcolor);
-
-            for(int i = 0; i < color.length; i++)
-                color[i] = tmpcolor[i];
-
-            return true;
+            
+            /* If no previous color contribution, use new color */
+            if(color[0].isTransparent()) {
+                for(int i = 0; i < color.length; i++)
+                    color[i].setColor(tmpcolor[i]);
+                return (color[0].getAlpha() == 255);
+            }
+            /* Else, blend and generate new alpha */
+            else {
+                int alpha = color[0].getAlpha();
+                int alpha2 = tmpcolor[0].getAlpha() * (255-alpha) / 255;
+                int talpha = alpha + alpha2;
+                if(talpha > 0)
+                    for(int i = 0; i < color.length; i++)
+                        color[i].setRGBA((tmpcolor[i].getRed()*alpha2 + color[i].getRed()*alpha) / talpha,
+                              (tmpcolor[i].getGreen()*alpha2 + color[i].getGreen()*alpha) / talpha,
+                              (tmpcolor[i].getBlue()*alpha2 + color[i].getBlue()*alpha) / talpha, talpha);
+                else
+                    for(int i = 0; i < color.length; i++)
+                        color[i].setTransparent();
+                    
+                return (talpha >= 254);   /* If only one short, no meaningful contribution left */
+            }
         }        
         /**
          * Ray ended - used to report that ray has exited map (called if renderer has not reported complete)
