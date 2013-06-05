@@ -474,6 +474,9 @@
     -moz-border-radius: 3px;
 
     padding: 6px 2px;
+
+    width: -webkit-calc(100% - 6px);
+    width: calc(100% - 6px);
 }
 
 .dynmap .playerlist .player:hover .playericon {
@@ -582,7 +585,7 @@
 
 .dynmap .playerName {
 	position: absolute;
-	top: -16px;
+	top: -19px;
 	left: 18px;
     z-index:20;
 
@@ -618,7 +621,7 @@
 .dynmap .healthContainer {
 	display: block;
 	position: absolute;
-	top: -2px;
+	top: 1px;
 	left: 18px;
 
 	width: 50px;
@@ -628,6 +631,8 @@
 
 	-moz-border-radius: 3px;
 	border-radius: 3px;
+
+	z-index: 21;
 }
 
 .dynmap .healthContainerSm {
@@ -755,6 +760,8 @@
     -webkit-border-radius: 3px 3px 0px 0px;
     -o-border-radius: 3px 3px 0px 0px;
     border-radius: 3px 3px 0px 0px;
+
+    margin-left: 10px;
 }
 
 .chatinput {
