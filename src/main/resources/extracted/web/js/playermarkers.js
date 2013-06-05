@@ -14,13 +14,12 @@ componentconstructors['playermarkers'] = function(dynmap, configuration) {
 			if(dynmap.canvassupport == false)
 				configuration.showplayerfaces = false;
 					
-			var nm;	
 			$(div)
 				.addClass('Marker')
 				.addClass('playerMarker')
 				.append(playerImage = $('<img/>').addClass(configuration.smallplayerfaces?'playerIconSm':'playerIcon')
 						.attr({ src: 'images/player.png' }))
-				.append(nm = $('<span/>')
+				.append(player.namefield = $('<span/>')
 					.addClass(configuration.smallplayerfaces?'playerNameSm':'playerName')
 					.append(player.name));
 			
@@ -75,7 +74,7 @@ componentconstructors['playermarkers'] = function(dynmap, configuration) {
 				}
 			}
 			else {
-				nm.addClass('playerNameNoHealth');
+				player.namefield.addClass('playerNameNoHealth');
 			}
 			
 			return div;
@@ -110,6 +109,9 @@ componentconstructors['playermarkers'] = function(dynmap, configuration) {
 			}
 		} else if(dynmap.map.hasLayer(player.marker)) {
 			dynmap.playermarkergroup.removeLayer(player.marker);
+		}
+		if (player.namefield && (player.namefield.html() != player.name)) {
+		    player.namefield.html(player.name);
 		}
 	});
     // Remove marker on start of map change

@@ -741,7 +741,7 @@ DynMap.prototype = {
 						me.followPlayer(follow ? player : null);
 					})
 					)
-			.append($('<a/>')
+			.append(player.menuname = $('<a/>')
 					.attr({
 						href: '#',
 						title: 'Center on ' + player.name
@@ -776,9 +776,14 @@ DynMap.prototype = {
 		var location = player.location = new Location(me.worlds[update.world], parseFloat(update.x), parseFloat(update.y), parseFloat(update.z));
 		player.health = update.health;
 		player.armor = update.armor;
+		player.name = update.name;
 
 		$(me).trigger('playerupdated', [ player ]);
 
+		if (player.menuname && (player.menuname.html() != player.name)) {
+		    player.menuname.html(player.name);
+		}
+		
 		// Update menuitem.
 		if(me.options.grayplayerswhenhidden)
 			player.menuitem.toggleClass('otherworld', me.world !== location.world);
