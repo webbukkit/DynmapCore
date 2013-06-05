@@ -58,7 +58,6 @@ public class ClientUpdateComponent extends Component {
         s(u, "servertime", world.getTime() % 24000);
         s(u, "hasStorm", world.hasStorm());
         s(u, "isThundering", world.isThundering());
-        s(u, "currentcount", core.getCurrentPlayers());
 
         s(u, "players", new JSONArray());
         List<DynmapPlayer> players = core.playerList.getVisiblePlayers();
@@ -136,8 +135,8 @@ public class ClientUpdateComponent extends Component {
             }
             a(u, "players", jp);
         }
+        List<DynmapPlayer> hidden = core.playerList.getHiddenPlayers();
         if(configuration.getBoolean("includehiddenplayers", false)) {
-            List<DynmapPlayer> hidden = core.playerList.getHiddenPlayers();
             for(DynmapPlayer p : hidden) {
                 JSONObject jp = new JSONObject();
                 s(jp, "type", "player");
@@ -154,6 +153,10 @@ public class ClientUpdateComponent extends Component {
                 s(jp, "armor", 0);
                 a(u, "players", jp);
             }
+            s(u, "currentcount", core.getCurrentPlayers());
+        }
+        else {
+            s(u, "currentcount", core.getCurrentPlayers() - hidden.size());
         }
 
         s(u, "updates", new JSONArray());
