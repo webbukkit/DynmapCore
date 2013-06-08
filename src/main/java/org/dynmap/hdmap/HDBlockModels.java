@@ -1110,7 +1110,6 @@ public class HDBlockModels {
                     line = line.substring(12);
                     String[] args = line.split(",");
                     String cls = null;
-                    String clsarg = "";
                     for(String a : args) {
                         String[] av = a.split("=");
                         if(av.length < 2) continue;

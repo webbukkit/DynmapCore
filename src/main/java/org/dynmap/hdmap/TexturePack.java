@@ -16,8 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import javax.imageio.ImageIO;
 
@@ -65,7 +63,6 @@ public class TexturePack {
     private static final String SWAMPGRASSCOLOR_PNG = "misc/swampgrasscolor.png";
     private static final String SWAMPFOLIAGECOLOR_PNG = "misc/swampfoliagecolor.png";
 
-	private static final String STANDARDTP = "standard";
     /* Color modifier codes (x1000 for value in definition file, x1000000 for internal value) */
     //private static final int COLORMOD_NONE = 0;
     private static final int COLORMOD_GRASSTONED = 1;
@@ -115,8 +112,8 @@ public class TexturePack {
     private static final int TILEINDEX_PISTONSIDE_EXT = 262;
     private static final int TILEINDEX_PANETOP_X = 263;
     private static final int TILEINDEX_AIRFRAME_EYE = 264;
-    private static final int TILEINDEX_FIRE = 265;
-    private static final int TILEINDEX_PORTAL = 266;
+    //private static final int TILEINDEX_FIRE = 265;
+    //private static final int TILEINDEX_PORTAL = 266;
     private static final int TILEINDEX_WHITE = 267; // Pure white tile
     private static final int MAX_TILEINDEX = 267;  /* Index of last static tile definition */
     private static final int TILETABLE_LEN = 5000;  /* Leave room for dynmaic tiles */
@@ -231,7 +228,6 @@ public class TexturePack {
         TileFileFormat format;
         List<CustomTileRec> cust;
         String[] tilenames;         /* For TILESET, array of tilenames, indexed by tile index */
-        String setdir;              /* For TILESET, directory of tile set in texture */
     }
     private static ArrayList<DynamicTileFile> addonfiles = new ArrayList<DynamicTileFile>();
     private static Map<String, DynamicTileFile> addonfilesbyname = new HashMap<String, DynamicTileFile>();
@@ -1065,7 +1061,6 @@ public class TexturePack {
                 patchCustomImages(idx+IMG_CNT, dtf.tile_to_dyntile, dtf.cust, dtf.tilecnt_x, dtf.tilecnt_y);
                 break;
             case TILESET:
-                // TODO
                 break;
             default:
                 break;
@@ -1450,7 +1445,6 @@ public class TexturePack {
                         }
                         /* Initialize tile name map and set directory path */
                         tfile.tilenames = new String[tfile.tile_to_dyntile.length];
-                        tfile.setdir = setdir;
                     }
                     else {
                         Log.severe("Error defining tile set at " + rdr.getLineNumber() + " of " + txtname);
@@ -1897,7 +1891,6 @@ public class TexturePack {
                     int watercolormult = -1;
                     double rain = -1.0;
                     double tmp = -1.0;
-                    String idval = null;
                     for(int i = 0; i < args.length; i++) {
                         String[] v = args[i].split("=");
                         if(v.length < 2) {
@@ -1906,7 +1899,6 @@ public class TexturePack {
                         }
                         if(v[0].equals("id")) {
                             id = getIntValue(varvals, v[1]);   
-                            idval = v[1];
                         }
                         else if(v[0].equals("grassColorMult")) {
                             grasscolormult = Integer.valueOf(v[1], 16);

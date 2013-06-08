@@ -9,15 +9,11 @@ import org.dynmap.renderer.CustomRenderer;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
-import org.dynmap.renderer.RenderPatchFactory.SideVisible;
-import org.dynmap.utils.BlockStep;
-import org.dynmap.utils.MapIterator;
 
 public class StairBlockRenderer extends CustomRenderer {
     private static final int TEXTURE_SIDES = 0;
     private static final int TEXTURE_TOP = 1;
     private static final int TEXTURE_BOTTOM = 2;
-    private int blkid;    
     private static BitSet stair_ids = new BitSet();
         
     // Array of meshes for normal steps - index = (data value & 7)
@@ -35,7 +31,6 @@ public class StairBlockRenderer extends CustomRenderer {
     public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
         if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
             return false;
-        this.blkid = blkid; /* Remember our block ID */
         stair_ids.set(blkid);   /* Mark block as a stair */
         /* Build step meshes */
         for(int i = 0; i < 8; i++) {

@@ -2,12 +2,10 @@ package org.dynmap.markers.impl;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import org.dynmap.DynmapCore;
-import org.dynmap.MapManager;
 import org.dynmap.common.DynmapChatColor;
 import org.dynmap.common.DynmapListenerManager;
 import org.dynmap.common.DynmapListenerManager.EventType;

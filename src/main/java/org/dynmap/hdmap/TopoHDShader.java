@@ -19,7 +19,6 @@ public class TopoHDShader implements HDShader {
     private final Color linecolor;  /* Color for topo lines */
     private final Color fillcolor[];  /* Color for nontopo surfaces */
     private final Color watercolor;
-    private final boolean waterIsOpaque;
     private int[] hiddenids;
     
     private Color readColor(String id, ConfigurationNode cfg) {
@@ -47,10 +46,6 @@ public class TopoHDShader implements HDShader {
         float wateralpha = configuration.getFloat("wateralpha", 1.0F);
         if (wateralpha < 1.0) {
             watercolor.setAlpha((int)(255 * wateralpha));
-            waterIsOpaque = false;
-        }
-        else {
-            waterIsOpaque = true;
         }
         /* Now, interpolate missing colors */
         if(fillcolor[0] == null) {

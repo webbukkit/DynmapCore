@@ -13,7 +13,6 @@ import org.dynmap.hdmap.HDPerspective;
 import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.MarkerSet;
 import org.dynmap.markers.impl.MarkerAPIImpl.MarkerUpdate;
-import org.dynmap.utils.Matrix3D;
 import org.dynmap.utils.Vector3D;
 
 class AreaMarkerImpl implements AreaMarker {

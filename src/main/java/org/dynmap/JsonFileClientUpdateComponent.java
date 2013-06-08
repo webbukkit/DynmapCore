@@ -524,10 +524,11 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
         File regFile = getStandaloneFile("dynmap_reg.php");
         if (regFile.exists()) {
             FileInputStream fstream = null;
+            BufferedReader br = null;
             ArrayList<String> lines = new ArrayList<String>();
             try {
                 fstream = new FileInputStream(regFile);
-                BufferedReader br = new BufferedReader(new InputStreamReader(fstream));
+                br = new BufferedReader(new InputStreamReader(fstream));
                 String line;
                 while ((line = br.readLine()) != null)   {
                     if(line.startsWith("<?") || line.startsWith("*/")) {
@@ -545,6 +546,13 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                         
                     }
                     fstream = null;
+                }
+                if (br != null) {
+                    try {
+                        br.close();
+                    } catch (IOException x) {
+                    }
+                    br = null;
                 }
             }
             for(int i = 0; i < lines.size(); i++) {

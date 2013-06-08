@@ -11,13 +11,8 @@ import org.dynmap.renderer.CustomRenderer;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
-import org.dynmap.renderer.RenderPatchFactory.SideVisible;
-import org.dynmap.utils.BlockStep;
-import org.dynmap.utils.MapIterator;
 
 public class FrameRenderer extends CustomRenderer {
-    private static final int TEXTURE_SIDE = 0;
-    private int blkid;
     // Map of block ID sets for linking blocks
     private static Map<String, BitSet> linked_ids_by_set = new HashMap<String, BitSet>();
     // Set of linked blocks
@@ -47,7 +42,6 @@ public class FrameRenderer extends CustomRenderer {
     public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
         if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
             return false;
-        this.blkid = blkid; /* Remember our block ID */
         String linkset = custparm.get("linkset");
         if(linkset == null) linkset = "default";
         linked_ids = linked_ids_by_set.get(linkset); /* Get our set */

@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.dynmap.Log;
 import org.dynmap.renderer.CustomRenderer;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
 
 public class RPMicroRenderer extends CustomRenderer {
-    private int blkid;
     private static final String[] tileFields = { "cvs", "cvm" };
     /* Defined texture indexes
     * 0 = Cobblestone (cobblestone:0)
@@ -163,7 +161,6 @@ public class RPMicroRenderer extends CustomRenderer {
     public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
         if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
             return false;
-        this.blkid = blkid; /* Remember our block ID */
         /* Flesh out sides map */
         for(int i = 0; i < materialTextureMap.length; i++) {
             if(materialTextureMap[i].length < 6) {
@@ -264,134 +261,134 @@ public class RPMicroRenderer extends CustomRenderer {
         if(isHollow(shape, thickness)) {
             switch(shape) {
                 case 0: /* Bottom cover */
-                    this.addBox(rpf, list, 0, 0.75, 0, thick, 0, 0.25, sides);
-                    this.addBox(rpf, list, 0.75, 1, 0, thick, 0, 0.75, sides);
-                    this.addBox(rpf, list, 0.25, 1, 0, thick, 0.75, 1, sides);
-                    this.addBox(rpf, list, 0, 0.25, 0, thick, 0.25, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 0, 0.75, 0, thick, 0, 0.25, sides);
+                    CustomRenderer.addBox(rpf, list, 0.75, 1, 0, thick, 0, 0.75, sides);
+                    CustomRenderer.addBox(rpf, list, 0.25, 1, 0, thick, 0.75, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 0, 0.25, 0, thick, 0.25, 1, sides);
                     break;
                 case 1: /* Top cover */
-                    this.addBox(rpf, list, 0, 0.75, 1-thick, 1, 0, 0.25, sides);
-                    this.addBox(rpf, list, 0.75, 1, 1-thick, 1, 0, 0.75, sides);
-                    this.addBox(rpf, list, 0.25, 1, 1-thick, 1, 0.75, 1, sides);
-                    this.addBox(rpf, list, 0, 0.25, 1-thick, 1, 0.25, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 0, 0.75, 1-thick, 1, 0, 0.25, sides);
+                    CustomRenderer.addBox(rpf, list, 0.75, 1, 1-thick, 1, 0, 0.75, sides);
+                    CustomRenderer.addBox(rpf, list, 0.25, 1, 1-thick, 1, 0.75, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 0, 0.25, 1-thick, 1, 0.25, 1, sides);
                     break;
                 case 2: /* Z min cover */
-                    this.addBox(rpf, list, 0, 0.75, 0, 0.25, 0, thick, sides);
-                    this.addBox(rpf, list, 0.75, 1, 0, 0.75, 0, thick, sides);
-                    this.addBox(rpf, list, 0.25, 1, 0.75, 1, 0, thick, sides);
-                    this.addBox(rpf, list, 0, 0.25, 0.25, 1, 0, thick, sides);
+                    CustomRenderer.addBox(rpf, list, 0, 0.75, 0, 0.25, 0, thick, sides);
+                    CustomRenderer.addBox(rpf, list, 0.75, 1, 0, 0.75, 0, thick, sides);
+                    CustomRenderer.addBox(rpf, list, 0.25, 1, 0.75, 1, 0, thick, sides);
+                    CustomRenderer.addBox(rpf, list, 0, 0.25, 0.25, 1, 0, thick, sides);
                     break;
                 case 3: /* Z max cover */
-                    this.addBox(rpf, list, 0, 0.75, 0, 0.25, 1-thick, 1, sides);
-                    this.addBox(rpf, list, 0.75, 1, 0, 0.75, 1-thick, 1, sides);
-                    this.addBox(rpf, list, 0.25, 1, 0.75, 1, 1-thick, 1, sides);
-                    this.addBox(rpf, list, 0, 0.25, 0.25, 1, 1-thick, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 0, 0.75, 0, 0.25, 1-thick, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 0.75, 1, 0, 0.75, 1-thick, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 0.25, 1, 0.75, 1, 1-thick, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 0, 0.25, 0.25, 1, 1-thick, 1, sides);
                     break;
                 case 4: /* X min cover */
-                    this.addBox(rpf, list, 0, thick, 0, 0.75, 0, 0.25, sides);
-                    this.addBox(rpf, list, 0, thick, 0.75, 1, 0, 0.75, sides);
-                    this.addBox(rpf, list, 0, thick, 0.25, 1, 0.75, 1, sides);
-                    this.addBox(rpf, list, 0, thick, 0, 0.25, 0.25, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 0, thick, 0, 0.75, 0, 0.25, sides);
+                    CustomRenderer.addBox(rpf, list, 0, thick, 0.75, 1, 0, 0.75, sides);
+                    CustomRenderer.addBox(rpf, list, 0, thick, 0.25, 1, 0.75, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 0, thick, 0, 0.25, 0.25, 1, sides);
                     break;
                 case 5: /* X max cover */
-                    this.addBox(rpf, list, 1-thick, 1, 0, 0.75, 0, 0.25, sides);
-                    this.addBox(rpf, list, 1-thick, 1, 0.75, 1, 0, 0.75, sides);
-                    this.addBox(rpf, list, 1-thick, 1, 0.25, 1, 0.75, 1, sides);
-                    this.addBox(rpf, list, 1-thick, 1, 0, 0.25, 0.25, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 1-thick, 1, 0, 0.75, 0, 0.25, sides);
+                    CustomRenderer.addBox(rpf, list, 1-thick, 1, 0.75, 1, 0, 0.75, sides);
+                    CustomRenderer.addBox(rpf, list, 1-thick, 1, 0.25, 1, 0.75, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 1-thick, 1, 0, 0.25, 0.25, 1, sides);
                     break;
             }
         }
         else {
             switch(shape) {
                 case 0: /* Bottom cover */
-                    this.addBox(rpf, list, 0, 1, 0, thick, 0, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 0, 1, 0, thick, 0, 1, sides);
                     break;
                 case 1: /* Top cover */
-                    this.addBox(rpf, list, 0, 1, 1-thick, 1.0, 0, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 0, 1, 1-thick, 1.0, 0, 1, sides);
                     break;
                 case 2: /* Z min cover */
-                    this.addBox(rpf, list, 0, 1, 0, 1, 0, thick, sides);
+                    CustomRenderer.addBox(rpf, list, 0, 1, 0, 1, 0, thick, sides);
                     break;
                 case 3: /* Z max cover */
-                    this.addBox(rpf, list, 0, 1, 0, 1, 1.0-thick, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 0, 1, 0, 1, 1.0-thick, 1, sides);
                     break;
                 case 4: /* X min cover */
-                    this.addBox(rpf, list, 0, thick, 0, 1, 0, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 0, thick, 0, 1, 0, 1, sides);
                     break;
                 case 5: /* X max cover */
-                    this.addBox(rpf, list, 1.0-thick, 1, 0, 1, 0, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 1.0-thick, 1, 0, 1, 0, 1, sides);
                     break;
                 case 6: /* Xmin, Ymin, Zmin corner */
-                    this.addBox(rpf, list, 0, thick, 0, thick, 0, thick, sides);
+                    CustomRenderer.addBox(rpf, list, 0, thick, 0, thick, 0, thick, sides);
                     break;
                 case 7: /* Xmin, Ymin, Zmax corner */
-                    this.addBox(rpf, list, 0, thick, 0, thick, 1-thick, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 0, thick, 0, thick, 1-thick, 1, sides);
                     break;
                 case 8: /* Xmax, Ymin, Zmin corner */
-                    this.addBox(rpf, list, 1-thick, 1, 0, thick, 0, thick, sides);
+                    CustomRenderer.addBox(rpf, list, 1-thick, 1, 0, thick, 0, thick, sides);
                     break;
                 case 9: /* Xmax, Ymin, Zmax corner */
-                    this.addBox(rpf, list, 1-thick, 1, 0, thick, 1-thick, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 1-thick, 1, 0, thick, 1-thick, 1, sides);
                     break;
                 case 10: /* Xmin, Ymax, Zmin corner */
-                    this.addBox(rpf, list, 0, thick, 1-thick, 1, 0, thick, sides);
+                    CustomRenderer.addBox(rpf, list, 0, thick, 1-thick, 1, 0, thick, sides);
                     break;
                 case 11: /* Xmin, Ymax, Zmax corner */
-                    this.addBox(rpf, list, 0, thick, 1-thick, 1, 1-thick, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 0, thick, 1-thick, 1, 1-thick, 1, sides);
                     break;
                 case 12: /* Xmax, Ymax, Zmin corner */
-                    this.addBox(rpf, list, 1-thick, 1, 1-thick, 1, 0, thick, sides);
+                    CustomRenderer.addBox(rpf, list, 1-thick, 1, 1-thick, 1, 0, thick, sides);
                     break;
                 case 13: /* Xmax, Ymax, Zmax corner */
-                    this.addBox(rpf, list, 1-thick, 1, 1-thick, 1, 1-thick, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 1-thick, 1, 1-thick, 1, 1-thick, 1, sides);
                     break;
                 case 14: /* Zmin, Ymin Strip */
-                    this.addBox(rpf, list, 0, 1, 0, thick, 0, thick, sides);
+                    CustomRenderer.addBox(rpf, list, 0, 1, 0, thick, 0, thick, sides);
                     break;
                 case 15: /* Zmax, Ymin Strip */
-                    this.addBox(rpf, list, 0, 1, 0, thick, 1-thick, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 0, 1, 0, thick, 1-thick, 1, sides);
                     break;
                 case 16: /* Xmin, Ymin Strip */
-                    this.addBox(rpf, list, 0, thick, 0, thick, 0, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 0, thick, 0, thick, 0, 1, sides);
                     break;
                 case 17: /* Xmax, Ymin Strip */
-                    this.addBox(rpf, list, 1-thick, 1, 0, thick, 0, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 1-thick, 1, 0, thick, 0, 1, sides);
                     break;
                 case 18: /* Xmin, Zmin Strip */
-                    this.addBox(rpf, list, 0, thick, 0, 1, 0, thick, sides);
+                    CustomRenderer.addBox(rpf, list, 0, thick, 0, 1, 0, thick, sides);
                     break;
                 case 19: /* Xmin, Zmax Strip */
-                    this.addBox(rpf, list, 0, thick, 0, 1, 1-thick, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 0, thick, 0, 1, 1-thick, 1, sides);
                     break;
                 case 20: /* Xmax, Zmin Strip */
-                    this.addBox(rpf, list, 1-thick, 1, 0, 1, 0, thick, sides);
+                    CustomRenderer.addBox(rpf, list, 1-thick, 1, 0, 1, 0, thick, sides);
                     break;
                 case 21: /* Xmax, Zmax Strip */
-                    this.addBox(rpf, list, 1-thick, 1, 0, 1, 1-thick, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 1-thick, 1, 0, 1, 1-thick, 1, sides);
                     break;
                 case 22: /* Zmin, Ymax Strip */
-                    this.addBox(rpf, list, 0, 1, 1-thick, 1, 0, thick, sides);
+                    CustomRenderer.addBox(rpf, list, 0, 1, 1-thick, 1, 0, thick, sides);
                     break;
                 case 23: /* Zmax, Ymax Strip */
-                    this.addBox(rpf, list, 0, 1, 1-thick, 1, 1-thick, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 0, 1, 1-thick, 1, 1-thick, 1, sides);
                     break;
                 case 24: /* Xmin, Ymax Strip */
-                    this.addBox(rpf, list, 0, thick, 1-thick, 1, 0, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 0, thick, 1-thick, 1, 0, 1, sides);
                     break;
                 case 25: /* Xmax, Ymax Strip */
-                    this.addBox(rpf, list, 1-thick, 1, 1-thick, 1, 0, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 1-thick, 1, 1-thick, 1, 0, 1, sides);
                     break;
                 case 26: /* Pillar Y */
-                    this.addBox(rpf, list, 0.5-thick, 0.5+thick, 0, 1, 0.5-thick, 0.5+thick, sides);
+                    CustomRenderer.addBox(rpf, list, 0.5-thick, 0.5+thick, 0, 1, 0.5-thick, 0.5+thick, sides);
                     break;
                 case 27: /* Pillar Z */
-                    this.addBox(rpf, list, 0.5-thick, 0.5+thick, 0.5-thick, 0.5+thick, 0, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 0.5-thick, 0.5+thick, 0.5-thick, 0.5+thick, 0, 1, sides);
                     break;
                 case 28: /* Pillar X */
-                    this.addBox(rpf, list, 0, 1, 0.5-thick, 0.5+thick, 0.5-thick, 0.5+thick, sides);
+                    CustomRenderer.addBox(rpf, list, 0, 1, 0.5-thick, 0.5+thick, 0.5-thick, 0.5+thick, sides);
                     break;
                 default:
-                    this.addBox(rpf, list, 0, 1, 0, 1, 0, 1, sides);
+                    CustomRenderer.addBox(rpf, list, 0, 1, 0, 1, 0, 1, sides);
                     break;
             }
         }

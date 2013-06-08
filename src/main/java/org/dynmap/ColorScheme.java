@@ -83,7 +83,6 @@ public class ColorScheme {
             stream = new FileInputStream(colorSchemeFile);
 
             Scanner scanner = new Scanner(stream);
-            int nc = 0;
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 if (line.startsWith("#") || line.equals("")) {
@@ -198,7 +197,6 @@ public class ColorScheme {
                 else {
                     colors[id] = c;
                 }
-                nc += 1;
             }
             scanner.close();
             /* Last, push base color into any open slots in data colors list */

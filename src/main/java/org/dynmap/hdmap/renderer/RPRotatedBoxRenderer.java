@@ -1,18 +1,11 @@
 package org.dynmap.hdmap.renderer;
 
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.HashMap;
 import java.util.Map;
 
-import org.dynmap.Log;
 import org.dynmap.renderer.CustomRenderer;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
-import org.dynmap.renderer.RenderPatchFactory.SideVisible;
-import org.dynmap.utils.BlockStep;
-import org.dynmap.utils.MapIterator;
 
 public class RPRotatedBoxRenderer extends CustomRenderer {
     // From RenderContext.java in RP2 (for rotateTexturesNew())
@@ -41,7 +34,6 @@ public class RPRotatedBoxRenderer extends CustomRenderer {
         { 3, 2, 4, 5, 1, 0, 187739, 27, 112320 }, 
         { 5, 4, 3, 2, 1, 0, 114011, 110619, 1728 }, 
         { 2, 3, 5, 4, 1, 0, 224603, 27, 112320 } };
-    private int blkid;
     private int rotalg[] = new int[16]; // Rotaton algorithm (0=orientTextures,1=orientTexturesNew,2=fixed-at-0, 3=rotateTextures)
     // Models for rotation values
     private RenderPatch[][] models;
@@ -53,7 +45,6 @@ public class RPRotatedBoxRenderer extends CustomRenderer {
     public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
         if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
             return false;
-        this.blkid = blkid; /* Remember our block ID */
 
         models = new RenderPatch[rotTable.length][];
         

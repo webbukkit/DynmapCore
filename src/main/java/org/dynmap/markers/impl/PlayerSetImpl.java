@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.dynmap.ConfigurationNode;
-import org.dynmap.Log;
 import org.dynmap.markers.PlayerSet;
 import org.dynmap.markers.impl.MarkerAPIImpl.MarkerUpdate;
 

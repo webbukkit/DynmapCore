@@ -4,16 +4,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.JarURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 
 import org.dynmap.Log;
@@ -39,7 +33,6 @@ public class TexturePackLoader {
         }
     }
     public InputStream openTPResource(String rname) {
-        InputStream is;
         try {
             if (zf != null) {
                 ZipEntry ze = zf.getEntry(rname);

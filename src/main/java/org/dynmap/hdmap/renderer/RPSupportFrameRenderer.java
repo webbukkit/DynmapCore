@@ -28,7 +28,6 @@ public class RPSupportFrameRenderer extends RPMicroRenderer {
     @Override
     public RenderPatch[] getRenderPatchList(MapDataContext ctx) {
         int covermask = 0;
-        byte[] covervals = new byte[2*29];
         Object v = ctx.getBlockTileEntityField("cvm");
         if(v instanceof Integer) {
             covermask = ((Integer)v).intValue();

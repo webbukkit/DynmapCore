@@ -1,21 +1,16 @@
 package org.dynmap.hdmap;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import org.dynmap.DynmapCore;
 import org.dynmap.Log;
@@ -38,7 +33,6 @@ public class CTMTexturePack {
     private String[] blocknames;
     private int[] blockmaterials;
     private String[] biomenames;
-    private static final int MAX_RECURSE = 4;
 
     private static final int BLOCK_ID_LOG = 17;
     private static final int BLOCK_ID_QUARTZ = 155;
@@ -70,15 +64,6 @@ public class CTMTexturePack {
     private static final int[] GO_SOUTH = new int[]{0, 0, 1};
     private static final int[] GO_WEST = new int[]{-1, 0, 0};
     private static final int[] GO_EAST = new int[]{1, 0, 0};
-
-    private static final int[][] NORMALS = new int[][]{
-        GO_DOWN,
-        GO_UP,
-        GO_NORTH,
-        GO_SOUTH,
-        GO_WEST,
-        GO_EAST,
-    };
 
     // NEIGHBOR_OFFSETS[a][b][c] = offset from starting block
     // a: face 0-5
@@ -970,7 +955,6 @@ public class CTMTexturePack {
     
     public int mapTexture(MapIterator mapiter, int blkid, int blkdata, BlockStep laststep, int textid, HDShaderState ss) {
         int newtext = -1;
-        int origtext = textid;
         if ((!this.mappedblocks.get(blkid)) && ((textid < 0) || (!this.mappedtiles.get(textid)))) {
             return textid;
         }

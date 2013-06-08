@@ -5,8 +5,6 @@ import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
 
-import org.dynmap.Log;
-import org.dynmap.hdmap.TexturePack;
 import org.dynmap.hdmap.TexturePack.BlockTransparency;
 import org.dynmap.hdmap.TexturePack.HDTextureMap;
 import org.dynmap.renderer.CustomRenderer;
@@ -18,7 +16,6 @@ public class FenceWallBlockRenderer extends CustomRenderer {
     private static final int TEXTURE_SIDES = 0;
     private static final int TEXTURE_TOP = 1;
     private static final int TEXTURE_BOTTOM = 2;
-    private int blkid;    
     private boolean check_yplus;
     private BitSet link_ids = new BitSet();
 
@@ -37,7 +34,6 @@ public class FenceWallBlockRenderer extends CustomRenderer {
     public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
         if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
             return false;
-        this.blkid = blkid; /* Remember our block ID */
         link_ids.set(blkid);    /* Link to self */
         /* Build models, based on type of fence/wall we're set to be */
         String type = custparm.get("type");

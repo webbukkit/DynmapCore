@@ -19,7 +19,6 @@ import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerIcon;
 import org.dynmap.markers.MarkerSet;
 import org.dynmap.markers.impl.MarkerAPIImpl.MarkerUpdate;
-import org.dynmap.utils.Matrix3D;
 
 class MarkerSetImpl implements MarkerSet {
     private HashMap<String, MarkerImpl> markers = new HashMap<String, MarkerImpl>();

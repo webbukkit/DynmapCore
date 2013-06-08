@@ -8,8 +8,6 @@ import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
 import org.dynmap.renderer.RenderPatchFactory.SideVisible;
-import org.dynmap.utils.BlockStep;
-import org.dynmap.utils.MapIterator;
 
 public class RedstoneWireRenderer extends CustomRenderer {
     private static final int TEXTURE_REDSTONE_STRAIGHT = 0;

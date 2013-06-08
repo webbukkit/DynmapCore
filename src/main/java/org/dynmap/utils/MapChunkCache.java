@@ -1,7 +1,6 @@
 package org.dynmap.utils;
 
 import org.dynmap.DynmapWorld;
-import org.dynmap.common.BiomeMap;
 
 public interface MapChunkCache {
     public enum HiddenChunkStyle {

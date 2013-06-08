@@ -1,8 +1,6 @@
 package org.dynmap.hdmap.renderer;
 
 import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.dynmap.Log;
@@ -10,12 +8,8 @@ import org.dynmap.renderer.CustomRenderer;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
-import org.dynmap.renderer.RenderPatchFactory.SideVisible;
-import org.dynmap.utils.BlockStep;
-import org.dynmap.utils.MapIterator;
 
 public class RotatedBoxRenderer extends CustomRenderer {
-    private int blkid;
     // Models for rotation values
     private RenderPatch[][] models;
     private Integer[] rotValues;
@@ -29,7 +23,6 @@ public class RotatedBoxRenderer extends CustomRenderer {
     public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
         if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
             return false;
-        this.blkid = blkid; /* Remember our block ID */
         /* See if index attribute defined */
         idx_attrib = custparm.get("textureIndex");
         ArrayList<Integer> map = new ArrayList<Integer>();

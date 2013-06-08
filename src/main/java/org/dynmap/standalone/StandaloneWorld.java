@@ -2,7 +2,6 @@ package org.dynmap.standalone;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -87,7 +86,7 @@ public class StandaloneWorld extends DynmapWorld {
                 timestamps[i] = raf.readInt();
             }
         }
-        public Tag readChunk(int x, int z) {
+        public CompoundTag readChunk(int x, int z) {
             byte[] rec = null;
             int ver = 0;
             synchronized(this) {
@@ -123,10 +122,10 @@ public class StandaloneWorld extends DynmapWorld {
             else {
                 return null;
             }
-            Tag t = null;
+            CompoundTag t = null;
             try {
                 NBTInputStream nis = new NBTInputStream(new BufferedInputStream(in), false);
-                t = nis.readTag();
+                t = (CompoundTag) nis.readTag();
                 nis.close();
             } catch (IOException iox) {
                 return null;
@@ -144,7 +143,8 @@ public class StandaloneWorld extends DynmapWorld {
             }
         }
     }
-    private static class RegionMap extends LinkedHashMap<CoordPair, RegionFileHandler>  {
+    @SuppressWarnings("serial")
+    static class RegionMap extends LinkedHashMap<CoordPair, RegionFileHandler>  {
         public RegionMap() {
             super(MAX_FILES_ACTIVE, 0.7F, true); // Make access-order based linking (for LRU)
         }
@@ -162,7 +162,8 @@ public class StandaloneWorld extends DynmapWorld {
         
         try {
             w = new StandaloneWorld("world", new File("/Users/mike/mcpc/world_nether"), "nether");
-            Tag t = w.getChunk(0, 0);
+            CompoundTag t = (CompoundTag) w.getChunk(0, 0);
+            @SuppressWarnings("unused")
             StandaloneChunkSnapshot ss = new StandaloneChunkSnapshot(t);
             
         } catch (IOException x) {
@@ -177,6 +178,7 @@ public class StandaloneWorld extends DynmapWorld {
         try {
             fis = new FileInputStream(lvl);
             NBTInputStream nis = new NBTInputStream(fis);
+            @SuppressWarnings("rawtypes")
             Tag t = nis.readTag();
             if (t.getType() == TagType.TAG_COMPOUND) {
                 CompoundTag ct = (CompoundTag)(((CompoundTag)t).getValue().get("Data"));
@@ -278,11 +280,10 @@ public class StandaloneWorld extends DynmapWorld {
 
     @Override
     public MapChunkCache getChunkCache(List<DynmapChunk> chunks) {
-        // TODO Auto-generated method stub
         return null;
     }
 
-    public Tag getChunk(int x, int z) {
+    public CompoundTag getChunk(int x, int z) {
         RegionFileHandler rf = null;
         CoordPair cp = new CoordPair();
         cp.x = (x >> 5);

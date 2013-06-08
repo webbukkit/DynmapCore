@@ -3,7 +3,6 @@ package org.dynmap.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.dynmap.Log;
 import org.dynmap.hdmap.TexturePack;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;

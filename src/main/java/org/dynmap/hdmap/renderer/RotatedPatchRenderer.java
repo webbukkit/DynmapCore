@@ -1,8 +1,6 @@
 package org.dynmap.hdmap.renderer;
 
 import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.dynmap.Log;
@@ -10,9 +8,6 @@ import org.dynmap.renderer.CustomRenderer;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
-import org.dynmap.renderer.RenderPatchFactory.SideVisible;
-import org.dynmap.utils.BlockStep;
-import org.dynmap.utils.MapIterator;
 
 /**
  * This renderer is used to define a model using a set of 1 or more patches (patch0=x, patch1=x - same syntax as patchblock),
@@ -25,7 +20,6 @@ import org.dynmap.utils.MapIterator;
  * the rotation index value N does not match a corresponding 'rotN' setting, no rotation is assumed.
  */
 public class RotatedPatchRenderer extends CustomRenderer {
-    private int blkid;
     // Default model
     private RenderPatch[] basemodel;
     // Models for rotation values
@@ -41,7 +35,6 @@ public class RotatedPatchRenderer extends CustomRenderer {
     public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
         if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
             return false;
-        this.blkid = blkid; /* Remember our block ID */
         ArrayList<RenderPatch> patches = new ArrayList<RenderPatch>();
         ArrayList<int[]> rotations = new ArrayList<int[]>();
         /* See if index attribute defined */

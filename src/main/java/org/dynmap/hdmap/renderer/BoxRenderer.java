@@ -1,24 +1,17 @@
 package org.dynmap.hdmap.renderer;
 
 import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.HashMap;
 import java.util.Map;
 
-import org.dynmap.Log;
 import org.dynmap.renderer.CustomRenderer;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
-import org.dynmap.renderer.RenderPatchFactory.SideVisible;
-import org.dynmap.utils.BlockStep;
-import org.dynmap.utils.MapIterator;
 
 /**
  * Simple renderer for creating a model representing a normal cube (texture-wise), but with reductions in the X, Y and/or Z ranges
  */
 public class BoxRenderer extends CustomRenderer {
-    private int blkid;
     // Models for rotation values
     private RenderPatch[] model;
     // Patch index ordering, corresponding to BlockStep ordinal order
@@ -28,7 +21,6 @@ public class BoxRenderer extends CustomRenderer {
     public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
         if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
             return false;
-        this.blkid = blkid; /* Remember our block ID */
         double xmin = 0.0, xmax = 1.0;
         double ymin = 0.0, ymax = 1.0;
         double zmin = 0.0, zmax = 1.0;
@@ -65,7 +57,7 @@ public class BoxRenderer extends CustomRenderer {
         }
         /* Now, build box model */
         ArrayList<RenderPatch> list = new ArrayList<RenderPatch>();
-        this.addBox(rpf, list, xmin, xmax, ymin, ymax, zmin, zmax, patchlist);
+        CustomRenderer.addBox(rpf, list, xmin, xmax, ymin, ymax, zmin, zmax, patchlist);
         model = list.toArray(new RenderPatch[patchlist.length]);
         
         return true;

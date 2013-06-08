@@ -1,14 +1,9 @@
 package org.dynmap.hdmap.renderer;
 
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
 
-import org.dynmap.Log;
-import org.dynmap.hdmap.TexturePack;
-import org.dynmap.hdmap.TexturePack.BlockTransparency;
-import org.dynmap.hdmap.TexturePack.HDTextureMap;
 import org.dynmap.renderer.CustomRenderer;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;

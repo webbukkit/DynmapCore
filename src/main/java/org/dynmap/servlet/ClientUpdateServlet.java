@@ -20,7 +20,6 @@ import org.dynmap.Client;
 import org.dynmap.DynmapCore;
 import org.dynmap.DynmapWorld;
 import org.dynmap.InternalClientUpdateComponent;
-import org.dynmap.Log;
 import org.dynmap.web.HttpField;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -35,6 +34,7 @@ public class ClientUpdateServlet extends HttpServlet {
     }
 
     Pattern updatePathPattern = Pattern.compile("/([^/]+)/([0-9]*)");
+    @SuppressWarnings("unchecked")
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         byte[] bytes;
@@ -67,7 +67,6 @@ public class ClientUpdateServlet extends HttpServlet {
                 resp.sendError(404, "World not found");
                 return;
             }
-            long current = System.currentTimeMillis();
             long since = 0;
 
             try {
@@ -80,7 +79,6 @@ public class ClientUpdateServlet extends HttpServlet {
             JSONObject upd = InternalClientUpdateComponent.getWorldUpdate(dynmapWorld.getName());
             if(upd != null)
                 u.putAll(upd);
-            //TODO: prune based on security
             boolean see_all = true;
             if(core.player_info_protected) {
                 if(guest) {

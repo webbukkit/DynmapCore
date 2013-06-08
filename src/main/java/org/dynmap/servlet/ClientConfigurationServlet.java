@@ -14,7 +14,6 @@ import javax.servlet.http.HttpSession;
 import org.dynmap.DynmapCore;
 import org.dynmap.DynmapWorld;
 import org.dynmap.InternalClientUpdateComponent;
-import org.dynmap.Log;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 import static org.dynmap.JSONUtils.s;
@@ -29,6 +28,7 @@ public class ClientConfigurationServlet extends HttpServlet {
         this.core = plugin;
     }
     
+    @SuppressWarnings("unchecked")
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         byte[] outputBytes;

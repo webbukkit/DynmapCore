@@ -1,21 +1,15 @@
 package org.dynmap.hdmap.renderer;
 
 import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.HashMap;
 import java.util.Map;
 
-import org.dynmap.Log;
 import org.dynmap.renderer.CustomRenderer;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
 import org.dynmap.renderer.RenderPatchFactory.SideVisible;
-import org.dynmap.utils.BlockStep;
-import org.dynmap.utils.MapIterator;
 
 public class SkullRenderer extends CustomRenderer {
-    private int blkid;
     private static final int NUM_FACES = 5;
     private static final int NUM_DIRECTIONS = 16;
     private static final String[] tileFields = { "SkullType", "Rot" };
@@ -27,7 +21,6 @@ public class SkullRenderer extends CustomRenderer {
     public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
         if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
             return false;
-        this.blkid = blkid; /* Remember our block ID */
 
         ArrayList<RenderPatch> list = new ArrayList<RenderPatch>();
         list.add(rpf.getPatch(0.75, 0.0, 0.25, 0.25, 0.0, 0.25, 0.75, 0.0, 0.75, 0, 1, 0, 1, SideVisible.TOP, 0));
@@ -53,7 +46,6 @@ public class SkullRenderer extends CustomRenderer {
     
     @Override
     public RenderPatch[] getRenderPatchList(MapDataContext ctx) {
-        ArrayList<RenderPatch> list = new ArrayList<RenderPatch>();
         int rot = 0;
         int face = 0;
         Object val = ctx.getBlockTileEntityField("Rot");

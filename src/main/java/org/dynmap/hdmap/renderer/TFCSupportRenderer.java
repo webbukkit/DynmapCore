@@ -5,17 +5,12 @@ import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
 
-import org.dynmap.Log;
-import org.dynmap.hdmap.TexturePack;
-import org.dynmap.hdmap.TexturePack.BlockTransparency;
-import org.dynmap.hdmap.TexturePack.HDTextureMap;
 import org.dynmap.renderer.CustomRenderer;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
 
 public class TFCSupportRenderer extends CustomRenderer {
-    private int blkid;    
     private boolean isVert;
     private static BitSet vertid = new BitSet();
     private static BitSet horizid = new BitSet();
@@ -35,7 +30,6 @@ public class TFCSupportRenderer extends CustomRenderer {
     public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
         if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
             return false;
-        this.blkid = blkid; /* Remember our block ID */
         String vert = custparm.get("vert");
         if((vert != null) && (vert.equals("true"))) {
             isVert = true;

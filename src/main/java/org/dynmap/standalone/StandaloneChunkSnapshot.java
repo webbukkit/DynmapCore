@@ -8,18 +8,20 @@ import org.spout.nbt.IntTag;
 import org.spout.nbt.LongTag;
 import org.spout.nbt.ByteTag;
 import org.spout.nbt.ByteArrayTag;
-import org.spout.nbt.ShortArrayTag;
 import org.spout.nbt.IntArrayTag;
-import org.spout.nbt.Tag;
 import org.spout.nbt.ListTag;
 
 public class StandaloneChunkSnapshot {
     private static final int NUM_SECTIONS = 16;
     private static final int BLKS_PER_SECTION = 16 * 16 * 16;
+    @SuppressWarnings("unused")
     private int x, z;
     private byte[] biomes;
+    @SuppressWarnings("unused")
     private long lastUpdate;
+    @SuppressWarnings("unused")
     private boolean populated;
+    @SuppressWarnings("unused")
     private int[] heightMap;
     private short[][] blockid = new short[NUM_SECTIONS][];
     private byte[][] blockdata = new byte[NUM_SECTIONS][];
@@ -46,10 +48,10 @@ public class StandaloneChunkSnapshot {
         }
     }
     
-    public StandaloneChunkSnapshot(Tag tag) {
+    public StandaloneChunkSnapshot(CompoundTag tag) {
         this();
         
-        CompoundMap map = ((CompoundTag)tag).getValue();
+        CompoundMap map = tag.getValue();
         map = ((CompoundTag)map.get("Level")).getValue(); // Get Level section
         /* Get coordinates */
         x = ((IntTag)map.get("xPos")).getValue();

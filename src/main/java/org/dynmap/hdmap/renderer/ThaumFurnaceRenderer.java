@@ -3,7 +3,6 @@ package org.dynmap.hdmap.renderer;
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.dynmap.Log;
 import org.dynmap.renderer.CustomRenderer;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
@@ -184,7 +183,7 @@ public class ThaumFurnaceRenderer extends CustomRenderer {
                 txtids[i] = calcTexture(ctx, i);
             }
         }
-        this.addBox(ctx.getPatchFactory(), list, 0, 1, 0, 1, 0, 1, txtids);
+        CustomRenderer.addBox(ctx.getPatchFactory(), list, 0, 1, 0, 1, 0, 1, txtids);
         return list.toArray(new RenderPatch[6]);
     }
 }

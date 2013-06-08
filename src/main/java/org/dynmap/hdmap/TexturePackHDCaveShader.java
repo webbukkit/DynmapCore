@@ -2,7 +2,6 @@ package org.dynmap.hdmap;
 
 import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapCore;
-import org.dynmap.hdmap.TexturePackHDShader.ShaderState;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.LightLevels;
 import org.dynmap.utils.MapChunkCache;

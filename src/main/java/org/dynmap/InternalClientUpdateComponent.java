@@ -130,7 +130,6 @@ public class InternalClientUpdateComponent extends ClientUpdateComponent {
             updates.put(dynmapWorld.getName(), update);
         }
     }
-    private static final int RETRY_LIMIT = 5;
     protected void writeConfiguration() {
         JSONObject clientConfiguration = new JSONObject();
         core.events.trigger("buildclientconfiguration", clientConfiguration);

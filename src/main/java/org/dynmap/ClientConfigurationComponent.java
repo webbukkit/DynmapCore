@@ -2,9 +2,7 @@ package org.dynmap;
 
 import static org.dynmap.JSONUtils.a;
 import static org.dynmap.JSONUtils.s;
-import static org.dynmap.JSONUtils.g;
 import org.dynmap.Event.Listener;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class ClientConfigurationComponent extends Component {
