@@ -47,6 +47,7 @@ DynMap.prototype = {
 	registeredTiles: [],
 	players: {},
 	lasttimestamp: new Date().getUTCMilliseconds(), /* Pseudorandom - prevent cached '?0' */
+	reqid: 0,
     servertime: 0,
     serverday: false,
     inittime: new Date().getTime(),
@@ -586,9 +587,9 @@ DynMap.prototype = {
 		var me = this;
 
 		$(me).trigger('worldupdating');
-		$.getJSON(me.formatUrl('update', { world: me.world.name, timestamp: me.lasttimestamp }), function(update) {
+		$.getJSON(me.formatUrl('update', { world: me.world.name, timestamp: me.lasttimestamp, reqid: me.reqid }), function(update) {
+				me.reqid++; // Bump request ID always
 				if (!update) {
-					me.lasttimestamp--;	// Avoid same TS URL
 					setTimeout(function() { me.update(); }, me.options.updaterate);
 					return;
 				}
@@ -602,6 +603,10 @@ DynMap.prototype = {
 					else {
 						alert(update.error);
 					}
+					return;
+				}
+				if (me.lasttimestamp == update.timestamp) { // Same as last update?
+					setTimeout(function() { me.update(); }, me.options.updaterate);
 					return;
 				}
 
