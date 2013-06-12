@@ -1,10 +1,8 @@
-# MineFactory Reloaded Block mapping
-version:-1.4.7
-modname:MFReloaded
-# Defaults
-var:ID.MachineBlock1=0,ID.StainedGlass=0,ID.StainedGlassPane=0
+# MineFactory Reloaded Block mapping (v1.5+)
+version:1.5.1-
+modname:MineFactoryReloaded
 # configuration file
-cfgfile:config/MFReloaded.cfg
+cfgfile:config/powercrystals/minefactoryreloaded/common.cfg
 
 # Vertical patch, 45 degrees from xz=1.0/0.0 to xz=0.0/1.0
 patch:id=VertX1Z0ToX0Z1,Ox=1.0,Oy=0.0,Oz=0.0,Ux=0.0,Uy=0.0,Uz=1.0,Vx=1.0,Vy=1.0,Vz=0.0,visibility=flip
@@ -33,6 +31,8 @@ patch:id=SlopeXUpZTop,Ox=0.0,Oy=0.0,Oz=0.0,Ux=0.0,Uy=0.0,Uz=1.0,Vx=1.0,Vy=1.0,Vz
 customblock:id=ID.MachineBlock,data=*,class=org.dynmap.hdmap.renderer.RotatedBoxRenderer,textureIndex=rotation,index0=0,map0=S012345,index1=1,map1=S012345,index2=4,map2=S012345,index3=5,map3=S013254,index4=3,map4=S014532,index5=2,map5=S015423
 # MachineBlock1
 customblock:id=ID.MachineBlock1,data=*,class=org.dynmap.hdmap.renderer.RotatedBoxRenderer,textureIndex=rotation,index0=0,map0=S012345,index1=1,map1=S012345,index2=4,map2=S012345,index3=5,map3=S013254,index4=3,map4=S014532,index5=2,map5=S015423
+# MachineBlock2
+customblock:id=ID.MachineBlock2,data=*,class=org.dynmap.hdmap.renderer.RotatedBoxRenderer,textureIndex=rotation,index0=0,map0=S012345,index1=1,map1=S012345,index2=4,map2=S012345,index3=5,map3=S013254,index4=3,map4=S014532,index5=2,map5=S015423
 
 # ID.CargoRailDropoffBlock
 # ID.CargoRailPickupBlock
@@ -73,3 +73,20 @@ patchblock:id=ID.StainedGlassPane,data=6,patch0=VertX05Left@180,patch1=HorizY100
 patchblock:id=ID.StainedGlassPane,data=12,patch0=VertX05Left@270,patch1=HorizY100ZTopStripTop@270,patch2=VertX05Left,patch3=HorizY100ZTopStripTop
 patchblock:id=ID.StainedGlassPane,data=9,patch0=VertX05Left,patch1=HorizY100ZTopStripTop,patch2=VertX05Left@90,patch3=HorizY100ZTopStripTop@90
 patchblock:id=ID.StainedGlassPane,data=3,patch0=VertX05Left@90,patch1=HorizY100ZTopStripTop@90,patch2=VertX05Left@180,patch3=HorizY100ZTopStripTop@180
+
+# ID.BioFuel.Still
+# ID.ChocolateMilk.Still
+# ID.Meat.Still
+# ID.Milk.Still
+# ID.MobEssence.Still
+# ID.MushroomSoup.Still
+# ID.PinkSlime.Still
+# ID.Sewage.Still
+# ID.Sludge.Still
+boxblock:id=ID.MobEssence.Still,id=ID.MushroomSoup.Still,id=ID.BioFuel.Still,id=ID.ChocolateMilk.Still,id=ID.Meat.Still,id=ID.Milk.Still,id=ID.PinkSlime.Still,id=ID.Sewage.Still,id=ID.Sludge.Still,data=6,ymax=0.875
+boxblock:id=ID.MobEssence.Still,id=ID.MushroomSoup.Still,id=ID.BioFuel.Still,id=ID.ChocolateMilk.Still,id=ID.Meat.Still,id=ID.Milk.Still,id=ID.PinkSlime.Still,id=ID.Sewage.Still,id=ID.Sludge.Still,data=5,ymax=0.75
+boxblock:id=ID.MobEssence.Still,id=ID.MushroomSoup.Still,id=ID.BioFuel.Still,id=ID.ChocolateMilk.Still,id=ID.Meat.Still,id=ID.Milk.Still,id=ID.PinkSlime.Still,id=ID.Sewage.Still,id=ID.Sludge.Still,data=4,ymax=0.625
+boxblock:id=ID.MobEssence.Still,id=ID.MushroomSoup.Still,id=ID.BioFuel.Still,id=ID.ChocolateMilk.Still,id=ID.Meat.Still,id=ID.Milk.Still,id=ID.PinkSlime.Still,id=ID.Sewage.Still,id=ID.Sludge.Still,data=3,ymax=0.5
+boxblock:id=ID.MobEssence.Still,id=ID.MushroomSoup.Still,id=ID.BioFuel.Still,id=ID.ChocolateMilk.Still,id=ID.Meat.Still,id=ID.Milk.Still,id=ID.PinkSlime.Still,id=ID.Sewage.Still,id=ID.Sludge.Still,data=2,ymax=0.375
+boxblock:id=ID.MobEssence.Still,id=ID.MushroomSoup.Still,id=ID.BioFuel.Still,id=ID.ChocolateMilk.Still,id=ID.Meat.Still,id=ID.Milk.Still,id=ID.PinkSlime.Still,id=ID.Sewage.Still,id=ID.Sludge.Still,data=1,ymax=0.25
+boxblock:id=ID.MobEssence.Still,id=ID.MushroomSoup.Still,id=ID.BioFuel.Still,id=ID.ChocolateMilk.Still,id=ID.Meat.Still,id=ID.Milk.Still,id=ID.PinkSlime.Still,id=ID.Sewage.Still,id=ID.Sludge.Still,data=0,ymax=0.125

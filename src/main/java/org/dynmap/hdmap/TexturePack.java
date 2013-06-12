@@ -1497,6 +1497,7 @@ public class TexturePack {
         boolean mod_cfg_needed = false;
         String modname = null;
         String texturemod = null;
+        String texturepath = null;
         try {
             String line;
             rdr = new LineNumberReader(new InputStreamReader(txtfile));
@@ -1791,8 +1792,13 @@ public class TexturePack {
                             continue;
                         if(aval[0].equals("id")) {
                             id = aval[1];
-                            if ((fname == null) && istxt && (texturemod != null)) {
-                                fname = "mods/" + texturemod + "/textures/blocks/" + id + ".png";
+                            if ((fname == null) && istxt) {
+                                if (texturepath != null) {
+                                    fname = texturepath + id + ".png";
+                                }
+                                else if (texturemod != null) {
+                                    fname = "mods/" + texturemod + "/textures/blocks/" + id + ".png";
+                                }
                             }
                         }
                         else if(aval[0].equals("filename"))
@@ -1881,6 +1887,12 @@ public class TexturePack {
                 }
                 else if(line.startsWith("texturemod:")) {
                     texturemod = line.substring(line.indexOf(':')+1).trim();
+                }
+                else if(line.startsWith("texturepath:")) {
+                    texturepath = line.substring(line.indexOf(':')+1).trim();
+                    if (texturepath.charAt(texturepath.length()-1) != '/') {
+                        texturepath += "/";
+                    }
                 }
                 else if(line.startsWith("biome:")) {
                     line = line.substring(6).trim();

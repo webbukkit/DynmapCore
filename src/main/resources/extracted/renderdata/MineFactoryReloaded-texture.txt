@@ -1,4 +1,5 @@
 # MineFactory Reloaded Block mapping
+version:-1.4.7
 modname:MFReloaded
 # Defaults
 var:ID.MachineBlock1=0,ID.StainedGlass=0,ID.StainedGlassPane=0
