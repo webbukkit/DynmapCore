@@ -311,9 +311,9 @@ public class ImmibisMicroRenderer extends CustomRenderer {
     
     private void addPatchesFor(RenderPatchFactory rpf, ArrayList<RenderPatch> list, int type, int pos) {
         int[] sides;
-        int material = (type / 64); // Get material type
-        int shape = (type / 8) % 8; // Get shape
-        int thickness = (type % 8) + 1; // Get thickness
+        int material = (type >> 6) & 0xFFFF; // Get material type
+        int shape = (type >> 3) & 0x7; // Get shape
+        int thickness = (type & 0x7) + 1; // Get thickness
 
         if((material < 0) || (material >= materialTextureMap.length)) {
             material = 0;
@@ -323,6 +323,8 @@ public class ImmibisMicroRenderer extends CustomRenderer {
         }
         sides = materialTextureMap[material];   /* Get sides map for texture */
         double thick = getThickness(shape, thickness);
+        if (thick <= 0.0) return;
+        if (thick > 1.0) thick = 1.0;
         
         /* If a hollow block, handle specially */
         if(isHollow(shape, thickness)) {

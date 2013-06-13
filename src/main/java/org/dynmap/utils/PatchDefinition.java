@@ -229,6 +229,9 @@ public class PatchDefinition implements RenderPatch {
             Log.severe("Invalid vmax=" + vmax);
             good = false;
         }
+        if (!good) {
+            Log.severe(new Exception("Trace Stack"));
+        }
         
         return good;
     }
