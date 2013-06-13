@@ -1,4 +1,5 @@
 # Soul Shards blocks mapping
+version:-1.4.7
 modname:SoulShards
 # configuration file
 cfgfile:config/SoulShards.cfg
