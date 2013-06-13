@@ -118,9 +118,11 @@ public class ForgeConfigFile {
             val = settings.get("block/" + id);  /* Check for "block/" */
         if (val != null) {
             val = val.trim();
-            try {
-                return Integer.parseInt(val);
-            } catch (NumberFormatException nfx) {
+            if ((val.length() > 0) && Character.isDigit(val.charAt(0))) {
+                try {
+                    return Integer.parseInt(val);
+                } catch (NumberFormatException nfx) {
+                }
             }
         }
         return -1;

@@ -128,11 +128,11 @@ public class PatchDefinition implements RenderPatch {
         u.x = xu - x0; u.y = yu - y0; u.z = zu - z0;
         v.x = xv - x0; v.y = yv - y0; v.z = zv - z0;
         /* Compute hash code */
-        hc = (int)Double.doubleToLongBits(x0 + xu + xv) ^
-                (int)Double.doubleToLongBits(y0 + yu + yv) ^
-                (int)Double.doubleToLongBits(z0 + yu + yv) ^
-                (int)Double.doubleToLongBits(umin + umax + vmin + vmax + uplusvmax) ^
-                sidevis.ordinal();
+        hc = (int)((Double.doubleToLongBits(x0 + xu + xv) >> 32) ^
+                (Double.doubleToLongBits(y0 + yu + yv) >> 34) ^
+                (Double.doubleToLongBits(z0 + yu + yv) >> 36) ^
+                (Double.doubleToLongBits(umin + umax + vmin + vmax + uplusvmax) >> 38)) ^
+                (sidevis.ordinal() << 8) ^ textureindex;
         /* Now compute normal of surface - U cross V */
         double crossx = (u.y*v.z) - (u.z*v.y);
         double crossy = (u.z*v.x) - (u.x*v.z);
