@@ -1,6 +1,8 @@
 # MineFactory Reloaded Block mapping (v1.5+)
 version:1.5.1-
 modname:MineFactoryReloaded
+# variables
+var:ID.MachineBlock2=0,ID.MushroomSoup.Still=0,ID.ChocolateMilk.Still=0
 # configuration file
 cfgfile:config/powercrystals/minefactoryreloaded/common.cfg
 
