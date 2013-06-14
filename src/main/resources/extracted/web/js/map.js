@@ -728,7 +728,8 @@ DynMap.prototype = {
 				location: new Location(me.worlds[update.world], parseFloat(update.x), parseFloat(update.y), parseFloat(update.z)),
 				health: update.health,
 				armor: update.armor,
-				account: update.account
+				account: update.account,
+				sort: update.sort
 		};
 
 		$(me).trigger('playeradded', [ player ]);
@@ -738,21 +739,21 @@ DynMap.prototype = {
 		var menuitem = player.menuitem = $('<li/>')
 			.addClass('player')
 			.append(playerIconContainer = $('<span/>')
-					.addClass('playerIcon')
-					.append($('<img/>').attr({ src: 'images/player_face.png' }))
-					.attr({ title: 'Follow ' + player.name })
-					.click(function() {
-						var follow = player !== me.followingPlayer;
-						me.followPlayer(follow ? player : null);
-					})
-					)
+				.addClass('playerIcon')
+				.append($('<img/>').attr({ src: 'images/player_face.png' }))
+				.attr({ title: 'Follow ' + player.name })
+				.click(function() {
+					var follow = player !== me.followingPlayer;
+					me.followPlayer(follow ? player : null);
+				})
+			)
 			.append(player.menuname = $('<a/>')
-					.attr({
-						href: '#',
-						title: 'Center on ' + player.name
-						})
-					.append(player.name)
-					)
+				.attr({
+					href: '#',
+					title: 'Center on ' + player.name
+				})
+				.append(player.name)
+			)
 			.click(function(e) {
 				if (me.followingPlayer !== player) {
 					me.followPlayer(null);
@@ -760,16 +761,21 @@ DynMap.prototype = {
 				if(player.location.world)
 					me.panToLocation(player.location);
 			});
-			// Inject into playerlist alphabetically
-			var firstNodeAfter = me.playerlist.children().filter(function() {
-				return ($('a', this).text().toLowerCase() > $('a', menuitem).text().toLowerCase());
-			}).eq(0);
-			if (firstNodeAfter.length > 0) {
-				firstNodeAfter.before(menuitem);
-			} else {
-				menuitem.appendTo(me.playerlist);
-			}
-			if (me.options.showplayerfacesinmenu) {
+		player.menuname.data('sort', player.sort);
+		// Inject into playerlist alphabetically
+		var firstNodeAfter = me.playerlist.children().filter(function() {
+		    var itm = $('a', this);
+			var sort = itm.data('sort');
+		    if (sort > player.sort) return true;
+		    if (sort < player.sort) return false;
+			return (itm.text().toLowerCase() > player.menuname.text().toLowerCase());
+		}).eq(0);
+		if (firstNodeAfter.length > 0) {
+			firstNodeAfter.before(menuitem);
+		} else {
+			menuitem.appendTo(me.playerlist);
+		}
+		if (me.options.showplayerfacesinmenu) {
 			getMinecraftHead(player.account, 16, function(head) {
 				$('img', playerIconContainer).remove();
 				$(head).appendTo(playerIconContainer);

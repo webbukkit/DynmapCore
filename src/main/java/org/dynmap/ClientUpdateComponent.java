@@ -133,6 +133,7 @@ public class ClientUpdateComponent extends Component {
                 s(jp, "health", 0);
                 s(jp, "armor", 0);
             }
+            s(jp, "sort", p.getSortWeight());
             a(u, "players", jp);
         }
         List<DynmapPlayer> hidden = core.playerList.getHiddenPlayers();
@@ -151,6 +152,7 @@ public class ClientUpdateComponent extends Component {
                 s(jp, "z", 0.0);
                 s(jp, "health", 0);
                 s(jp, "armor", 0);
+                s(jp, "sort", p.getSortWeight());
                 a(u, "players", jp);
             }
             s(u, "currentcount", core.getCurrentPlayers());

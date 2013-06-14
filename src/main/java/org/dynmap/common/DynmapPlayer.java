@@ -67,4 +67,12 @@ public interface DynmapPlayer extends DynmapCommandSender {
      * Is invisible
      */
     public boolean isInvisible();
+    /**
+     * Get sort weight (ordered lowest to highest in player list: 0=default)
+     */
+    public int getSortWeight();
+    /**
+     * Set sort weight (ordered lowest to highest in player list: 0=default)
+     */
+    public void setSortWeight(int wt);
 }

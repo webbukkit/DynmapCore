@@ -105,6 +105,7 @@ public class DynmapCore implements DynmapCommonAPI {
     private WebAuthManager authmgr;
     public boolean player_info_protected;
     private boolean transparentLeaves = true;
+    private List<String> sortPermissionNodes;
         
     public CompassMode compassmode = CompassMode.PRE19;
     private int     config_hashcode;    /* Used to signal need to reload web configuration (world changes, config update, etc) */
@@ -427,7 +428,9 @@ public class DynmapCore implements DynmapCommonAPI {
         fullrenderplayerlimit = configuration.getInteger("fullrenderplayerlimit", 0);
         /* Load update render processing player limit */
         updateplayerlimit = configuration.getInteger("updateplayerlimit", 0);
-                        
+        /* Load sort permission nodes */
+        sortPermissionNodes = configuration.getStrings("player-sort-permission-nodes", null);
+        
         /* Load preupdate/postupdate commands */
         FileLockManager.preUpdateCommand = configuration.getString("custom-commands/image-updates/preupdatecommand", "");
         FileLockManager.postUpdateCommand = configuration.getString("custom-commands/image-updates/postupdatecommand", "");
@@ -552,6 +555,21 @@ public class DynmapCore implements DynmapCommonAPI {
                 ids.remove(pid);    /* Remove from list */
                 ids.addFirst(pid);  /* Put us first on list */
             }
+        }
+        /* Check sort weight permissions list */
+        if ((sortPermissionNodes != null) && (sortPermissionNodes.size() > 0)) {
+            int ord;
+            for (ord = 0; ord < sortPermissionNodes.size(); ord++) {
+                if (p.hasPermissionNode(sortPermissionNodes.get(ord))) {
+                    Log.info("Player " + p.getName() + " has " + sortPermissionNodes.get(ord));
+                    break;
+                }
+            }
+            Log.info("Player " + p.getName() + ": ord=" + ord);
+            p.setSortWeight(ord);
+        }
+        else {
+            p.setSortWeight(0); // Initialize to zero
         }
         /* And re-attach to active jobs */
         if(mapManager != null)

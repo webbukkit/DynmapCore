@@ -21,4 +21,8 @@ public interface DynmapCommandSender {
      * Is operator privilege
      */
     public boolean isOp();
+    /**
+     * Test for permission node (no dynmap. prefix assumed)
+     */
+    public boolean hasPermissionNode(String node);
 }
