@@ -137,7 +137,6 @@ public class TileFlags {
 	 * @param flags - flags to be ORed with our flags
 	 */
 	public void union(TileFlags flags) {
-	    count = 0;
 	    for(Map.Entry<Long, long[]> es : flags.chunkmap.entrySet()) {
 	        Long k = es.getKey();
 	        long[] f = chunkmap.get(k);
@@ -147,6 +146,7 @@ public class TileFlags {
                 chunkmap.put(k, f);
 	        }
             for(int i = 0; i < f.length; i++) {
+                count -= Long.bitCount(f[i]);
                 f[i] = f[i] | nf[i];
                 count += Long.bitCount(f[i]);
             }

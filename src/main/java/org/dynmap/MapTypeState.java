@@ -101,4 +101,9 @@ public class MapTypeState {
             return invTiles.countFlags();
         }
     }
+    public void clear() {
+        synchronized(invTileLock) {
+            invTiles.clear();
+        }
+    }
 }

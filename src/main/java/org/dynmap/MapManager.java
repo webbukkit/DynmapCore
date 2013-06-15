@@ -938,6 +938,12 @@ public class MapManager {
                 cnt = popped.size();
                 popped.clear();
             }
+            for(DynmapWorld dw : this.worlds) {
+                for(MapTypeState mts : dw.mapstate) {
+                    cnt += mts.getInvCount();
+                    mts.clear();
+                }
+            }
             sender.sendMessage("Purged " + cnt + " tiles from queue");
         }
     }
