@@ -930,15 +930,33 @@ public class MapManager {
     	}
     }
     
-    void purgeQueue(DynmapCommandSender sender) {
+    void purgeQueue(DynmapCommandSender sender, String worldname) {
+        DynmapWorld world = null;
+        if (worldname != null) {
+            world = this.getWorld(worldname);
+            if (world == null) {
+                sender.sendMessage("World '" + worldname + "' not found.");
+                return;
+            }
+        }
         if(tileQueue != null) {
             int cnt = 0;
             List<MapTile> popped = tileQueue.popAll();
             if(popped != null) {
                 cnt = popped.size();
+                if (worldname != null) {
+                    for (MapTile mt : popped) {
+                        if (mt.world != world) {
+                            tileQueue.push(mt); // Push tiles for worlds other than the one we're purging
+                        }
+                    }
+                }
                 popped.clear();
             }
             for(DynmapWorld dw : this.worlds) {
+                if ((worldname != null) && (dw != world)) {
+                    continue;
+                }
                 for(MapTypeState mts : dw.mapstate) {
                     cnt += mts.getInvCount();
                     mts.clear();

@@ -917,6 +917,7 @@ public class DynmapCore implements DynmapCommonAPI {
         new CommandInfo("dynmap", "resetstats", "Reset render statistics."),
         new CommandInfo("dynmap", "sendtoweb", "<msg>", "Send message <msg> to web users."),
         new CommandInfo("dynmap", "purgequeue", "Empty all pending tile updates from update queue."),
+        new CommandInfo("dynmap", "purgequeue", "<world>", "Empty all pending tile updates from update queue for world <world>."),
         new CommandInfo("dynmap", "purgemap", "<world> <map>", "Delete all existing tiles for map <map> on world <world>."),
         new CommandInfo("dynmap", "pause", "Show render pause state."),
         new CommandInfo("dynmap", "pause", "<all|none|full|update>", "Set render pause state."),
@@ -1196,7 +1197,14 @@ public class DynmapCore implements DynmapCommonAPI {
                     sender.sendMessage("World name is required");
                 }
             } else if (c.equals("purgequeue") && checkPlayerPermission(sender, "purgequeue")) {
-                mapManager.purgeQueue(sender);
+                if (args.length > 1) {
+                    for (int i = 1; i < args.length; i++) {
+                        mapManager.purgeQueue(sender, args[i]);
+                    }
+                }
+                else {
+                    mapManager.purgeQueue(sender, null);
+                }
             } else if (c.equals("purgemap") && checkPlayerPermission(sender,"purgemap")) {
                 if (args.length > 2) {
                     mapManager.purgeMap(sender, args[1], args[2]);
