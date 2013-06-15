@@ -21,6 +21,7 @@ import org.dynmap.MapManager;
 import org.dynmap.MapTile;
 import org.dynmap.MapType;
 import org.dynmap.MapType.ImageFormat;
+import org.dynmap.MapTypeState;
 import org.dynmap.TileHashManager;
 import org.dynmap.debug.Debug;
 import org.dynmap.markers.impl.MarkerAPIImpl;
@@ -1429,7 +1430,7 @@ public class IsoHDPerspective implements HDPerspective {
     public boolean render(MapChunkCache cache, HDMapTile tile, String mapname) {
         Color rslt = new Color();
         MapIterator mapiter = cache.getIterator(0, 0, 0);
-
+        DynmapWorld world = tile.getDynmapWorld();
         int scaled = 0;
         if ((tile.boostzoom > 0) && MarkerAPIImpl.testTileForBoostMarkers(cache.getWorld(), this, tile.tx * tileWidth, tile.ty * tileHeight, tileWidth)) {
             scaled = tile.boostzoom;
@@ -1442,7 +1443,7 @@ public class IsoHDPerspective implements HDPerspective {
         if(numshaders == 0)
             return false;
         /* Check if nether world */
-        boolean isnether = tile.getDynmapWorld().isNether();
+        boolean isnether = world.isNether();
         /* Create buffered image for each */
         DynmapBufferedImage im[] = new DynmapBufferedImage[numshaders];
         DynmapBufferedImage dayim[] = new DynmapBufferedImage[numshaders];
@@ -1464,7 +1465,13 @@ public class IsoHDPerspective implements HDPerspective {
             bgday[i] = shaderstate[i].getMap().getBackgroundARGBDay();
             bgnight[i] = shaderstate[i].getMap().getBackgroundARGBNight();
         }
-        
+        // Mark the tiles we're going to render as validated
+        for (int i = 0; i < numshaders; i++) {
+            MapTypeState mts = world.getMapState(shaderstate[i].getMap());
+            if (mts != null) {
+                mts.validateTile(tile.tx, tile.ty);
+            }
+        }
         /* Create perspective state object */
         OurPerspectiveState ps = new OurPerspectiveState(mapiter, isnether, scaled);        
         

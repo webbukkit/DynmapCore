@@ -273,8 +273,8 @@ public class MapManager {
             else {
                 cxmin = ((int)l.x - radius)>>4;
                 czmin = ((int)l.z - radius)>>4;
-                cxmax = ((int)l.x + radius + 15)>>4;
-                czmax = ((int)l.z + radius + 15)>>4;
+                cxmax = ((int)l.x + radius + 1)>>4;
+                czmax = ((int)l.z + radius + 1)>>4;
                 rendertype = RENDERTYPE_RADIUSRENDER;
             }
             this.mapname = mapname;
@@ -942,6 +942,36 @@ public class MapManager {
         }
     }
     
+    void purgeMap(final DynmapCommandSender sender, final String worldname, final String mapname) {
+        final DynmapWorld world = getWorld(worldname);
+        if (world == null) {
+            sender.sendMessage("Could not purge map: world '" + worldname + "' not defined in configuration.");
+            return;
+        }
+        MapType mt = null;
+        for (MapType mtp : world.maps) {
+            if (mtp.getName().equals(mapname)) {
+                mt = mtp;
+                break;
+            }
+        }
+        if (mt == null) {
+            sender.sendMessage("Could not purge map: map '" + mapname + "' not defined in configuration.");
+            return;
+        }
+        final MapType mtf = mt;
+        Runnable purgejob = new Runnable() {
+            public void run() {
+                mtf.purgeOldTiles(world, new TileFlags());
+                sender.sendMessage("Purge of tiles for map '" + mapname + "' for world '" + worldname + "' completed");
+            }
+        };
+        /* Schedule first tile to be worked */
+        scheduleDelayedJob(purgejob, 0);
+
+        sender.sendMessage("Map tile purge starting on map '" + mapname + "' for world '" + worldname + "'...");
+    }
+
     public boolean activateWorld(DynmapWorld dynmapWorld) {
         String worldname = dynmapWorld.getName();
         ConfigurationNode worldconfig = core.getWorldConfiguration(dynmapWorld);

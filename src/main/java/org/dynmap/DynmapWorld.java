@@ -837,4 +837,14 @@ public abstract class DynmapWorld {
     public int getChunkMap(TileFlags map) {
         return -1;
     }
+    // Get map state for given map
+    public MapTypeState getMapState(MapType m) {
+        for (int i = 0; i < this.maps.size(); i++) {
+            MapType mt = this.maps.get(i);
+            if (mt == m) {
+                return this.mapstate.get(i);
+            }
+        }
+        return null;
+    }
 }
