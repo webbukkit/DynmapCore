@@ -3,7 +3,7 @@ version:1.5.2-
 modname:BiomesOPlenty
 
 var:biome_ids/Promised_Land_ID=0,biome_ids/Majestic_Meadow_(Promised_Land)_ID=0,biome_ids/Wonderous_Woods_(Promised_Land)_ID=0,biome_ids/Blessed_Bog_(Promised_Land)_ID=0
-var:terrain_block_ids/Holy_Stone_ID=0,terrain_block_ids/Skystone_ID=0
+var:terrain_block_ids/Holy_Stone_ID=0,terrain_block_ids/Skystone_ID=0,biome_ids/Drylands_ID=0,biome_ids/Snowy_Woods_ID=0,biome_ids/Swampwoods_ID=0
 # configuration file
 cfgfile:config/BiomesOPlenty.cfg
 
