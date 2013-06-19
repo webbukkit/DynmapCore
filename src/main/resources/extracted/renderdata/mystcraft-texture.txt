@@ -2,6 +2,7 @@
 modname:mod_Mystcraft,Mystcraft
 # Configuration file
 cfgfile:config/mystcraft_config.txt
+cfgfile:config/mystcraft/core.cfg
 # Files
 texturefile:id=blk0,filename=myst/blocks.png,xcount=16,ycount=16
 texturefile:id=blk1,filename=terrain.png,xcount=16,ycount=16
