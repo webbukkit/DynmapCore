@@ -106,6 +106,7 @@ public class DynmapCore implements DynmapCommonAPI {
     public boolean player_info_protected;
     private boolean transparentLeaves = true;
     private List<String> sortPermissionNodes;
+    private int perTickLimit = 50;   // 50 ms
         
     public CompassMode compassmode = CompassMode.PRE19;
     private int     config_hashcode;    /* Used to signal need to reload web configuration (world changes, config update, etc) */
@@ -431,6 +432,10 @@ public class DynmapCore implements DynmapCommonAPI {
         /* Load sort permission nodes */
         sortPermissionNodes = configuration.getStrings("player-sort-permission-nodes", null);
         
+        perTickLimit = configuration.getInteger("per-tick-time-limit", 50);
+        if (perTickLimit < 5) perTickLimit = 5;
+        perTickLimit = perTickLimit;
+        
         /* Load preupdate/postupdate commands */
         FileLockManager.preUpdateCommand = configuration.getString("custom-commands/image-updates/preupdatecommand", "");
         FileLockManager.postUpdateCommand = configuration.getString("custom-commands/image-updates/postupdatecommand", "");
@@ -526,18 +531,24 @@ public class DynmapCore implements DynmapCommonAPI {
         if((fullrenderplayerlimit > 0) || (updateplayerlimit > 0)) {
             int pcnt = getServer().getOnlinePlayers().length;
             
-            if ((fullrenderplayerlimit > 0) && (pcnt >= fullrenderplayerlimit)) {
+            if ((fullrenderplayerlimit > 0) && (pcnt == fullrenderplayerlimit)) {
                 if(getPauseFullRadiusRenders() == false) {  /* If not paused, pause it */
                     setPauseFullRadiusRenders(true);
                     Log.info("Pause full/radius renders - player limit reached");
                     didfullpause = true;
                 }
+                else {
+                    didfullpause = false;
+                }
             }
-            if ((updateplayerlimit > 0) && (pcnt >= updateplayerlimit)) {
+            if ((updateplayerlimit > 0) && (pcnt == updateplayerlimit)) {
                 if(getPauseUpdateRenders() == false) {  /* If not paused, pause it */
                     setPauseUpdateRenders(true);
                     Log.info("Pause tile update renders - player limit reached");
                     didupdatepause = true;
+                }
+                else {
+                    didupdatepause = false;
                 }
             }
         }
@@ -582,19 +593,19 @@ public class DynmapCore implements DynmapCommonAPI {
         if ((fullrenderplayerlimit > 0) || (updateplayerlimit > 0)) {
             /* Quitting player is still online at this moment, so discount count by 1 */
             int pcnt = getServer().getOnlinePlayers().length - 1;
-            if ((fullrenderplayerlimit > 0) && (pcnt < fullrenderplayerlimit)) {
-                if(didfullpause) {  /* Only unpause if we did the pause */
+            if ((fullrenderplayerlimit > 0) && (pcnt == (fullrenderplayerlimit - 1))) {
+                if(didfullpause && getPauseFullRadiusRenders()) {  /* Only unpause if we did the pause */
                     setPauseFullRadiusRenders(false);
                     Log.info("Resume full/radius renders - below player limit");
-                    didfullpause = false;
                 }
+                didfullpause = false;
             }
-            if ((updateplayerlimit > 0) && (pcnt < updateplayerlimit)) {
-                if(didupdatepause) {  /* Only unpause if we did the pause */
+            if ((updateplayerlimit > 0) && (pcnt == (updateplayerlimit - 1))) {
+                if(didupdatepause && getPauseUpdateRenders()) {  /* Only unpause if we did the pause */
                     setPauseUpdateRenders(false);
                     Log.info("Resume tile update renders - below player limit");
-                    didupdatepause = false;
                 }
+                didupdatepause = false;
             }
         }
     }
@@ -849,6 +860,7 @@ public class DynmapCore implements DynmapCommonAPI {
         "render",
         "hide",
         "show",
+        "version",
         "fullrender",
         "cancelrender",
         "radiusrender",
@@ -927,6 +939,7 @@ public class DynmapCore implements DynmapCommonAPI {
         new CommandInfo("dynmap", "del-id-for-ip", "<player> <ipaddress>", "Disassociate player <player> from IP address <ipaddress>."),
         new CommandInfo("dynmap", "webregister", "Start registration process for creating web login account"),
         new CommandInfo("dynmap", "webregister", "<player>", "Start registration process for creating web login account for player <player>"),
+        new CommandInfo("dynmap", "version", "Return version information"),
         new CommandInfo("dmarker", "", "Manipulate map markers."),
         new CommandInfo("dmarker", "add", "<label>", "Add new marker with label <label> at current location (use double-quotes if spaces needed)."),
         new CommandInfo("dmarker", "add", "id:<id> <label>", "Add new marker with ID <id> at current location (use double-quotes if spaces needed)."),
@@ -1323,13 +1336,15 @@ public class DynmapCore implements DynmapCommonAPI {
             else if(c.equals("help")) {
                 printCommandHelp(sender, cmd, (args.length > 1)?args[1]:"");
             }
+            else if(c.equals("version")) {
+                sender.sendMessage("Dynmap version: core=" + this.getDynmapCoreVersion() + ", plugin=" + this.getDynmapPluginVersion());
+            }
             return true;
         }
         printCommandHelp(sender, cmd, (args.length > 0)?args[0]:"");
 
         return true;
     }
-
     public boolean checkPlayerPermission(DynmapCommandSender sender, String permission) {
         if (!(sender instanceof DynmapPlayer) || sender.isOp()) {
             return true;
@@ -2014,8 +2029,8 @@ public class DynmapCore implements DynmapCommonAPI {
         else {  // First time, delete old external texture pack
             deleteDirectory(new File(df, "texturepacks/standard"));
         }
-        /* If not dev build, and matched, we're good */
-        if ((!prevver.endsWith("-Dev")) && prevver.equals(this.getDynmapPluginVersion())) {
+        /* If matched, we're good */
+        if (prevver.equals(this.getDynmapPluginVersion())) {
             return;
         }
         /* Open JAR as ZIP */
@@ -2081,4 +2096,15 @@ public class DynmapCore implements DynmapCommonAPI {
         }
         Log.info("Extracted files upgraded");
     }
+    // Server thread tick : nominally, once per 20 Hz tick
+    public void serverTick(double tps) {
+        if (this.mapManager != null) {
+            this.mapManager.updateTPS(tps);
+        }
+    }
+    
+    public int getMaxTickUseMS() {
+        return perTickLimit;
+    }
 }
+

@@ -133,4 +133,9 @@ public interface DynmapServerInterface {
      * @return block ID, or -1 if chunk at given coordainte isnt loaded
      */
     public int getBlockIDAt(String wname, int x, int y, int z);
+    /**
+     * Get current TPS for server (20.0 is nominal)
+     * @returns ticks per second
+     */
+    public double getServerTPS();
 }

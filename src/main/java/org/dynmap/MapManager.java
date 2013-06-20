@@ -52,13 +52,18 @@ public class MapManager {
     
     private boolean pauseupdaterenders = false;
     private boolean pausefullrenders = false;
+
+    // TPS based render pauses
+    private double tpslimit_updaterenders = 18.0;
+    private double tpslimit_fullrenders = 18.0;
+    private boolean tpspauseupdaterenders = false;
+    private boolean tpspausefullrenders = false;
     
     private boolean did_start = false;
     
     private int zoomout_period = DEFAULT_ZOOMOUT_PERIOD;	/* Zoom-out tile processing period, in seconds */
     /* Which fullrenders are active */
     private HashMap<String, FullWorldRenderState> active_renders = new HashMap<String, FullWorldRenderState>();
-
 
     /* Chunk load performance numbers */
     AtomicInteger chunk_caches_created = new AtomicInteger(0);
@@ -412,7 +417,11 @@ public class MapManager {
         public void cleanup() {
             if(tile0 == null) {
                 synchronized(lock) {
-                    active_renders.remove(world.getName());
+                    String wn = world.getName();
+                    FullWorldRenderState rs = active_renders.get(wn);
+                    if (rs == this) {
+                        active_renders.remove(wn);
+                    }
                 }
             }
             else {
@@ -429,7 +438,7 @@ public class MapManager {
             	return;
             }
             if(tile0 == null) {    /* Not single tile render */
-                if(pausefullrenders) {    /* Update renders are paused? */
+                if(pausefullrenders || tpspausefullrenders) {    /* Update renders are paused? */
                     scheduleDelayedJob(this, 20*5); /* Delay 5 seconds and retry */
                     return;
                 }
@@ -449,7 +458,9 @@ public class MapManager {
                 if(renderQueue.isEmpty()) {
                     if(map_index >= 0) { /* Finished a map? */
                         double msecpertile = (double)timeaccum / (double)((rendercnt>0)?rendercnt:1)/(double)activemapcnt;
-                        double rendtime = total_render_ns.doubleValue() * 0.000001 / rendercalls.get();
+                        int rndcalls = rendercalls.get();
+                        if(rndcalls == 0) rndcalls = 1;
+                        double rendtime = total_render_ns.doubleValue() * 0.000001 / rndcalls;
                         if(activemapcnt > 1)
                             sendMessage(String.format("%s of maps [%s] of '%s' completed - %d tiles rendered each (%.2f msec/map-tile, %.2f msec per render)",
                                     rendertype, activemaps, world.getName(), rendercnt, msecpertile, rendtime));
@@ -555,7 +566,7 @@ public class MapManager {
                 }
             }
             else {    /* Else, single tile render */
-                if(pauseupdaterenders) {
+                if(pauseupdaterenders || tpspauseupdaterenders) {
                     scheduleDelayedJob(this, 5*20); /* Retry after 5 seconds */
                     return;
                 }
@@ -685,7 +696,9 @@ public class MapManager {
                         rendercnt++;
                         timeaccum += System.currentTimeMillis() - tstart;
                         if((rendercnt % progressinterval) == 0) {
-                            double rendtime = total_render_ns.doubleValue() * 0.000001 / rendercalls.get();
+                            int rndcalls = rendercalls.get();
+                            if (rndcalls == 0) rndcalls = 1;
+                            double rendtime = total_render_ns.doubleValue() * 0.000001 / rndcalls;
                             double msecpertile = (double)timeaccum / (double)rendercnt / (double)activemapcnt;
                             if(activemapcnt > 1) 
                                 sendMessage(String.format("%s of maps [%s] of '%s' in progress - %d tiles rendered each (%.2f msec/map-tile, %.2f msec per render)",
@@ -830,6 +843,11 @@ public class MapManager {
         saverestorepending = configuration.getBoolean("saverestorepending", true);
         tileupdatedelay = configuration.getInteger("tileupdatedelay", 30);
         
+        tpslimit_updaterenders = configuration.getDouble("update-min-tps", 18.0);
+        if (tpslimit_updaterenders > 19.5) tpslimit_updaterenders = 19.5;
+        tpslimit_fullrenders = configuration.getDouble("fullrender-min-tps", 18.0);
+        if (tpslimit_fullrenders > 19.5) tpslimit_fullrenders = 19.5;
+
         this.tileQueue = new AsynchronousQueue<MapTile>(
                 new Handler<MapTile>() {
                 @Override
@@ -910,7 +928,7 @@ public class MapManager {
     	synchronized(lock) {
     		if(w != null) {
     			FullWorldRenderState rndr;
-    			rndr = active_renders.get(w);
+    			rndr = active_renders.remove(w);
     			if(rndr != null) {
     				rndr.cancelRender();	/* Cancel render */
     				if(sender != null) {
@@ -919,8 +937,9 @@ public class MapManager {
     			}
     		}
     		else {	/* Else, cancel all */
-    			for(String wid : active_renders.keySet()) {
-    				FullWorldRenderState rnd = active_renders.get(wid);
+    		    String[] wids = active_renders.keySet().toArray(new String[0]);
+    			for(String wid : wids) {
+    				FullWorldRenderState rnd = active_renders.remove(wid);
 					rnd.cancelRender();
     				if(sender != null) {
     					sender.sendMessage("Cancelled render for '" + wid + "'");
@@ -1554,5 +1573,12 @@ public class MapManager {
     
     public int getMaxChunkLoadsPerTick() {
         return max_chunk_loads_per_tick;
+    }
+    
+    public void updateTPS(double tps) {
+        // Pause if needed for update renders
+        tpspauseupdaterenders = (tps < tpslimit_updaterenders);
+        // Pause if needed for fullrenders
+        tpspausefullrenders = (tps < tpslimit_fullrenders);
     }
 }
