@@ -175,7 +175,7 @@ public class Client {
         { "3", "<span style=\'color:#00AAAA\'>" },
         { "4", "<span style=\'color:#AA0000\'>" },
         { "5", "<span style=\'color:#AA00AA\'>" },
-        { "6", "<span style=\'color:#00AAAA\'>" },
+        { "6", "<span style=\'color:#FFAA00\'>" },
         { "7", "<span style=\'color:#AAAAAA\'>" },
         { "8", "<span style=\'color:#555555\'>" },
         { "9", "<span style=\'color:#5555FF\'>" },
