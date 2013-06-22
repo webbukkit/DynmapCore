@@ -2030,7 +2030,7 @@ public class DynmapCore implements DynmapCommonAPI {
             deleteDirectory(new File(df, "texturepacks/standard"));
         }
         /* If matched, we're good */
-        if (prevver.equals(this.getDynmapPluginVersion())) {
+        if (prevver.equals(this.getDynmapCoreVersion())) {
             return;
         }
         /* Open JAR as ZIP */
