@@ -58,6 +58,7 @@ DynMap.prototype = {
 	currentcount: 0,
 	playerfield: null,
 	layercontrol: undefined,
+	nogui: false,
 	formatUrl: function(name, options) {
 		var url = this.options.url[name];
 		$.each(options, function(n,v) {
@@ -105,6 +106,10 @@ DynMap.prototype = {
 		urlarg = me.getIntParameterByName('z');
 		if(urlarg != null)
 			me.defaultworld.center.z = urlarg;
+		urlarg = me.getParameterByName('nogui');
+		if(urlarg != "") {
+			me.nogui = (urlarg == 'true');
+		}
 	},
 	initialize: function() {
 		var me = this;
@@ -154,6 +159,7 @@ DynMap.prototype = {
 			zoom: me.options.defaultzoom,
 			center: new L.LatLng(0, 0),
 			zoomAnimation: true,
+			zoomControl: !me.nogui,
 			attributionControl: false,
 			crs: L.extend({}, L.CRS, {
 				code: 'simple',
@@ -194,7 +200,7 @@ DynMap.prototype = {
 		var panel;
 		var sidebar;
 		var pinbutton;
-		var nopanel = (me.getParameterByName('nopanel') == 'true');
+		var nopanel = (me.getParameterByName('nopanel') == 'true') || me.nogui;
 
 		if(me.options.sidebaropened != 'true') { // false or pinned
 			var pincls = 'pinned'
@@ -231,20 +237,20 @@ DynMap.prototype = {
 		var upbtn_world = $('<div/>')
 		.addClass('scrollup')
 		.bind('mousedown mouseup touchstart touchend', function(event){
-		    if(event.type == 'mousedown' || event.type == 'touchstart'){
+	    	if(event.type == 'mousedown' || event.type == 'touchstart'){
 				worldlist.animate({"scrollTop": "-=300px"}, 3000, 'linear');
-		    }else{
-		        worldlist.stop();
-		    }
+	    	}else{
+	        	worldlist.stop();
+	    	}
 		});
 		var downbtn_world = $('<div/>')
 		.addClass('scrolldown')
 		.bind('mousedown mouseup touchstart touchend', function(event){
-		    if(event.type == 'mousedown' || event.type == 'touchstart'){
+	    	if(event.type == 'mousedown' || event.type == 'touchstart'){
 				worldlist.animate({"scrollTop": "+=300px"}, 3000, 'linear');
-		    }else{
-		        worldlist.stop();
-		    }
+	    	}else{
+	        	worldlist.stop();
+	    	}
 		});
 
 		// Worlds
@@ -378,8 +384,10 @@ DynMap.prototype = {
 			addClass('compass');
 		if(L.Browser.mobile)
 			compass.addClass('mobilecompass');
-		compass.appendTo(container);
-
+		if (!me.nogui) {
+			compass.appendTo(container);
+		}
+		
 		if(me.options.sidebaropened != 'true') {
 			var hitbar = $('<div/>')
 			.addClass('hitbar')
@@ -407,13 +415,15 @@ DynMap.prototype = {
 
 		var componentstoload = 0;
 		var configset = { };
-		$.each(me.options.components, function(index, configuration) {
-			if(!configset[configuration.type]) {
-				configset[configuration.type] = [];
-				componentstoload++;
-			}
-			configset[configuration.type].push(configuration);
-		});
+		if (!me.nogui) {
+			$.each(me.options.components, function(index, configuration) {
+				if(!configset[configuration.type]) {
+					configset[configuration.type] = [];
+					componentstoload++;
+				}
+				configset[configuration.type].push(configuration);
+			});
+		}
 
 		var tobeloaded = {};
 		$.each(configset, function(type, configlist) {
@@ -435,17 +445,22 @@ DynMap.prototype = {
 				}
 			});
 		});
-		setTimeout(function() {
-			$.each(configset, function(type, configlist) {
-				if(tobeloaded[type]) {
-					me.alertbox
-						.text('Error loading js/' + type + '.js')
-						.show();
-				}
-			});
-			if(componentstoload > 0)
-				setTimeout(function() { me.update(); }, me.options.updaterate);
-		}, 15000);
+		if (me.nogui) {
+			setTimeout(function() { me.update(); }, me.options.updaterate);
+		}
+		else {
+			setTimeout(function() {
+				$.each(configset, function(type, configlist) {
+					if(tobeloaded[type]) {
+						me.alertbox
+							.text('Error loading js/' + type + '.js')
+							.show();
+					}
+				});
+				if(componentstoload > 0)
+					setTimeout(function() { me.update(); }, me.options.updaterate);
+			}, 15000);
+		}
 	},
 	getProjection: function() { return this.maptype.getProjection(); },
 	selectMapAndPan: function(map, location, completed) {
