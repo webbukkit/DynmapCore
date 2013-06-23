@@ -1015,6 +1015,24 @@ public class MapManager {
         sender.sendMessage("Map tile purge starting on map '" + mapname + "' for world '" + worldname + "'...");
     }
 
+    void purgeWorld(final DynmapCommandSender sender, final String worldname) {
+        final DynmapWorld world = getWorld(worldname);
+        if (world == null) {
+            sender.sendMessage("Could not purge world: world '" + worldname + "' not defined in configuration.");
+            return;
+        }
+        Runnable purgejob = new Runnable() {
+            public void run() {
+                world.purgeTree();
+                sender.sendMessage("Purge of files for world '" + worldname + "' completed");
+            }
+        };
+        /* Schedule first tile to be worked */
+        scheduleDelayedJob(purgejob, 0);
+
+        sender.sendMessage("World purge starting on world '" + worldname + "'...");
+    }
+
     public boolean activateWorld(DynmapWorld dynmapWorld) {
         String worldname = dynmapWorld.getName();
         ConfigurationNode worldconfig = core.getWorldConfiguration(dynmapWorld);

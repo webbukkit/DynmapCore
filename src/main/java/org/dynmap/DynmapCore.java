@@ -873,6 +873,7 @@ public class DynmapCore implements DynmapCommonAPI {
         "pause",
         "purgequeue",
         "purgemap",
+        "purgeworld",
         "ids-for-ip",
         "ips-for-id",
         "add-id-for-ip",
@@ -931,6 +932,7 @@ public class DynmapCore implements DynmapCommonAPI {
         new CommandInfo("dynmap", "purgequeue", "Empty all pending tile updates from update queue."),
         new CommandInfo("dynmap", "purgequeue", "<world>", "Empty all pending tile updates from update queue for world <world>."),
         new CommandInfo("dynmap", "purgemap", "<world> <map>", "Delete all existing tiles for map <map> on world <world>."),
+        new CommandInfo("dynmap", "purgeworld", "<world>", "Delete all existing directories for world <world>."),
         new CommandInfo("dynmap", "pause", "Show render pause state."),
         new CommandInfo("dynmap", "pause", "<all|none|full|update>", "Set render pause state."),
         new CommandInfo("dynmap", "ids-for-ip", "<ipaddress>", "Show player IDs that have logged in from address <ipaddress>."),
@@ -1223,6 +1225,12 @@ public class DynmapCore implements DynmapCommonAPI {
                     mapManager.purgeMap(sender, args[1], args[2]);
                 } else {
                     sender.sendMessage("World name and map name values are required");
+                }
+            } else if (c.equals("purgeworld") && checkPlayerPermission(sender,"purgeworld")) {
+                if (args.length > 1) {
+                    mapManager.purgeWorld(sender, args[1]);
+                } else {
+                    sender.sendMessage("World name is required");
                 }
             } else if (c.equals("reload") && checkPlayerPermission(sender, "reload")) {
                 sender.sendMessage("Reloading Dynmap...");
