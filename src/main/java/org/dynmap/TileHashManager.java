@@ -66,7 +66,7 @@ public class TileHashManager {
                 fd.seek(0);
                 fd.write(crcbuf);
             } catch (IOException iox) {
-                Log.severe("Error writing hash file - " + getHashFile(tiledir).getPath());
+                Log.severe("Error writing hash file - " + getHashFile(tiledir).getPath(), iox);
             } finally {
                 if(fd != null) {
                     try { fd.close(); } catch (IOException iox) {}
