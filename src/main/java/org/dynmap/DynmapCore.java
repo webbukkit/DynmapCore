@@ -572,11 +572,9 @@ public class DynmapCore implements DynmapCommonAPI {
             int ord;
             for (ord = 0; ord < sortPermissionNodes.size(); ord++) {
                 if (p.hasPermissionNode(sortPermissionNodes.get(ord))) {
-                    Log.info("Player " + p.getName() + " has " + sortPermissionNodes.get(ord));
                     break;
                 }
             }
-            Log.info("Player " + p.getName() + ": ord=" + ord);
             p.setSortWeight(ord);
         }
         else {
