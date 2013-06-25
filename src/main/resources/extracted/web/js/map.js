@@ -756,7 +756,7 @@ DynMap.prototype = {
 			.append(playerIconContainer = $('<span/>')
 				.addClass('playerIcon')
 				.append($('<img/>').attr({ src: 'images/player_face.png' }))
-				.attr({ title: 'Follow ' + player.name })
+				.attr({ title: 'Follow player' })
 				.click(function() {
 					var follow = player !== me.followingPlayer;
 					me.followPlayer(follow ? player : null);
@@ -765,7 +765,7 @@ DynMap.prototype = {
 			.append(player.menuname = $('<a/>')
 				.attr({
 					href: '#',
-					title: 'Center on ' + player.name
+					title: 'Center on player'
 				})
 				.append(player.name)
 			)
