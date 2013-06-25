@@ -5,9 +5,9 @@
 	<name>DynmapCore</name>
 	<properties>
 	   	<timestamp>${maven.build.timestamp}</timestamp>
-   		<maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>	
+   		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>	
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<BUILD_NUMBER>Dev(${timestamp})</BUILD_NUMBER>
+		<BUILD_NUMBER>Dev${timestamp}</BUILD_NUMBER>
 		<nbtVersion>1.0.5-SNAPSHOT</nbtVersion>
 	</properties>
 	<url>http://github.com/webbukkit/DynmapCore/</url>
