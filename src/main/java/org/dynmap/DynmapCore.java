@@ -117,6 +117,7 @@ public class DynmapCore implements DynmapCommonAPI {
     private Map<String, LinkedList<String>> ids_by_ip = new HashMap<String, LinkedList<String>>();
     private boolean persist_ids_by_ip = false;
     private int snapshotcachesize;
+    private boolean snapshotsoftref;
     private String[] blocknames = new String[0];
     private int[] blockmaterialmap = new int[0];
     private String[] biomenames = new String[0];
@@ -415,6 +416,8 @@ public class DynmapCore implements DynmapCommonAPI {
         deftemplatesuffix = configuration.getString("deftemplatesuffix", "");
         /* Get snapshot cache size */
         snapshotcachesize = configuration.getInteger("snapshotcachesize", 500);
+        /* Get soft ref flag for cache (weak=false, soft=true) */
+        snapshotsoftref = configuration.getBoolean("soft-ref-cache", true);
         /* Default compassmode to newrose */
         String cmode = configuration.getString("compass-mode", "newrose");
         if(cmode.equals("newnorth"))
@@ -1894,7 +1897,9 @@ public class DynmapCore implements DynmapCommonAPI {
     }
     
     public int getSnapShotCacheSize() { return snapshotcachesize; }
-    
+
+    public boolean useSoftRefInSnapShotCache() { return snapshotsoftref; }
+
     public String getDefImageFormat() { return def_image_format; }
     
     public void webChat(final String name, final String message) {
