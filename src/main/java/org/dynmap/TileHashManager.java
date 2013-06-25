@@ -66,10 +66,11 @@ public class TileHashManager {
                 fd.seek(0);
                 fd.write(crcbuf);
             } catch (IOException iox) {
-                Log.severe("Error writing hash file - " + getHashFile(tiledir).getPath(), iox);
+                Log.severe("Error writing hash file - " + getHashFile(tiledir).getPath() + " - " + iox.getMessage());
             } finally {
                 if(fd != null) {
                     try { fd.close(); } catch (IOException iox) {}
+                    fd = null;
                 }
             }
         }
@@ -77,17 +78,22 @@ public class TileHashManager {
         /* Read from file */
         public void readFromFile(File tiledir, byte[] crcbuf) {
             RandomAccessFile fd = null;
+            boolean success = false;
             try {
                 fd = new RandomAccessFile(getHashFile(tiledir), "r");
                 fd.seek(0);
                 fd.read(crcbuf);
+                success = true;
             } catch (IOException iox) {
-                Arrays.fill(crcbuf, (byte)0xFF);
-                writeToFile(tiledir, crcbuf);
             } finally {
                 if(fd != null) {
                     try { fd.close(); } catch (IOException iox) {}
+                    fd = null;
                 }
+            }
+            if (!success) {
+                Arrays.fill(crcbuf, (byte)0xFF);
+                writeToFile(tiledir, crcbuf);
             }
         }
         /* Read CRC */
