@@ -56,8 +56,10 @@ public class MapManager {
     // TPS based render pauses
     private double tpslimit_updaterenders = 18.0;
     private double tpslimit_fullrenders = 18.0;
+    private double tpslimit_zoomout = 18.0;
     private boolean tpspauseupdaterenders = false;
     private boolean tpspausefullrenders = false;
+    private boolean tpspausezoomout = false;
     
     private boolean did_start = false;
     
@@ -772,13 +774,18 @@ public class MapManager {
     
     private class DoZoomOutProcessing implements Runnable {
         public void run() {
-            Debug.debug("DoZoomOutProcessing started");
-            ArrayList<DynmapWorld> wl = new ArrayList<DynmapWorld>(worlds);
-            for(DynmapWorld w : wl) {
-                w.freshenZoomOutFiles();
+            if (!tpspausezoomout) {
+                Debug.debug("DoZoomOutProcessing started");
+                ArrayList<DynmapWorld> wl = new ArrayList<DynmapWorld>(worlds);
+                for(DynmapWorld w : wl) {
+                    w.freshenZoomOutFiles();
+                }
+                Debug.debug("DoZoomOutProcessing finished");
+                scheduleDelayedJob(this, zoomout_period*1000);
             }
-            scheduleDelayedJob(this, zoomout_period*1000);
-            Debug.debug("DoZoomOutProcessing finished");
+            else {
+                scheduleDelayedJob(this, 5*1000);
+            }
         }
     }
     
@@ -847,6 +854,8 @@ public class MapManager {
         if (tpslimit_updaterenders > 19.5) tpslimit_updaterenders = 19.5;
         tpslimit_fullrenders = configuration.getDouble("fullrender-min-tps", 18.0);
         if (tpslimit_fullrenders > 19.5) tpslimit_fullrenders = 19.5;
+        tpslimit_zoomout = configuration.getDouble("zoomout-min-tps", 18.0);
+        if (tpslimit_zoomout > 19.5) tpslimit_zoomout = 19.5;
 
         this.tileQueue = new AsynchronousQueue<MapTile>(
                 new Handler<MapTile>() {
@@ -1598,5 +1607,17 @@ public class MapManager {
         tpspauseupdaterenders = (tps < tpslimit_updaterenders);
         // Pause if needed for fullrenders
         tpspausefullrenders = (tps < tpslimit_fullrenders);
+        // Pause if needed for zoom out
+        tpspausezoomout = (tps < tpslimit_zoomout);
+    }
+    
+    public boolean getTPSFullRenderPause() {
+        return tpspausefullrenders;
+    }
+    public boolean getTPSUpdateRenderPause() {
+        return tpspauseupdaterenders;
+    }
+    public boolean getTPSZoomOutPause() {
+        return tpspausezoomout;
     }
 }

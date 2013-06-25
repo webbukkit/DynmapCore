@@ -1262,12 +1262,20 @@ public class DynmapCore implements DynmapCommonAPI {
                 }
                 if(getPauseFullRadiusRenders())
                     sender.sendMessage("Full/Radius renders are PAUSED");
+                else if (mapManager.getTPSFullRenderPause())
+                    sender.sendMessage("Full/Radius renders are TPS PAUSED");
                 else
                     sender.sendMessage("Full/Radius renders are ACTIVE");
                 if(getPauseUpdateRenders())
                     sender.sendMessage("Update renders are PAUSED");
+                else if (mapManager.getTPSUpdateRenderPause())
+                    sender.sendMessage("Update renders are TPS PAUSED");
                 else
                     sender.sendMessage("Update renders are ACTIVE");
+                if (mapManager.getTPSZoomOutPause())
+                    sender.sendMessage("Zoom out processing is TPS PAUSED");
+                else
+                    sender.sendMessage("Zoom out processing is ACTIVE");
             } else if (c.equals("resetstats") && checkPlayerPermission(sender, "resetstats")) {
                 if(args.length == 1)
                     mapManager.resetStats(sender, null);
