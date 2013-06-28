@@ -1,5 +1,6 @@
 package org.dynmap;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -61,8 +62,17 @@ public class TileHashManager {
         /* Write to file */
         public void writeToFile(File tiledir, byte[] crcbuf) {
             RandomAccessFile fd = null;
+            File f = getHashFile(tiledir);
             try {
-                fd = new RandomAccessFile(getHashFile(tiledir), "rw");
+                try {
+                    fd = new RandomAccessFile(f, "rw");
+                } catch (FileNotFoundException nfnx) {
+                    File pf = f.getParentFile();
+                    if (pf.exists() == false) {
+                        pf.mkdirs();
+                    }
+                    fd = new RandomAccessFile(f, "rw");
+                }
                 fd.seek(0);
                 fd.write(crcbuf);
             } catch (IOException iox) {
