@@ -573,10 +573,19 @@ public class HDBlockModels {
         changeIgnoredBlocks.clear();
         
         /* Load block models */
-        InputStream in = TexturePack.class.getResourceAsStream("/models.txt");
-        if(in != null) {
-            loadModelFile(in, "models.txt", config, core, "core");
-            try { in.close(); } catch (IOException iox) {} in = null;
+        int i = 0;
+        boolean done = false;
+        InputStream in = null;
+        while (!done) {
+            in = TexturePack.class.getResourceAsStream("/models_" + i + ".txt");
+            if(in != null) {
+                loadModelFile(in, "models_" + i + ".txt", config, core, "core");
+                try { in.close(); } catch (IOException iox) {} in = null;
+            }
+            else {
+                done = true;
+            }
+            i++;
         }
         ArrayList<String> files = new ArrayList<String>();
         File customdir = new File(datadir, "renderdata");

@@ -1,3 +1,4 @@
+version:-1.5.2
 #
 # Patches - define surfaces to be used in patch models
 #
@@ -1346,7 +1347,7 @@ patchblock:id=145,data=3,data=7,data=11,data=15
 patchrotate:id=145,data=1,rot=180
 
 # (151) Daylight Sensor
-boxblock:id=151,data=*,ymax=0.75
+boxblock:id=151,data=*,ymax=0.375
 
 # (149) Redstone Comparator (inactive)
 # (150) Redstone Comparator (active)
@@ -1479,5 +1480,3 @@ layer:11,12,13,14,15
 **------------**
 ****************
 ****************
-# (171) Carpet
-boxblock:id=171,data=*,ymax=0.0625

@@ -1296,15 +1296,21 @@ public class TexturePack {
         resetFiles();
         /* Initialize map with blank map for all entries */
         HDTextureMap.initializeTable();
-        /* Load block models */
-        InputStream in = TexturePack.class.getResourceAsStream("/texture.txt");
-        if(in != null) {
-            loadTextureFile(in, "texture.txt", config, core, "core");
-            if(in != null) { try { in.close(); } catch (IOException x) {} in = null; }
+        /* Load block textures (0-N) */
+        int i = 0;
+        boolean done = false;
+        InputStream in = null;
+        while (!done) {
+            in = TexturePack.class.getResourceAsStream("/texture_" + i + ".txt");
+            if(in != null) {
+                loadTextureFile(in, "texture_" + i + ".txt", config, core, "core");
+                if(in != null) { try { in.close(); } catch (IOException x) {} in = null; }
+            }
+            else {
+                done = true;
+            }
+            i++;
         }
-        else
-            Log.severe("Error loading texture.txt");
-        
         File renderdir = new File(datadir, "renderdata");
         ArrayList<String> tsfiles = new ArrayList<String>();
         ArrayList<String> txfiles = new ArrayList<String>();
@@ -1347,7 +1353,7 @@ public class TexturePack {
                 Log.severe("Block ID " + blkid + ":" + blkdata + " - not enough textures for faces (" + cnt + " > " + tm.faces.length + ")");
                 int[] newfaces = new int[cnt];
                 System.arraycopy(tm.faces, 0, newfaces, 0, tm.faces.length);
-                for(int i = tm.faces.length; i < cnt; i++) {
+                for(i = tm.faces.length; i < cnt; i++) {
                     newfaces[i] = TILEINDEX_BLANK;
                 }
             }
