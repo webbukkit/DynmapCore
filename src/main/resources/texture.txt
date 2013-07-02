@@ -35,7 +35,44 @@ texturefile:id=dropper,filename=textures/blocks/dropper_front.png,xcount=1,ycoun
 texturefile:id=droppervert,filename=textures/blocks/dropper_front_vertical.png,xcount=1,ycount=1
 texturefile:id=hopper,filename=textures/blocks/hopper.png,xcount=1,ycount=1
 texturefile:id=hopperinside,filename=textures/blocks/hopper_inside.png,xcount=1,ycount=1
-
+# 1.6 textures
+texturepath:assets/minecraft/textures/blocks/
+texture:id=hardened_clay_stained_black
+texture:id=hardened_clay_stained_blue
+texture:id=hardened_clay_stained_brown
+texture:id=hardened_clay_stained_cyan
+texture:id=hardened_clay_stained_gray
+texture:id=hardened_clay_stained_green
+texture:id=hardened_clay_stained_light_blue
+texture:id=hardened_clay_stained_lime
+texture:id=hardened_clay_stained_magenta
+texture:id=hardened_clay_stained_orange
+texture:id=hardened_clay_stained_pink
+texture:id=hardened_clay_stained_purple
+texture:id=hardened_clay_stained_red
+texture:id=hardened_clay_stained_silver
+texture:id=hardened_clay_stained_white
+texture:id=hardened_clay_stained_yellow
+texture:id=hay_block_side
+texture:id=hay_block_top
+texture:id=wool_colored_black
+texture:id=wool_colored_blue
+texture:id=wool_colored_brown
+texture:id=wool_colored_cyan
+texture:id=wool_colored_gray
+texture:id=wool_colored_green
+texture:id=wool_colored_light_blue
+texture:id=wool_colored_lime
+texture:id=wool_colored_magenta
+texture:id=wool_colored_orange
+texture:id=wool_colored_pink
+texture:id=wool_colored_purple
+texture:id=wool_colored_red
+texture:id=wool_colored_silver
+texture:id=wool_colored_white
+texture:id=wool_colored_yellow
+texture:id=hardened_clay
+texture:id=coal_block
 ######
 # Stone
 block:id=1,allfaces=1,stdrot=true
@@ -853,3 +890,44 @@ block:id=158,data=2,top=62,east=0:dropper,south=45,north=45,west=45,bottom=62
 block:id=158,data=3,top=62,west=0:dropper,south=45,north=45,east=45,bottom=62
 block:id=158,data=4,top=62,north=0:dropper,south=45,east=45,west=45,bottom=62
 block:id=158,data=5,top=62,south=0:dropper,north=45,east=45,west=45,bottom=62
+
+# (159) Colored clay
+block:id=159,data=15,stdrot=true,allfaces=0:hardened_clay_stained_black
+block:id=159,data=14,stdrot=true,allfaces=0:hardened_clay_stained_red
+block:id=159,data=13,stdrot=true,allfaces=0:hardened_clay_stained_green
+block:id=159,data=12,stdrot=true,allfaces=0:hardened_clay_stained_brown
+block:id=159,data=11,stdrot=true,allfaces=0:hardened_clay_stained_blue
+block:id=159,data=10,stdrot=true,allfaces=0:hardened_clay_stained_purple
+block:id=159,data=9,stdrot=true,allfaces=0:hardened_clay_stained_cyan
+block:id=159,data=8,stdrot=true,allfaces=0:hardened_clay_stained_silver
+block:id=159,data=7,stdrot=true,allfaces=0:hardened_clay_stained_gray
+block:id=159,data=6,stdrot=true,allfaces=0:hardened_clay_stained_pink
+block:id=159,data=5,stdrot=true,allfaces=0:hardened_clay_stained_lime
+block:id=159,data=4,stdrot=true,allfaces=0:hardened_clay_stained_yellow
+block:id=159,data=3,stdrot=true,allfaces=0:hardened_clay_stained_light_blue
+block:id=159,data=2,stdrot=true,allfaces=0:hardened_clay_stained_magenta
+block:id=159,data=1,stdrot=true,allfaces=0:hardened_clay_stained_orange
+block:id=159,data=0,stdrot=true,allfaces=0:hardened_clay_stained_white
+# (170) Hay
+block:id=170,data=*,allsides=0:hay_block_side,topbottom=0:hay_block_top,stdrot=true
+# (171) Carpet
+block:id=171,data=15,stdrot=true,allfaces=0:wool_colored_black
+block:id=171,data=14,stdrot=true,allfaces=0:wool_colored_red
+block:id=171,data=13,stdrot=true,allfaces=0:wool_colored_green
+block:id=171,data=12,stdrot=true,allfaces=0:wool_colored_brown
+block:id=171,data=11,stdrot=true,allfaces=0:wool_colored_blue
+block:id=171,data=10,stdrot=true,allfaces=0:wool_colored_purple
+block:id=171,data=9,stdrot=true,allfaces=0:wool_colored_cyan
+block:id=171,data=8,stdrot=true,allfaces=0:wool_colored_silver
+block:id=171,data=7,stdrot=true,allfaces=0:wool_colored_gray
+block:id=171,data=6,stdrot=true,allfaces=0:wool_colored_pink
+block:id=171,data=5,stdrot=true,allfaces=0:wool_colored_lime
+block:id=171,data=4,stdrot=true,allfaces=0:wool_colored_yellow
+block:id=171,data=3,stdrot=true,allfaces=0:wool_colored_light_blue
+block:id=171,data=2,stdrot=true,allfaces=0:wool_colored_magenta
+block:id=171,data=1,stdrot=true,allfaces=0:wool_colored_orange
+block:id=171,data=0,stdrot=true,allfaces=0:wool_colored_white
+# (172) Hardened clay
+block:id=172,data=*,stdrot=true,allfaces=0:hardened_clay
+# (173) Coal block    
+block:id=173,data=*,stdrot=true,allfaces=0:coal_block
