@@ -446,6 +446,10 @@ public class CTMTexturePack {
                 return null;
             }
             else {
+                v = v.trim();
+                if (v.length() == 0) {
+                    return null;
+                }
                 ArrayList<String> lst = new ArrayList<String>();
                 String[] tok = tokenize(v, " ,");
                 for (String t : tok) {
@@ -565,10 +569,6 @@ public class CTMTexturePack {
                 Log.info("No matching method: " + fname);
                 return false;
             }
-            if ((this.tiles == null) || (this.tiles.length == 0)) {
-                Log.info("No tiles: " + fname);
-                return false;
-            }
             if (this.connect == CTMConnect.NONE) {
                 if (this.matchBlocks != null) {
                     this.connect = CTMConnect.BLOCK;
@@ -621,9 +621,9 @@ public class CTMTexturePack {
         }
         private boolean isValidCtm(String fname) {
             if (this.tiles == null) {
-                this.tiles = this.parseTileNames("0-11 16-27 32-43 48-58");
+                this.tiles = this.parseTileNames("0-46");
             }
-            if (this.tiles.length < 47) {   // Not enough for CTF
+            if ((this.tiles == null) || (this.tiles.length < 47)) {   // Not enough for CTF
                 Log.info("Not enough tiles for CTF method: " + fname);
                 return false;
             }
@@ -642,15 +642,18 @@ public class CTMTexturePack {
         }
         private boolean isValidHorizontal(String fname) {
             if (this.tiles == null) {
-                this.tiles = this.parseTileNames("12-15");
+                this.tiles = this.parseTileNames("0-3");
             }
-            if (this.tiles.length != 4) {
+            if ((this.tiles == null) || (this.tiles.length != 4)) {
                 Log.info("Incorrect tile count for Horizonal method: " + fname);
                 return false;
             }
             return true;
         }
         private boolean isValidVertical(String fname) {
+            if (this.tiles == null) {
+                this.tiles = this.parseTileNames("0-3");
+            }
             if ((this.tiles == null) || (this.tiles.length != 4)) {
                 Log.info("Incorrect tile count for Vertical method: " + fname);
                 return false;
@@ -701,6 +704,9 @@ public class CTMTexturePack {
             }
         }
         private boolean isValidFixed(String fname) {
+            if (this.tiles == null) {
+                this.tiles = this.parseTileNames("0");
+            }
             if ((this.tiles == null) || (this.tiles.length != 1)) {
                 Log.info("Required 1 tile for Fixed method: " + fname);
                 return false;
@@ -709,9 +715,9 @@ public class CTMTexturePack {
         }
         private boolean isValidTop(String fname) {
             if (this.tiles == null) {
-                this.tiles = this.parseTileNames("66");
+                this.tiles = this.parseTileNames("0");
             }
-            if (this.tiles.length != 1) {
+            if ((this.tiles == null) || (this.tiles.length != 1)) {
                 Log.info("Requires 1 tile for Top method: " + fname);
                 return false;
             }
