@@ -33,7 +33,10 @@ public class CTMTexturePack {
     private String[] blocknames;
     private int[] blockmaterials;
     private String[] biomenames;
-
+    
+    private String ctmpath;
+    private String vanillatextures;
+    
     private static final int BLOCK_ID_LOG = 17;
     private static final int BLOCK_ID_QUARTZ = 155;
 
@@ -714,22 +717,22 @@ public class CTMTexturePack {
             }
             return true;
         }
-        private void registerTiles() {
+        private void registerTiles(String deftxtpath) {
             if (this.matchTiles != null) {  // If any matching tiles, register them
-                this.matchTileIcons = registerTiles(this.matchTiles);
+                this.matchTileIcons = registerTiles(this.matchTiles, deftxtpath);
             }
             if (this.tiles != null) { // If any result tiles, register them
-                this.tileIcons = registerTiles(this.tiles);
+                this.tileIcons = registerTiles(this.tiles, deftxtpath);
             }
         }
-        private int[] registerTiles(String[] tilenames) {
+        private int[] registerTiles(String[] tilenames, String deftxtpath) {
             if (tilenames == null) return null;
             int[] rslt = new int[tilenames.length];
             for (int i = 0; i < tilenames.length; i++) {
                 String tn = tilenames[i];
                 String ftn = tn;
                 if (ftn.indexOf('/') < 0) { // no path (base tile)
-                    ftn = "textures/blocks/" + tn;
+                    ftn = deftxtpath + tn;
                 }
                 if (!ftn.endsWith(".png")) {
                     ftn = ftn + ".png"; // Add .png if needed
@@ -781,15 +784,23 @@ public class CTMTexturePack {
      * @param tpl - texture pack loader
      * @param tp - texture pack
      */
-    public CTMTexturePack(TexturePackLoader tpl, TexturePack tp, DynmapCore core) {
+    public CTMTexturePack(TexturePackLoader tpl, TexturePack tp, DynmapCore core, boolean is_rp) {
         ArrayList<String> files = new ArrayList<String>();
         this.tpl = tpl;
         blocknames = core.getBlockNames();
         blockmaterials = core.getBlockMaterialMap();
         biomenames = core.getBiomeNames();
         Set<String> ent = tpl.getEntries();
+        if (is_rp) {
+            ctmpath = "assets/minecraft/mcpatcher/ctm/";
+            vanillatextures = "assets/minecraft/textures/blocks";
+        }
+        else {
+            ctmpath = "ctm/";
+            vanillatextures = "textures/blocks";
+        }
         for (String name : ent) {
-            if(name.startsWith("ctm/") && name.endsWith(".properties")) {
+            if(name.startsWith(ctmpath) && name.endsWith(".properties")) {
                 files.add(name);
             }
         }
@@ -853,7 +864,7 @@ public class CTMTexturePack {
                     
                     CTMProps ctmp = new CTMProps(p, f, this);
                     if(ctmp.isValid(f)) {
-                        ctmp.registerTiles();
+                        ctmp.registerTiles(this.vanillatextures);
                         bytilelist = addToList(bytilelist, mappedtiles, ctmp.matchTileIcons, ctmp);
                         byblocklist = addToList(byblocklist, mappedblocks, ctmp.matchBlocks, ctmp);
                     }

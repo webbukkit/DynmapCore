@@ -32,6 +32,15 @@ public class TexturePackLoader {
             Log.info("Texture pack not found - " + tp.getPath());
         }
     }
+    public InputStream openTPResource(String rname, String altname) {
+        InputStream is = openTPResource(rname);
+        if (is == null) {
+            if (altname != null) {
+                is = openTPResource(altname);
+            }
+        }
+        return is;
+    }
     public InputStream openTPResource(String rname) {
         try {
             if (zf != null) {

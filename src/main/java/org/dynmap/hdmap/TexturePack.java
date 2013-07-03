@@ -54,14 +54,19 @@ public class TexturePack {
     
     private static final String TERRAIN_PNG = "terrain.png";
     private static final String GRASSCOLOR_PNG = "misc/grasscolor.png";
+    private static final String GRASSCOLOR_RP_PNG = "assets/minecraft/textures/colormap/grass.png";
     private static final String FOLIAGECOLOR_PNG = "misc/foliagecolor.png";
+    private static final String FOLIAGECOLOR_RP_PNG = "assets/minecraft/textures/colormap/foliage.png";
     private static final String WATERCOLORX_PNG = "misc/watercolorX.png";
+    private static final String WATERCOLORX_RP_PNG = "assets/minecraft/mcpatcher/colormap/water.png";
     private static final String CUSTOMLAVASTILL_PNG = "custom_lava_still.png";
     private static final String CUSTOMLAVAFLOWING_PNG = "custom_lava_flowing.png";
     private static final String CUSTOMWATERSTILL_PNG = "custom_water_still.png";
     private static final String CUSTOMWATERFLOWING_PNG = "custom_water_flowing.png";
     private static final String SWAMPGRASSCOLOR_PNG = "misc/swampgrasscolor.png";
+    private static final String SWAMPGRASSCOLOR_RP_PNG = "assets/minecraft/mcpatcher/colormap/swampgrass.png";
     private static final String SWAMPFOLIAGECOLOR_PNG = "misc/swampfoliagecolor.png";
+    private static final String SWAMPFOLIAGECOLOR_RP_PNG = "assets/minecraft/mcpatcher/colormap/swampfoliage.png";
 
     /* Color modifier codes (x1000 for value in definition file, x1000000 for internal value) */
     //private static final int COLORMOD_NONE = 0;
@@ -112,8 +117,6 @@ public class TexturePack {
     private static final int TILEINDEX_PISTONSIDE_EXT = 262;
     private static final int TILEINDEX_PANETOP_X = 263;
     private static final int TILEINDEX_AIRFRAME_EYE = 264;
-    //private static final int TILEINDEX_FIRE = 265;
-    //private static final int TILEINDEX_PORTAL = 266;
     private static final int TILEINDEX_WHITE = 267; // Pure white tile
     private static final int MAX_TILEINDEX = 267;  /* Index of last static tile definition */
     private static final int TILETABLE_LEN = 5000;  /* Leave room for dynmaic tiles */
@@ -214,6 +217,45 @@ public class TexturePack {
         null, "fire_0", "portal"
     };
 
+    /* Map of 1.6 resource files to 0-255 texture indices */
+    private static final String[] terrain_rp_map = {
+        "grass_top", "stone", "dirt", "grass_side", "planks_oak", "stone_slab_side", "stone_slab_top", "brick", 
+        "tnt_side", "tnt_top", "tnt_bottom", "web", "flower_rose", "flower_dandelion", "portal", "sapling_oak",
+        "stonebrick", "bedrock", "sand", "gravel", "log_oak", "log_oak_top", "iron_block", "gold_block",
+        "diamond_block", "emerald_block", null, null, "mushroom_red", "mushroom_brown", "sapling_jungle", null,
+        "gold_ore", "iron_ore", "coal_ore", "bookshelf", "cobblestone_mossy", "obsidian", "grass_side_overlay", "tallgrass",
+        null, "beacon", null, "crafting_table_top", "furnace_front_off", "furnace_side", "dispenser_front_horizontal", null,
+        "sponge", "glass", "diamond_ore", "redstone_ore", "leaves_oak", "leaves_oak_opaque", "stonebrick", "deadbush",
+        "fern", null, null, "crafting_table_side", "crafting_table_front", "furnace_front_on", "furnace_top", "sapling_spruce",
+        "wool_colored_white", "mob_spawner", "snow", "ice", "grass_side_snowed", "cactus_top", "cactus_side", "cactus_bottom",
+        "clay", "reeds", "jukebox_side", "jukebox_top", "waterlily", "mycelium_side", "mycelium_top", "sapling_birch",
+        "torch_on", "door_wood_upper", "door_iron_upper", "ladder", "trapdoor", "iron_bars", "farmland_wet", "farmland_dry",
+        "wheat_stage_0", "wheat_stage_1", "wheat_stage_2", "wheat_stage_3", "wheat_stage_4", "wheat_stage_5", "wheat_stage_6", "wheat_stage_7",
+        "lever", "door_wood_lower", "door_iron_lower", "redstone_torch_on", "stonebrick_mossy", "stonebrick_cracked", "pumpkin_top", "netherrack",
+        "soul_sand", "glowstone", "piston_top_sticky", "piston_top_normal", "piston_side", "piston_bottom", "piston_inner", "pumpkin_stem_disconnected",
+        "rail_normal_turned", "wool_colored_black", "wool_colored_gray", "redstone_torch_off", "log_spruce", "log_birch", "pumpkin_side", "pumpkin_face_off",
+        "pumpkin_face_on", "cake_top", "cake_side", "cake_inner", "cake_bottom", "mushroom_block_skin_red", "mushroom_block_skin_brown", "pumpkin_stem_connected",
+        "rail_normal", "wool_colored_red", "wool_colored_pink", "repeater_off", "leaves_spruce", "leaves_spruce_opaque", "bed_feet_top", "bed_head_top",
+        "melon_side", "melon_top", "cauldron_top", "cauldron_inner", null, "mushroom_block_skin_stem", "mushroom_block_inside", "vine",
+        "lapis_block", "wool_colored_green", "wool_colored_lime", "repeater_on", "glass_pane_top", "bed_feet_end", "bed_feet_side", "bed_head_side",
+        "bed_head_end", "log_jungle", "cauldron_side", "cauldron_bottom", "brewibrewing_stand_base", "brewing_stand", "endframe_top", "endframe_side",
+        "lapis_ore", "wool_colored_brown", "wool_colored_yellow", "rail_golden", "redstone_dust_cross", "redstone_dust_line", "enchanting_table_top", "dragon_egg",
+        "cocoa_stage_2", "cocoa_stage_1", "cocoa_stage_0", "emerald_ore", "trip_wire_source", "trip_wire", "endframe_eye", "end_stone",
+        "sandstone_top", "wool_colored_blue", "wool_colored_light_blue", "rail_golden_powered", "redstone_dust_cross_overlay", "redstone_dust_line_overlay", "enchanting_table_side", "enchanting_table_bottom",
+        "command_block", "itemframe_background", "flower_pot", null, null, null, null, null,
+        "sandstone_normal", "wool_colored_purple", "wool_colored_magenta", "rail_detector", "leaves_jungle", "leaves_jungle_opaque", "planks_spruce", "planks_jungle",
+        "carrots_stage_0", "carrots_stage_1", "carrots_stage_2", "carrots_stage_3", "potatoes_stage_3", null, null, null,
+        "sandstone_bottom", "wool_colored_cyan", "wool_colored_orange", "redstone_lamp_off", "redstone_lamp_on", "stonebrick_carved", "planks_birch", "anvil_base",
+        "anvil_top_damaged_1", null, null, null, null, null, null, null,
+        "nether_brick", "wool_colored_silver", "nether_wart_stage_0", "nether_wart_stage_1", "nether_wart_stage_2", "sandstone_carved", "sandstone_smooth", "anvil_top_damaged_0",
+        "anvil_top_damaged_2", null, null, null, null, null, null, null,
+        "destroy_stage_0", "destroy_stage_1", "destroy_stage_2", "destroy_stage_3", "destroy_stage_4", "destroy_stage_5", "destroy_stage_6", "destroy_stage_7",
+        "destroy_stage_8", "destroy_stage_9", null, null, null, null, null, null,
+        /* Extra 1.5-based textures: starting at 256 (corresponds to TILEINDEX_ values) */
+        null, "water_still", "water_flow", "lava_still", "lava_flow", null, null, null, 
+        null, "fire_layer_0", "portal"
+    };
+
     private static class CustomTileRec {
         int srcx, srcy, width, height, targetx, targety;
     }
@@ -238,16 +280,35 @@ public class TexturePack {
         }
         return null;
     }
-    
+
+    private static String getRPFileName(int idx) {
+        if ((idx >= 0) && (idx < terrain_rp_map.length) && (terrain_rp_map[idx] != null)) {
+            return "assets/minecraft/textures/blocks/" + terrain_rp_map[idx] + ".png";
+        }
+        return null;
+    }
+
     /* Reset add-on tile data */
-    private static void resetFiles() {
+    private static void resetFiles(DynmapCore core) {
         synchronized(packlock) {
             packs.clear();
         }
         addonfiles.clear();
         addonfilesbyname.clear();
         next_dynamic_tile = MAX_TILEINDEX+1;
-        /* Now, load entries for vanilla v1.5 files */
+        
+        /* Now, load entries for vanilla v1.6.x RP files */
+        for(int i = 0; i < terrain_rp_map.length; i++) {
+            String fn = getRPFileName(i);
+            if (fn != null) {
+                int idx = findOrAddDynamicTileFile(fn, 1, 1, TileFileFormat.GRID, new String[0]);
+                DynamicTileFile dtf = addonfiles.get(idx);
+                if (dtf != null) {  // Fix mapping of tile ID to global table index
+                    dtf.tile_to_dyntile[0] = i;
+                }
+            }
+        }
+        /* Now, load entries for vanilla v1.5.x files (put second so that add-on TP overrides built in RP) */
         for(int i = 0; i < terrain_map.length; i++) {
             String fn = getBlockFileName(i);
             if (fn != null) {
@@ -538,16 +599,28 @@ public class TexturePack {
         TexturePackLoader tpl = new TexturePackLoader(f);
         InputStream is = null;
         try {
+            boolean is_rp = false;
+            /* Check if resource pack */
+            is = tpl.openTPResource("pack.mcmeta");
+            if (is != null) {
+                tpl.closeResource(is);
+                is_rp = true;
+            }
+            else if(tpname.equals("standard")) { // Built in is RP
+                is_rp = true;
+            }
             /* Load CTM support, if enabled */
             if(core.isCTMSupportEnabled()) {
-                ctm = new CTMTexturePack(tpl, this, core);
+                ctm = new CTMTexturePack(tpl, this, core, is_rp);
                 if(ctm.isValid() == false) {
                     ctm = null;
                 }
             }
+            String fn;
             /* Load custom colors support, if enabled */
             if(core.isCustomColorsSupportEnabled()) {
-                is = tpl.openTPResource("color.properties");
+                fn = (is_rp?"assets/minecraft/mcpatcher/color.properties":"color.properties");
+                is = tpl.openTPResource(fn);
                 Properties p;
                 if (is != null) {
                     p = new Properties();
@@ -575,35 +648,35 @@ public class TexturePack {
             /* Find and load terrain.png */
             is = tpl.openTPResource(TERRAIN_PNG); /* Try to find terrain.png */
             if (is != null) {
-                loadTerrainPNG(is);
+                loadTerrainPNG(is, is_rp);
                 tpl.closeResource(is);
             }
             /* Try to find and load misc/grasscolor.png */
-            is = tpl.openTPResource(GRASSCOLOR_PNG);
+            is = tpl.openTPResource(GRASSCOLOR_PNG, GRASSCOLOR_RP_PNG);
             if (is != null) {
                 loadBiomeShadingImage(is, IMG_GRASSCOLOR);
                 tpl.closeResource(is);
             }
             /* Try to find and load misc/foliagecolor.png */
-            is = tpl.openTPResource(FOLIAGECOLOR_PNG);
+            is = tpl.openTPResource(FOLIAGECOLOR_PNG, FOLIAGECOLOR_RP_PNG);
             if (is != null) {
                 loadBiomeShadingImage(is, IMG_FOLIAGECOLOR);
                 tpl.closeResource(is);
             }
             /* Try to find and load misc/swampgrasscolor.png */
-            is = tpl.openTPResource(SWAMPGRASSCOLOR_PNG);
+            is = tpl.openTPResource(SWAMPGRASSCOLOR_PNG, SWAMPGRASSCOLOR_RP_PNG);
             if (is != null) {
                 loadBiomeShadingImage(is, IMG_SWAMPGRASSCOLOR);
                 tpl.closeResource(is);
             }
             /* Try to find and load misc/swampfoliagecolor.png */
-            is = tpl.openTPResource(SWAMPFOLIAGECOLOR_PNG);
+            is = tpl.openTPResource(SWAMPFOLIAGECOLOR_PNG, SWAMPFOLIAGECOLOR_RP_PNG);
             if (is != null) {
                 loadBiomeShadingImage(is, IMG_SWAMPFOLIAGECOLOR);
                 tpl.closeResource(is);
             }
             /* Try to find and load misc/watercolor.png */
-            is = tpl.openTPResource(WATERCOLORX_PNG);
+            is = tpl.openTPResource(WATERCOLORX_PNG, WATERCOLORX_RP_PNG);
             if (is != null) {
                 loadBiomeShadingImage(is, IMG_WATERCOLORX);
                 tpl.closeResource(is);
@@ -867,7 +940,7 @@ public class TexturePack {
     }
     
     /* Load terrain.png */
-    private void loadTerrainPNG(InputStream is) throws IOException {
+    private void loadTerrainPNG(InputStream is, boolean is_rp) throws IOException {
         int i, j;
         /* Load image */
         ImageIO.setUseCache(false);
@@ -895,6 +968,40 @@ public class TexturePack {
                     terrain_argb[i] = new int[native_scale * native_scale];
                     scaleTerrainPNGSubImage(li.width, native_scale, li.argb, terrain_argb[i]);
                 }
+            }
+            for(i = terrain_map.length; i < TILETABLE_LEN; i++) {
+                terrain_argb[i] = blank;
+            }
+        }
+        else if (is_rp) {   // If resource pack (1.6+)
+            native_scale = 16;
+            /* Loop through textures - find biggest one */
+            for(i = 0; i < terrain_rp_map.length; i++) {
+                String fn = getRPFileName(i);
+                if (fn == null) continue;
+                DynamicTileFile dtf = addonfilesbyname.get(fn);
+                if (dtf == null) continue;
+                LoadedImage li = imgs[dtf.idx+IMG_CNT];
+                if(li != null) {
+                    if(native_scale < li.width) native_scale = li.width;
+                }
+            }
+            blank = new int[native_scale*native_scale];
+            /* Now, load scaled images */
+            for(i = 0; i < terrain_rp_map.length; i++) {
+                terrain_argb[i] = blank;
+                String fn = getRPFileName(i);
+                if (fn == null) continue;
+                DynamicTileFile dtf = addonfilesbyname.get(fn);
+                if (dtf == null) continue;
+                LoadedImage li = imgs[dtf.idx + IMG_CNT];
+                if(li != null) {
+                    terrain_argb[i] = new int[native_scale * native_scale];
+                    scaleTerrainPNGSubImage(li.width, native_scale, li.argb, terrain_argb[i]);
+                }
+            }
+            for(i = terrain_rp_map.length; i < TILETABLE_LEN; i++) {
+                terrain_argb[i] = blank;
             }
         }
         else {  /* Else, use v1.5 tile files */
@@ -924,9 +1031,9 @@ public class TexturePack {
                     scaleTerrainPNGSubImage(li.width, native_scale, li.argb, terrain_argb[i]);
                 }
             }
-        }
-        for(i = terrain_map.length; i < TILETABLE_LEN; i++) {
-            terrain_argb[i] = blank;
+            for(i = terrain_map.length; i < TILETABLE_LEN; i++) {
+                terrain_argb[i] = blank;
+            }
         }
         /* Now, build redstone textures with active wire color (since we're not messing with that) */
         Color tc = new Color();
@@ -1293,7 +1400,7 @@ public class TexturePack {
     public static void loadTextureMapping(DynmapCore core, ConfigurationNode config) {
         File datadir = core.getDataFolder();
         /* Start clean with texture packs - need to be loaded after mapping */
-        resetFiles();
+        resetFiles(core);
         /* Initialize map with blank map for all entries */
         HDTextureMap.initializeTable();
         /* Load block textures (0-N) */
@@ -1404,6 +1511,9 @@ public class TexturePack {
             /* Map to assigned ID in global tile table: preserve modifier */
             txtid =findOrAddDynamicTile(srctxtid, txtid); 
         }
+        if(srctxtid == TXTID_INVALID) {
+            throw new NumberFormatException("Invalid texture ID: no default terrain.png: " + val);
+        }
         return txtid + (COLORMOD_MULT_INTERNAL * funcid);
     }
     /**
@@ -1492,6 +1602,8 @@ public class TexturePack {
             }
         }
     }
+    private static final int TXTID_INVALID = -2;
+    private static final int TXTID_TERRAINPNG = -1;
     /**
      * Load texture pack mappings from texture.txt file
      */
@@ -1504,6 +1616,7 @@ public class TexturePack {
         String modname = null;
         String texturemod = null;
         String texturepath = null;
+        boolean terrain_ok = true;
         try {
             String line;
             rdr = new LineNumberReader(new InputStreamReader(txtfile));
@@ -1511,7 +1624,9 @@ public class TexturePack {
                 if(line.startsWith("block:")) {
                     ArrayList<Integer> blkids = new ArrayList<Integer>();
                     int databits = -1;
-                    int srctxtid = -1;
+                    int srctxtid = TXTID_TERRAINPNG;
+                    if (!terrain_ok)
+                        srctxtid = TXTID_INVALID;  // Mark as not usable
                     int faces[] = new int[] { TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK };
                     int txtidx[] = new int[] { -1, -1, -1, -1, -1, -1 };
                     byte layers[] = null;
@@ -1971,6 +2086,15 @@ public class TexturePack {
                         else {
                             return;
                         }
+                    }
+                }
+                else if(line.startsWith("noterrainpng:")) {
+                    line = line.substring(line.indexOf(':')+1);
+                    if (line.startsWith("true")) {
+                        terrain_ok = false;
+                    }
+                    else {
+                        terrain_ok = true;
                     }
                 }
             }
