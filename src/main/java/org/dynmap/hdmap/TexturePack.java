@@ -58,7 +58,7 @@ public class TexturePack {
     private static final String FOLIAGECOLOR_PNG = "misc/foliagecolor.png";
     private static final String FOLIAGECOLOR_RP_PNG = "assets/minecraft/textures/colormap/foliage.png";
     private static final String WATERCOLORX_PNG = "misc/watercolorX.png";
-    private static final String WATERCOLORX_RP_PNG = "assets/minecraft/mcpatcher/colormap/water.png";
+    private static final String WATERCOLORX_RP_PNG = "assets/minecraft/mcpatcher/colormap/watercolorX.png";
     private static final String CUSTOMLAVASTILL_PNG = "custom_lava_still.png";
     private static final String CUSTOMLAVAFLOWING_PNG = "custom_lava_flowing.png";
     private static final String CUSTOMWATERSTILL_PNG = "custom_water_still.png";
@@ -333,8 +333,6 @@ public class TexturePack {
     private BitSet hasBlockColoring = new BitSet(); // Quick lookup - (blockID << 4) + blockMeta - set if custom colorizer
     private DynIntHashMap blockColoring = new DynIntHashMap();  // Map - index by (blockID << 4) + blockMeta - Index of image for color map
 
-    private int water_toned_op = COLORMOD_WATERTONED;
-    
     private static final int IMG_GRASSCOLOR = 0;
     private static final int IMG_FOLIAGECOLOR = 1;
     private static final int IMG_CUSTOMWATERMOVING = 2;
@@ -605,9 +603,14 @@ public class TexturePack {
             if (is != null) {
                 tpl.closeResource(is);
                 is_rp = true;
+                Log.info("Loading resource pack " + f.getName());
             }
             else if(tpname.equals("standard")) { // Built in is RP
                 is_rp = true;
+                Log.info("Loading default resource pack");
+            }
+            else {
+                Log.info("Loading texture pack " + f.getName());
             }
             /* Load CTM support, if enabled */
             if(core.isCTMSupportEnabled()) {
@@ -932,7 +935,6 @@ public class TexturePack {
         this.terrain_argb = new int[tp.terrain_argb.length][];
         System.arraycopy(tp.terrain_argb, 0, this.terrain_argb, 0, this.terrain_argb.length);
         this.native_scale = tp.native_scale;
-        this.water_toned_op = tp.water_toned_op;
         this.ctm = tp.ctm;
         this.imgs = tp.imgs;
         this.hasBlockColoring = tp.hasBlockColoring;
@@ -2254,7 +2256,7 @@ public class TexturePack {
             }
             /* If water block, to watercolor tone op */
             if((blkid == 8) || (blkid == 9)) {
-                textop = water_toned_op;
+                textop = COLORMOD_WATERTONED;
             }
             else if(textop == COLORMOD_MULTTONED_CLEARINSIDE) {
                 textop = COLORMOD_MULTTONED;
