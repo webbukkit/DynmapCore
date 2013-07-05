@@ -39,6 +39,7 @@ import org.dynmap.utils.MapChunkCache;
 import org.dynmap.utils.MapIterator;
 import org.dynmap.utils.Matrix3D;
 import org.dynmap.utils.PatchDefinition;
+import org.dynmap.utils.Polygon;
 import org.dynmap.utils.TileFlags;
 import org.dynmap.utils.Vector3D;
 import org.json.simple.JSONObject;
@@ -1288,76 +1289,15 @@ public class IsoHDPerspective implements HDPerspective {
             new HDMapTile(w, this, x - 1, y, t.boostzoom) };
     }
 
-    private static class Rectangle {
-        double r0x, r0z;   /* Coord of corner of rectangle */
-        double s1x, s1z;   /* Side vector for one edge */
-        double s2x, s2z;    /* Side vector for other edge */
-        public Rectangle(Vector3D v1, Vector3D v2, Vector3D v3) {
-            r0x = v1.x;
-            r0z = v1.z;
-            s1x = v2.x - v1.x;
-            s1z = v2.z - v1.z;
-            s2x = v3.x - v1.x;
-            s2z = v3.z - v1.z;
-        }
-        public Rectangle() {
-        }
-        public void setSquare(double rx, double rz, double s) {
-            this.r0x = rx;
-            this.r0z = rz;
-            this.s1x = s;
-            this.s1z = 0;
-            this.s2x = 0;
-            this.s2z = s;
-        }
-        double getX(int idx) {
-            return r0x + (((idx & 1) == 0)?0:s1x) + (((idx & 2) != 0)?0:s2x);
-        }
-        double getZ(int idx) {
-            return r0z + (((idx & 1) == 0)?0:s1z) + (((idx & 2) != 0)?0:s2z);
-        }
-        /**
-         * Test for overlap of projection of one vector on to anoter
-         */
-        boolean testoverlap(double rx, double rz, double sx, double sz, Rectangle r) {
-            double rmin_dot_s0 = Double.MAX_VALUE;
-            double rmax_dot_s0 = Double.MIN_VALUE;
-            /* Project each point from rectangle on to vector: find lowest and highest */
-            for(int i = 0; i < 4; i++) {
-                double r_x = r.getX(i) - rx;  /* Get relative positon of second vector start to origin */
-                double r_z = r.getZ(i) - rz;
-                double r_dot_s0 = r_x*sx + r_z*sz;   /* Projection of start of vector */
-                if(r_dot_s0 < rmin_dot_s0) rmin_dot_s0 = r_dot_s0;
-                if(r_dot_s0 > rmax_dot_s0) rmax_dot_s0 = r_dot_s0;
-            }
-            /* Compute dot products */
-            double s0_dot_s0 = sx*sx + sz*sz; /* End of our side */
-            if((rmax_dot_s0 < 0.0) || (rmin_dot_s0 > s0_dot_s0))
-                return false;
-            else
-                return true;
-        }
-        /**
-         * Test if two rectangles intersect
-         * Based on separating axis theorem
-         */
-        boolean testRectangleIntesectsRectangle(Rectangle r) {
-            /* Test if projection of each edge of one rectangle on to each edge of the other yields overlap */
-            if(testoverlap(r0x, r0z, s1x, s1z, r) && testoverlap(r0x, r0z, s2x, s2z, r) && 
-                    testoverlap(r0x+s1x, r0z+s1z, s2x, s2z, r) && testoverlap(r0x+s2x, r0z+s2z, s1x, s1z, r) && 
-                    r.testoverlap(r.r0x, r.r0z, r.s1x, r.s1z, this) && r.testoverlap(r.r0x, r.r0z, r.s2x, r.s2z, this) &&
-                    r.testoverlap(r.r0x+r.s1x, r.r0z+r.s1z, r.s2x, r.s2z, this) && r.testoverlap(r.r0x+r.s2x, r.r0z+r.s2z, r.s1x, r.s1z, this)) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-        public String toString() {
-            return "{ " + r0x + "," + r0z + "}x{" + (r0x+s1x) + ","+ + (r0z+s1z) + "}x{" + (r0x+s2x) + "," + (r0z+s2z) + "}";
-        }
-    }
-    
+    private static final int corners_by_side[][] = {
+        { 1, 3, 7, 5 }, // Top
+        { 0, 2, 6, 4 }, // Bottom
+        { 0, 1, 3, 2 }, // Left
+        { 4, 5, 7, 6 }, // Right
+        { 2, 3, 7, 6 }, // Upper
+        { 0, 1, 5, 4 }  // Lower
+    };
+
     @Override
     public List<DynmapChunk> getRequiredChunks(MapTile tile) {
         if (!(tile instanceof HDMapTile))
@@ -1369,8 +1309,15 @@ public class IsoHDPerspective implements HDPerspective {
         int min_chunk_z = Integer.MAX_VALUE;
         int max_chunk_z = Integer.MIN_VALUE;
         
-        /* Make corners for volume: 0 = bottom-lower-left, 1 = top-lower-left, 2=bottom-upper-left, 3=top-upper-left
-         * 4 = bottom-lower-right, 5 = top-lower-right, 6 = bottom-upper-right, 7 = top-upper-right */  
+        /* Make corners for volume: 
+         * 0 = bottom-lower-left (xyz), 
+         * 1 = top-lower-left (xyZ), 
+         * 2 = bottom-upper-left (xYz), 
+         * 3 = top-upper-left (xYZ),
+         * 4 = bottom-lower-right (Xyz), 
+         * 5 = top-lower-right (XyZ), 
+         * 6 = bottom-upper-right (XYz), 
+         * 7 = top-upper-right (XYZ) */  
         Vector3D corners[] = new Vector3D[8];
         double dx = -basemodscale, dy = -basemodscale;    /* Add 1 block on each axis */
         for(int x = t.tx, idx = 0; x <= (t.tx+1); x++) {
@@ -1396,33 +1343,41 @@ public class IsoHDPerspective implements HDPerspective {
         }
         /* Make rectangles of X-Z projection of each side of the tile volume, 0 = top, 1 = bottom, 2 = left, 3 = right,
          * 4 = upper, 5 = lower */
-        Rectangle rect[] = new Rectangle[6];
-        rect[0] = new Rectangle(corners[1], corners[3], corners[5]);
-        rect[1] = new Rectangle(corners[0], corners[2], corners[4]);
-        rect[2] = new Rectangle(corners[0], corners[1], corners[2]);
-        rect[3] = new Rectangle(corners[4], corners[5], corners[6]);
-        rect[4] = new Rectangle(corners[2], corners[3], corners[6]);
-        rect[5] = new Rectangle(corners[0], corners[1], corners[4]);
-        
+        Polygon[] side = new Polygon[6];
+        for (int sidenum = 0; sidenum < side.length; sidenum++) {
+            side[sidenum] = new Polygon();
+            for (int corner = 0; corner < corners_by_side[sidenum].length; corner++) {
+                int cid = corners_by_side[sidenum][corner];
+                side[sidenum].addVertex(corners[cid].x, corners[cid].z);
+            }
+        }
         /* Now, need to walk through the min/max range to see which chunks are actually needed */
         ArrayList<DynmapChunk> chunks = new ArrayList<DynmapChunk>();
-        Rectangle chunkrect = new Rectangle();
+        
+        //Log.info("============================");
+        int cnt1 = 0, cnt2 = 0;
         for(int x = min_chunk_x; x <= max_chunk_x; x++) {
+            //String xs = "";
             for(int z = min_chunk_z; z <= max_chunk_z; z++) {
-                chunkrect.setSquare(x*16, z*16, 16);
                 boolean hit = false;
-                /* Check to see if square of chunk intersects any of our rectangle sides */
-                for(int rctidx = 0; (!hit) && (rctidx < rect.length); rctidx++) {
-                    if(chunkrect.testRectangleIntesectsRectangle(rect[rctidx])) {
+                //char c = '-';
+                for (int sidenum = 0; (!hit) && (sidenum < side.length); sidenum++) {
+                    if (side[sidenum].clip(16.0*x, 16.0*z, 16.0*(x+1), 16.0*(z+1)) != null) {
                         hit = true;
+                        //c = (char)('0' + sidenum);
+                        cnt1++;
                     }
                 }
+                //xs += c;
                 if(hit) {
                     DynmapChunk chunk = new DynmapChunk(x, z);
                     chunks.add(chunk);
                 }
+                cnt2++;
             }
+            //Log.info(xs);
         }
+        //Log.info("============================");
         return chunks;
     }
 
