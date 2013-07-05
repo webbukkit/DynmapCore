@@ -20,7 +20,6 @@ public class Client {
 
         @Override
         public void writeJSONString(Writer w) throws IOException {
-            // TODO: This isn't the best...
             w.write(toJSONString());
         }
     }
@@ -34,7 +33,9 @@ public class Client {
         public String channel;
         public ChatMessage(String source, String channel, String playerName, String message, String playeraccount) {
             this.source = source;
-            if (ClientUpdateComponent.usePlayerColors)
+            if (ClientUpdateComponent.hideNames)
+                this.playerName = "";
+            else if (ClientUpdateComponent.usePlayerColors)
                 this.playerName = Client.encodeColorInHTML(playerName);
             else
                 this.playerName = Client.stripColor(playerName);
@@ -61,7 +62,9 @@ public class Client {
         public String playerName;
         public String account;
         public PlayerJoinMessage(String playerName, String playeraccount) {
-            if (ClientUpdateComponent.usePlayerColors)
+            if (ClientUpdateComponent.hideNames)
+                this.playerName = "";
+            else if (ClientUpdateComponent.usePlayerColors)
                 this.playerName = Client.encodeColorInHTML(playerName);
             else
                 this.playerName = Client.stripColor(playerName);
@@ -77,7 +80,7 @@ public class Client {
         }
         @Override
         public int hashCode() {
-            return playerName.hashCode();
+            return account.hashCode();
         }
     }
 
@@ -86,7 +89,9 @@ public class Client {
         public String playerName;
         public String account;
         public PlayerQuitMessage(String playerName, String playeraccount) {
-            if (ClientUpdateComponent.usePlayerColors)
+            if (ClientUpdateComponent.hideNames)
+                this.playerName = "";
+            else if (ClientUpdateComponent.usePlayerColors)
                 this.playerName = Client.encodeColorInHTML(playerName);
             else
                 this.playerName = Client.stripColor(playerName);
@@ -102,7 +107,7 @@ public class Client {
         }
         @Override
         public int hashCode() {
-            return playerName.hashCode();
+            return account.hashCode();
         }
     }
 

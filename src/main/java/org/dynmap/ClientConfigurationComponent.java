@@ -35,6 +35,8 @@ public class ClientConfigurationComponent extends Component {
                 s(t, "msg-players", c.getString("msg/players", "Players"));
                 s(t, "msg-chatrequireslogin", c.getString("msg/chatrequireslogin", "Chat Requires Login"));
                 s(t, "msg-chatnotallowed", c.getString("msg/chatnotallowed", "You are not permitted to send chat messages"));
+                s(t, "msg-hiddennamejoin", c.getString("msg/hiddennamejoin", "Player joined"));
+                s(t, "msg-hiddennamequit", c.getString("msg/hiddennamequit", "Player quit"));
                 s(t, "maxcount", core.getMaxPlayers());
                 
                 DynmapWorld defaultWorld = null;

@@ -15,10 +15,12 @@ public class ClientUpdateComponent extends Component {
     private boolean hideifinvisiblepotion;
     private boolean is_protected;
     public static boolean usePlayerColors;
+    public static boolean hideNames;
     
     public ClientUpdateComponent(final DynmapCore core, ConfigurationNode configuration) {
         super(core, configuration);
         
+        hideNames = configuration.getBoolean("hidenames", false);
         hideifshadow = configuration.getInteger("hideifshadow", 15);
         hideifunder = configuration.getInteger("hideifundercover", 15);
         hideifsneaking = configuration.getBoolean("hideifsneaking", false);
@@ -71,7 +73,9 @@ public class ClientUpdateComponent extends Component {
             JSONObject jp = new JSONObject();
             
             s(jp, "type", "player");
-            if (usePlayerColors)
+            if (hideNames)
+                s(jp, "name", "");
+            else if (usePlayerColors)
                 s(jp, "name", Client.encodeColorInHTML(p.getDisplayName()));
             else
                 s(jp, "name", Client.stripColor(p.getDisplayName()));
@@ -141,7 +145,9 @@ public class ClientUpdateComponent extends Component {
             for(DynmapPlayer p : hidden) {
                 JSONObject jp = new JSONObject();
                 s(jp, "type", "player");
-                if (usePlayerColors)
+                if (hideNames) 
+                    s(jp, "name", "");
+                else if (usePlayerColors)
                     s(jp, "name", Client.encodeColorInHTML(p.getDisplayName()));
                 else
                     s(jp, "name", Client.stripColor(p.getDisplayName()));
