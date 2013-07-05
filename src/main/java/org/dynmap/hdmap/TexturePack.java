@@ -2414,18 +2414,19 @@ public class TexturePack {
 
         int clrmult = -1;
         int clralpha = 0xFF000000;
+        int custclrmult = -1;
         // If block has custom coloring
         if (hasblockcoloring) {
             Integer idx = (Integer) this.blockColoring.get(blkindex);
             LoadedImage img = imgs[idx];
             if (img.argb != null) {
-                clrmult = mapiter.getSmoothWaterColorMultiplier(img.argb);
+                custclrmult = mapiter.getSmoothWaterColorMultiplier(img.argb);
             }
             else {
                 hasblockcoloring = false;
             }
         }
-        if (!hasblockcoloring) {
+        //if (!hasblockcoloring) {
             // Switch based on texture modifier
             switch(textop) {
                 case COLORMOD_GRASSTONED:
@@ -2506,10 +2507,13 @@ public class TexturePack {
                     }
                     break;
             }
-        }
+        //}
         
         if((clrmult != -1) && (clrmult != 0)) {
             rslt.blendColor(clrmult | clralpha);
+        }
+        if (hasblockcoloring && (custclrmult != -1)) {
+            rslt.blendColor(custclrmult | clralpha);
         }
     }
     
@@ -2732,6 +2736,7 @@ public class TexturePack {
             String v = p.getProperty(pname);
             String fname = pname.substring(PALETTE_BLOCK_KEY.length()).trim(); // Get filename of color map
             if(fname.charAt(0) == '/') fname = fname.substring(1); // Strip leading /
+            if(fname.charAt(0) == '~') fname = "assets/minecraft/mcpatcher" + fname.substring(1);
             processCustomColorMap(fname, v);
         }
     }
