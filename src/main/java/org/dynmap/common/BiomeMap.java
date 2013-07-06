@@ -55,6 +55,8 @@ public class BiomeMap {
         this.watercolormult = waterColorMultiplier;
         this.grassmult = grassmult;
         this.foliagemult = foliagemult;
+        // Handle null biome
+        if (id == null) { id = "biome_" + idx; }
         id = id.toUpperCase().replace(' ', '_');
         if(isUniqueID(id) == false) {
             id = id + "_" + idx;
