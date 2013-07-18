@@ -1,5 +1,7 @@
 package org.dynmap.hdmap;
 
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
@@ -28,6 +30,7 @@ import org.dynmap.common.BiomeMap;
 import org.dynmap.renderer.CustomColorMultiplier;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.DynIntHashMap;
+import org.dynmap.utils.DynmapBufferedImage;
 import org.dynmap.utils.ForgeConfigFile;
 import org.dynmap.utils.MapIterator;
 
@@ -1255,126 +1258,22 @@ public class TexturePack {
         makeAlphaPure(tp.terrain_argb[TILEINDEX_GRASSMASK]); /* Grass side mask */
     }
     public static void scaleTerrainPNGSubImage(int srcscale, int destscale, int[] src_argb, int[] dest_argb) {
-        int nativeres = srcscale;
-        int res = destscale;
-        Color c = new Color();
         /* Same size, so just copy */
-        if(res == nativeres) {
+        if(srcscale == destscale) {
             System.arraycopy(src_argb, 0, dest_argb, 0, dest_argb.length);
         }
-        /* If we're scaling larger source pixels into smaller pixels, each destination pixel
-         * receives input from 1 or 2 source pixels on each axis
-         */
-        else if(res > nativeres) {
-            int weights[] = new int[res];
-            int offsets[] = new int[res];
-            /* LCM of resolutions is used as length of line (res * nativeres)
-             * Each native block is (res) long, each scaled block is (nativeres) long
-             * Each scaled block overlaps 1 or 2 native blocks: starting with native block 'offsets[]' with
-             * 'weights[]' of its (res) width in the first, and the rest in the second
-             */
-            for(int v = 0, idx = 0; v < res*nativeres; v += nativeres, idx++) {
-                offsets[idx] = (v/res); /* Get index of the first native block we draw from */
-                if((v+nativeres-1)/res == offsets[idx]) {   /* If scaled block ends in same native block */
-                    weights[idx] = nativeres;
-                }
-                else {  /* Else, see how much is in first one */
-                    weights[idx] = (offsets[idx]*res + res) - v;
-                }
-            }
-            /* Now, use weights and indices to fill in scaled map */
-            for(int y = 0; y < res; y++) {
-                int ind_y = offsets[y];
-                int wgt_y = weights[y];
-                for(int x = 0; x < res; x++) {
-                    int ind_x = offsets[x];
-                    int wgt_x = weights[x];
-                    double accum_red = 0;
-                    double accum_green = 0;
-                    double accum_blue = 0;
-                    double accum_alpha = 0;
-                    for(int xx = 0; xx < 2; xx++) {
-                        int wx = (xx==0)?wgt_x:(nativeres-wgt_x);
-                        if(wx == 0) continue;
-                        for(int yy = 0; yy < 2; yy++) {
-                            int wy = (yy==0)?wgt_y:(nativeres-wgt_y);
-                            if(wy == 0) continue;
-                            /* Accumulate */
-                            c.setARGB(src_argb[(ind_y+yy)*nativeres + ind_x + xx]);
-                            int w = wx * wy;
-                            double a = (double)w * (double)c.getAlpha();
-                            accum_red += c.getRed() * a;
-                            accum_green += c.getGreen() * a;
-                            accum_blue += c.getBlue() * a;
-                            accum_alpha += a;
-                        }
-                    }
-                    double newalpha = accum_alpha;
-                    if(newalpha == 0.0) newalpha = 1.0;
-                    /* Generate weighted compnents into color */
-                    c.setRGBA((int)(accum_red / newalpha), (int)(accum_green / newalpha), 
-                              (int)(accum_blue / newalpha), (int)(accum_alpha / (nativeres*nativeres)));
-                    dest_argb[(y*res) + x] = c.getARGB();
-                }
-            }
-        }
-        else {  /* nativeres > res */
-            int weights[] = new int[nativeres];
-            int offsets[] = new int[nativeres];
-            /* LCM of resolutions is used as length of line (res * nativeres)
-             * Each native block is (res) long, each scaled block is (nativeres) long
-             * Each native block overlaps 1 or 2 scaled blocks: starting with scaled block 'offsets[]' with
-             * 'weights[]' of its (res) width in the first, and the rest in the second
-             */
-            for(int v = 0, idx = 0; v < res*nativeres; v += res, idx++) {
-                offsets[idx] = (v/nativeres); /* Get index of the first scaled block we draw to */
-                if((v+res-1)/nativeres == offsets[idx]) {   /* If native block ends in same scaled block */
-                    weights[idx] = res;
-                }
-                else {  /* Else, see how much is in first one */
-                    weights[idx] = (offsets[idx]*nativeres + nativeres) - v;
-                }
-            }
-            double accum_red[] = new double[res*res];
-            double accum_green[] = new double[res*res];
-            double accum_blue[] = new double[res*res];
-            double accum_alpha[] = new double[res*res];
-            
-            /* Now, use weights and indices to fill in scaled map */
-            for(int y = 0; y < nativeres; y++) {
-                int ind_y = offsets[y];
-                int wgt_y = weights[y];
-                for(int x = 0; x < nativeres; x++) {
-                    int ind_x = offsets[x];
-                    int wgt_x = weights[x];
-                    c.setARGB(src_argb[(y*nativeres) + x]);
-                    for(int xx = 0; xx < 2; xx++) {
-                        int wx = (xx==0)?wgt_x:(res-wgt_x);
-                        if(wx == 0) continue;
-                        for(int yy = 0; yy < 2; yy++) {
-                            int wy = (yy==0)?wgt_y:(res-wgt_y);
-                            if(wy == 0) continue;
-                            double w = wx * wy;
-                            double a = w * c.getAlpha();
-                            accum_red[(ind_y+yy)*res + (ind_x+xx)] += c.getRed() * a;
-                            accum_green[(ind_y+yy)*res + (ind_x+xx)] += c.getGreen() * a;
-                            accum_blue[(ind_y+yy)*res + (ind_x+xx)] += c.getBlue() * a;
-                            accum_alpha[(ind_y+yy)*res + (ind_x+xx)] += a;
-                        }
-                    }
-                }
-            }
-            /* Produce normalized scaled values */
-            for(int y = 0; y < res; y++) {
-                for(int x = 0; x < res; x++) {
-                    int off = (y*res) + x;
-                    double aa = accum_alpha[off];
-                    if(aa == 0.0) aa = 1.0;
-                    c.setRGBA((int)(accum_red[off]/aa), (int)(accum_green[off]/aa),
-                          (int)(accum_blue[off]/aa), (int)(accum_alpha[off] / (nativeres*nativeres)));
-                    dest_argb[y*res + x] = c.getARGB();
-                }
-            }
+        else {
+            DynmapBufferedImage bisrc = DynmapBufferedImage.allocateBufferedImage(srcscale, srcscale);
+            System.arraycopy(src_argb, 0, bisrc.argb_buf, 0, srcscale*srcscale);
+            DynmapBufferedImage bidest = DynmapBufferedImage.allocateBufferedImage(destscale, destscale);
+            Graphics2D resultGraphics = bidest.buf_img.createGraphics();
+            // Scale the image to the new buffer using the specified rendering hint.
+            resultGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            resultGraphics.drawImage(bisrc.buf_img, 0, 0, destscale, destscale, null);
+            resultGraphics.dispose();
+            System.arraycopy(bidest.argb_buf, 0, dest_argb, 0, destscale*destscale);
+            DynmapBufferedImage.freeBufferedImage(bisrc);
+            DynmapBufferedImage.freeBufferedImage(bidest);
         }
     }
     private static void addFiles(List<String> tsfiles, List<String> txfiles, File dir, String path) {
