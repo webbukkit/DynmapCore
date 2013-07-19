@@ -57,6 +57,7 @@ public class UpdateQueue {
             doAgeOut(now);  /* Consider age out */
             UpdateRec r = new UpdateRec();
             r.u = obj;
+            r.u.timestamp = now; // Use our timestamp: makes sure order is preserved
             UpdateRec oldr = updateSet.remove(r);   /* Try to remove redundant event */
             if(oldr != null) {  /* If found, remove from ordered list too */
                 if(oldr.next == oldr) { /* Only one? */
