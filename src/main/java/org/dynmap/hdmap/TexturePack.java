@@ -1268,7 +1268,7 @@ public class TexturePack {
             DynmapBufferedImage bidest = DynmapBufferedImage.allocateBufferedImage(destscale, destscale);
             Graphics2D resultGraphics = bidest.buf_img.createGraphics();
             // Scale the image to the new buffer using the specified rendering hint.
-            resultGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+            resultGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
             resultGraphics.drawImage(bisrc.buf_img, 0, 0, destscale, destscale, null);
             resultGraphics.dispose();
             System.arraycopy(bidest.argb_buf, 0, dest_argb, 0, destscale*destscale);
