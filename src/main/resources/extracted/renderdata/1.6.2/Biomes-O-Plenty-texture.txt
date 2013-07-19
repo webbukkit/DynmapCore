@@ -1,9 +1,7 @@
 # Biomes O Plenty Block mapping
-version:1.5.2-1.6.1
+version:1.6.2-
 modname:BiomesOPlenty
 
-var:biome_ids/Promised_Land_ID=0,biome_ids/Majestic_Meadow_(Promised_Land)_ID=0,biome_ids/Wonderous_Woods_(Promised_Land)_ID=0,biome_ids/Blessed_Bog_(Promised_Land)_ID=0
-var:terrain_block_ids/Holy_Stone_ID=0,terrain_block_ids/Skystone_ID=0,biome_ids/Drylands_ID=0,biome_ids/Snowy_Woods_ID=0,biome_ids/Swampwoods_ID=0
 # configuration file
 cfgfile:config/BiomesOPlenty.cfg
 
@@ -176,8 +174,6 @@ biome:id=biome_ids/Dead_Swamp_ID,grassColorMult=166704C,foliageColorMult=166704C
 biome:id=biome_ids/Deadlands_ID,waterColorMult=1FF0000
 #  Deciduous Forest
 biome:id=biome_ids/Deciduous_Forest_ID,grassColorMult=1C1B749,foliageColorMult=1C4C93A
-#  Drylands
-biome:id=biome_ids/Drylands_ID,grassColorMult=1CC8A6C,foliageColorMult=1CC956C
 #  Fen
 biome:id=biome_ids/Fen_ID,grassColorMult=1BAC481,foliageColorMult=1CEB979
 #  Field
@@ -214,8 +210,6 @@ biome:id=biome_ids/Orchard_ID,grassColorMult=1D5FF6D,foliageColorMult=1D5FF6D
 biome:id=biome_ids/Origin_Valley_ID,grassColorMult=1A2FF5F,foliageColorMult=13AFF00
 #  Pasture
 biome:id=biome_ids/Pasture_ID,grassColorMult=1E8D740,foliageColorMult=1C8E84A
-#  Promised Land
-biome:id=biome_ids/Promised_Land_ID,foliageColorMult=145EFA3
 #  Quagmire
 biome:id=biome_ids/Quagmire_ID,grassColorMult=19E8B69,foliageColorMult=19E8B69,waterColorMult=CC5100
 #  Rainforest
@@ -226,12 +220,8 @@ biome:id=biome_ids/Sacred_Springs_ID,grassColorMult=100995B,foliageColorMult=100
 biome:id=biome_ids/Seasonal_Forest_ID,grassColorMult=1BEC44C,foliageColorMult=1B3C442
 #  Shield
 biome:id=biome_ids/Shield_ID,grassColorMult=1647F38,foliageColorMult=1789643
-#  Snowy Woods
-biome:id=biome_ids/Snowy_Woods_ID,grassColorMult=1AA8A4E,foliageColorMult=1B5A353
 #  Steppe
 biome:id=biome_ids/Steppe_ID,grassColorMult=1CCAB5F,foliageColorMult=1CCAB5F
-#  Swampwoods
-biome:id=biome_ids/Swampwoods_ID,grassColorMult=1195639,foliageColorMult=123774F
 #  Swampland (New)
 biome:id=biome_ids/Swampland_(New)_ID,grassColorMult=4E0E4E,foliageColorMult=4E0E4E,waterColorMult=E0FF70
 #  Temperate Rainforest
@@ -264,43 +254,33 @@ block:id=Tree_Moss_ID,patch0-4=2000:treemoss,transparency=TRANSPARENT
 #  "Willow ID"
 block:id=Willow_ID,patch0-4=2000:willow,transparency=TRANSPARENT
 
-# "terrain block ids"
+# "terrain block ids - must be below 255"
 #  "Ash Block ID"
-block:id=terrain_block_ids/Ash_Block_ID,data=*,allfaces=0:ashblock,stdrot=true
+block:id=terrain_block_ids_-_must_be_below_255/Ash_Block_ID,data=*,allfaces=0:ashblock,stdrot=true
 #  "Ash Stone ID"
-block:id=terrain_block_ids/Ash_Stone_ID,data=*,allfaces=0:ashstone,stdrot=true
+block:id=terrain_block_ids_-_must_be_below_255/Ash_Stone_ID,data=*,allfaces=0:ashstone,stdrot=true
 #  "Crag Rock ID"
-block:id=terrain_block_ids/Crag_Rock_ID,data=*,allfaces=0:cragrock,stdrot=true
+block:id=terrain_block_ids_-_must_be_below_255/Crag_Rock_ID,data=*,allfaces=0:cragrock,stdrot=true
 #  "Dried Dirt ID"
-block:id=terrain_block_ids/Dried_Dirt_ID,data=*,allfaces=0:drieddirt,stdrot=true
+block:id=terrain_block_ids_-_must_be_below_255/Dried_Dirt_ID,data=*,allfaces=0:drieddirt,stdrot=true
 #  "Hard Dirt ID"
-block:id=terrain_block_ids/Hard_Dirt_ID,data=*,allfaces=0:harddirt,stdrot=true
+block:id=terrain_block_ids_-_must_be_below_255/Hard_Dirt_ID,data=*,allfaces=0:harddirt,stdrot=true
 #  "Hard Ice ID"
-block:id=terrain_block_ids/Hard_Ice_ID,data=*,allfaces=0:hardice,stdrot=true
+block:id=terrain_block_ids_-_must_be_below_255/Hard_Ice_ID,data=*,allfaces=0:hardice,stdrot=true
 #  "Hard Sand ID"
-block:id=terrain_block_ids/Hard_Sand_ID,data=*,allfaces=0:hardsand,stdrot=true
+block:id=terrain_block_ids_-_must_be_below_255/Hard_Sand_ID,data=*,allfaces=0:hardsand,stdrot=true
 #  "Holy Grass ID"
-block:id=terrain_block_ids/Holy_Grass_ID,data=0,allsides=0:holygrass_side,top=1000:holygrass_top,bottom=0:holystone,stdrot=true
-#  "Smoldering Grass ID"
-block:id=terrain_block_ids/Holy_Grass_ID,data=1,allsides=0:smolderinggrass_side,top=1000:smolderinggrass_top,bottom=0:smolderinggrass_bottom,stdrot=true
-#  "Holy Stone ID"
-block:id=terrain_block_ids/Holy_Stone_ID,data=*,allfaces=0:holystone,stdrot=true
+block:id=terrain_block_ids_-_must_be_below_255/Holy_Grass_ID,data=0,allsides=0:holygrass_side,top=1000:holygrass_top,bottom=0:holystone,stdrot=true
 #  "Mud ID"
-block:id=terrain_block_ids/Mud_ID,data=0,allfaces=0:mud,stdrot=true
-#  "Quicksand ID"
-block:id=terrain_block_ids/Mud_ID,data=1,allfaces=0:quicksand,stdrot=true
+block:id=terrain_block_ids_-_must_be_below_255/Mud_ID,data=0,allfaces=0:mud,stdrot=true
 #  "Origin Grass ID"
-block:id=terrain_block_ids/Origin_Grass_ID,data=*,allsides=11000:origingrass2,top=0:origingrass1,bottom=0:origingrass3,stdrot=true
+block:id=terrain_block_ids_-_must_be_below_255/Origin_Grass_ID,data=*,allsides=11000:origingrass2,top=0:origingrass1,bottom=0:origingrass3,stdrot=true
 #  "Red Rock ID"
-block:id=terrain_block_ids/Red_Rock_ID,data=0,allfaces=0:redrock,stdrot=true
-#  "Red Cobblestone ID"
-block:id=terrain_block_ids/Red_Rock_ID,data=1,allfaces=0:redcobble,stdrot=true
-#  "Red Rock Bricks ID"
-block:id=terrain_block_ids/Red_Rock_ID,data=2,allfaces=0:redbrick,stdrot=true
+block:id=terrain_block_ids_-_must_be_below_255/Red_Rock_ID,data=0,allfaces=0:redrock,stdrot=true
 #  "Skystone ID"
-block:id=terrain_block_ids/Skystone_ID,data=0,allfaces=0:holystone,stdrot=true
-block:id=terrain_block_ids/Skystone_ID,data=1,allfaces=0:holycobble,stdrot=true
-block:id=terrain_block_ids/Skystone_ID,data=2,allfaces=0:holybrick,stdrot=true
+block:id=terrain_block_ids_-_must_be_below_255/Skystone_ID,data=0,allfaces=0:holystone,stdrot=true
+block:id=terrain_block_ids_-_must_be_below_255/Skystone_ID,data=1,allfaces=0:holycobble,stdrot=true
+block:id=terrain_block_ids_-_must_be_below_255/Skystone_ID,data=2,allfaces=0:holybrick,stdrot=true
 
 # Flowers
 block:id=Flower_ID,data=0,patch0=0:clover,transparency=TRANSPARENT
