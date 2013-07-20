@@ -413,7 +413,7 @@ block:id=59,data=5,patch0=93,patch1=93,patch2=93,patch3=93,transparency=TRANSPAR
 # Crops (size 7)
 block:id=59,data=6,patch0=94,patch1=94,patch2=94,patch3=94,transparency=TRANSPARENT
 # Crops (size 8)
-block:id=59,data=7,patch0=95,patch1=95,patch2=95,patch3=95,transparency=TRANSPARENT
+block:id=59,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,patch0=95,patch1=95,patch2=95,patch3=95,transparency=TRANSPARENT
 # Farmland (dry)
 block:id=60,data=0,top=87,allsides=2,bottom=2,stdrot=true
 # Farmland (wet)
