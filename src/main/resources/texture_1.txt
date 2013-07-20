@@ -634,21 +634,21 @@ block:id=57,allfaces=0:diamond_block,stdrot=true
 # Crafting table
 block:id=58,topbottom=0:crafting_table_top,east=0:crafting_table_front,west=0:crafting_table_front,north=0:crafting_table_side,south=0:crafting_table_side,stdrot=true
 # Crops (size 1)
-block:id=59,data=0,patch0-3=0:wheat_stage_0,transparency=TRANSPARENT
+block:id=59,data=0,data=8,patch0-3=0:wheat_stage_0,transparency=TRANSPARENT
 # Crops (size 2)
-block:id=59,data=1,patch0-3=0:wheat_stage_1,transparency=TRANSPARENT
+block:id=59,data=1,data=9,patch0-3=0:wheat_stage_1,transparency=TRANSPARENT
 # Crops (size 3)
-block:id=59,data=2,patch0-3=0:wheat_stage_2,transparency=TRANSPARENT
+block:id=59,data=2,data=10,patch0-3=0:wheat_stage_2,transparency=TRANSPARENT
 # Crops (size 4)
-block:id=59,data=3,patch0-3=0:wheat_stage_3,transparency=TRANSPARENT
+block:id=59,data=3,data=11,patch0-3=0:wheat_stage_3,transparency=TRANSPARENT
 # Crops (size 5)
-block:id=59,data=4,patch0-3=0:wheat_stage_4,transparency=TRANSPARENT
+block:id=59,data=4,data=12,patch0-3=0:wheat_stage_4,transparency=TRANSPARENT
 # Crops (size 6)
-block:id=59,data=5,patch0-3=0:wheat_stage_5,transparency=TRANSPARENT
+block:id=59,data=5,data=13,patch0-3=0:wheat_stage_5,transparency=TRANSPARENT
 # Crops (size 7)
-block:id=59,data=6,patch0-3=0:wheat_stage_6,transparency=TRANSPARENT
+block:id=59,data=6,data=14,patch0-3=0:wheat_stage_6,transparency=TRANSPARENT
 # Crops (size 8)
-block:id=59,data=7,patch0-3=0:wheat_stage_7,transparency=TRANSPARENT
+block:id=59,data=7,data=15,patch0-3=0:wheat_stage_7,transparency=TRANSPARENT
 # Farmland (dry)
 block:id=60,data=0,top=0:farmland_dry,allsides=0:dirt,bottom=0:dirt,stdrot=true
 # Farmland (wet)
