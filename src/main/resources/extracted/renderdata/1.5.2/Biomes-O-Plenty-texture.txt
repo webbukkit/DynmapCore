@@ -8,6 +8,7 @@ var:terrain_block_ids/Holy_Stone_ID=0,terrain_block_ids/Skystone_ID=0,biome_ids/
 cfgfile:config/BiomesOPlenty.cfg
 
 # Files
+texturepath:assets/biomesoplenty/textures/blocks/
 texture:id=algae
 texture:id=amethystblock
 texture:id=amethystore
@@ -151,7 +152,6 @@ texture:id=tulip
 texture:id=violet
 texture:id=wildflower
 texture:id=willow
-texture:id=yucca
 
 # Biomes
 #  Bamboo Forest
@@ -315,7 +315,6 @@ block:id=Flower_ID,data=8,patch0-1=0:violet,transparency=TRANSPARENT
 block:id=Flower_ID,data=9,patch0-1=0:anemone,transparency=TRANSPARENT
 block:id=Flower_ID,data=10,patch0-1=0:toadstool,transparency=TRANSPARENT
 block:id=Flower_ID,data=11,patch0-1=0:cactus,transparency=TRANSPARENT
-block:id=Flower_ID,data=12,patch0-1=0:yucca,transparency=TRANSPARENT
 
 # Foliage
 block:id=Foliage_ID,data=0,patch0=15000:algae,transparency=TRANSPARENT
