@@ -8,15 +8,19 @@ cfgfile:config/BiomesOPlenty.cfg
 # Files
 texturepath:assets/biomesoplenty/textures/blocks/
 texture:id=algae
+texture:id=aloe
 texture:id=amethystblock
 texture:id=amethystore
 texture:id=anemone
+texture:id=apatiteore
+texture:id=apatiteblock
 texture:id=ashblock
 texture:id=ashblock
 texture:id=ashstone
 texture:id=bamboo
 texture:id=bamboothatching
 texture:id=barley
+texture:id=berrybush
 texture:id=bigflowerred
 texture:id=bigflowerstem_heart
 texture:id=bigflowerstem_side
@@ -29,6 +33,7 @@ texture:id=cattailtop
 texture:id=clover
 texture:id=cragrock
 texture:id=daisy
+texture:id=dandelion
 texture:id=deadbloom
 texture:id=deadgrass
 texture:id=desertgrass
@@ -41,6 +46,9 @@ texture:id=hardice
 texture:id=hardsand
 texture:id=highgrassbottom
 texture:id=highgrasstop
+texture:id=holybrick
+texture:id=holycobble
+texture:id=holydirt
 texture:id=holygrass_side
 texture:id=holygrass_top
 texture:id=holystone
@@ -63,13 +71,16 @@ texture:id=leaves_bamboo_fancy
 texture:id=leaves_dark_fancy
 texture:id=leaves_dead_fancy
 texture:id=leaves_fir_fancy
+texture:id=leaves_hellbark_fancy
 texture:id=leaves_holy_fancy
+texture:id=leaves_jacaranda_fancy
 texture:id=leaves_magic_fancy
 texture:id=leaves_mangrove_fancy
 texture:id=leaves_maple_fancy
 texture:id=leaves_orangeautumn_fancy
 texture:id=leaves_origin_fancy
 texture:id=leaves_palm_fancy
+texture:id=leaves_pine_fancy
 texture:id=leaves_pinkcherry_fancy
 texture:id=leaves_redwood_fancy
 texture:id=leaves_whitecherry_fancy
@@ -85,14 +96,20 @@ texture:id=log_dead_heart
 texture:id=log_dead_side
 texture:id=log_fir_heart
 texture:id=log_fir_side
+texture:id=log_hellbark_heart
+texture:id=log_hellbark_side
 texture:id=log_holy_heart
 texture:id=log_holy_side
+texture:id=log_jacaranda_heart
+texture:id=log_jacaranda_side
 texture:id=log_magic_heart
 texture:id=log_magic_side
 texture:id=log_mangrove_heart
 texture:id=log_mangrove_side
 texture:id=log_palm_heart
 texture:id=log_palm_side
+texture:id=log_pine_heart
+texture:id=log_pine_side
 texture:id=log_redwood_heart
 texture:id=log_redwood_side
 texture:id=log_willow_heart
@@ -104,21 +121,29 @@ texture:id=mudbrick
 texture:id=origingrass1
 texture:id=origingrass2
 texture:id=origingrass3
+texture:id=peridotore
+texture:id=peridotblock
 texture:id=plank_acacia
 texture:id=plank_cherry
 texture:id=plank_dark
 texture:id=plank_fir
+texture:id=plank_hell_bark
 texture:id=plank_holy
+texture:id=plank_jacaranda
 texture:id=plank_magic
 texture:id=plank_mangrove
 texture:id=plank_palm
+texture:id=plank_pine
 texture:id=plank_redwood
 texture:id=plank_willow
+texture:id=poisonivy
 texture:id=portal
 texture:id=quicksand
 texture:id=redbrick
 texture:id=redcobble
 texture:id=redrock
+texture:id=rubyore
+texture:id=rubyblock
 texture:id=sapling_acacia
 texture:id=sapling_apple
 texture:id=sapling_bamboo
@@ -132,22 +157,32 @@ texture:id=sapling_maple
 texture:id=sapling_orangeautumn
 texture:id=sapling_origin
 texture:id=sapling_palm
+texture:id=sapling_pine
 texture:id=sapling_pinkcherry
 texture:id=sapling_redwood
 texture:id=sapling_whitecherry
 texture:id=sapling_willow
 texture:id=sapling_yellowautumn
+texture:id=sapphireore
+texture:id=sapphireblock
 texture:id=shortgrass
 texture:id=smolderinggrass_bottom
 texture:id=smolderinggrass_side
 texture:id=smolderinggrass_top
 texture:id=sprout
+texture:id=sunflowerbottom
+texture:id=sunflowertop
 texture:id=swampflower
+texture:id=tanzaniteore
+texture:id=tanzaniteblock
 texture:id=thorn
 texture:id=toadstool
+texture:id=topazore
+texture:id=topazblock
 texture:id=treemoss
 texture:id=tulip
 texture:id=violet
+texture:id=wildcarrot
 texture:id=wildflower
 texture:id=willow
 
@@ -241,6 +276,19 @@ biome:id=biome_ids/Wonderous_Woods_(Promised_Land)_ID,foliageColorMult=178ED85
 
 #  "Amethyst Ore ID"
 block:id=Amethyst_Ore_ID,data=0,allfaces=0:amethystore,stdrot=true
+block:id=Amethyst_Ore_ID,data=1,allfaces=0:amethystblock,stdrot=true
+block:id=Amethyst_Ore_ID,data=2,allfaces=0:rubyore,stdrot=true
+block:id=Amethyst_Ore_ID,data=3,allfaces=0:rubyblock,stdrot=true
+block:id=Amethyst_Ore_ID,data=4,allfaces=0:peridotore,stdrot=true
+block:id=Amethyst_Ore_ID,data=5,allfaces=0:peridotblock,stdrot=true
+block:id=Amethyst_Ore_ID,data=6,allfaces=0:topazore,stdrot=true
+block:id=Amethyst_Ore_ID,data=7,allfaces=0:topazblock,stdrot=true
+block:id=Amethyst_Ore_ID,data=8,allfaces=0:tanzaniteore,stdrot=true
+block:id=Amethyst_Ore_ID,data=9,allfaces=0:tanzaniteblock,stdrot=true
+block:id=Amethyst_Ore_ID,data=10,allfaces=0:apatiteore,stdrot=true
+block:id=Amethyst_Ore_ID,data=11,allfaces=0:apatiteblock,stdrot=true
+block:id=Amethyst_Ore_ID,data=12,allfaces=0:sapphireore,stdrot=true
+block:id=Amethyst_Ore_ID,data=13,allfaces=0:sapphireblock,stdrot=true
 #  "Bamboo ID"
 block:id=Bamboo_ID,data=*,patch0-1=0:bamboo,transparency=TRANSPARENT
 #  "Block of Amethyst ID"
@@ -269,8 +317,10 @@ block:id=terrain_block_ids_-_must_be_below_255/Hard_Dirt_ID,data=*,allfaces=0:ha
 block:id=terrain_block_ids_-_must_be_below_255/Hard_Ice_ID,data=*,allfaces=0:hardice,stdrot=true
 #  "Hard Sand ID"
 block:id=terrain_block_ids_-_must_be_below_255/Hard_Sand_ID,data=*,allfaces=0:hardsand,stdrot=true
+#  "Holy Dirt ID"
+block:id=terrain_block_ids_-_must_be_below_255/Holy_Dirt_ID,data=0,allfaces=0:holydirt,stdrot=true
 #  "Holy Grass ID"
-block:id=terrain_block_ids_-_must_be_below_255/Holy_Grass_ID,data=0,allsides=0:holygrass_side,top=1000:holygrass_top,bottom=0:holystone,stdrot=true
+block:id=terrain_block_ids_-_must_be_below_255/Holy_Grass_ID,data=0,allsides=0:holygrass_side,top=1000:holygrass_top,bottom=0:holydirt,stdrot=true
 #  "Mud ID"
 block:id=terrain_block_ids_-_must_be_below_255/Mud_ID,data=0,allfaces=0:mud,stdrot=true
 #  "Origin Grass ID"
@@ -295,6 +345,10 @@ block:id=Flower_ID,data=8,patch0-1=0:violet,transparency=TRANSPARENT
 block:id=Flower_ID,data=9,patch0-1=0:anemone,transparency=TRANSPARENT
 block:id=Flower_ID,data=10,patch0-1=0:toadstool,transparency=TRANSPARENT
 block:id=Flower_ID,data=11,patch0-1=0:cactus,transparency=TRANSPARENT
+block:id=Flower_ID,data=12,patch0-1=0:aloe,transparency=TRANSPARENT
+block:id=Flower_ID,data=13,patch0-1=0:sunflowerbottom,transparency=TRANSPARENT
+block:id=Flower_ID,data=14,patch0-1=0:sunflowertop,transparency=TRANSPARENT
+block:id=Flower_ID,data=15,patch0-1=0:dandelion,transparency=TRANSPARENT
 
 # Foliage
 block:id=Foliage_ID,data=0,patch0=15000:algae,transparency=TRANSPARENT
@@ -304,6 +358,8 @@ block:id=Foliage_ID,data=3,patch0-1=1000:highgrassbottom,transparency=TRANSPAREN
 block:id=Foliage_ID,data=4,patch0-1=1000:bush,transparency=TRANSPARENT
 block:id=Foliage_ID,data=5,patch0-1=1000:sprout,transparency=TRANSPARENT
 block:id=Foliage_ID,data=6,patch0-1=1000:highgrasstop,transparency=TRANSPARENT
+block:id=Foliage_ID,data=7,patch0-1=1000:poisonivy,transparency=TRANSPARENT
+block:id=Foliage_ID,data=8,patch0-1=1000:berrybush,transparency=TRANSPARENT
 
 # Fruit Leaf
 block:id=Fruit_Leaf_Block_ID,data=0,data=4,data=8,data=12,allfaces=0:leaves_apple0_fancy
@@ -324,6 +380,8 @@ block:id=Leaf_Block_ID_2,data=0,data=8,allfaces=0:leaves_origin_fancy,stdrot=tru
 block:id=Leaf_Block_ID_2,data=1,data=9,allfaces=0:leaves_pinkcherry_fancy,stdrot=true
 block:id=Leaf_Block_ID_2,data=2,data=10,allfaces=0:leaves_maple_fancy,stdrot=true
 block:id=Leaf_Block_ID_2,data=3,data=11,allfaces=0:leaves_whitecherry_fancy,stdrot=true
+block:id=Leaf_Block_ID_2,data=4,data=12,allfaces=0:leaves_hellbark_fancy,stdrot=true
+block:id=Leaf_Block_ID_2,data=5,data=13,allfaces=0:leaves_jacaranda_fancy,stdrot=true
 
 # Log Blocks
 block:id=Log_Block_ID_1,data=0,allsides=0:log_acacia_side,topbottom=0:log_acacia_heart,stdrot=true
@@ -377,6 +435,19 @@ block:id=Log_Block_ID_3,data=7,north=0:bigflowerstem_heart,south=0:bigflowerstem
 block:id=Log_Block_ID_3,data=11,north=4000:bigflowerstem_side,south=4000:bigflowerstem_side,east=0:bigflowerstem_heart,west=0:bigflowerstem_heart,top=4000:bigflowerstem_side,bottom=4000:bigflowerstem_side
 block:id=Log_Block_ID_3,data=15,allfaces=0:bigflowerstem_side,stdrot=true
 
+block:id=Log_Block_ID_4,data=0,allsides=0:log_pine_side,topbottom=0:log_pine_heart,stdrot=true
+block:id=Log_Block_ID_4,data=4,north=0:log_pine_heart,south=0:log_pine_heart,east=4000:log_pine_side,west=4000:log_pine_side,top=0:log_pine_side,bottom=0:log_pine_side
+block:id=Log_Block_ID_4,data=8,north=4000:log_pine_side,south=4000:log_pine_side,east=0:log_pine_heart,west=0:log_pine_heart,top=4000:log_pine_side,bottom=4000:log_pine_side
+block:id=Log_Block_ID_4,data=12,allfaces=0:log_pine_side,stdrot=true
+block:id=Log_Block_ID_4,data=1,allsides=0:log_hellbark_side,topbottom=0:log_hellbark_heart,stdrot=true
+block:id=Log_Block_ID_4,data=5,north=0:log_hellbark_heart,south=0:log_hellbark_heart,east=4000:log_hellbark_side,west=4000:log_hellbark_side,top=0:log_hellbark_side,bottom=0:log_hellbark_side
+block:id=Log_Block_ID_4,data=9,north=4000:log_hellbark_side,south=4000:log_hellbark_side,east=0:log_hellbark_heart,west=0:log_hellbark_heart,top=4000:log_hellbark_side,bottom=4000:log_hellbark_side
+block:id=Log_Block_ID_4,data=13,allfaces=0:log_hellbark_side,stdrot=true
+block:id=Log_Block_ID_4,data=2,allsides=0:log_jacaranda_side,topbottom=0:log_jacaranda_heart,stdrot=true
+block:id=Log_Block_ID_4,data=6,north=0:log_jacaranda_heart,south=0:log_jacaranda_heart,east=4000:log_jacaranda_side,west=4000:log_jacaranda_side,top=0:log_jacaranda_side,bottom=0:log_jacaranda_side
+block:id=Log_Block_ID_4,data=10,north=4000:log_jacaranda_side,south=4000:log_jacaranda_side,east=0:log_jacaranda_heart,west=0:log_jacaranda_heart,top=4000:log_jacaranda_side,bottom=4000:log_jacaranda_side
+block:id=Log_Block_ID_4,data=14,allfaces=0:log_jacaranda_side,stdrot=true
+
 # Plant
 block:id=Plant_ID,data=0,patch0-1=0:deadgrass,transparency=TRANSPARENT
 block:id=Plant_ID,data=1,patch0-1=0:desertgrass,transparency=TRANSPARENT
@@ -388,6 +459,7 @@ block:id=Plant_ID,data=6,patch0-3=0:barley,transparency=TRANSPARENT
 block:id=Plant_ID,data=7,patch0-3=0:cattail,transparency=TRANSPARENT
 block:id=Plant_ID,data=8,patch0-3=0:cattailtop,transparency=TRANSPARENT
 block:id=Plant_ID,data=9,patch0-3=0:cattailbottom,transparency=TRANSPARENT
+block:id=Plant_ID,data=10,patch0-3=0:wildcarrot,transparency=TRANSPARENT
 
 # Planks
 block:id=Planks_ID,data=0,allfaces=0:plank_acacia,stdrot=true
@@ -401,6 +473,9 @@ block:id=Planks_ID,data=7,allfaces=0:plank_palm,stdrot=true
 block:id=Planks_ID,data=8,allfaces=0:plank_redwood,stdrot=true
 block:id=Planks_ID,data=9,allfaces=0:plank_willow,stdrot=true
 block:id=Planks_ID,data=10,allfaces=0:bamboothatching,stdrot=true
+block:id=Planks_ID,data=11,allfaces=0:plank_pine,stdrot=true
+block:id=Planks_ID,data=12,allfaces=0:plank_hell_bark,stdrot=true
+block:id=Planks_ID,data=13,allfaces=0:plank_jacaranda,stdrot=true
 
 # Petals
 block:id=Petal_ID,data=0,allfaces=0:bigflowerred,stdrot=true
@@ -412,6 +487,7 @@ block:id=Colourized_Sapling_ID,data=1,data=9,patch0-1=2000:sapling_mangrove,tran
 block:id=Colourized_Sapling_ID,data=2,data=10,patch0-1=2000:sapling_palm,transparency=TRANSPARENT
 block:id=Colourized_Sapling_ID,data=3,patch0-1=2000:sapling_redwood,transparency=TRANSPARENT
 block:id=Colourized_Sapling_ID,data=4,patch0-1=2000:sapling_willow,transparency=TRANSPARENT
+block:id=Colourized_Sapling_ID,data=5,patch0-1=2000:sapling_pine,transparency=TRANSPARENT
 
 # Saplings
 block:id=Sapling_ID,data=0,patch0-1=0:sapling_apple,transparency=TRANSPARENT
@@ -434,6 +510,7 @@ block:id=Colourized_Leaves_ID,data=1,data=9,allfaces=2000:leaves_mangrove_fancy,
 block:id=Colourized_Leaves_ID,data=2,data=10,allfaces=2000:leaves_palm_fancy,stdrot=true
 block:id=Colourized_Leaves_ID,data=3,data=11,allfaces=2000:leaves_redwood_fancy,stdrot=true
 block:id=Colourized_Leaves_ID,data=4,data=12,allfaces=2000:leaves_willow_fancy,stdrot=true
+block:id=Colourized_Leaves_ID,data=5,data=13,allfaces=2000:leaves_pine_fancy,stdrot=true
 
 # Wooden Single Slabs
 block:id=Wooden_Single_Slab_1_ID,data=0,data=8,allfaces=0:plank_acacia,stdrot=true,transparency=SEMITRANSPARENT
@@ -446,6 +523,9 @@ block:id=Wooden_Single_Slab_1_ID,data=6,data=14,allfaces=0:plank_mangrove,stdrot
 block:id=Wooden_Single_Slab_1_ID,data=7,data=15,allfaces=0:plank_palm,stdrot=true,transparency=SEMITRANSPARENT
 block:id=Wooden_Single_Slab_2_ID,data=0,data=8,allfaces=0:plank_redwood,stdrot=true,transparency=SEMITRANSPARENT
 block:id=Wooden_Single_Slab_2_ID,data=1,data=9,allfaces=0:plank_willow,stdrot=true,transparency=SEMITRANSPARENT
+block:id=Wooden_Single_Slab_2_ID,data=2,data=10,allfaces=0:plank_pine,stdrot=true,transparency=SEMITRANSPARENT
+block:id=Wooden_Single_Slab_2_ID,data=3,data=11,allfaces=0:plank_hell_bark,stdrot=true,transparency=SEMITRANSPARENT
+block:id=Wooden_Single_Slab_2_ID,data=4,data=12,allfaces=0:plank_jacaranda,stdrot=true,transparency=SEMITRANSPARENT
 
 # Wooden Double Slabs
 block:id=Wooden_Double_Slab_1_ID,data=0,data=8,allfaces=0:plank_acacia,stdrot=true
@@ -458,28 +538,39 @@ block:id=Wooden_Double_Slab_1_ID,data=6,data=14,allfaces=0:plank_mangrove,stdrot
 block:id=Wooden_Double_Slab_1_ID,data=7,data=15,allfaces=0:plank_palm,stdrot=true
 block:id=Wooden_Double_Slab_2_ID,data=0,data=8,allfaces=0:plank_redwood,stdrot=true
 block:id=Wooden_Double_Slab_2_ID,data=1,data=9,allfaces=0:plank_willow,stdrot=true
+block:id=Wooden_Double_Slab_2_ID,data=2,data=10,allfaces=0:plank_pine,stdrot=true
+block:id=Wooden_Double_Slab_2_ID,data=3,data=11,allfaces=0:plank_hell_bark,stdrot=true
+block:id=Wooden_Double_Slab_2_ID,data=4,data=12,allfaces=0:plank_jacaranda,stdrot=true
 
 # Stairs
 block:id=Acacia_Stairs_ID,data=*,patch0-2=0:plank_acacia,transparency=SEMITRANSPARENT
 block:id=Cherry_Stairs_ID,data=*,patch0-2=0:plank_cherry,transparency=SEMITRANSPARENT
 block:id=Dark_Stairs_ID,data=*,patch0-2=0:plank_dark,transparency=SEMITRANSPARENT
 block:id=Fir_Stairs_ID,data=*,patch0-2=0:plank_fir,transparency=SEMITRANSPARENT
+block:id=Hell_Bark_Stairs_ID,data=*,patch0-2=0:plank_hell_bark,transparency=SEMITRANSPARENT
 block:id=Holy_Stairs_ID,data=*,patch0-2=0:plank_holy,transparency=SEMITRANSPARENT
 block:id=Magic_Stairs_ID,data=*,patch0-2=0:plank_magic,transparency=SEMITRANSPARENT
 block:id=Mangrove_Stairs_ID,data=*,patch0-2=0:plank_mangrove,transparency=SEMITRANSPARENT
 block:id=Mud_Brick_Stairs_ID,data=*,patch0-2=0:mudbrick,transparency=SEMITRANSPARENT
 block:id=Palm_Stairs_ID,data=*,patch0-2=0:plank_palm,transparency=SEMITRANSPARENT
+block:id=Pine_Stairs_ID,data=*,patch0-2=0:plank_pine,transparency=SEMITRANSPARENT
 block:id=Red_Brick_Stairs_ID,data=*,patch0-2=0:redbrick,transparency=SEMITRANSPARENT
 block:id=Red_Cobble_Stairs_ID,data=*,patch0-2=0:redcobble,transparency=SEMITRANSPARENT
 block:id=Redwood_Stairs_ID,data=*,patch0-2=0:plank_redwood,transparency=SEMITRANSPARENT
+block:id=Skystone_Brick_Stairs_ID,data=*,patch0-2=0:holybrick,transparency=SEMITRANSPARENT
+block:id=Skystone_Cobble_Stairs_ID,data=*,patch0-2=0:holycobble,transparency=SEMITRANSPARENT
 block:id=Willow_Stairs_ID,data=*,patch0-2=0:plank_willow,transparency=SEMITRANSPARENT
 
 # Stone Double Slabs
 block:id=Stone_Double_Slab_ID,data=0,data=8,allfaces=0:redcobble,stdrot=true
 block:id=Stone_Double_Slab_ID,data=1,data=9,allfaces=0:redbrick,stdrot=true
 block:id=Stone_Double_Slab_ID,data=2,data=10,allfaces=0:mudbrick,stdrot=true
+block:id=Stone_Double_Slab_ID,data=3,data=11,allfaces=0:holycobble,stdrot=true
+block:id=Stone_Double_Slab_ID,data=4,data=12,allfaces=0:holybrick,stdrot=true
 
 # Stone Single Slabs
 block:id=Stone_Single_Slab_ID,data=0,data=8,allfaces=0:redcobble,stdrot=true,transparency=SEMITRANSPARENT
 block:id=Stone_Single_Slab_ID,data=1,data=9,allfaces=0:redbrick,stdrot=true,transparency=SEMITRANSPARENT
 block:id=Stone_Single_Slab_ID,data=2,data=10,allfaces=0:mudbrick,stdrot=true,transparency=SEMITRANSPARENT
+block:id=Stone_Single_Slab_ID,data=3,data=11,allfaces=0:holycobble,stdrot=true,transparency=SEMITRANSPARENT
+block:id=Stone_Single_Slab_ID,data=4,data=12,allfaces=0:holybrick,stdrot=true,transparency=SEMITRANSPARENT

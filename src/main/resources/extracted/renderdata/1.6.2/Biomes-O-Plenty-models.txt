@@ -30,20 +30,24 @@ layer:0
 layer:1
 **
 **
-#  "Acacia Stairs ID"
-#  "Redwood Stairs ID"
-#  "Willow Stairs ID"
-#  "Fir Stairs ID"
-#  "Cherry Stairs ID"
-#  "Palm Stairs ID"
-#  "Mangrove Stairs ID"
-#  "Dark Stairs ID"
-#  "Holy Stairs ID"
-#  "Magic Stairs ID"
-#  "Mud Brick Stairs ID"
-#  "Red Brick Stairs ID"
-#  "Red Cobble Stairs ID"
-customblock:id=Acacia_Stairs_ID,id=Redwood_Stairs_ID,id=Willow_Stairs_ID,id=Fir_Stairs_ID,id=Cherry_Stairs_ID,id=Palm_Stairs_ID,id=Mangrove_Stairs_ID,id=Dark_Stairs_ID,id=Holy_Stairs_ID,id=Magic_Stairs_ID,id=Mud_Brick_Stairs_ID,id=Red_Brick_Stairs_ID,id=Red_Cobble_Stairs_ID,data=*,class=org.dynmap.hdmap.renderer.StairBlockRenderer
+#    I:"Acacia Stairs ID"=1952
+#    I:"Cherry Stairs ID"=1953
+#    I:"Dark Stairs ID"=1954
+#    I:"Fir Stairs ID"=1955
+#    I:"Hell Bark Stairs ID"=1976
+#    I:"Holy Stairs ID"=1956
+#    I:"Magic Stairs ID"=1957
+#    I:"Mangrove Stairs ID"=1958
+#    I:"Mud Brick Stairs ID"=1929
+#    I:"Palm Stairs ID"=1959
+#    I:"Pine Stairs ID"=1975
+#    I:"Red Brick Stairs ID"=1940
+#    I:"Red Cobble Stairs ID"=1939
+#    I:"Redwood Stairs ID"=1960
+#    I:"Skystone Brick Stairs ID"=1966
+#    I:"Skystone Cobble Stairs ID"=1965
+#    I:"Willow Stairs ID"=1961
+customblock:id=Acacia_Stairs_ID,id=Cherry_Stairs_ID,id=Dark_Stairs_ID,id=Fir_Stairs_ID,id=Hell_Bark_Stairs_ID,id=Holy_Stairs_ID,id=Magic_Stairs_ID,id=Mangrove_Stairs_ID,id=Mud_Brick_Stairs_ID,,id=Palm_Stairs_ID,id=Pine_Stairs_ID,id=Red_Brick_Stairs_ID,id=Red_Cobble_Stairs_ID,id=Redwood_Stairs_ID,id=Skystone_Brick_Stairs_ID,id=Skystone_Cobble_Stairs_ID,id=Willow_Stairs_ID,data=*,class=org.dynmap.hdmap.renderer.StairBlockRenderer
 
 #  "Sapling ID"
 #  "Anenome ID"
