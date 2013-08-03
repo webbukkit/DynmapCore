@@ -2125,5 +2125,9 @@ public class DynmapCore implements DynmapCommonAPI {
     public int getMaxTickUseMS() {
         return perTickLimit;
     }
+    // Notice that server has finished starting (needed for forge, which starts dynmap before full server is running)
+    public void serverStarted() {
+        events.<Object>trigger("server-started", null);
+    }
 }
 

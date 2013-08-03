@@ -202,6 +202,15 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                 writeAccess();
             }
         });
+        core.events.addListener("server-started", new Event.Listener<Object>() {
+            @Override
+            public void triggered(Object t) {
+                writeConfiguration();
+                writeUpdates(); /* Make sure we stay in sync */
+                writeLogins();
+                writeAccess();
+            }
+        });
         core.events.addListener("worldactivated", new Event.Listener<DynmapWorld>() {
             @Override
             public void triggered(DynmapWorld t) {
