@@ -15,6 +15,7 @@ import java.util.Map;
 import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapCore;
 import org.dynmap.Log;
+import org.dynmap.MapManager;
 import org.dynmap.debug.Debug;
 import org.dynmap.renderer.CustomRenderer;
 import org.dynmap.renderer.MapDataContext;
@@ -29,8 +30,9 @@ import org.dynmap.utils.PatchDefinitionFactory;
  * Used by perspectives to determine if rays have intersected a block that doesn't occupy its whole block
  */
 public class HDBlockModels {
-    private static int linkalg[] = new int[256];
-    private static int linkmap[][] = new int[256][];
+    private static final int BLOCKTABLELEN = 4096;
+    private static int linkalg[] = new int[BLOCKTABLELEN];
+    private static int linkmap[][] = new int[BLOCKTABLELEN][];
     private static int max_patches;
     private static HashMap<Integer, HDBlockModel> models_by_id_data = new HashMap<Integer, HDBlockModel>();
     private static PatchDefinitionFactory pdf = new PatchDefinitionFactory();
@@ -46,7 +48,6 @@ public class HDBlockModels {
         if((bm != null) && (bm.getBlockSet().equals(blockset) == false)) {
             Debug.debug("Reset block model for " + blkid + ":" + blkdata + " from " + bm.getBlockSet() + " due to new def from " + blockset);
             models_by_id_data.remove((blkid << 4) | blkdata);
-            bm.databits ^= (1 << blkdata);  /* Clear data bit for this model, in case used elsewhere */
             return true;
         }
         return false;
@@ -64,16 +65,37 @@ public class HDBlockModels {
         return changeIgnoredBlocks.get((blkid << 4) | blkdata);
     }
     
-    private static void resizeTable(int idx) {
-        int cnt = idx+1;
-        int[] newlinkalg = new int[cnt];
-        System.arraycopy(linkalg, 0, newlinkalg, 0, linkalg.length);
-        linkalg = newlinkalg;
-        int[][] newlinkmap = new int[cnt][];
-        System.arraycopy(linkmap, 0, newlinkmap, 0, linkmap.length);
-        linkmap = newlinkmap;
+
+    /* Process any block aliases */
+    public static void handleBlockAlias() {
+        for(int i = 0; i < BLOCKTABLELEN; i++) {
+            int id = MapManager.mapman.getBlockIDAlias(i);
+            if(id != i) {   /* New mapping? */
+                remapModel(i, id);
+            }
+        }
     }
     
+    private static void remapModel(int id, int newid) {
+        if ((id > 0) && (id < BLOCKTABLELEN) && (newid >= 0) && (newid < BLOCKTABLELEN)) {
+            linkalg[id] = linkalg[newid];
+            linkmap[id] = linkmap[newid];
+            for (int meta = 0; meta < 16; meta++) {
+                int srcid = (newid * 16) + meta;
+                int destid = (id * 16) + meta;
+                HDBlockModel m = models_by_id_data.get(srcid);
+                if (m != null) {
+                    models_by_id_data.put(destid, m);
+                }
+                else {
+                    models_by_id_data.remove(destid);
+                }
+                customModelsRequestingTileData.set(destid, customModelsRequestingTileData.get(srcid));
+                changeIgnoredBlocks.set(destid, changeIgnoredBlocks.get(srcid));
+            }
+        }
+    }
+
     public static class HDScaledBlockModels {
         private short[][][] modelvectors;
         private PatchDefinition[][][] patches;
@@ -126,8 +148,6 @@ public class HDBlockModels {
     private static HashMap<Integer, HDScaledBlockModels> scaled_models_by_scale = new HashMap<Integer, HDScaledBlockModels>();
     
     public static abstract class HDBlockModel {
-        private int blockid;
-        private int databits;
         private String blockset;
         /**
          * Block definition - positions correspond to Bukkit coordinates (+X is south, +Y is up, +Z is west)
@@ -136,8 +156,6 @@ public class HDBlockModels {
          * @param blockset - ID of block definition set
          */
         protected HDBlockModel(int blockid, int databits, String blockset) {
-            this.blockid = blockid;
-            this.databits = databits;
             this.blockset = blockset;
             if(blockid > 0) {
                 for(int i = 0; i < 16; i++) {
@@ -156,7 +174,6 @@ public class HDBlockModels {
         public abstract int getTextureCount();
         
         public void removed(int blkid, int blkdat) {
-            this.databits &= (~(1 << blkdat));
         }
     }
     
@@ -421,12 +438,7 @@ public class HDBlockModels {
      * @return 0=no link alg
      */
     public static final int getLinkAlgID(int blkid) {
-        try {
-            return linkalg[blkid];
-        } catch (ArrayIndexOutOfBoundsException aioobx) {
-            resizeTable(blkid);
-            return 0;
-        }
+        return linkalg[blkid];
     }
     /**
      * Get link block IDs
@@ -434,12 +446,7 @@ public class HDBlockModels {
      * @return array of block IDs to link with
      */
     public static final int[] getLinkIDs(int blkid) {
-        try {
-            return linkmap[blkid];
-        } catch (ArrayIndexOutOfBoundsException aioobx) {
-            resizeTable(blkid);
-            return null;
-        }
+        return linkmap[blkid];
     }
     
     /**
@@ -467,27 +474,20 @@ public class HDBlockModels {
         HDScaledBlockModels model = scaled_models_by_scale.get(Integer.valueOf(scale));
         if(model == null) {
             model = new HDScaledBlockModels();
-            short[][][] blockmodels = new short[256][][];
-            PatchDefinition[][][] patches = new PatchDefinition[256][][];
-            CustomBlockModel[][] custom = new CustomBlockModel[256][];
+            short[][][] blockmodels = new short[BLOCKTABLELEN][][];
+            PatchDefinition[][][] patches = new PatchDefinition[BLOCKTABLELEN][][];
+            CustomBlockModel[][] custom = new CustomBlockModel[BLOCKTABLELEN][];
             
-            for(HDBlockModel m : models_by_id_data.values()) {
-                if(m.blockid >= blockmodels.length){
-                    short[][][] newmodels = new short[m.blockid+1][][];
-                    System.arraycopy(blockmodels,  0, newmodels, 0, blockmodels.length);
-                    blockmodels = newmodels;
-                    PatchDefinition[][][] newpatches = new PatchDefinition[m.blockid+1][][];
-                    System.arraycopy(patches,  0, newpatches, 0, patches.length);
-                    patches = newpatches;
-                    CustomBlockModel[][] newcustom = new CustomBlockModel[m.blockid+1][];
-                    System.arraycopy(custom,  0, newcustom, 0, custom.length);
-                    custom = newcustom;
-                }
+            for(Integer id_data : models_by_id_data.keySet()) {
+                int blkid = id_data.intValue() >> 4;
+                int blkmeta = id_data.intValue() & 0xF;
+                HDBlockModel m = models_by_id_data.get(id_data);
+                
                 if(m instanceof HDBlockVolumetricModel) {
-                    short[][] row = blockmodels[m.blockid];
+                    short[][] row = blockmodels[blkid];
                     if(row == null) {
                         row = new short[16][];
-                        blockmodels[m.blockid] = row; 
+                        blockmodels[blkid] = row; 
                     }
                     HDBlockVolumetricModel vm = (HDBlockVolumetricModel)m;
                     short[] smod = vm.getScaledMap(scale);
@@ -498,42 +498,30 @@ public class HDBlockModels {
                             if(smod[i] == 0) keep = true;
                         }
                         if(keep) {
-                            for(int i = 0; i < 16; i++) {
-                                if((m.databits & (1 << i)) != 0) {
-                                    row[i] = smod;
-                                }
-                            }
+                            row[blkmeta] = smod;
                         }
                     }
                 }
                 else if(m instanceof HDBlockPatchModel) {
                     HDBlockPatchModel pm = (HDBlockPatchModel)m;
                     PatchDefinition[] patch = pm.getPatches();
-                    PatchDefinition[][] row = patches[m.blockid];
+                    PatchDefinition[][] row = patches[blkid];
                     if(row == null) {
                         row = new PatchDefinition[16][];
-                        patches[m.blockid] = row; 
+                        patches[blkid] = row; 
                     }
                     if(patch != null) {
-                        for(int i = 0; i < 16; i++) {
-                            if((m.databits & (1 << i)) != 0) {
-                                row[i] = patch;
-                            }
-                        }
+                        row[blkmeta] = patch;
                     }
                 }
                 else if(m instanceof CustomBlockModel) {
                     CustomBlockModel cbm = (CustomBlockModel)m;
-                    CustomBlockModel[] row = custom[m.blockid];
+                    CustomBlockModel[] row = custom[blkid];
                     if(row == null) {
                         row = new CustomBlockModel[16];
-                        custom[m.blockid] = row; 
+                        custom[blkid] = row; 
                     }
-                    for(int i = 0; i < 16; i++) {
-                        if((m.databits & (1 << i)) != 0) {
-                            row[i] = cbm;
-                        }
-                    }
+                    row[blkmeta] = cbm;
                 }
             }
             model.modelvectors = blockmodels;
@@ -824,14 +812,8 @@ public class HDBlockModels {
                         for(int i = 0; i < mapids.length; i++)
                             mapids[i] = map.get(i);
                         for(Integer bid : blkids) {
-                            try {
-                                linkalg[bid] = linktype;
-                                linkmap[bid] = mapids;
-                            } catch (ArrayIndexOutOfBoundsException aioobx) {
-                                resizeTable(bid);
-                                linkalg[bid] = linktype;
-                                linkmap[bid] = mapids;
-                            }
+                            linkalg[bid] = linktype;
+                            linkmap[bid] = mapids;
                         }
                     }
                 }

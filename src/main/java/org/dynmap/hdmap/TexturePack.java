@@ -165,8 +165,8 @@ public class TexturePack {
     private static final int TILEINDEX_SKIN_FACEBOTTOM = 5;
     private static final int TILEINDEX_SKIN_COUNT = 6;
 
-    private static final int BLOCKTABLELEN = 256;  /* Enough for normal block IDs */
-
+    private static final int BLOCKTABLELEN = 4096; // Max block ID range
+    
     public static enum TileFileFormat {
         GRID,
         CHEST,
@@ -370,26 +370,7 @@ public class TexturePack {
         private static BlockTransparency transp[];
         private static boolean userenderdata[];
         private static HDTextureMap blank;
-        
-        private static void resizeTable(int idx) {
-            int cnt = idx+1;
-            /* Copy texture maps */
-            HDTextureMap[] newtexmaps = new HDTextureMap[cnt*16];
-            System.arraycopy(texmaps, 0, newtexmaps, 0, texmaps.length);
-            Arrays.fill(newtexmaps, texmaps.length, newtexmaps.length, blank);
-            texmaps = newtexmaps;
-            /* Copy transparency */
-            BlockTransparency[] newtrans = new BlockTransparency[cnt];
-            System.arraycopy(transp, 0, newtrans, 0, transp.length);
-            Arrays.fill(newtrans, transp.length, cnt, BlockTransparency.OPAQUE);
-            transp = newtrans;
-            /* Copy use-render-data */
-            boolean[] newurd = new boolean[cnt];
-            System.arraycopy(userenderdata, 0, newurd, 0, userenderdata.length);
-            Arrays.fill(newurd, userenderdata.length, cnt, false);
-            userenderdata = newurd;
-        }
-        
+                
         private static void initializeTable() {
             texmaps = new HDTextureMap[16*BLOCKTABLELEN];
             transp = new BlockTransparency[BLOCKTABLELEN];
@@ -429,8 +410,6 @@ public class TexturePack {
         public void addToTable() {
             /* Add entries to lookup table */
             for(Integer blkid : blockids) {
-                if(blkid >= transp.length)
-                    resizeTable(blkid);
                 if(blkid > 0) {
                     for(int i = 0; i < 16; i++) {
                         if((databits & (1 << i)) != 0) {
@@ -456,7 +435,6 @@ public class TexturePack {
                 else
                     return texmaps[(blkid<<4) + blkdata];
             } catch (Exception x) {
-                resizeTable(blkid);
                 return blank;
             }
         }
@@ -465,7 +443,6 @@ public class TexturePack {
             try {
                 return transp[blkid];
             } catch (Exception x) {
-                resizeTable(blkid);
                 return BlockTransparency.OPAQUE;
             }
         }
@@ -474,6 +451,8 @@ public class TexturePack {
             for(int i = 0; i < 16; i++) {
                 texmaps[(id<<4)+i] = texmaps[(srcid<<4)+i];
             }
+            transp[id] = transp[srcid];
+            userenderdata[id] = userenderdata[srcid];
         }
 
     }
@@ -2121,15 +2100,12 @@ public class TexturePack {
 
     }
 
-    /* Process any ore hiding mappings */
-    public static void handleHideOres() {
-        /* Now, fix mapping if we're hiding any ores */
-        if(MapManager.mapman.getHideOres()) {
-            for(int i = 0; i < 256; i++) {
-                int id = MapManager.mapman.getBlockIDAlias(i);
-                if(id != i) {   /* New mapping? */
-                    HDTextureMap.remapTexture(i, id);
-                }
+    /* Process any block aliases */
+    public static void handleBlockAlias() {
+        for(int i = 0; i < BLOCKTABLELEN; i++) {
+            int id = MapManager.mapman.getBlockIDAlias(i);
+            if(id != i) {   /* New mapping? */
+                HDTextureMap.remapTexture(i, id);
             }
         }
     }

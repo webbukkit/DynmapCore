@@ -49,6 +49,7 @@ public class MapManager {
     private boolean saverestorepending = true;
     private boolean hideores = false;
     private boolean usenormalpriority = false;
+    private short blockidalias[];
     
     private boolean pauseupdaterenders = false;
     private boolean pausefullrenders = false;
@@ -832,7 +833,32 @@ public class MapManager {
 
         /* Get block hiding data, if any */
         hideores = configuration.getBoolean("hideores", false);
-
+        blockidalias = new short[4096];
+        for (int i = 0; i < blockidalias.length; i++) {
+            blockidalias[i] = (short) i;
+        }
+        if (hideores) {
+            setBlockIDAlias(14, 1); // Gold ore
+            setBlockIDAlias(15, 1); // Iron ore
+            setBlockIDAlias(16, 1); // Coal ore
+            setBlockIDAlias(21, 1); // Lapis ore
+            setBlockIDAlias(56, 1); // Diamond ore
+            setBlockIDAlias(73, 1); // Redstone ore
+            setBlockIDAlias(74, 1); // Glowing Redstone ore
+            setBlockIDAlias(129, 1); // Emerald ore
+            setBlockIDAlias(153, 87); // Nether quartz ore
+        }
+        ConfigurationNode blockalias = configuration.getNode("block-id-alias");
+        if (blockalias != null) {
+            for (String id : blockalias.keySet()) {
+                int srcid = Integer.parseInt(id.trim());
+                int newid = blockalias.getInteger(id, srcid);
+                if (srcid != newid) {
+                    setBlockIDAlias(srcid, newid);
+                }
+            }
+        }
+        
         /* See what priority to use */
         usenormalpriority = configuration.getBoolean("usenormalthreadpriority", false);
         
@@ -1451,17 +1477,13 @@ public class MapManager {
     }
     /* Map block ID to aliased ID - used to hide ores */
     public int getBlockIDAlias(int id) {
-        if(!hideores) return id;
-        switch(id) {
-            case 14:    /* Gold Ore */
-            case 15:    /* Iron Ore */
-            case 16:    /* Coal Ore */
-            case 21:    /* Lapis Lazuli Ore */
-            case 56:    /* Diamond Ore */
-            case 73:    /* Redstone ore */
-                return 1;   /* Stone */
+        return blockidalias[id];
+    }
+    /* Set block ID alias */
+    public void setBlockIDAlias(int id, int newid) {
+        if ((id > 0) && (id < 4096) && (newid >= 0) && (newid < 4096)) {
+            blockidalias[id] = (short)newid;
         }
-        return id;
     }
     /*
      * Pause full/radius render processing

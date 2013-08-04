@@ -26,6 +26,8 @@ public class HDMapManager {
 
     public void loadHDShaders(DynmapCore core) {
         Log.verboseinfo("Loading shaders...");
+        /* Update mappings, if needed */
+        TexturePack.handleBlockAlias();
 
         File f = new File(core.getDataFolder(), "shaders.txt");
         if(!core.updateUsingDefaultResource("/shaders.txt", f, "shaders")) {
@@ -50,12 +52,13 @@ public class HDMapManager {
             }
         }
         Log.info("Loaded " + shaders.size() + " shaders.");
-        /* Update ore mappings, if needed */
-        TexturePack.handleHideOres();
     }
 
     public void loadHDPerspectives(DynmapCore core) {
         Log.verboseinfo("Loading perspectives...");
+        // Update mappings, if needed
+        HDBlockModels.handleBlockAlias();
+        
         File f = new File(core.getDataFolder(), "perspectives.txt");
         if(!core.updateUsingDefaultResource("/perspectives.txt", f, "perspectives")) {
             return;
