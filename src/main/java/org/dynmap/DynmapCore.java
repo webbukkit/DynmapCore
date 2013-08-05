@@ -437,15 +437,16 @@ public class DynmapCore implements DynmapCommonAPI {
         
         perTickLimit = configuration.getInteger("per-tick-time-limit", 50);
         if (perTickLimit < 5) perTickLimit = 5;
-        perTickLimit = perTickLimit;
         
         /* Load preupdate/postupdate commands */
         FileLockManager.preUpdateCommand = configuration.getString("custom-commands/image-updates/preupdatecommand", "");
         FileLockManager.postUpdateCommand = configuration.getString("custom-commands/image-updates/postupdatecommand", "");
 
         /* Load block models */
+        Log.verboseinfo("Loading models...");
         HDBlockModels.loadModels(this, configuration);
         /* Load texture mappings */
+        Log.verboseinfo("Loading texture mappings...");
         TexturePack.loadTextureMapping(this, configuration);
         
         /* Now, process worlds.txt - merge it in as an override of existing values (since it is only user supplied values) */
@@ -457,15 +458,17 @@ public class DynmapCore implements DynmapCommonAPI {
         world_config.load();
 
         /* Now, process templates */
+        Log.verboseinfo("Loading templates...");
         loadTemplates();
 
         /* If we're persisting ids-by-ip, load it */
         persist_ids_by_ip = configuration.getBoolean("persist-ids-by-ip", true);
-        if(persist_ids_by_ip)
+        if(persist_ids_by_ip) {
+            Log.verboseinfo("Loading userid-by-IP data...");
             loadIDsByIP();
+        }
         
         loadDebuggers();
-
 
         playerList = new PlayerList(getServer(), getFile("hiddenplayers.txt"), configuration);
         playerList.load();
