@@ -1,0 +1,29 @@
+# Coral Reef textures
+modname:coralmod
+# configuration file
+cfgfile:config/coralreef/blockids.cfg
+
+texturepath:assets/coralmod/textures/blocks/
+texture:id=coral1
+texture:id=coral2
+texture:id=coral3
+texture:id=coral4
+texture:id=coral5
+texture:id=coral6
+texture:id=reef1
+texture:id=reef2
+
+block:id=Coral1,data=0,patch0-1=0:coral1,transparency=TRANSPARENT
+block:id=Coral1,data=1,patch0-1=0:coral2,transparency=TRANSPARENT
+block:id=Coral1,data=2,patch0-1=0:coral3,transparency=TRANSPARENT
+block:id=Coral1,data=3,patch0-1=0:coral4,transparency=TRANSPARENT
+block:id=Coral1,data=4,patch0-1=0:coral5,transparency=TRANSPARENT
+block:id=Coral1,data=5,patch0-1=0:coral6,transparency=TRANSPARENT
+block:id=Coral2,allfaces=0:reef1,stdrot=true
+block:id=Coral3,allfaces=0:reef2,stdrot=true
+block:id=Coral4,id=Coral5,data=0,patch0-2=0:coral1,transparency=TRANSPARENT
+block:id=Coral4,id=Coral5,data=1,patch0-2=0:coral2,transparency=TRANSPARENT
+block:id=Coral4,id=Coral5,data=2,patch0-2=0:coral3,transparency=TRANSPARENT
+block:id=Coral4,id=Coral5,data=3,patch0-2=0:coral4,transparency=TRANSPARENT
+block:id=Coral4,id=Coral5,data=4,patch0-2=0:coral5,transparency=TRANSPARENT
+block:id=Coral4,id=Coral5,data=5,patch0-2=0:coral6,transparency=TRANSPARENT
