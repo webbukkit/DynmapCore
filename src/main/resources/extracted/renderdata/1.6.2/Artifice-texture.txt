@@ -1,0 +1,142 @@
+# Artifice textures
+modname:Artifice
+# configuration file
+cfgfile:config/Artifice.cfg
+
+texturepath:assets/minecraft/textures/blocks/
+texture:id=waterlily
+texturepath:assets/artifice/textures/blocks/
+texture:id=flora/bluebell
+texture:id=flora/orchid
+texture:id=flora/iris
+texture:id=flora/lotus
+texture:id=flora/lotusclosed
+texture:id=flora/waterlotus
+texture:id=flora/waterlotusclosed
+texture:id=basalt/basalt
+texture:id=basalt/cobblestone
+texture:id=basalt/bricks
+texture:id=basalt/paverside
+texture:id=basalt/paver/basalt_paver_26
+texture:id=basalt/chiseled
+texture:id=marble/marble
+texture:id=marble/cobblestone
+texture:id=marble/bricks
+texture:id=marble/paverside
+texture:id=marble/paver/marble_paver_26
+texture:id=marble/chiseled
+texture:id=frame/basic
+texture:id=frame/reinforced
+texture:id=frame/industrial
+texture:id=frame/advanced
+texture:id=misc/steel
+texture:id=misc/detector
+texture:id=scaffold/basic_side
+texture:id=scaffold/reinforced_side
+texture:id=scaffold/industrial_side
+texture:id=scaffold/advanced_side
+texture:id=scaffold/basic_vert
+texture:id=scaffold/reinforced_vert
+texture:id=scaffold/industrial_vert
+texture:id=scaffold/advanced_vert
+texture:id=blastwall/basic
+texture:id=blastwall/reinforced
+texture:id=blastwall/industrial
+texture:id=blastwall/advanced
+texture:id=glasswall/basic
+texture:id=glasswall/reinforced
+texture:id=glasswall/industrial
+texture:id=glasswall/advanced
+
+# blockBasalt
+block:id=blockBasalt,data=0,allfaces=0:basalt/basalt,stdrot=true
+block:id=blockBasalt,data=1,allfaces=0:basalt/cobblestone,stdrot=true
+block:id=blockBasalt,data=2,allfaces=0:basalt/bricks,stdrot=true
+block:id=blockBasalt,data=3,allfaces=0:basalt/paver/basalt_paver_26,stdrot=true
+block:id=blockBasalt,data=4,allfaces=0:basalt/paver/basalt_paver_26,stdrot=true
+block:id=blockBasalt,data=5,allfaces=0:basalt/chiseled,stdrot=true
+
+# blockBasaltBrickStairs
+block:id=blockBasaltBrickStairs,data=*,allfaces=0:basalt/bricks,stdrot=true,transparent=SEMITRANSPARENT
+
+# blockBasaltCobbleStairs
+block:id=blockBasaltCobbleStairs,data=*,allfaces=0:basalt/cobblestone,stdrot=true,transparent=SEMITRANSPARENT
+
+# blockBasaltDoubleSlab
+block:id=blockBasaltDoubleSlab,data=0,data=8,allfaces=0:basalt/bricks,stdrot=true
+block:id=blockBasaltDoubleSlab,data=1,data=9,allfaces=0:basalt/cobblestone,stdrot=true
+block:id=blockBasaltDoubleSlab,data=2,data=10,allsides=0:basalt/paverside,topbottom=0:basalt/paver/basalt_paver_26,stdrot=true
+block:id=blockBasaltDoubleSlab,data=3,data=11,allsides=0:basalt/paverside,topbottom=0:basalt/paver/basalt_paver_26,stdrot=true
+
+# blockBasaltSlab
+block:id=blockBasaltSlab,data=0,data=8,allfaces=0:basalt/bricks,stdrot=true,transparent=SEMITRANSPARENT
+block:id=blockBasaltSlab,data=1,data=9,allfaces=0:basalt/cobblestone,stdrot=true,transparent=SEMITRANSPARENT
+block:id=blockBasaltSlab,data=2,data=10,allsides=0:basalt/paverside,topbottom=0:basalt/paver/basalt_paver_26,stdrot=true,transparent=SEMITRANSPARENT
+block:id=blockBasaltSlab,data=3,data=11,allsides=0:basalt/paverside,topbottom=0:basalt/paver/basalt_paver_26,stdrot=true,transparent=SEMITRANSPARENT
+
+# blockDetector
+block:id=blockDetector,data=*,allfaces=0:misc/detector,stdrot=true
+
+# blockFlora
+block:id=blockFlora,data=0,patch0-1=0:flora/bluebell,transparency=TRANSPARENT
+block:id=blockFlora,data=1,patch0-1=0:flora/orchid,transparency=TRANSPARENT
+block:id=blockFlora,data=2,patch0-1=0:flora/iris,transparency=TRANSPARENT
+block:id=blockFlora,data=3,patch0-1=0:flora/lotus,transparency=TRANSPARENT
+block:id=blockFlora,data=4,patch0-1=0:flora/lotusclosed,transparency=TRANSPARENT
+
+# blockFrame
+block:id=blockFrame,data=0,allfaces=0:frame/basic,stdrot=true,transparency=TRANSPARENT
+block:id=blockFrame,data=1,allfaces=0:frame/reinforced,stdrot=true,transparency=TRANSPARENT
+block:id=blockFrame,data=2,allfaces=0:frame/industrial,stdrot=true,transparency=TRANSPARENT
+block:id=blockFrame,data=3,allfaces=0:frame/advanced,stdrot=true,transparency=TRANSPARENT
+
+# blockGlassWall
+block:id=blockGlassWall,data=0,allfaces=0:glasswall/basic,stdrot=true,transparency=TRANSPARENT
+block:id=blockGlassWall,data=1,allfaces=0:glasswall/reinforced,stdrot=true,transparency=TRANSPARENT
+block:id=blockGlassWall,data=2,allfaces=0:glasswall/industrial,stdrot=true,transparency=TRANSPARENT
+block:id=blockGlassWall,data=3,allfaces=0:glasswall/advanced,stdrot=true,transparency=TRANSPARENT
+
+# blockLotus
+block:id=blockLotus,data=0,patch0=15000:waterlily,patch1-2=0:flora/waterlotus,transparency=TRANSPARENT
+block:id=blockLotus,data=1,patch0=15000:waterlily,patch1-2=0:flora/waterlotusclosed,transparency=TRANSPARENT
+
+# blockMarble
+block:id=blockMarble,data=0,allfaces=0:marble/marble,stdrot=true
+block:id=blockMarble,data=1,allfaces=0:marble/cobblestone,stdrot=true
+block:id=blockMarble,data=2,allfaces=0:marble/bricks,stdrot=true
+block:id=blockMarble,data=3,allfaces=0:marble/paver/marble_paver_26,stdrot=true
+block:id=blockMarble,data=4,allfaces=0:marble/paver/marble_paver_26,stdrot=true
+block:id=blockMarble,data=5,allfaces=0:marble/chiseled,stdrot=true
+
+# blockMarbleBrickStairs
+block:id=blockMarbleBrickStairs,data=*,allfaces=0:marble/bricks,stdrot=true,transparency=SEMITRANSPARENT
+
+# blockMarbleCobbleStairs
+block:id=blockMarbleCobbleStairs,data=*,allfaces=0:marble/cobblestone,stdrot=true,transparency=SEMITRANSPARENT
+
+# blockMarbleDoubleSlab
+block:id=blockMarbleDoubleSlab,data=0,data=8,allfaces=0:marble/bricks,stdrot=true
+block:id=blockMarbleDoubleSlab,data=1,data=9,allfaces=0:marble/cobblestone,stdrot=true
+block:id=blockMarbleDoubleSlab,data=2,data=10,allsides=0:marble/paverside,topbottom=0:marble/paver/marble_paver_26,stdrot=true
+block:id=blockMarbleDoubleSlab,data=3,data=11,allsides=0:marble/paverside,topbottom=0:marble/paver/marble_paver_26,stdrot=true
+
+# blockMarbleSlab
+block:id=blockMarbleSlab,data=0,data=8,allfaces=0:marble/bricks,stdrot=true,transparent=SEMITRANSPARENT
+block:id=blockMarbleSlab,data=1,data=9,allfaces=0:marble/cobblestone,stdrot=true,transparent=SEMITRANSPARENT
+block:id=blockMarbleSlab,data=2,data=10,allsides=0:marble/paverside,topbottom=0:marble/paver/marble_paver_26,stdrot=true,transparent=SEMITRANSPARENT
+block:id=blockMarbleSlab,data=3,data=11,allsides=0:marble/paverside,topbottom=0:marble/paver/marble_paver_26,stdrot=true,transparent=SEMITRANSPARENT
+
+# blockReinforced
+block:id=blockReinforced,data=0,allfaces=0:blastwall/basic,stdrot=true
+block:id=blockReinforced,data=1,allfaces=0:blastwall/reinforced,stdrot=true
+block:id=blockReinforced,data=2,allfaces=0:blastwall/industrial,stdrot=true
+block:id=blockReinforced,data=3,allfaces=0:blastwall/advanced,stdrot=true
+
+# blockScaffold
+block:id=blockScaffold,data=0,allsides=0:scaffold/basic_side,topbottom=0:scaffold/basic_vert,stdrot=true,transparency=TRANSPARENT
+block:id=blockScaffold,data=1,allsides=0:scaffold/reinforced_side,topbottom=0:scaffold/reinforced_vert,stdrot=true,transparency=TRANSPARENT
+block:id=blockScaffold,data=2,allsides=0:scaffold/industrial_side,topbottom=0:scaffold/industrial_vert,stdrot=true,transparency=TRANSPARENT
+block:id=blockScaffold,data=3,allsides=0:scaffold/advanced_side,topbottom=0:scaffold/advanced_vert,stdrot=true,transparency=TRANSPARENT
+
+# blockSteel
+block:id=blockSteel,data=*,allfaces=0:misc/steel,stdrot=true
