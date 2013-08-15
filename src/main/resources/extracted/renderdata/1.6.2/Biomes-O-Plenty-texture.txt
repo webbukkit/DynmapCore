@@ -4,6 +4,7 @@ modname:BiomesOPlenty
 
 # configuration file
 cfgfile:config/BiomesOPlenty.cfg
+cfgfile:config/biomesoplenty/ids.cfg
 
 # Files
 texturepath:assets/biomesoplenty/textures/blocks/
