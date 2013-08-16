@@ -35,11 +35,15 @@ public class ForgeConfigFile {
                 boolean instr = false;
                 boolean intok = false;
                 tok = "";
+                char last_c = ' ';
                 for (int i = 0; i < line.length() && !skip; ++i) {
                     char c = line.charAt(i);
                     if(instr) {
                         if(c != '"') {
                             tok += c;
+                        }
+                        else if (last_c == '"') {
+                            // Ignore double double-quotes
                         }
                         else {
                             instr = false;
@@ -47,8 +51,9 @@ public class ForgeConfigFile {
                         }
                     }
                     else if(c == '"') {
-                        //tok = "";
-                        intok = instr = true;
+                        if (last_c != '"')  {
+                            intok = instr = true;
+                        }
                     }
                     else if(Character.isLetterOrDigit(line.charAt(i)) || ALLOWED_CHARS.indexOf(line.charAt(i)) != -1) {
                         if(intok) {
@@ -99,6 +104,7 @@ public class ForgeConfigFile {
                                 break;
                         }
                     }
+                    last_c = c;
                 }
             }
         } catch (IOException iox) {
