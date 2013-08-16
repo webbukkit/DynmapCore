@@ -1152,11 +1152,19 @@ public class HDBlockModels {
                     String[] names = line.substring(8).split(",");
                     boolean found = false;
                     for(String n : names) {
-                        if(core.getServer().isModLoaded(n.trim()) == true) {
+                        String[] ntok = n.split("[\\[\\]]");
+                        String rng = null;
+                        if (ntok.length > 1) {
+                            n = ntok[0].trim();
+                            rng = ntok[1].trim();
+                        }
+                        n = n.trim();
+                        String modver = core.getServer().getModVersion(n);
+                        if((modver != null) && ((rng == null) || checkVersionRange(modver, rng))) {
                             found = true;
-                            Log.info(n + " models enabled");
+                            Log.info(n + "[" + modver + "] models enabled");
                             need_mod_cfg = true;
-                            modname = n.trim();
+                            modname = n;
                             break;
                         }
                     }
@@ -1224,5 +1232,50 @@ public class HDBlockModels {
             }
             pdf.setPatchNameMape(null);
         }
+    }
+    private static int vscale[] = { 1000000, 10000, 100, 1 };
+    
+    private static int parseVersion(String v, boolean up) {
+        String[] vv = v.split("\\.");
+        int ver = 0;
+        for (int i = 0; i < vscale.length; i++) {
+            if (i < vv.length){ 
+                try {
+                    ver += vscale[i] * Integer.parseInt(vv[i]);
+                } catch (NumberFormatException nfx) {
+                }
+            }
+            else if (up) {
+                ver += vscale[i] * 99;
+            }
+        }
+
+        return ver;
+    }
+    public static boolean checkVersionRange(String ver, String range) {
+        if (ver.equals(range))
+            return true;
+        String[] rng = range.split("-");
+        String low;
+        String high;
+        
+        int v = parseVersion(ver, false);
+        if (v == 0) return false;
+        
+        if (rng.length == 1) {
+            low = rng[0];
+            high = rng[0];
+        }
+        else {
+            low = rng[0];
+            high = rng[1];
+        }
+        if ((low.length() > 0) && (parseVersion(low, false) > v)) {
+            return false;
+        }
+        if ((high.length() > 0) && (parseVersion(high, true) < v)) {
+            return false;
+        }
+        return true;
     }
 }

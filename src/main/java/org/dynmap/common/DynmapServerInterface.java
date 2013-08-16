@@ -125,6 +125,14 @@ public interface DynmapServerInterface {
      */
     public boolean isModLoaded(String name);
     /**
+     * Get version of mod with given name
+     * 
+     * @param name - name of mod
+     * @return version, or null of not found
+     */
+    public String getModVersion(String name);
+
+    /**
      * Get block ID at given coordinate in given world (if chunk is loaded)
      * @param wname - world name
      * @param x - X coordinate

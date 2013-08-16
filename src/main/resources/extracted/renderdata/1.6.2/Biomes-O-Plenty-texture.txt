@@ -1,9 +1,8 @@
 # Biomes O Plenty Block mapping
 version:1.6.2-
-modname:BiomesOPlenty
+modname:BiomesOPlenty[0.6.0-]
 
 # configuration file
-cfgfile:config/BiomesOPlenty.cfg
 cfgfile:config/biomesoplenty/ids.cfg
 
 # Files

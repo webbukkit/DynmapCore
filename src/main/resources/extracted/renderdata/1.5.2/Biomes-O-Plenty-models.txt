@@ -1,9 +1,8 @@
 # Biomes O Plenty Block mapping
 version:1.5.2-1.6.1
-modname:BiomesOPlenty
+modname:BiomesOPlenty[0.5.9-],BiomesOPlenty[@VERSION@]
 
 # configuration file
-cfgfile:config/BiomesOPlenty.cfg
 cfgfile:config/biomesoplenty/main.cfg
 
 # Patches

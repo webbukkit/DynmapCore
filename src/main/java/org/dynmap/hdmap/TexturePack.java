@@ -1976,11 +1976,19 @@ public class TexturePack {
                     String[] names = line.substring(8).split(",");
                     boolean found = false;
                     for(String n : names) {
-                        if(core.getServer().isModLoaded(n.trim()) == true) {
+                        String[] ntok = n.split("[\\[\\]]");
+                        String rng = null;
+                        if (ntok.length > 1) {
+                            n = ntok[0].trim();
+                            rng = ntok[1].trim();
+                        }
+                        n = n.trim();
+                        String modver = core.getServer().getModVersion(n);
+                        if((modver != null) && ((rng == null) || HDBlockModels.checkVersionRange(modver, rng))) {
                             found = true;
-                            Log.info(n + " textures enabled");
+                            Log.info(n + "[" + modver + "] textures enabled");
                             mod_cfg_needed = true;
-                            modname = n.trim();
+                            modname = n;
                             if(texturemod == null) texturemod = modname;
                             break;
                         }
