@@ -1255,7 +1255,7 @@ public class HDBlockModels {
     public static boolean checkVersionRange(String ver, String range) {
         if (ver.equals(range))
             return true;
-        String[] rng = range.split("-");
+        String[] rng = range.split("-", -1);
         String low;
         String high;
         
