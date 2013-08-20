@@ -2,6 +2,8 @@
 version:1.4.7-
 modname:UndergroundBiomes,Underground Biomes
 
+var:Anthracite_Block_ID:=0
+
 # configuration file
 cfgfile:config/Underground Biomes.cfg
 cfgfile:config/UndergroundBiomes.cfg
