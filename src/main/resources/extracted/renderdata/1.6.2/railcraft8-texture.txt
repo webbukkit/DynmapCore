@@ -1,6 +1,7 @@
 # Railcraft v8.0+ Block mapping
-version:1.6.2-
-modname:Railcraft
+modname:Railcraft[7.0.0-]
+
+var:block.brick.abyssal=0,block.brick.bleachedbone=0,block.brick.bloodstained=0,block.brick.frostbound=0,block.brick.infernal=0,block.brick.quarried=0,block.brick.sandy=0
 
 # configuration file
 cfgfile:config/railcraft/railcraft.cfg
@@ -39,6 +40,8 @@ texture:id=ice
 texture:id=iron_block
 texture:id=gold_block
 texture:id=diamond_block
+texture:id=sandstone_bottom
+texture:id=stone
 
 # Blocks
 # (block.detector:0-12) Detector
@@ -166,34 +169,34 @@ block:id=block.cube,data=6,allfaces=0:cube.stone.abyssal
 block:id=block.cube,data=7,allfaces=0:cube.stone.quarried
 
 # block.ore
-block:id=block.ore,data=0,allfaces=0:ore.sulfur,stdrot=true
-block:id=block.ore,data=1,allfaces=0:ore.saltpeter,stdrot=true
-block:id=block.ore,data=2,allfaces=0:ore.dark.diamond,stdrot=true
-block:id=block.ore,data=3,allfaces=0:ore.dark.emerald,stdrot=true
-block:id=block.ore,data=4,allfaces=0:ore.dark.lapis,stdrot=true
+block:id=block.ore,data=0,allfaces=0:ore.sulfur,patch6=0:stone,layer0-5=6,stdrot=true
+block:id=block.ore,data=1,allfaces=0:ore.saltpeter,patch6=0:sandstone_bottom,layer0-5=6,stdrot=true
+block:id=block.ore,data=2,allfaces=0:ore.dark.diamond,patch6=0:cube.stone.abyssal,layer0-5=6,stdrot=true
+block:id=block.ore,data=3,allfaces=0:ore.dark.emerald,patch6=0:cube.stone.abyssal,layer0-5=6,stdrot=true
+block:id=block.ore,data=4,allfaces=0:ore.dark.lapis,patch6=0:cube.stone.abyssal,layer0-5=6,stdrot=true
 
 # block.post
-block:id=block.post,data=0,patch0-2=0:post.wood
-block:id=block.post,data=1,patch0-2=0:concrete
-block:id=block.post,data=2,patch0-2=0:post.metal
+block:id=block.post,data=0,patch0-2=0:post.wood,transparency=TRANSPARENT
+block:id=block.post,data=1,patch0-2=0:concrete,transparency=TRANSPARENT
+block:id=block.post,data=2,patch0-2=0:post.metal,transparency=TRANSPARENT
 
 # block.post.metal:0-15 - metal post
-block:id=block.post.metal,data=0,patch0-2=0:post.metal.painted
-block:id=block.post.metal,data=1,patch0-2=1:post.metal.painted
-block:id=block.post.metal,data=2,patch0-2=2:post.metal.painted
-block:id=block.post.metal,data=3,patch0-2=3:post.metal.painted
-block:id=block.post.metal,data=4,patch0-2=4:post.metal.painted
-block:id=block.post.metal,data=5,patch0-2=5:post.metal.painted
-block:id=block.post.metal,data=6,patch0-2=6:post.metal.painted
-block:id=block.post.metal,data=7,patch0-2=7:post.metal.painted
-block:id=block.post.metal,data=8,patch0-2=8:post.metal.painted
-block:id=block.post.metal,data=9,patch0-2=9:post.metal.painted
-block:id=block.post.metal,data=10,patch0-2=10:post.metal.painted
-block:id=block.post.metal,data=11,patch0-2=11:post.metal.painted
-block:id=block.post.metal,data=12,patch0-2=12:post.metal.painted
-block:id=block.post.metal,data=13,patch0-2=13:post.metal.painted
-block:id=block.post.metal,data=14,patch0-2=14:post.metal.painted
-block:id=block.post.metal,data=15,patch0-2=15:post.metal.painted
+block:id=block.post.metal,data=0,patch0-2=0:post.metal.painted,transparency=TRANSPARENT
+block:id=block.post.metal,data=1,patch0-2=1:post.metal.painted,transparency=TRANSPARENT
+block:id=block.post.metal,data=2,patch0-2=2:post.metal.painted,transparency=TRANSPARENT
+block:id=block.post.metal,data=3,patch0-2=3:post.metal.painted,transparency=TRANSPARENT
+block:id=block.post.metal,data=4,patch0-2=4:post.metal.painted,transparency=TRANSPARENT
+block:id=block.post.metal,data=5,patch0-2=5:post.metal.painted,transparency=TRANSPARENT
+block:id=block.post.metal,data=6,patch0-2=6:post.metal.painted,transparency=TRANSPARENT
+block:id=block.post.metal,data=7,patch0-2=7:post.metal.painted,transparency=TRANSPARENT
+block:id=block.post.metal,data=8,patch0-2=8:post.metal.painted,transparency=TRANSPARENT
+block:id=block.post.metal,data=9,patch0-2=9:post.metal.painted,transparency=TRANSPARENT
+block:id=block.post.metal,data=10,patch0-2=10:post.metal.painted,transparency=TRANSPARENT
+block:id=block.post.metal,data=11,patch0-2=11:post.metal.painted,transparency=TRANSPARENT
+block:id=block.post.metal,data=12,patch0-2=12:post.metal.painted,transparency=TRANSPARENT
+block:id=block.post.metal,data=13,patch0-2=13:post.metal.painted,transparency=TRANSPARENT
+block:id=block.post.metal,data=14,patch0-2=14:post.metal.painted,transparency=TRANSPARENT
+block:id=block.post.metal,data=15,patch0-2=15:post.metal.painted,transparency=TRANSPARENT
 
 # (block.signal:0) iron post
 block:id=block.signal,data=0,allfaces=169,txtid=blk0,transparency=TRANSPARENT
@@ -278,10 +281,10 @@ block:id=block.brick.sandy,data=5,allfaces=5:brick.sandy,stdrot=true
 # block.fluid.steam
 # block.glass
 # block.hidden
-# block.slab
 
 # block.stair
-block:id=block.stair,data=*,patch0=0:brick.sandy,patch1=0:brick.infernal,patch2=0:concrete,patch3=0:snow,,patch4=0:ice,patch5=0:iron_block,patch6=0:gold_block,patch7=0:diamond_block,patch8=0:brick.frostbound,patch9=0:brick.quarried,patch10=0:brick.bleachedbone,patch11=0:brick.bloodstained,patch12=0:brick.abyssal,patch13=1:brick.sandy,patch14=1:brick.infernal,patch15=1:brick.frostbound,patch16=1:brick.quarried,patch17=1:brick.bleachedbone,patch18=1:brick.bloodstained,patch19=1:brick.abyssal,patch20=2:brick.sandy,patch21=2:brick.infernal,patch22=2:brick.frostbound,patch23=2:brick.quarried,patch24=2:brick.bleachedbone,patch25=2:brick.bloodstained,patch26=2:brick.abyssal,patch27=5:brick.sandy,patch28=5:brick.infernal,patch29=5:brick.frostbound,patch30=5:brick.quarried,patch31=5:brick.bleachedbone,patch32=5:brick.bloodstained,patch33=5:brick.abyssal,transparency=SEMITRANSPARENT
+# block.slab
+block:id=block.stair,id=block.slab,data=*,patch0=0:brick.sandy,patch1=0:brick.infernal,patch2=0:concrete,patch3=0:snow,,patch4=0:ice,patch5=0:iron_block,patch6=0:gold_block,patch7=0:diamond_block,patch8=0:brick.frostbound,patch9=0:brick.quarried,patch10=0:brick.bleachedbone,patch11=0:brick.bloodstained,patch12=0:brick.abyssal,patch13=1:brick.sandy,patch14=1:brick.infernal,patch15=1:brick.frostbound,patch16=1:brick.quarried,patch17=1:brick.bleachedbone,patch18=1:brick.bloodstained,patch19=1:brick.abyssal,patch20=2:brick.sandy,patch21=2:brick.infernal,patch22=2:brick.frostbound,patch23=2:brick.quarried,patch24=2:brick.bleachedbone,patch25=2:brick.bloodstained,patch26=2:brick.abyssal,patch27=5:brick.sandy,patch28=5:brick.infernal,patch29=5:brick.frostbound,patch30=5:brick.quarried,patch31=5:brick.bleachedbone,patch32=5:brick.bloodstained,patch33=5:brick.abyssal,transparency=SEMITRANSPARENT
 
 # block.wall.alpha
 # block.wall.beta

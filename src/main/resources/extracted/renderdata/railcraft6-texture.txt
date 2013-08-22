@@ -1,5 +1,5 @@
 # Railcraft v6.0+ Block mapping
-modname:Railcraft
+modname:Railcraft[6.0.0-6.99]
 
 # configuration file
 cfgfile:config/railcraft/railcraft.cfg
