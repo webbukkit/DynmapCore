@@ -33,6 +33,12 @@ texture:id=cube.crushed.obsidian
 texture:id=cube.steel
 texture:id=cube.stone.abyssal
 texture:id=cube.stone.quarried
+texturepath:assets/minecraft/textures/blocks/
+texture:id=snow
+texture:id=ice
+texture:id=iron_block
+texture:id=gold_block
+texture:id=diamond_block
 
 # Blocks
 # (block.detector:0-12) Detector
@@ -273,7 +279,10 @@ block:id=block.brick.sandy,data=5,allfaces=5:brick.sandy,stdrot=true
 # block.glass
 # block.hidden
 # block.slab
+
 # block.stair
+block:id=block.stair,data=*,patch0=0:brick.sandy,patch1=0:brick.infernal,patch2=0:concrete,patch3=0:snow,,patch4=0:ice,patch5=0:iron_block,patch6=0:gold_block,patch7=0:diamond_block,patch8=0:brick.frostbound,patch9=0:brick.quarried,patch10=0:brick.bleachedbone,patch11=0:brick.bloodstained,patch12=0:brick.abyssal,patch13=1:brick.sandy,patch14=1:brick.infernal,patch15=1:brick.frostbound,patch16=1:brick.quarried,patch17=1:brick.bleachedbone,patch18=1:brick.bloodstained,patch19=1:brick.abyssal,patch20=2:brick.sandy,patch21=2:brick.infernal,patch22=2:brick.frostbound,patch23=2:brick.quarried,patch24=2:brick.bleachedbone,patch25=2:brick.bloodstained,patch26=2:brick.abyssal,patch27=5:brick.sandy,patch28=5:brick.infernal,patch29=5:brick.frostbound,patch30=5:brick.quarried,patch31=5:brick.bleachedbone,patch32=5:brick.bloodstained,patch33=5:brick.abyssal,transparency=SEMITRANSPARENT
+
 # block.wall.alpha
 # block.wall.beta
 # block.worldlogic

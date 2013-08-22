@@ -26,6 +26,7 @@ public class StairBlockRenderer extends CustomRenderer {
     private int textsetcnt = 0;
     private String textindex = null;
     private String[] tilefields = null;
+    private String[] texturemap;
     
     @Override
     public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
@@ -46,6 +47,13 @@ public class StairBlockRenderer extends CustomRenderer {
             else
                 textsetcnt = 16;
             tilefields = new String[] { textindex };
+            texturemap = new String[textsetcnt];
+            for (int i = 0; i < textsetcnt; i++) {
+                texturemap[i] = custparm.get("textmap" + i);
+                if (texturemap[i] == null) {
+                    texturemap[i] = Integer.toString(i);
+                }
+            }
         }
         return true;
     }
@@ -183,6 +191,15 @@ public class StairBlockRenderer extends CustomRenderer {
             Object o = ctx.getBlockTileEntityField(textindex);
             if(o instanceof Number) {
                 idx = ((Number)o).intValue();
+            }
+            else if (o instanceof String) {
+                String os = (String) o;
+                for (int i = 0; i < texturemap.length; i++) {
+                    if (os.equals(texturemap[i])) {
+                        idx = i;
+                        break;
+                    }
+                }
             }
             if((idx < 0) || (idx >= textsetcnt)) {
                 idx = 0;
