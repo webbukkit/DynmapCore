@@ -237,3 +237,9 @@ customblock:id=block.slab,data=*,class=org.dynmap.hdmap.renderer.RailCraftSlabBl
 # block.post
 customblock:id=block.post,id=block.post.metal,data=*,class=org.dynmap.hdmap.renderer.FenceWallBlockRenderer,type=fence,link0=block.post.metal,link1=block.post
 
+# block.glass
+customblock:id=block.glass,data=*,class=org.dynmap.hdmap.renderer.CTMVertTextureRenderer
+
+# block.wall.alpha
+# block.wall.beta
+customblock:id=block.wall.alpha,id=block.wall.beta,data=*,class=org.dynmap.hdmap.renderer.FenceWallBlockRenderer,type=wall,link0=107,link1=block.wall.alpha,link2=block.wall.beta

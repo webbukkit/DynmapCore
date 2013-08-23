@@ -34,14 +34,34 @@ texture:id=cube.crushed.obsidian
 texture:id=cube.steel
 texture:id=cube.stone.abyssal
 texture:id=cube.stone.quarried
+texture:id=glass,xcount=1,ycount=5
+
 texturepath:assets/minecraft/textures/blocks/
 texture:id=snow
 texture:id=ice
 texture:id=iron_block
 texture:id=gold_block
 texture:id=diamond_block
-texture:id=sandstone_bottom
 texture:id=stone
+texture:id=stonebrick
+texture:id=stonebrick_mossy
+texture:id=stonebrick_cracked
+texture:id=stonebrick_carved
+texture:id=nether_brick
+texture:id=brick
+texture:id=obsidian
+texture:id=sandstone_normal
+texture:id=sandstone_top
+texture:id=sandstone_bottom
+texture:id=sandstone_carved
+texture:id=sandstone_smooth
+texture:id=quartz_block_bottom
+texture:id=quartz_block_chiseled
+texture:id=quartz_block_chiseled_top
+texture:id=quartz_block_lines
+texture:id=quartz_block_lines_top
+texture:id=quartz_block_side
+texture:id=quartz_block_top
 
 # Blocks
 # (block.detector:0-12) Detector
@@ -279,13 +299,58 @@ block:id=block.brick.sandy,data=5,allfaces=5:brick.sandy,stdrot=true
 
 # block.fluid.creosote
 # block.fluid.steam
+
 # block.glass
+block:id=block.glass,data=0,patch0=21000:glass,patch1=21000:glass,patch2=21000:glass,patch3=21003:glass,patch4=21001:glass,patch5=21002:glass,patch6=12004:glass,layer0-5=6,transparency=TRANSPARENT,colorMult=FFFFFF
+block:id=block.glass,data=1,patch0=21000:glass,patch1=21000:glass,patch2=21000:glass,patch3=21003:glass,patch4=21001:glass,patch5=21002:glass,patch6=12004:glass,layer0-5=6,transparency=TRANSPARENT,colorMult=FF6A00
+block:id=block.glass,data=2,patch0=21000:glass,patch1=21000:glass,patch2=21000:glass,patch3=21003:glass,patch4=21001:glass,patch5=21002:glass,patch6=12004:glass,layer0-5=6,transparency=TRANSPARENT,colorMult=FF64FF
+block:id=block.glass,data=3,patch0=21000:glass,patch1=21000:glass,patch2=21000:glass,patch3=21003:glass,patch4=21001:glass,patch5=21002:glass,patch6=12004:glass,layer0-5=6,transparency=TRANSPARENT,colorMult=7F9AD1
+block:id=block.glass,data=4,patch0=21000:glass,patch1=21000:glass,patch2=21000:glass,patch3=21003:glass,patch4=21001:glass,patch5=21002:glass,patch6=12004:glass,layer0-5=6,transparency=TRANSPARENT,colorMult=CFC231
+block:id=block.glass,data=5,patch0=21000:glass,patch1=21000:glass,patch2=21000:glass,patch3=21003:glass,patch4=21001:glass,patch5=21002:glass,patch6=12004:glass,layer0-5=6,transparency=TRANSPARENT,colorMult=3FAA36
+block:id=block.glass,data=6,patch0=21000:glass,patch1=21000:glass,patch2=21000:glass,patch3=21003:glass,patch4=21001:glass,patch5=21002:glass,patch6=12004:glass,layer0-5=6,transparency=TRANSPARENT,colorMult=E585A0
+block:id=block.glass,data=7,patch0=21000:glass,patch1=21000:glass,patch2=21000:glass,patch3=21003:glass,patch4=21001:glass,patch5=21002:glass,patch6=12004:glass,layer0-5=6,transparency=TRANSPARENT,colorMult=444444
+block:id=block.glass,data=8,patch0=21000:glass,patch1=21000:glass,patch2=21000:glass,patch3=21003:glass,patch4=21001:glass,patch5=21002:glass,patch6=12004:glass,layer0-5=6,transparency=TRANSPARENT,colorMult=888888
+block:id=block.glass,data=9,patch0=21000:glass,patch1=21000:glass,patch2=21000:glass,patch3=21003:glass,patch4=21001:glass,patch5=21002:glass,patch6=12004:glass,layer0-5=6,transparency=TRANSPARENT,colorMult=36809E
+block:id=block.glass,data=10,patch0=21000:glass,patch1=21000:glass,patch2=21000:glass,patch3=21003:glass,patch4=21001:glass,patch5=21002:glass,patch6=12004:glass,layer0-5=6,transparency=TRANSPARENT,colorMult=843FBF
+block:id=block.glass,data=11,patch0=21000:glass,patch1=21000:glass,patch2=21000:glass,patch3=21003:glass,patch4=21001:glass,patch5=21002:glass,patch6=12004:glass,layer0-5=6,transparency=TRANSPARENT,colorMult=3441A2
+block:id=block.glass,data=12,patch0=21000:glass,patch1=21000:glass,patch2=21000:glass,patch3=21003:glass,patch4=21001:glass,patch5=21002:glass,patch6=12004:glass,layer0-5=6,transparency=TRANSPARENT,colorMult=5C3A24
+block:id=block.glass,data=13,patch0=21000:glass,patch1=21000:glass,patch2=21000:glass,patch3=21003:glass,patch4=21001:glass,patch5=21002:glass,patch6=12004:glass,layer0-5=6,transparency=TRANSPARENT,colorMult=394C1E
+block:id=block.glass,data=14,patch0=21000:glass,patch1=21000:glass,patch2=21000:glass,patch3=21003:glass,patch4=21001:glass,patch5=21002:glass,patch6=12004:glass,layer0-5=6,transparency=TRANSPARENT,colorMult=A33835
+block:id=block.glass,data=15,patch0=21000:glass,patch1=21000:glass,patch2=21000:glass,patch3=21003:glass,patch4=21001:glass,patch5=21002:glass,patch6=12004:glass,layer0-5=6,transparency=TRANSPARENT,colorMult=2D2D2D
+
 # block.hidden
 
 # block.stair
 # block.slab
-block:id=block.stair,id=block.slab,data=*,patch0=0:brick.sandy,patch1=0:brick.infernal,patch2=0:concrete,patch3=0:snow,,patch4=0:ice,patch5=0:iron_block,patch6=0:gold_block,patch7=0:diamond_block,patch8=0:brick.frostbound,patch9=0:brick.quarried,patch10=0:brick.bleachedbone,patch11=0:brick.bloodstained,patch12=0:brick.abyssal,patch13=1:brick.sandy,patch14=1:brick.infernal,patch15=1:brick.frostbound,patch16=1:brick.quarried,patch17=1:brick.bleachedbone,patch18=1:brick.bloodstained,patch19=1:brick.abyssal,patch20=2:brick.sandy,patch21=2:brick.infernal,patch22=2:brick.frostbound,patch23=2:brick.quarried,patch24=2:brick.bleachedbone,patch25=2:brick.bloodstained,patch26=2:brick.abyssal,patch27=5:brick.sandy,patch28=5:brick.infernal,patch29=5:brick.frostbound,patch30=5:brick.quarried,patch31=5:brick.bleachedbone,patch32=5:brick.bloodstained,patch33=5:brick.abyssal,transparency=SEMITRANSPARENT
+block:id=block.stair,id=block.slab,data=*,patch0=0:brick.sandy,patch1=0:brick.infernal,patch2=0:concrete,patch3=0:snow,,patch4=12000:ice,patch5=0:iron_block,patch6=0:gold_block,patch7=0:diamond_block,patch8=0:brick.frostbound,patch9=0:brick.quarried,patch10=0:brick.bleachedbone,patch11=0:brick.bloodstained,patch12=0:brick.abyssal,patch13=1:brick.sandy,patch14=1:brick.infernal,patch15=1:brick.frostbound,patch16=1:brick.quarried,patch17=1:brick.bleachedbone,patch18=1:brick.bloodstained,patch19=1:brick.abyssal,patch20=2:brick.sandy,patch21=2:brick.infernal,patch22=2:brick.frostbound,patch23=2:brick.quarried,patch24=2:brick.bleachedbone,patch25=2:brick.bloodstained,patch26=2:brick.abyssal,patch27=5:brick.sandy,patch28=5:brick.infernal,patch29=5:brick.frostbound,patch30=5:brick.quarried,patch31=5:brick.bleachedbone,patch32=5:brick.bloodstained,patch33=5:brick.abyssal,transparency=SEMITRANSPARENT
 
 # block.wall.alpha
+block:id=block.wall.alpha,data=0,patch0-2=0:brick.infernal,transparency=TRANSPARENT
+block:id=block.wall.alpha,data=1,patch0-2=0:brick.sandy,transparency=TRANSPARENT
+block:id=block.wall.alpha,data=2,patch0-2=0:concrete,transparency=TRANSPARENT
+block:id=block.wall.alpha,data=3,patch0-2=0:snow,transparency=TRANSPARENT
+block:id=block.wall.alpha,data=4,patch0-2=12000:ice,transparency=TRANSPARENT
+block:id=block.wall.alpha,data=5,patch0-2=0:stonebrick,transparency=TRANSPARENT
+block:id=block.wall.alpha,data=6,patch0-2=0:stonebrick_mossy,transparency=TRANSPARENT
+block:id=block.wall.alpha,data=7,patch0-2=0:stonebrick_cracked,transparency=TRANSPARENT
+block:id=block.wall.alpha,data=8,patch0-2=0:stonebrick_carved,transparency=TRANSPARENT
+block:id=block.wall.alpha,data=9,patch0-2=0:nether_brick,transparency=TRANSPARENT
+block:id=block.wall.alpha,data=10,patch0-2=0:brick,transparency=TRANSPARENT
+block:id=block.wall.alpha,data=11,patch0=0:sandstone_normal,patch1=0:sandstone_top,patch2=0:sandstone_bottom,transparency=TRANSPARENT
+block:id=block.wall.alpha,data=12,patch0=0:sandstone_carved,patch1=0:sandstone_top,patch2=0:sandstone_bottom,transparency=TRANSPARENT
+block:id=block.wall.alpha,data=13,patch0=0:sandstone_smooth,patch1=0:sandstone_top,patch2=0:sandstone_bottom,transparency=TRANSPARENT
+block:id=block.wall.alpha,data=14,patch0-2=0:obsidian,transparency=TRANSPARENT
+block:id=block.wall.alpha,data=15,patch0-2=0:brick.frostbound,transparency=TRANSPARENT
+
 # block.wall.beta
+block:id=block.wall.beta,data=0,patch0=0:quartz_block_side,patch1=0:quartz_block_top,patch2=0:quartz_block_bottom,transparency=TRANSPARENT
+block:id=block.wall.beta,data=1,patch0=0:quartz_block_chiseled,patch1-2=0:quartz_block_chiseled_top,transparency=TRANSPARENT
+block:id=block.wall.beta,data=2,patch0-2=0:iron_block,transparency=TRANSPARENT
+block:id=block.wall.beta,data=3,patch0-2=0:gold_block,transparency=TRANSPARENT
+block:id=block.wall.beta,data=4,patch0-2=0:diamond_block,transparency=TRANSPARENT
+block:id=block.wall.beta,data=5,patch0-2=0:brick.abyssal,transparency=TRANSPARENT
+block:id=block.wall.beta,data=6,patch0-2=0:brick.quarried,transparency=TRANSPARENT
+block:id=block.wall.beta,data=7,patch0-2=0:brick.bloodstained,transparency=TRANSPARENT
+block:id=block.wall.beta,data=8,patch0-2=0:brick.bleachedbone,transparency=TRANSPARENT
+
 # block.worldlogic
