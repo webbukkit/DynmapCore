@@ -1,5 +1,5 @@
-# Biomes O Plenty Block mapping
-version:1.6.2-
+# Biomes O Plenty Block mapping (0.5.9.x for 1.5.2 and 1.6.2)
+version:1.5.2-
 modname:BiomesOPlenty[0.5.9]
 
 # configuration file
