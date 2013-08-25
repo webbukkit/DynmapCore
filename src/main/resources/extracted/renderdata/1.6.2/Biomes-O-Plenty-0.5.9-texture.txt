@@ -4,6 +4,7 @@ modname:BiomesOPlenty[0.5.9]
 
 # configuration file
 cfgfile:config/biomesoplenty/main.cfg
+cfgfile:config/BiomesOPlenty.cfg
 
 # Files
 texturepath:assets/biomesoplenty/textures/blocks/
@@ -25,11 +26,16 @@ texture:id=bigflowerred
 texture:id=bigflowerstem_heart
 texture:id=bigflowerstem_side
 texture:id=bigfloweryellow
+texture:id=bones_large
+texture:id=bones_medium
+texture:id=bones_small
 texture:id=bush
 texture:id=cactus
 texture:id=cattail
 texture:id=cattailbottom
 texture:id=cattailtop
+texture:id=celestiallens
+texture:id=cloud
 texture:id=clover
 texture:id=cragrock
 texture:id=daisy
@@ -41,6 +47,7 @@ texture:id=desertsprouts
 texture:id=drieddirt
 texture:id=dunegrass
 texture:id=glowflower
+texture:id=grave
 texture:id=harddirt
 texture:id=hardice
 texture:id=hardsand
@@ -61,6 +68,7 @@ texture:id=item_barley
 texture:id=item_cattail
 texture:id=item_highgrass
 texture:id=item_moss
+texture:id=kelp
 texture:id=leaves_acacia_fancy
 texture:id=leaves_apple
 texture:id=leaves_apple0_fancy
@@ -144,6 +152,9 @@ texture:id=redcobble
 texture:id=redrock
 texture:id=rubyore
 texture:id=rubyblock
+texture:id=sacrificialfocus_empty
+texture:id=sacrificialfocus_active
+texture:id=sacrificialfocus_villager
 texture:id=sapling_acacia
 texture:id=sapling_apple
 texture:id=sapling_bamboo
@@ -574,3 +585,32 @@ block:id=Stone_Single_Slab_ID,data=1,data=9,allfaces=0:redbrick,stdrot=true,tran
 block:id=Stone_Single_Slab_ID,data=2,data=10,allfaces=0:mudbrick,stdrot=true,transparency=SEMITRANSPARENT
 block:id=Stone_Single_Slab_ID,data=3,data=11,allfaces=0:holycobble,stdrot=true,transparency=SEMITRANSPARENT
 block:id=Stone_Single_Slab_ID,data=4,data=12,allfaces=0:holybrick,stdrot=true,transparency=SEMITRANSPARENT
+
+# Bones ID
+block:id=Bones_ID,data=0,data=3,data=4,allfaces=0:bones_small,transparency=TRANSPARENT
+block:id=Bones_ID,data=1,data=5,data=6,allfaces=0:bones_medium,transparency=TRANSPARENT
+block:id=Bones_ID,data=2,allfaces=0:bones_large,transparency=TRANSPARENT
+
+# "Cloud ID"
+block:id=Cloud_ID,data=*,allfaces=12000:cloud,transparency=TRANSPARENT
+
+# "Glass ID"
+block:id=Glass_ID,data=0,allfaces=12000:celestiallens,transparency=TRANSPARENT
+block:id=Glass_ID,data=1,allfaces=12000:sacrificialfocus_empty,transparency=TRANSPARENT
+block:id=Glass_ID,data=2,allfaces=12000:sacrificialfocus_active,transparency=TRANSPARENT
+block:id=Glass_ID,data=3,allfaces=12000:sacrificialfocus_villager,transparency=TRANSPARENT
+
+# "Coral ID"
+block:id=Coral_ID,data=*,patch0=0:kelp,transparency=TRANSPARENT
+
+# "Grave ID"
+block:id=Grave_ID,data=*,allfaces=0:grave,transparency=TRANSPARENT
+
+#TODO
+# "Altar ID"
+# "Crystal ID"
+# "Ivy ID"
+# "Jacaranda ID"
+# "Mushroom ID"
+# "Puddle ID"
+# "terrain_block_ids_-_must_be_below_255/Long_Grass_ID"
