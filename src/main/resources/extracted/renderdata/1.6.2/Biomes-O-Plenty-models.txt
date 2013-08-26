@@ -1,8 +1,10 @@
-# Biomes O Plenty Block mapping
-version:1.6.2-
-modname:BiomesOPlenty[0.6.0-]
+# Biomes O Plenty Block mapping (0.5.9.x+ for 1.5.2 and 1.6.2)
+version:1.5.2-
+modname:BiomesOPlenty[0.5.9-]
 
 # configuration file
+cfgfile:config/biomesoplenty/main.cfg
+cfgfile:config/BiomesOPlenty.cfg
 cfgfile:config/biomesoplenty/ids.cfg
 
 # Patches
@@ -47,47 +49,36 @@ layer:1
 #    I:"Skystone Brick Stairs ID"=1966
 #    I:"Skystone Cobble Stairs ID"=1965
 #    I:"Willow Stairs ID"=1961
-customblock:id=Acacia_Stairs_ID,id=Cherry_Stairs_ID,id=Dark_Stairs_ID,id=Fir_Stairs_ID,id=Hell_Bark_Stairs_ID,id=Holy_Stairs_ID,id=Magic_Stairs_ID,id=Mangrove_Stairs_ID,id=Mud_Brick_Stairs_ID,,id=Palm_Stairs_ID,id=Pine_Stairs_ID,id=Red_Brick_Stairs_ID,id=Red_Cobble_Stairs_ID,id=Redwood_Stairs_ID,id=Skystone_Brick_Stairs_ID,id=Skystone_Cobble_Stairs_ID,id=Willow_Stairs_ID,data=*,class=org.dynmap.hdmap.renderer.StairBlockRenderer
+#    "Jacaranda ID"
+customblock:id=Acacia_Stairs_ID,id=Cherry_Stairs_ID,id=Dark_Stairs_ID,id=Fir_Stairs_ID,id=Hell_Bark_Stairs_ID,id=Holy_Stairs_ID,id=Magic_Stairs_ID,id=Mangrove_Stairs_ID,id=Mud_Brick_Stairs_ID,,id=Palm_Stairs_ID,id=Pine_Stairs_ID,id=Red_Brick_Stairs_ID,id=Red_Cobble_Stairs_ID,id=Redwood_Stairs_ID,id=Skystone_Brick_Stairs_ID,id=Skystone_Cobble_Stairs_ID,id=Willow_Stairs_ID,id=Jacaranda_ID,data=*,class=org.dynmap.hdmap.renderer.StairBlockRenderer
 
 #  "Sapling ID"
 #  "Anenome ID"
 #  "Bamboo ID"
 #  "Foliage ID"
 #  "Flower ID"
-patchblock:id=Sapling_ID,id=Flower_ID,id=Bamboo_ID,id=Foliage_ID,data=*,patch0=VertX1Z0ToX0Z1,patch1=VertX1Z0ToX0Z1@90
+#  "Mushroom ID"
+patchblock:id=Sapling_ID,id=Flower_ID,id=Bamboo_ID,id=Foliage_ID,id=Mushroom_ID,data=*,patch0=VertX1Z0ToX0Z1,patch1=VertX1Z0ToX0Z1@90
 
-# Willow - N side of block
+#  "Willow ID"
 #  "Tree Moss ID"
 #  "Moss ID"
-patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,data=2,patch0=VertX0In
-# Willow - E side of block
-patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,data=4,patch0=VertX0In@90
-# Willow - S side of block
-patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,data=8,patch0=VertX0In@180
-# Willow - W side of block
-patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,data=1,patch0=VertX0In@270
-# Willow - N+E sides of block
-patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,data=6,patch0=VertX0In,patch1=VertX0In@90
-# Willow - E+S side of block
-patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,data=12,patch0=VertX0In@90,patch1=VertX0In@180
-# Willow - S+W side of block
-patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,data=9,patch0=VertX0In@180,patch1=VertX0In@270
-# Willow - W+N side of block
-patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,data=3,patch0=VertX0In@270,patch1=VertX0In
-# Willow - N+S sides of block
-patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,data=10,patch0=VertX0In,patch1=VertX0In@180
-# Willow - E+W side of block
-patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,data=5,patch0=VertX0In@90,patch1=VertX0In@270
-# Willow - N+E+W sides of block
-patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,data=7,patch0=VertX0In@90,patch1=VertX0In@270,patch2=VertX0In
-# Willow - N+E+S side of block
-patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,data=14,patch0=VertX0In@180,patch1=VertX0In,patch2=VertX0In@90
-# Willow - E+S+W side of block
-patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,data=13,patch0=VertX0In@270,patch1=VertX0In@90,patch2=VertX0In@180
-# Willow - N+S+W side of block
-patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,data=11,patch0=VertX0In,patch1=VertX0In@180,patch2=VertX0In@270
-# Willow - N+S+E+W sides of block
-patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,data=15,patch0=VertX0In@270,patch1=VertX0In@90,patch2=VertX0In@180,patch3=VertX0In
+#  "Ivy ID"
+patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,id=Ivy_ID,data=2,patch0=VertX0In
+patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,id=Ivy_ID,data=4,patch0=VertX0In@90
+patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,id=Ivy_ID,data=8,patch0=VertX0In@180
+patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,id=Ivy_ID,data=1,patch0=VertX0In@270
+patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,id=Ivy_ID,data=6,patch0=VertX0In,patch1=VertX0In@90
+patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,id=Ivy_ID,data=12,patch0=VertX0In@90,patch1=VertX0In@180
+patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,id=Ivy_ID,data=9,patch0=VertX0In@180,patch1=VertX0In@270
+patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,id=Ivy_ID,data=3,patch0=VertX0In@270,patch1=VertX0In
+patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,id=Ivy_ID,data=10,patch0=VertX0In,patch1=VertX0In@180
+patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,id=Ivy_ID,data=5,patch0=VertX0In@90,patch1=VertX0In@270
+patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,id=Ivy_ID,data=7,patch0=VertX0In@90,patch1=VertX0In@270,patch2=VertX0In
+patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,id=Ivy_ID,data=14,patch0=VertX0In@180,patch1=VertX0In,patch2=VertX0In@90
+patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,id=Ivy_ID,data=13,patch0=VertX0In@270,patch1=VertX0In@90,patch2=VertX0In@180
+patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,id=Ivy_ID,data=11,patch0=VertX0In,patch1=VertX0In@180,patch2=VertX0In@270
+patchblock:id=Willow_ID,id=Tree_Moss_ID,id=Moss_ID,id=Ivy_ID,data=15,patch0=VertX0In@270,patch1=VertX0In@90,patch2=VertX0In@180,patch3=VertX0In
 
 #  "Plant ID"
 patchblock:id=Plant_ID,data=*,patch0=VertX075,patch1=VertX075@90,patch2=VertX025,patch3=VertX025@90
@@ -249,3 +240,6 @@ block:id=Grave_ID,data=0,scale=16
 rotate:id=Grave_ID,data=2,rot=90
 block:id=Grave_ID,data=1,scale=16
 rotate:id=Grave_ID,data=3,rot=90
+
+# Puddle ID
+boxblock:id=Puddle_ID,data=*,ymax=0.8135

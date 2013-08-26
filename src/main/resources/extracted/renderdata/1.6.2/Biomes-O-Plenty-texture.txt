@@ -1,14 +1,18 @@
-# Biomes O Plenty Block mapping
-version:1.6.2-
-modname:BiomesOPlenty[0.6.0-]
+# Biomes O Plenty Block mapping (0.5.9.x+ for 1.5.2 and 1.6.2)
+version:1.5.2-
+modname:BiomesOPlenty[0.5.9-]
 
 # configuration file
+cfgfile:config/biomesoplenty/main.cfg
+cfgfile:config/BiomesOPlenty.cfg
 cfgfile:config/biomesoplenty/ids.cfg
 
 # Files
 texturepath:assets/biomesoplenty/textures/blocks/
 texture:id=algae
 texture:id=aloe
+texture:id=altarframe
+texture:id=altarframetop
 texture:id=amethystblock
 texture:id=amethystore
 texture:id=anemone
@@ -25,6 +29,7 @@ texture:id=bigflowerred
 texture:id=bigflowerstem_heart
 texture:id=bigflowerstem_side
 texture:id=bigfloweryellow
+texture:id=bluemilk
 texture:id=bones_large
 texture:id=bones_medium
 texture:id=bones_small
@@ -37,6 +42,7 @@ texture:id=celestiallens
 texture:id=cloud
 texture:id=clover
 texture:id=cragrock
+texture:id=crystal
 texture:id=daisy
 texture:id=dandelion
 texture:id=deadbloom
@@ -46,6 +52,7 @@ texture:id=desertsprouts
 texture:id=drieddirt
 texture:id=dunegrass
 texture:id=glowflower
+texture:id=glowshroom
 texture:id=grave
 texture:id=harddirt
 texture:id=hardice
@@ -67,6 +74,7 @@ texture:id=item_barley
 texture:id=item_cattail
 texture:id=item_highgrass
 texture:id=item_moss
+texture:id=ivy
 texture:id=kelp
 texture:id=leaves_acacia_fancy
 texture:id=leaves_apple
@@ -121,6 +129,9 @@ texture:id=log_redwood_heart
 texture:id=log_redwood_side
 texture:id=log_willow_heart
 texture:id=log_willow_side
+texture:id=longgrass1
+texture:id=longgrass2
+texture:id=longgrass3
 texture:id=mediumgrass
 texture:id=moss
 texture:id=mud
@@ -145,6 +156,7 @@ texture:id=plank_redwood
 texture:id=plank_willow
 texture:id=poisonivy
 texture:id=portal
+texture:id=portobello
 texture:id=quicksand
 texture:id=redbrick
 texture:id=redcobble
@@ -195,6 +207,9 @@ texture:id=violet
 texture:id=wildcarrot
 texture:id=wildflower
 texture:id=willow
+
+texturepath:assets/minecraft/textures/blocks/
+texture:id=dirt
 
 # Biomes
 #  Bamboo Forest
@@ -331,6 +346,8 @@ block:id=terrain_block_ids_-_must_be_below_255/Hard_Sand_ID,data=*,allfaces=0:ha
 block:id=terrain_block_ids_-_must_be_below_255/Holy_Dirt_ID,data=0,allfaces=0:holydirt,stdrot=true
 #  "Holy Grass ID"
 block:id=terrain_block_ids_-_must_be_below_255/Holy_Grass_ID,data=0,allsides=0:holygrass_side,top=1000:holygrass_top,bottom=0:holydirt,stdrot=true
+# "Long Grass ID"
+block:id=terrain_block_ids_-_must_be_below_255/Long_Grass_ID,data=*,top=0:longgrass1,bottom=0:longgrass3,allsides=0:longgrass2,stdrot=true
 #  "Mud ID"
 block:id=terrain_block_ids_-_must_be_below_255/Mud_ID,data=0,allfaces=0:mud,stdrot=true
 #  "Origin Grass ID"
@@ -570,6 +587,7 @@ block:id=Redwood_Stairs_ID,data=*,patch0-2=0:plank_redwood,transparency=SEMITRAN
 block:id=Skystone_Brick_Stairs_ID,data=*,patch0-2=0:holybrick,transparency=SEMITRANSPARENT
 block:id=Skystone_Cobble_Stairs_ID,data=*,patch0-2=0:holycobble,transparency=SEMITRANSPARENT
 block:id=Willow_Stairs_ID,data=*,patch0-2=0:plank_willow,transparency=SEMITRANSPARENT
+block:id=Jacaranda_ID,data=*,patch0-2=0:plank_jacaranda,transparency=SEMITRANSPARENT
 
 # Stone Double Slabs
 block:id=Stone_Double_Slab_ID,data=0,data=8,allfaces=0:redcobble,stdrot=true
@@ -605,11 +623,20 @@ block:id=Coral_ID,data=*,patch0=0:kelp,transparency=TRANSPARENT
 # "Grave ID"
 block:id=Grave_ID,data=*,allfaces=0:grave,transparency=TRANSPARENT
 
-#TODO
-# "Altar ID"
-# "Crystal ID"
 # "Ivy ID"
-# "Jacaranda ID"
-# "Mushroom ID"
+block:id=Ivy_ID,data=*,patch0-4=2000:ivy,transparency=TRANSPARENT
+
 # "Puddle ID"
-# "terrain_block_ids_-_must_be_below_255/Long_Grass_ID"
+block:id=Puddle_ID,data=*,allfaces=0:dirt,transparency=TRANSPARENT
+
+# "Mushroom ID"
+block:id=Mushroom_ID,data=0,patch0-1=0:toadstool,transparency=TRANSPARENT
+block:id=Mushroom_ID,data=1,patch0-1=0:portobello,transparency=TRANSPARENT
+block:id=Mushroom_ID,data=2,patch0-1=0:bluemilk,transparency=TRANSPARENT
+block:id=Mushroom_ID,data=3,patch0-1=0:glowshroom,transparency=TRANSPARENT
+
+# "Crystal ID"
+block:id=Crystal_ID,data=*,allfaces=0:crystal,stdrot=true
+
+# "Altar ID"
+block:id=Altar_ID,topbottom=0:altarframetop,allsides=0:altarframe,stdrot=true
