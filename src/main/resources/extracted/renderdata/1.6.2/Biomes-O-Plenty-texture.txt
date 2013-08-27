@@ -2,6 +2,7 @@
 version:1.5.2-
 modname:BiomesOPlenty[0.5.9-]
 
+var:altarframe=0
 # configuration file
 cfgfile:config/biomesoplenty/main.cfg
 cfgfile:config/BiomesOPlenty.cfg
