@@ -1,0 +1,405 @@
+# ExtraBiomesXL 3+ Block mapping (v1.6.2 or later)
+modname:ExtrabiomesXL
+version:1.6.2-
+# configuration file
+cfgfile:config/extrabiomes/extrabiomes.cfg
+
+# Files
+texturefile:id=blk0,filename=extrabiomes/extrabiomes.png,xcount=16,ycount=16
+
+texturepath:assets/extrabiomesxl/textures/blocks
+texture:id=autumnshrub
+texture:id=browngrassshort
+texture:id=browngrasstall
+texture:id=calla
+texture:id=cattail
+texture:id=crackedsand
+texture:id=deadgrassshort
+texture:id=deadgrasstall
+texture:id=deadgrassyellow
+texture:id=hydrangea
+texture:id=leafpile
+texture:id=leavesacaciafancy
+texture:id=leavesbrownautumnfancy
+texture:id=leavesfirfancy
+texture:id=leavesorangeautumnfancy
+texture:id=leavesredautumnfancy
+texture:id=leavesredwoodfancy
+texture:id=leavessakurafancy
+texture:id=leavesyellowautumnfancy
+texture:id=leavesbaldcypressfancy
+texture:id=leavesjapanesemaplefancy
+texture:id=leavesjapanesemapleshrubfancy
+texture:id=leavesrainboweucalyptusfancy
+texture:id=logacaciaside
+texture:id=logacaciatop
+texture:id=logfirside
+texture:id=logfirtop
+texture:id=lograinboweucalyptusside
+texture:id=lograinboweucalyptustop
+texture:id=lograinboweucalyptusknee1
+texture:id=lograinboweucalyptusknee2
+texture:id=lograinboweucalyptusknee3
+texture:id=lograinboweucalyptusknee4
+texture:id=lograinboweucalyptusside1
+texture:id=lograinboweucalyptusside2
+texture:id=logautumnside
+texture:id=logautumntop
+texture:id=logbaldcypressside
+texture:id=logbaldcypresstop
+texture:id=logbaldcypressknee1
+texture:id=logbaldcypressknee2
+texture:id=logbaldcypressknee3
+texture:id=logbaldcypressknee4
+texture:id=logbaldcypressside1
+texture:id=logbaldcypressside2
+texture:id=logcypressside
+texture:id=logcypresstop
+texture:id=logjapanesemapleside
+texture:id=logjapanesemapletop
+texture:id=orangeflowers
+texture:id=planksacacia
+texture:id=planksfir
+texture:id=planksredwood
+texture:id=plankscypress
+texture:id=planksjapanesemaple
+texture:id=planksrainboweucalyptus
+texture:id=planksautumn
+texture:id=planksbaldcypress
+texture:id=plankssakura
+texture:id=purpleflowers
+texture:id=quicksand
+texture:id=redrock
+texture:id=redrockcobble
+texture:id=redrockbrick
+texture:id=redrockslabside
+texture:id=redrockslabtop
+texture:id=root
+texture:id=saplingbrownautumn
+texture:id=saplingorangeautumn
+texture:id=saplingredautumn
+texture:id=saplingyellowautumn
+texture:id=saplingfir
+texture:id=saplingredwood
+texture:id=saplingacacia
+texture:id=saplingcypress
+texture:id=saplingbaldcypress
+texture:id=saplingjapanesemaple
+texture:id=saplingjapanesemapleshrub
+texture:id=saplingrainboweucalyptus
+texture:id=saplingsakura
+texture:id=tinycactus
+texture:id=toadstools
+
+# Biomes
+#  Autumn Woods
+biome:id=biome/autumnwoods.id,temp=1.0,rain=0.1
+#  Forested Hills
+biome:id=biome/forestedhills.id,temp=0.8,rain=1.0
+#  Green Hills
+biome:id=biome/greenhills.id,temp=0.7,rain=0.8
+#  Meadow
+biome:id=biome/meadow.id,temp=1.0,rain=1.0
+#  Mini Jungle
+biome:id=biome/minijungle.id,waterColorMult=24B01C
+#  Pine Forest
+biome:id=biome/pineforest.id,temp=0.4,rain=0.6
+#  Snowy Forest
+biome:id=biome/snowyforest.id,temp=0.0,rain=0.2
+#  Snowy Rainforest
+biome:id=biome/snowyrainforest.id,temp=0.0,rain=0.1
+#  Wasteland
+biome:id=biome/wasteland.id,waterColorMult=F08000
+#  Woodlands
+biome:id=biome/woodlands.id,temp=1.0,rain=0.2
+
+# Blocks
+# Cracked Sand (crackedsandID:*)
+block:id=crackedsand.id,data=*,allfaces=0:crackedsand,stdrot=true
+# Red Rock (redrockID:0)
+block:id=redrock.id,data=0,allfaces=0:redrock,stdrot=true
+# Red Rock Cobblestone (redrockID:1)
+block:id=redrock.id,data=1,allfaces=0:redrockcobble,stdrot=true
+# Red Rock Brick (redrockID:2)
+block:id=redrock.id,data=2,allfaces=0:redrockbrick,stdrot=true
+# Quicksand (quicksandID:*)
+block:id=quicksand.id,data=*,allfaces=0:quicksand,stdrot=true
+# Brown Autumn Leaves (autumnleavesID:0,4,8,12)
+block:id=autumnleaves.id,data=0,data=4,data=8,data=12,allfaces=0:leavesbrownautumnfancy,stdrot=true,transparency=LEAVES
+# Orange Autumn Leaves (autumnleavesID:1,5,9,13)
+block:id=autumnleaves.id,data=1,data=5,data=9,data=13,allfaces=0:leavesorangeautumnfancy,stdrot=true,transparency=LEAVES
+# Red Autumn Leaves (autumnleavesID:2,6,10,14)
+block:id=autumnleaves.id,data=2,data=6,data=10,data=14,allfaces=0:leavesredautumnfancy,stdrot=true,transparency=LEAVES
+# Yellow Autumn Leaves (autumnleavesID:3,7,11,15)
+block:id=autumnleaves.id,data=3,data=7,data=11,data=15,allfaces=0:leavesyellowautumnfancy,stdrot=true,transparency=LEAVES
+# Fir leaves (greenleavesID:0,4,8,12)
+block:id=greenleaves.id,data=0,data=4,data=8,data=12,allfaces=2000:leavesfirfancy,stdrot=true,transparency=LEAVES
+# Redwood leaves (greenleavesID:1,5,9,13)
+block:id=greenleaves.id,data=1,data=5,data=9,data=13,allfaces=2000:leavesredwoodfancy,stdrot=true,transparency=LEAVES
+# Acacia leaves (greenleavesID:2,6,10,14)
+block:id=greenleaves.id,data=2,data=6,data=10,data=14,allfaces=2000:leavesacaciafancy,stdrot=true,transparency=LEAVES
+# Autumn Shrub (flowerID:0)
+block:id=flower.id,data=0,patch0-1=0:autumnshrub,transparency=TRANSPARENT
+# Hydrangea (flowerID:1)
+block:id=flower.id,data=1,patch0-1=0:hydrangea,transparency=TRANSPARENT
+# Orange (flowerID:2)
+block:id=flower.id,data=2,patch0-1=0:orangeflowers,transparency=TRANSPARENT
+# Purple (flowerID:3)
+block:id=flower.id,data=3,patch0-1=0:purpleflowers,transparency=TRANSPARENT
+# Tiny Cactus (flowerID:4)
+block:id=flower.id,data=4,patch0-1=0:tinycactus,transparency=TRANSPARENT
+# Root (flowerID:5)
+block:id=flower.id,data=5,patch0-1=0:root,transparency=TRANSPARENT
+# Toadstools (flowerID:6)
+block:id=flower.id,data=6,patch0-1=0:toadstools,transparency=TRANSPARENT
+# White (flowerID:7)
+block:id=flower.id,data=7,patch0-1=0:calla,transparency=TRANSPARENT
+# Brown tall grass (grassID:0)
+block:id=grass.id,data=0,patch0-1=0:browngrasstall,transparency=TRANSPARENT
+# Short Brown grass (grassID:1)
+block:id=grass.id,data=1,patch0-1=0:browngrassshort,transparency=TRANSPARENT
+# Dead grass (grassID:2)
+block:id=grass.id,data=2,patch0-1=0:deadgrassshort,transparency=TRANSPARENT
+# Dead tall grass (grassID:3)
+block:id=grass.id,data=3,patch0-1=0:deadgrasstall,transparency=TRANSPARENT
+# Dead yellow grass (grassID:4)
+block:id=grass.id,data=4,patch0-1=0:deadgrassyellow,transparency=TRANSPARENT
+# Brown Sapling (saplingID:0,8)
+block:id=sapling.id,data=0,data=8,patch0-1=0:saplingbrownautumn,transparency=TRANSPARENT
+# Orange Sapling (saplingID:1,9)
+block:id=sapling.id,data=1,data=9,patch0-1=0:saplingorangeautumn,transparency=TRANSPARENT
+# Purple Sapling (saplingID:2,10)
+block:id=sapling.id,data=2,data=10,patch0-1=0:saplingredautumn,transparency=TRANSPARENT
+# Yellow Sapling (saplingID:3,11)
+block:id=sapling.id,data=3,data=11,patch0-1=0:saplingyellowautumn,transparency=TRANSPARENT
+# Fir Sapling (saplingID:4,12)
+block:id=sapling.id,data=4,data=12,patch0-1=0:saplingfir,transparency=TRANSPARENT
+# Redwood Sapling (saplingID:5,13)
+block:id=sapling.id,data=5,data=13,patch0-1=0:saplingredwood,transparency=TRANSPARENT
+# Acacia Sapling (saplingID:6,14)
+block:id=sapling.id,data=6,data=14,patch0-1=0:saplingacacia,transparency=TRANSPARENT
+# Cypress Sapling (saplingID:7,15)
+block:id=sapling.id,data=7,data=15,patch0-1=0:saplingcypress,transparency=TRANSPARENT
+# Cattail (cattailID:*)
+block:id=cattail.id,data=*,patch0-3=0:cattail,transparency=TRANSPARENT
+# Leaf piles (leafpileID:*)
+block:id=leafpile.id,data=*,patch0=2000:leafpile,transparency=TRANSPARENT
+
+# acaciastairs.id
+block:id=acaciastairs.id,data=*,patch0-2=0:planksacacia,transparency=SEMITRANSPARENT
+
+# customlog.id
+block:id=customlog.id,data=0,allsides=0:logfirside,topbottom=6000:logfirtop
+block:id=customlog.id,data=4,north=0:logfirtop,south=0:logfirtop,east=4000:logfirside,west=4000:logfirside,top=0:logfirside,bottom=0:logfirside
+block:id=customlog.id,data=8,north=4000:logfirside,south=4000:logfirside,east=0:logfirtop,west=0:logfirtop,top=4000:logfirside,bottom=4000:logfirside
+block:id=customlog.id,data=12,allsides=0:logfirside,topbottom=6000:logfirside
+block:id=customlog.id,data=1,allsides=0:logacaciaside,topbottom=6000:logacaciatop
+block:id=customlog.id,data=5,north=0:logacaciatop,south=0:logacaciatop,east=4000:logacaciaside,west=4000:logacaciaside,top=0:logacaciaside,bottom=0:logacaciaside
+block:id=customlog.id,data=9,north=4000:logacaciaside,south=4000:logacaciaside,east=0:logacaciatop,west=0:logacaciatop,top=4000:logacaciaside,bottom=4000:logacaciaside
+block:id=customlog.id,data=13,allsides=0:logacaciaside,topbottom=6000:logacaciaside
+block:id=customlog.id,data=2,allsides=0:logcypressside,topbottom=6000:logcypresstop
+block:id=customlog.id,data=6,north=0:logcypresstop,south=0:logcypresstop,east=4000:logcypressside,west=4000:logcypressside,top=0:logcypressside,bottom=0:logcypressside
+block:id=customlog.id,data=10,north=4000:logcypressside,south=4000:logcypressside,east=0:logcypresstop,west=0:logcypresstop,top=4000:logcypressside,bottom=4000:logcypressside
+block:id=customlog.id,data=14,allsides=0:logcypressside,topbottom=6000:logcypressside
+block:id=customlog.id,data=3,allsides=0:logjapanesemapleside,topbottom=6000:logjapanesemapletop
+block:id=customlog.id,data=7,north=0:logjapanesemapletop,south=0:logjapanesemapletop,east=4000:logjapanesemapleside,west=4000:logjapanesemapleside,top=0:logjapanesemapleside,bottom=0:logjapanesemapleside
+block:id=customlog.id,data=11,north=4000:logjapanesemapleside,south=4000:logjapanesemapleside,east=0:logjapanesemapletop,west=0:logjapanesemapletop,top=4000:logjapanesemapleside,bottom=4000:logjapanesemapleside
+block:id=customlog.id,data=15,allsides=0:logjapanesemapleside,topbottom=6000:logjapanesemapleside
+
+# doubleredrockslab.id
+block:id=doubleredrockslab.id,data=0,data=8,allfaces=0:redrockcobble,stdrot=true
+block:id=doubleredrockslab.id,data=1,data=9,allsides=0:redrockslabside,topbottom=0:redrockslabtop,stdrot=true
+block:id=doubleredrockslab.id,data=2,data=10,allfaces=0:redrockbrick,stdrot=true
+
+# doublewoodslab.id
+block:id=doublewoodslab.id,data=0,allfaces=0:planksredwood,stdrot=true
+block:id=doublewoodslab.id,data=1,allfaces=0:planksfir,stdrot=true
+block:id=doublewoodslab.id,data=2,allfaces=0:planksacacia,stdrot=true
+block:id=doublewoodslab.id,data=3,allfaces=0:plankscypress,stdrot=true
+block:id=doublewoodslab.id,data=4,allfaces=0:planksjapanesemaple,stdrot=true
+block:id=doublewoodslab.id,data=5,allfaces=0:planksrainboweucalyptus,stdrot=true
+block:id=doublewoodslab.id,data=6,allfaces=0:planksautumn,stdrot=true
+block:id=doublewoodslab.id,data=7,allfaces=0:planksbaldcypress,stdrot=true
+
+# firstairs.id
+block:id=firstairs.id,data=*,patch0-2=0:planksfir,transparency=SEMITRANSPARENT
+
+# planks.id
+block:id=planks.id,data=0,allfaces=0:planksredwood,stdrot=true
+block:id=planks.id,data=1,allfaces=0:planksfir,stdrot=true
+block:id=planks.id,data=2,allfaces=0:planksacacia,stdrot=true
+block:id=planks.id,data=3,allfaces=0:plankscypress,stdrot=true
+block:id=planks.id,data=4,allfaces=0:planksjapanesemaple,stdrot=true
+block:id=planks.id,data=5,allfaces=0:planksrainboweucalyptus,stdrot=true
+block:id=planks.id,data=6,allfaces=0:planksautumn,stdrot=true
+block:id=planks.id,data=7,allfaces=0:planksbaldcypress,stdrot=true
+block:id=planks.id,data=8,allfaces=0:plankssakura,stdrot=true
+
+# quarterlog0.id (NW)
+# Redwood corner
+block:id=quarterlog0.id,data=0,face0=6160,face1=6160,face2=145,face3=192,face4=144,face5=193,txtid=blk0
+block:id=quarterlog0.id,data=4,face0=192,face1=145,face2=6193,face3=6144,face4=161,face5=160,txtid=blk0
+block:id=quarterlog0.id,data=8,face0=6192,face1=6144,face2=161,face3=160,face4=6145,face5=6193,txtid=blk0
+# Fir corner
+block:id=quarterlog0.id,data=1,face0=6162,face1=6162,face2=147,face3=194,face4=146,face5=195,txtid=blk0
+block:id=quarterlog0.id,data=5,face0=194,face1=147,face2=6195,face3=6146,face4=163,face5=162,txtid=blk0
+block:id=quarterlog0.id,data=9,face0=6194,face1=6146,face2=163,face3=162,face4=6147,face5=6195,txtid=blk0
+# Oak corner
+block:id=quarterlog0.id,data=2,face0=6164,face1=6164,face2=149,face3=196,face4=148,face5=197,txtid=blk0
+block:id=quarterlog0.id,data=6,face0=196,face1=149,face2=6197,face3=6148,face4=165,face5=164,txtid=blk0
+block:id=quarterlog0.id,data=10,face0=6196,face1=6148,face2=165,face3=164,face4=6149,face5=6197,txtid=blk0
+
+# quarterlog1.id (NE)
+# Redwood corner
+block:id=quarterlog1.id,data=0,face0=6161,face1=6161,face2=144,face3=193,face4=192,face5=145,txtid=blk0
+block:id=quarterlog1.id,data=4,face0=193,face1=144,face2=6145,face3=6192,face4=160,face5=161,txtid=blk0
+block:id=quarterlog1.id,data=8,face0=6193,face1=6145,face2=160,face3=161,face4=6193,face5=6145,txtid=blk0
+# Fir corner
+block:id=quarterlog1.id,data=1,face0=6163,face1=6163,face2=146,face3=195,face4=194,face5=147,txtid=blk0
+block:id=quarterlog1.id,data=5,face0=195,face1=146,face2=6147,face3=6194,face4=162,face5=163,txtid=blk0
+block:id=quarterlog1.id,data=9,face0=6195,face1=6147,face2=162,face3=163,face4=6195,face5=6147,txtid=blk0
+# Oak corner
+block:id=quarterlog1.id,data=2,face0=6165,face1=6165,face2=148,face3=197,face4=196,face5=149,txtid=blk0
+block:id=quarterlog1.id,data=6,face0=197,face1=148,face2=6149,face3=6196,face4=164,face5=165,txtid=blk0
+block:id=quarterlog1.id,data=10,face0=6197,face1=6149,face2=164,face3=165,face4=6197,face5=6149,txtid=blk0
+
+# quarterlog2.id (SW)
+# Redwood corner
+block:id=quarterlog2.id,data=0,face0=6176,face1=6176,face2=193,face3=144,face4=145,face5=192,txtid=blk0
+block:id=quarterlog2.id,data=4,face0=145,face1=192,face2=6144,face3=6193,face4=176,face5=177,txtid=blk0
+block:id=quarterlog2.id,data=8,face0=6144,face1=6192,face2=177,face3=176,face4=6144,face5=6192,txtid=blk0
+# Fir corner
+block:id=quarterlog2.id,data=1,face0=6178,face1=6178,face2=195,face3=146,face4=147,face5=194,txtid=blk0
+block:id=quarterlog2.id,data=5,face0=147,face1=194,face2=6146,face3=6195,face4=178,face5=179,txtid=blk0
+block:id=quarterlog2.id,data=9,face0=6146,face1=6194,face2=179,face3=178,face4=6146,face5=6194,txtid=blk0
+# Oak corner
+block:id=quarterlog2.id,data=2,face0=6180,face1=6180,face2=197,face3=148,face4=149,face5=196,txtid=blk0
+block:id=quarterlog2.id,data=6,face0=149,face1=196,face2=6148,face3=6197,face4=180,face5=181,txtid=blk0
+block:id=quarterlog2.id,data=10,face0=6148,face1=6196,face2=181,face3=180,face4=6148,face5=6196,txtid=blk0
+
+# quarterlog3.id (SE)
+# Redwood corner
+block:id=quarterlog3.id,data=0,face0=6177,face1=6177,face2=192,face3=145,face4=193,face5=144,txtid=blk0
+block:id=quarterlog3.id,data=4,face0=144,face1=193,face2=6192,face3=6145,face4=177,face5=176,txtid=blk0
+block:id=quarterlog3.id,data=8,face0=6145,face1=6193,face2=176,face3=177,face4=6192,face5=6144,txtid=blk0
+# Redwood corner
+block:id=quarterlog3.id,data=1,face0=6179,face1=6179,face2=194,face3=147,face4=195,face5=146,txtid=blk0
+block:id=quarterlog3.id,data=5,face0=146,face1=195,face2=6194,face3=6147,face4=179,face5=178,txtid=blk0
+block:id=quarterlog3.id,data=9,face0=6147,face1=6195,face2=178,face3=179,face4=6194,face5=6146,txtid=blk0
+# Oak corner
+block:id=quarterlog3.id,data=2,face0=6181,face1=6181,face2=196,face3=149,face4=197,face5=148,txtid=blk0
+block:id=quarterlog3.id,data=6,face0=148,face1=197,face2=6196,face3=6149,face4=181,face5=180,txtid=blk0
+block:id=quarterlog3.id,data=10,face0=6149,face1=6197,face2=180,face3=181,face4=6196,face5=6148,txtid=blk0
+
+# redcobblestairs.id
+block:id=redcobblestairs.id,data=*,patch0-2=0:redrockcobble,transparency=SEMITRANSPARENT
+
+# redrockslab.id
+block:id=redrockslab.id,data=0,data=8,allfaces=0:redrockcobble,stdrot=true,transparency=SEMITRANSPARENT
+block:id=redrockslab.id,data=1,data=9,allsides=0:redrockslabside,topbottom=0:redrockslabtop,stdrot=true,transparency=SEMITRANSPARENT
+block:id=redrockslab.id,data=2,data=10,allfaces=0:redrockbrick,stdrot=true,transparency=SEMITRANSPARENT
+
+# redrockbrickstairs.id
+block:id=redrockbrickstairs.id,data=*,patch0-2=0:redrockbrick,transparency=SEMITRANSPARENT
+
+# redwoodstairs.id
+block:id=redwoodstairs.id,data=*,patch0-2=0:planksredwood,transparency=SEMITRANSPARENT
+
+# wall.id
+block:id=wall.id,data=*,patch0-2=0:redrockcobble,transparency=TRANSPARENT
+
+# woodslab.id
+block:id=woodslab.id,data=0,data=8,allfaces=0:planksredwood,stdrot=true,transparency=SEMITRANSPARENT
+block:id=woodslab.id,data=1,data=9,allfaces=0:planksfir,stdrot=true,transparency=SEMITRANSPARENT
+block:id=woodslab.id,data=2,data=10,allfaces=0:planksacacia,stdrot=true,transparency=SEMITRANSPARENT
+block:id=woodslab.id,data=3,data=11,allfaces=0:plankscypress,stdrot=true,transparency=SEMITRANSPARENT
+block:id=woodslab.id,data=4,data=12,allfaces=0:planksjapanesemaple,stdrot=true,transparency=SEMITRANSPARENT
+block:id=woodslab.id,data=5,data=13,allfaces=0:planksrainboweucalyptus,stdrot=true,transparency=SEMITRANSPARENT
+block:id=woodslab.id,data=6,data=14,allfaces=0:planksautumn,stdrot=true,transparency=SEMITRANSPARENT
+block:id=woodslab.id,data=7,data=15,allfaces=0:planksbaldcypress,stdrot=true,transparency=SEMITRANSPARENT
+
+# autumnstairs.id
+block:id=autumnstairs.id,data=*,patch0-2=0:planksautumn,transparency=SEMITRANSPARENT
+
+# baldcypressstairs.id
+block:id=baldcypressstairs.id,data=*,patch0-2=0:planksbaldcypress,transparency=SEMITRANSPARENT
+
+# cypressstairs.id
+block:id=cypressstairs.id,data=*,patch0-2=0:plankscypress,transparency=SEMITRANSPARENT
+
+# japanesemaplestairs.id
+block:id=japanesemaplestairs.id,data=*,patch0-2=0:planksjapanesemaple,transparency=SEMITRANSPARENT
+
+# rainboweucalyptusstairs.id
+block:id=rainboweucalyptusstairs.id,data=*,patch0-2=0:planksrainboweucalyptus,transparency=SEMITRANSPARENT
+
+# sakurablossomstairs.id
+block:id=sakurablossomstairs.id,data=*,patch0-2=0:plankssakura,transparency=SEMITRANSPARENT
+
+# newwoodslab.id
+block:id=newwoodslab.id,data=0,data=8,allfaces=0:plankssakura,stdrot=true,transparency=SEMITRANSPARENT
+
+# newdoublewoodslab.id
+block:id=newdoublewoodslab.id,data=0,data=8,allfaces=0:plankssakura,stdrot=true
+
+# moreleaves.id
+block:id=moreleaves.id,data=0,data=4,data=8,data=12,allfaces=0:leavessakurafancy,stdrot=true,transparency=LEAVES
+
+# newleaves.id
+block:id=newleaves.id,data=0,data=4,data=8,data=12,allfaces=0:leavesbaldcypressfancy,stdrot=true,transparency=LEAVES
+block:id=newleaves.id,data=1,data=5,data=9,data=13,allfaces=0:leavesjapanesemaplefancy,stdrot=true,transparency=LEAVES
+block:id=newleaves.id,data=2,data=6,data=10,data=14,allfaces=0:leavesjapanesemapleshrubfancy,stdrot=true,transparency=LEAVES
+block:id=newleaves.id,data=3,data=7,data=11,data=15,allfaces=0:leavesrainboweucalyptusfancy,stdrot=true,transparency=LEAVES
+
+# newlog.id
+block:id=newlog.id,data=0,allsides=0:lograinboweucalyptusside,topbottom=6000:lograinboweucalyptustop
+block:id=newlog.id,data=4,north=0:lograinboweucalyptustop,south=0:lograinboweucalyptustop,east=4000:lograinboweucalyptusside,west=4000:lograinboweucalyptusside,top=0:lograinboweucalyptusside,bottom=0:lograinboweucalyptusside
+block:id=newlog.id,data=8,north=4000:lograinboweucalyptusside,south=4000:lograinboweucalyptusside,east=0:lograinboweucalyptustop,west=0:lograinboweucalyptustop,top=4000:lograinboweucalyptusside,bottom=4000:lograinboweucalyptusside
+block:id=newlog.id,data=12,allsides=0:lograinboweucalyptusside,topbottom=6000:lograinboweucalyptusside
+block:id=newlog.id,data=1,allsides=0:logautumnside,topbottom=6000:logautumntop
+block:id=newlog.id,data=5,north=0:logautumntop,south=0:logautumntop,east=4000:logautumnside,west=4000:logautumnside,top=0:logautumnside,bottom=0:logautumnside
+block:id=newlog.id,data=9,north=4000:logautumnside,south=4000:logautumnside,east=0:logautumntop,west=0:logautumntop,top=4000:logautumnside,bottom=4000:logautumnside
+block:id=newlog.id,data=13,allsides=0:logautumnside,topbottom=6000:logautumnside
+block:id=newlog.id,data=2,allsides=0:logbaldcypressside,topbottom=6000:logbaldcypresstop
+block:id=newlog.id,data=6,north=0:logbaldcypresstop,south=0:logbaldcypresstop,east=4000:logbaldcypressside,west=4000:logbaldcypressside,top=0:logbaldcypressside,bottom=0:logbaldcypressside
+block:id=newlog.id,data=10,north=4000:logbaldcypressside,south=4000:logbaldcypressside,east=0:logbaldcypresstop,west=0:logbaldcypresstop,top=4000:logbaldcypressside,bottom=4000:logbaldcypressside
+block:id=newlog.id,data=14,allsides=0:logbaldcypressside,topbottom=6000:logbaldcypressside
+
+# kneelog.id
+block:id=kneelog.id,data=0,face0=0:logbaldcypressknee1,face1=0:logbaldcypressknee1,face2=0:logbaldcypressside1,face3=0:logbaldcypresstop,face4=0:logbaldcypressside2,face5=0:logbaldcypresstop,stdrot=true
+block:id=kneelog.id,data=1,face0=0:logbaldcypressknee2,face1=0:logbaldcypressknee2,face2=0:logbaldcypressside2,face3=0:logbaldcypresstop,face4=0:logbaldcypresstop,face5=0:logbaldcypressside1,stdrot=true
+block:id=kneelog.id,data=2,face0=0:logbaldcypressknee3,face1=0:logbaldcypressknee3,face2=0:logbaldcypresstop,face3=0:logbaldcypressside1,face4=0:logbaldcypresstop,face5=0:logbaldcypressside2,stdrot=true
+block:id=kneelog.id,data=3,face0=0:logbaldcypressknee4,face1=0:logbaldcypressknee4,face2=0:logbaldcypresstop,face3=0:logbaldcypressside2,face4=0:logbaldcypressside1,face5=0:logbaldcypresstop,stdrot=true
+block:id=kneelog.id,data=4,face0=0:logbaldcypresstop,face1=0:logbaldcypressside1,face2=0:logbaldcypressknee1,face3=0:logbaldcypressknee2,face4=0:logbaldcypresstop,face5=0:logbaldcypressside1,stdrot=true
+block:id=kneelog.id,data=5,face0=0:logbaldcypresstop,face1=0:logbaldcypressside2,face2=0:logbaldcypressknee2,face3=0:logbaldcypressknee1,face4=0:logbaldcypressside1,face5=0:logbaldcypresstop,stdrot=true
+block:id=kneelog.id,data=6,face0=0:logbaldcypressside1,face1=0:logbaldcypresstop,face2=0:logbaldcypressknee3,face3=0:logbaldcypressknee4,face4=0:logbaldcypressside2,face5=0:logbaldcypresstop,stdrot=true
+block:id=kneelog.id,data=7,face0=0:logbaldcypressside2,face1=0:logbaldcypresstop,face2=0:logbaldcypressknee2,face3=0:logbaldcypressknee3,face4=0:logbaldcypresstop,face5=0:logbaldcypressside2,stdrot=true
+block:id=kneelog.id,data=8,face0=0:logbaldcypresstop,face1=0:logbaldcypressside1,face2=0:logbaldcypressside1,face3=0:logbaldcypresstop,face4=0:logbaldcypressknee1,face5=0:logbaldcypressknee2,stdrot=true
+block:id=kneelog.id,data=9,face0=0:logbaldcypresstop,face1=0:logbaldcypressside2,face2=0:logbaldcypresstop,face3=0:logbaldcypressside1,face4=0:logbaldcypressknee2,face5=0:logbaldcypressknee1,stdrot=true
+block:id=kneelog.id,data=10,face0=0:logbaldcypressside2,face1=0:logbaldcypresstop,face2=0:logbaldcypresstop,face3=0:logbaldcypressside2,face4=0:logbaldcypressknee3,face5=0:logbaldcypressknee4,stdrot=true
+block:id=kneelog.id,data=11,face0=0:logbaldcypressside1,face1=0:logbaldcypresstop,face2=0:logbaldcypressside2,face3=0:logbaldcypresstop,face4=0:logbaldcypressknee4,face5=0:logbaldcypressknee3,stdrot=true
+
+# rainbowkneelog.id
+block:id=rainbowkneelog.id,data=0,face0=0:lograinboweucalyptusknee1,face1=0:lograinboweucalyptusknee1,face2=0:lograinboweucalyptusside1,face3=0:lograinboweucalyptustop,face4=0:lograinboweucalyptusside2,face5=0:lograinboweucalyptustop,stdrot=true
+block:id=rainbowkneelog.id,data=1,face0=0:lograinboweucalyptusknee2,face1=0:lograinboweucalyptusknee2,face2=0:lograinboweucalyptusside2,face3=0:lograinboweucalyptustop,face4=0:lograinboweucalyptustop,face5=0:lograinboweucalyptusside1,stdrot=true
+block:id=rainbowkneelog.id,data=2,face0=0:lograinboweucalyptusknee3,face1=0:lograinboweucalyptusknee3,face2=0:lograinboweucalyptustop,face3=0:lograinboweucalyptusside1,face4=0:lograinboweucalyptustop,face5=0:lograinboweucalyptusside2,stdrot=true
+block:id=rainbowkneelog.id,data=3,face0=0:lograinboweucalyptusknee4,face1=0:lograinboweucalyptusknee4,face2=0:lograinboweucalyptustop,face3=0:lograinboweucalyptusside2,face4=0:lograinboweucalyptusside1,face5=0:lograinboweucalyptustop,stdrot=true
+block:id=rainbowkneelog.id,data=4,face0=0:lograinboweucalyptustop,face1=0:lograinboweucalyptusside1,face2=0:lograinboweucalyptusknee1,face3=0:lograinboweucalyptusknee2,face4=0:lograinboweucalyptustop,face5=0:lograinboweucalyptusside1,stdrot=true
+block:id=rainbowkneelog.id,data=5,face0=0:lograinboweucalyptustop,face1=0:lograinboweucalyptusside2,face2=0:lograinboweucalyptusknee2,face3=0:lograinboweucalyptusknee1,face4=0:lograinboweucalyptusside1,face5=0:lograinboweucalyptustop,stdrot=true
+block:id=rainbowkneelog.id,data=6,face0=0:lograinboweucalyptusside1,face1=0:lograinboweucalyptustop,face2=0:lograinboweucalyptusknee3,face3=0:lograinboweucalyptusknee4,face4=0:lograinboweucalyptusside2,face5=0:lograinboweucalyptustop,stdrot=true
+block:id=rainbowkneelog.id,data=7,face0=0:lograinboweucalyptusside2,face1=0:lograinboweucalyptustop,face2=0:lograinboweucalyptusknee2,face3=0:lograinboweucalyptusknee3,face4=0:lograinboweucalyptustop,face5=0:lograinboweucalyptusside2,stdrot=true
+block:id=rainbowkneelog.id,data=8,face0=0:lograinboweucalyptustop,face1=0:lograinboweucalyptusside1,face2=0:lograinboweucalyptusside1,face3=0:lograinboweucalyptustop,face4=0:lograinboweucalyptusknee1,face5=0:lograinboweucalyptusknee2,stdrot=true
+block:id=rainbowkneelog.id,data=9,face0=0:lograinboweucalyptustop,face1=0:lograinboweucalyptusside2,face2=0:lograinboweucalyptustop,face3=0:lograinboweucalyptusside1,face4=0:lograinboweucalyptusknee2,face5=0:lograinboweucalyptusknee1,stdrot=true
+block:id=rainbowkneelog.id,data=10,face0=0:lograinboweucalyptusside2,face1=0:lograinboweucalyptustop,face2=0:lograinboweucalyptustop,face3=0:lograinboweucalyptusside2,face4=0:lograinboweucalyptusknee3,face5=0:lograinboweucalyptusknee4,stdrot=true
+block:id=rainbowkneelog.id,data=11,face0=0:lograinboweucalyptusside1,face1=0:lograinboweucalyptustop,face2=0:lograinboweucalyptusside2,face3=0:lograinboweucalyptustop,face4=0:lograinboweucalyptusknee4,face5=0:lograinboweucalyptusknee3,stdrot=true
+
+# newsapling.id
+block:id=newsapling.id,data=0,data=8,patch0-1=0:saplingbaldcypress,transparency=TRANSPARENT
+block:id=newsapling.id,data=1,data=9,patch0-1=0:saplingjapanesemaple,transparency=TRANSPARENT
+block:id=newsapling.id,data=2,data=10,patch0-1=0:saplingjapanesemapleshrub,transparency=TRANSPARENT
+block:id=newsapling.id,data=3,data=11,patch0-1=0:saplingrainboweucalyptus,transparency=TRANSPARENT
+block:id=newsapling.id,data=4,data=12,patch0-1=0:saplingsakura,transparency=TRANSPARENT
+
+# minilog.id
+# newquarterlog.id
+# rainbowquarterlog.id

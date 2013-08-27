@@ -1,5 +1,6 @@
 # ExtraBiomesXL 3+ Block mapping
 modname:ExtrabiomesXL
+version:-1.6.1
 # Defaults
 var:wall.id=0
 # configuration file
