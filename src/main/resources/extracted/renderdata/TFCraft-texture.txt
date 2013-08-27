@@ -1,5 +1,5 @@
 # TerraFirmaCraft block mapping
-modname:TerraFirmaCraft
+modname:TerraFirmaCraft,terrafirmacraft
 # configuration file
 cfgfile:config/TFC.cfg
 
