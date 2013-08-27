@@ -1076,10 +1076,10 @@ public class DynmapCore implements DynmapCommonAPI {
             if (c.equals("render") && checkPlayerPermission(sender,"render")) {
                 if (player != null) {
                     DynmapLocation loc = player.getLocation();
-                    
-                    mapManager.touch(loc.world, (int)loc.x, (int)loc.y, (int)loc.z, "render");
-                    
-                    sender.sendMessage("Tile render queued.");
+                    if (loc != null) {
+                        mapManager.touch(loc.world, (int)loc.x, (int)loc.y, (int)loc.z, "render");
+                        sender.sendMessage("Tile render queued.");
+                    }
                 }
                 else {
                     sender.sendMessage("Command can only be issued by player.");
