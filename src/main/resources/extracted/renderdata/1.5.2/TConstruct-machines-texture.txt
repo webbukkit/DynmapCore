@@ -1,0 +1,28 @@
+# Tinkers' Construct:1.5.2_1.4.3d4
+modname:TConstruct
+
+#configuration file
+cfgfile:config/TinkersWorkshop.txt
+
+texturepath:assets/tinker/textures/blocks
+texture:id=machines/aggregator_glowstone_bottom
+texture:id=machines/aggregator_glowstone_side
+texture:id=machines/aggregator_glowstone_top_inactive
+#texture:id=machines/aggregator_glowstone_top
+#texture:id=machines/drawbridge_bottom_face
+texture:id=machines/drawbridge_bottom
+texture:id=machines/drawbridge_side_face
+texture:id=machines/drawbridge_side
+texture:id=machines/drawbridge_top_face
+texture:id=machines/drawbridge_top
+texture:id=machines/firestarter_bottom
+texture:id=machines/firestarter_side
+texture:id=machines/firestarter_top
+
+#    I:Aggregator=3221
+block:id=Aggregator,data=0,allfaces=0:machines/aggregator_glowstone_side,bottom=0:machines/aggregator_glowstone_bottom,top=0:machines/aggregator_glowstone_top_inactive
+
+#    I:"Redstone Machines"=3226
+block:id=Redstone_Machines,data=0,patch0=0:machines/drawbridge_bottom,patch1=0:machines/drawbridge_top,patch2=0:machines/drawbridge_side_face,patch3=0:machines/drawbridge_side,patch4=0:machines/drawbridge_side,patch5=0:machines/drawbridge_side
+block:id=Redstone_Machines,data=1,patch0=0:machines/firestarter_bottom,patch1=0:machines/firestarter_top,patch2=0:machines/firestarter_side,patch3=0:machines/firestarter_side,patch4=0:machines/firestarter_side,patch5=0:machines/firestarter_side
+
