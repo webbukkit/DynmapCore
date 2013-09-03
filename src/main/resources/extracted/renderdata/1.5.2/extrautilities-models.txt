@@ -1,0 +1,5 @@
+# ExtraUtilities 0.2.4f
+modname:ExtraUtilities
+
+#configuration file
+cfgfile:config/ExtraUtilities.cfg
