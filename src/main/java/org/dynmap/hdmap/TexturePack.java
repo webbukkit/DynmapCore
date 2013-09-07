@@ -59,6 +59,7 @@ public class TexturePack {
     private static final String FOLIAGECOLOR_RP_PNG = "assets/minecraft/textures/colormap/foliage.png";
     private static final String WATERCOLORX_PNG = "misc/watercolorX.png";
     private static final String WATERCOLORX_RP_PNG = "assets/minecraft/mcpatcher/colormap/watercolorX.png";
+    private static final String WATERCOLORX2_RP_PNG = "assets/minecraft/mcpatcher/colormap/water.png";
     private static final String CUSTOMLAVASTILL_PNG = "custom_lava_still.png";
     private static final String CUSTOMLAVAFLOWING_PNG = "custom_lava_flowing.png";
     private static final String CUSTOMWATERSTILL_PNG = "custom_water_still.png";
@@ -67,6 +68,10 @@ public class TexturePack {
     private static final String SWAMPGRASSCOLOR_RP_PNG = "assets/minecraft/mcpatcher/colormap/swampgrass.png";
     private static final String SWAMPFOLIAGECOLOR_PNG = "misc/swampfoliagecolor.png";
     private static final String SWAMPFOLIAGECOLOR_RP_PNG = "assets/minecraft/mcpatcher/colormap/swampfoliage.png";
+    private static final String PINECOLOR_PNG = "misc/pinecolor.png";
+    private static final String PINECOLOR_RP_PNG = "assets/minecraft/mcpatcher/colormap/pine.png";
+    private static final String BIRCHCOLOR_PNG = "misc/birchcolor.png";
+    private static final String BIRCHCOLOR_RP_PNG = "assets/minecraft/mcpatcher/colormap/birch.png";
 
     /* Color modifier codes (x1000 for value in definition file, x1000000 for internal value) */
     //private static final int COLORMOD_NONE = 0;
@@ -333,6 +338,11 @@ public class TexturePack {
     private BitSet hasBlockColoring = new BitSet(); // Quick lookup - (blockID << 4) + blockMeta - set if custom colorizer
     private DynIntHashMap blockColoring = new DynIntHashMap();  // Map - index by (blockID << 4) + blockMeta - Index of image for color map
 
+    private int colorMultBirch = 0x80a755;  /* From ColorizerFoliage.java in MCP */
+    private int colorMultPine = 0x619961;   /* From ColorizerFoliage.java in MCP */
+    private int colorMultLily = 0x208030;   /* from BlockLilyPad.java in MCP */
+    private int colorMultWater = 0xFFFFFF; 
+    
     private static final int IMG_GRASSCOLOR = 0;
     private static final int IMG_FOLIAGECOLOR = 1;
     private static final int IMG_CUSTOMWATERMOVING = 2;
@@ -342,7 +352,10 @@ public class TexturePack {
     private static final int IMG_WATERCOLORX = 6;
     private static final int IMG_SWAMPGRASSCOLOR = 7;
     private static final int IMG_SWAMPFOLIAGECOLOR = 8;
-    private static final int IMG_CNT = 9;
+    private static final int IMG_PINECOLOR = 9;
+    private static final int IMG_BIRCHCOLOR = 10;
+    
+    private static final int IMG_CNT = 11;
     /* 0-(IMG_CNT-1) are fixed, IMG_CNT+x is dynamic file x */
     private LoadedImage[] imgs;
 
@@ -659,8 +672,24 @@ public class TexturePack {
             }
             /* Try to find and load misc/watercolor.png */
             is = tpl.openTPResource(WATERCOLORX_PNG, WATERCOLORX_RP_PNG);
+            if (is == null) {
+                /* Try to find and load colormap/water.png */
+                is = tpl.openTPResource(WATERCOLORX_PNG, WATERCOLORX2_RP_PNG);
+            }
             if (is != null) {
                 loadBiomeShadingImage(is, IMG_WATERCOLORX);
+                tpl.closeResource(is);
+            }
+            /* Try to find pine.png */
+            is = tpl.openTPResource(PINECOLOR_PNG, PINECOLOR_RP_PNG);
+            if (is != null) {
+                loadBiomeShadingImage(is, IMG_PINECOLOR);
+                tpl.closeResource(is);
+            }
+            /* Try to find birch.png */
+            is = tpl.openTPResource(BIRCHCOLOR_PNG, BIRCHCOLOR_RP_PNG);
+            if (is != null) {
+                loadBiomeShadingImage(is, IMG_BIRCHCOLOR);
                 tpl.closeResource(is);
             }
             /* Optional files - process if they exist */
@@ -2466,18 +2495,38 @@ public class TexturePack {
                         }
                     }
                     else {
-                        if(ss.do_biome_shading)
-                            clrmult = mapiter.getSmoothWaterColorMultiplier();
+                        if(ss.do_biome_shading) {
+                            if (colorMultWater != 0xFFFFFF)
+                                clrmult = colorMultWater;
+                            else
+                                clrmult = mapiter.getSmoothWaterColorMultiplier();
+                        }
                     }
                     break;
                 case COLORMOD_BIRCHTONED:
-                    clrmult = 0x80a755;    /* From ColorizerFoliage.java in MCP */
+                    if(ss.do_biome_shading) {
+                        if(imgs[IMG_BIRCHCOLOR] != null)
+                            clrmult = mapiter.getSmoothFoliageColorMultiplier(imgs[IMG_BIRCHCOLOR].argb);
+                        else
+                            clrmult = colorMultBirch;
+                    }
+                    else {
+                        clrmult = colorMultBirch;
+                    }
                     break;
                 case COLORMOD_PINETONED:
-                    clrmult = 0x619961;    /* From ColorizerFoliage.java in MCP */
+                    if(ss.do_biome_shading) {
+                        if(imgs[IMG_PINECOLOR] != null)
+                            clrmult = mapiter.getSmoothFoliageColorMultiplier(imgs[IMG_PINECOLOR].argb);
+                        else
+                            clrmult = colorMultPine;
+                    }
+                    else {
+                        clrmult = colorMultPine;
+                    }
                     break;
                 case COLORMOD_LILYTONED:
-                    clrmult =  0x208030; /* from BlockLilyPad.java in MCP */
+                    clrmult = colorMultLily;
                     break;
                 case COLORMOD_MULTTONED:    /* Use color multiplier */
                     if(map.custColorMult != null) {
@@ -2695,6 +2744,7 @@ public class TexturePack {
                     Log.info("Bad custom color meta ID: " + tok[1]);
                 }
             }
+
             /* Add mappings for values */
             if ((blkid > 0) && (blkid < 4096)) {
                 if ((meta >= 0) && (meta < 16)) {
