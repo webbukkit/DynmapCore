@@ -80,7 +80,25 @@
             			</goals>
 			            <configuration>
               				<classifier>modsupport</classifier>
-              				<classesDirectory>src/main/modsupport</classesDirectory>
+              				<classesDirectory>modsupport</classesDirectory>
+            			</configuration>
+          			</execution>
+        		</executions>
+      		</plugin>
+
+		    <plugin>
+        		<artifactId>maven-jar-plugin</artifactId>
+        		<version>2.3.2</version>
+        		<executions>
+          			<execution>
+            			<id>modsupport-pre15-jar</id>
+            			<phase>package</phase>
+            			<goals>
+              				<goal>jar</goal>
+            			</goals>
+			            <configuration>
+              				<classifier>modsupport-pre15</classifier>
+              				<classesDirectory>modsupport-pre15</classesDirectory>
             			</configuration>
           			</execution>
         		</executions>
