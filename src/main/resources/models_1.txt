@@ -530,6 +530,16 @@ patchblock:id=69,data=14,patch0=LeverBase1@270,patch1=LeverBase1@90,patch2=Lever
 # Ground lever, off tp west
 patchblock:id=69,data=5,patch0=LeverBase1,patch1=LeverBase1@180,patch2=LeverBase2,patch3=LeverBase2@180,patch4=LeverBase3,patch5=LeverSide1,patch6=LeverSide2,patch7=LeverSide3,patch8=LeverSide4
 patchblock:id=69,data=13,patch0=LeverBase1,patch1=LeverBase1@180,patch2=LeverBase2,patch3=LeverBase2@180,patch4=LeverBase3,patch5=LeverSide1@180,patch6=LeverSide2@180,patch7=LeverSide3@180,patch8=LeverSide4@180
+# Ceiling lever, off tp west
+patchblock:id=69,data=7
+patchrotate:id=69,data=5,rotz=180
+patchblock:id=69,data=15
+patchrotate:id=69,data=13,rotz=180
+# Ceiling lever, off tp south
+patchblock:id=69,data=0
+patchrotate:id=69,data=6,rotx=180
+patchblock:id=69,data=8
+patchrotate:id=69,data=14,rotx=180
 # Cactus
 patchblock:id=81,data=*,patch0=VertX00625,patch1=VertX00625@90,patch2=VertX00625@180,patch3=VertX00625@270,patch4=HorizY100ZTop,patch5=HorizY100ZTop@180/0/0
 # Redstone repeater (on) facing east
