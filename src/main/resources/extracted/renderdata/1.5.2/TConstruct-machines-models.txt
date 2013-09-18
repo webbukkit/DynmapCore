@@ -1,8 +1,0 @@
-# Tinkers' Construct:1.5.2_1.4.3d4
-modname:TConstruct
-
-#configuration file
-cfgfile:config/TinkersWorkshop.txt
-
-# Redstone_Machines
-customblock:id=Redstone_Machines,data=*,class=org.dynmap.hdmap.renderer.RotatedBoxRenderer,textureIndex=Direction,index0=0,map0=S012345,index1=1,map1=S012345,index2=4,map2=S012345,index3=5,map3=S013254,index4=3,map4=S014532,index5=2,map5=S015423
