@@ -49,6 +49,61 @@
 				</configuration>
 			</plugin>
 
+		    <plugin>
+        		<artifactId>maven-jar-plugin</artifactId>
+        		<version>2.3.2</version>
+        		<executions>
+          			<execution>
+            			<id>default-jar</id>
+            			<phase>package</phase>
+            			<goals>
+              				<goal>jar</goal>
+            			</goals>
+   			            <configuration>
+              				<excludes>
+                				<exclude>**/modsupport/*</exclude>
+              				</excludes>
+            			</configuration>
+          			</execution>
+        		</executions>
+      		</plugin>
+      		
+		    <plugin>
+        		<artifactId>maven-jar-plugin</artifactId>
+        		<version>2.3.2</version>
+        		<executions>
+          			<execution>
+            			<id>modsupport-jar</id>
+            			<phase>package</phase>
+            			<goals>
+              				<goal>jar</goal>
+            			</goals>
+			            <configuration>
+              				<classifier>modsupport</classifier>
+              				<classesDirectory>modsupport</classesDirectory>
+            			</configuration>
+          			</execution>
+        		</executions>
+      		</plugin>
+
+		    <plugin>
+        		<artifactId>maven-jar-plugin</artifactId>
+        		<version>2.3.2</version>
+        		<executions>
+          			<execution>
+            			<id>modsupport-pre15-jar</id>
+            			<phase>package</phase>
+            			<goals>
+              				<goal>jar</goal>
+            			</goals>
+			            <configuration>
+              				<classifier>modsupport-pre15</classifier>
+              				<classesDirectory>modsupport-pre15</classesDirectory>
+            			</configuration>
+          			</execution>
+        		</executions>
+      		</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>

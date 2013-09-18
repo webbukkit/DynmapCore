@@ -1,0 +1,14 @@
+# Soul Shards block mapping
+version:1.5.1-
+modname:SoulShards
+
+var:Soul_Tower=0
+# configuration file
+cfgfile:config/SoulShards.cfg
+
+# Blocks
+# Soul_Tower
+patch:id=CrystalSide,Ox=0.2,Oy=0.5,Oz=0.5,Ux=0.5,Uy=0.5,Uz=0.2,Vx=0.5,Vy=1.0,Vz=0.5,UplusVmax=1.0,visibility=both
+patch:id=CrystalSide2,Ox=0.2,Oy=0.5,Oz=0.5,Ux=0.5,Uy=0.5,Uz=0.2,Vx=0.5,Vy=0.0,Vz=0.5,UplusVmax=1.0,visibility=both
+patchblock:id=Soul_Tower,data=*,patch0=CrystalSide#0,patch1=CrystalSide@90#0,patch2=CrystalSide@180#0,patch3=CrystalSide@270#0,patch4=CrystalSide2#0,patch5=CrystalSide2@90#0,patch6=CrystalSide2@180#0,patch7=CrystalSide2@270#0
+

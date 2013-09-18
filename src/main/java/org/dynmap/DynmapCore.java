@@ -636,7 +636,11 @@ public class DynmapCore implements DynmapCommonAPI {
 
     public void loadWebserver() {
         org.eclipse.jetty.util.log.Log.setLog(new JettyNullLogger());
-        webhostname = configuration.getString("webserver-bindaddress", "0.0.0.0");
+        String ip = server.getServerIP();
+        if ((ip == null) || (ip.trim().length() == 0)) {
+            ip = "0.0.0.0";
+        }
+        webhostname = configuration.getString("webserver-bindaddress", ip);
         webport = configuration.getInteger("webserver-port", 8123);
         
         webServer = new Server();

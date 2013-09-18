@@ -1,0 +1,38 @@
+# Thermal Expansion models
+version:1.5.1-
+modname:ThermalExpansion
+
+# Configuration file
+cfgfile:config/cofh/ThermalExpansion.cfg
+
+# Engine (lifted from bc-models.txt)
+patch:id=EngineBottom,Ox=0.0,Oy=0.0,Oz=0.0,Ux=1.0,Uy=0.0,Uz=0.0,Vx=0.0,Vy=0.0,Vz=1.0,visibility=top
+patch:id=EngineTop,Ox=0.0,Oy=0.25,Oz=1.0,Ux=1.0,Uy=0.25,Uz=1.0,Vx=0.0,Vy=0.25,Vz=0.0,visibility=top
+patch:id=EngineSide,Ox=0.0,Oy=0.0,Oz=0.0,Ux=0.0,Uy=0.0,Uz=1.0,Vx=0.0,Vy=1.0,Vz=0.0,Vmin=0.0,Vmax=0.25,visibility=top
+patch:id=EngineTop2,Ox=0.0,Oy=0.5,Oz=1.0,Ux=1.0,Uy=0.5,Uz=1.0,Vx=0.0,Vy=0.5,Vz=0.0,visibility=top
+patch:id=EngineSide2,Ox=0.0625,Oy=0.25,Oz=0.0,Ux=0.0625,Uy=0.25,Uz=1.0,Vx=0.0625,Vy=1.25,Vz=0.0,Vmin=0.0,Vmax=0.25,visibility=top
+patch:id=EngineSide3,Ox=0.25,Oy=0.0,Oz=0.0,Ux=0.25,Uy=0.0,Uz=1.0,Vx=0.25,Vy=1.0,Vz=0.0,Umin=0.25,Umax=0.75,visibility=top
+patch:id=EngineTop3,Ox=0.0,Oy=1.0,Oz=1.0,Ux=1.0,Uy=1.0,Uz=1.0,Vx=0.0,Vy=1.0,Vz=0.0,Umin=0.25,Umax=0.75,Vmin=0.25,Vmax=0.75,visibility=top
+customblock:id=Engine,data=0,data=1,class=org.dynmap.hdmap.renderer.RotatedPatchRenderer,patch0=EngineBottom,patch1=EngineTop,patch2=EngineSide,patch3=EngineSide@90,patch4=EngineSide@180,patch5=EngineSide@270,patch6=EngineSide2,patch7=EngineSide2@90,patch8=EngineSide2@180,patch9=EngineSide2@270,patch10=EngineSide3,patch11=EngineSide3@90,patch12=EngineSide3@180,patch13=EngineSide3@270,patch14=EngineTop3,patch15=EngineTop2,index=side.facing,rot0=180/0/0,rot2=90/0/0,rot3=90/180/0,rot4=90/270/0,rot5=90/90/0
+
+# Machines (lifted from MineFactoryReloaded-models.txt but didn't work)
+#customblock:id=Machine,data=*,class=org.dynmap.hdmap.renderer.RotatedBoxRenderer,textureIndex=rotation,index0=0,map0=S012345,index1=1,map1=S012345,index2=4,map2=S012345,index3=5,map3=S013254,index4=3,map4=S014532,index5=2,map5=S015423
+
+# Liquids
+boxblock:id=LiquidRedstone,data=6,ymax=0.875
+boxblock:id=LiquidRedstone,data=5,ymax=0.75
+boxblock:id=LiquidRedstone,data=4,ymax=0.625
+boxblock:id=LiquidRedstone,data=3,ymax=0.5
+boxblock:id=LiquidRedstone,data=2,ymax=0.375
+boxblock:id=LiquidRedstone,data=1,ymax=0.25
+boxblock:id=LiquidRedstone,data=0,ymax=0.125
+
+boxblock:id=LiquidGlowstone,data=0,ymin=0.833
+boxblock:id=LiquidGlowstone,data=1,ymin=0.666
+boxblock:id=LiquidGlowstone,data=2,ymin=0.5
+boxblock:id=LiquidGlowstone,data=3,ymin=0.333
+boxblock:id=LiquidGlowstone,data=4,ymin=0.166
+
+boxblock:id=LiquidEnder,data=2,ymax=0.75
+boxblock:id=LiquidEnder,data=1,ymax=0.5
+boxblock:id=LiquidEnder,data=0,ymax=0.25

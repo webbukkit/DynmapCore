@@ -146,4 +146,10 @@ public interface DynmapServerInterface {
      * @returns ticks per second
      */
     public double getServerTPS();
+    /**
+     * Get address configured for server
+     * 
+     * @return "" or null if none configured
+     */
+    public String getServerIP();
 }
