@@ -355,6 +355,8 @@ block:id=terrain_block_ids_-_must_be_below_255/Mud_ID,data=0,allfaces=0:mud,stdr
 block:id=terrain_block_ids_-_must_be_below_255/Origin_Grass_ID,data=*,allsides=11000:origingrass2,top=0:origingrass1,bottom=0:origingrass3,stdrot=true
 #  "Red Rock ID"
 block:id=terrain_block_ids_-_must_be_below_255/Red_Rock_ID,data=0,allfaces=0:redrock,stdrot=true
+block:id=terrain_block_ids_-_must_be_below_255/Red_Rock_ID,data=1,allfaces=0:redcobble,stdrot=true
+block:id=terrain_block_ids_-_must_be_below_255/Red_Rock_ID,data=2,allfaces=0:redbrick,stdrot=true
 #  "Skystone ID"
 block:id=terrain_block_ids_-_must_be_below_255/Skystone_ID,data=0,allfaces=0:holystone,stdrot=true
 block:id=terrain_block_ids_-_must_be_below_255/Skystone_ID,data=1,allfaces=0:holycobble,stdrot=true
