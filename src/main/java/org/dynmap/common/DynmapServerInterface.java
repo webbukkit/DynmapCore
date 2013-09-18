@@ -1,5 +1,6 @@
 package org.dynmap.common;
 
+import java.io.File;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -152,4 +153,10 @@ public interface DynmapServerInterface {
      * @return "" or null if none configured
      */
     public String getServerIP();
+    /**
+     * Get file/directory for given mod (for loading mod resources)
+     * @param mod - mod name
+     * @return file or directory, or null if not loaded
+     */
+    public File getModContainerFile(String mod);
 }

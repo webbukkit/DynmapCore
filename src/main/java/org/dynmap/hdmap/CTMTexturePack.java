@@ -744,7 +744,7 @@ public class CTMTexturePack {
                     ftn = ftn + ".png"; // Add .png if needed
                 }
                 // Find file ID, add if needed
-                int fid = TexturePack.findOrAddDynamicTileFile(ftn, 1, 1, TileFileFormat.GRID, new String[0]);
+                int fid = TexturePack.findOrAddDynamicTileFile(ftn, null, 1, 1, TileFileFormat.GRID, new String[0]);
                 rslt[i] = TexturePack.findOrAddDynamicTile(fid, 0); 
             }
             return rslt;

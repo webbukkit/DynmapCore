@@ -6,7 +6,6 @@ version:1.6.2-
 cfgfile:config/buildcraft/main.conf
 
 # Files
-texturefile:id=blk,filename=gfx/buildcraft/blocks/blocks.png,xcount=16,ycount=16
 texturepath:assets/buildcraft/textures/blocks
 texturefile:id=wood,filename=assets/buildcraft/textures/blocks/base_wood.png,xcount=4,ycount=2,format=CUSTOM,tile0=16:1/16:16,tile1=32:1/16:16,tile2=0:17/16:4/0:12,tile3=16:17/16:4/0:12,tile4=32:17/16:4/0:12,tile5=48:17/16:4/0:12
 texturefile:id=iron,filename=assets/buildcraft/textures/blocks/base_iron.png,xcount=4,ycount=2,format=CUSTOM,tile0=16:1/16:16,tile1=32:1/16:16,tile2=0:17/16:4/0:12,tile3=16:17/16:4/0:12,tile4=32:17/16:4/0:12,tile5=48:17/16:4/0:12
