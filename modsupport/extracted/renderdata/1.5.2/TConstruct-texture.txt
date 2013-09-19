@@ -4,7 +4,8 @@ modname:TConstruct
 #configuration file
 cfgfile:config/TinkersWorkshop.txt
 
-texturepath:assets/tinker/textures/blocks
+[-1.5.2]texturepath:mods/tinker/textures/blocks
+[1.6.0-]texturepath:assets/tinker/textures/blocks
 texture:id=machines/aggregator_glowstone_bottom
 texture:id=machines/aggregator_glowstone_side
 texture:id=machines/aggregator_glowstone_top_inactive

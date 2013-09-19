@@ -639,7 +639,38 @@ public class HDBlockModels {
             int scale = 0;
             rdr = new LineNumberReader(new InputStreamReader(in));
             while((line = rdr.readLine()) != null) {
-                if(line.startsWith("block:")) {
+                boolean skip = false;
+                if ((line.length() > 0) && (line.charAt(0) == '[')) {    // If version constrained like
+                    int end = line.indexOf(']');    // Find end
+                    if (end < 0) {
+                        Log.severe("Format error - line " + rdr.getLineNumber() + " of " + fname + ": bad version limit");
+                        return;
+                    }
+                    String vertst = line.substring(1, end);
+                    String mcver = core.getDynmapPluginPlatformVersion();
+                    int dash = vertst.indexOf('-');
+                    if(dash < 0) {
+                        if(!mcver.equals(vertst.trim())) { // If not match
+                            skip = true;
+                        }
+                    }
+                    else {
+                        String s1 = vertst.substring(0, dash).trim();
+                        String s2 = vertst.substring(dash+1).trim();
+                        if( (s1.equals("") || (s1.compareTo(mcver) <= 0)) &&
+                                (s2.equals("") || (s2.compareTo(mcver) >= 0))) {
+                        }
+                        else {
+                            skip = true;
+                        }
+                    }
+                    line = line.substring(end+1);
+                }
+                // If we're skipping due to version restriction
+                if (skip) {
+                    
+                }
+                else if(line.startsWith("block:")) {
                     ArrayList<Integer> blkids = new ArrayList<Integer>();
                     int databits = 0;
                     scale = 0;

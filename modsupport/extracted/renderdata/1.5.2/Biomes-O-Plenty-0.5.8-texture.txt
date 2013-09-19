@@ -9,7 +9,8 @@ var:biome_ids/Drylands_ID=0,biome_ids/Snowy_Woods_ID=0,biome_ids/Swampwoods_ID=0
 cfgfile:config/BiomesOPlenty.cfg
 
 # Files
-texturepath:assets/biomesoplenty/textures/blocks/
+[1.6.0-]texturepath:assets/biomesoplenty/textures/blocks/
+[-1.5.2]texturepath:mods/BiomesOPlenty/textures/blocks/
 texture:id=algae
 texture:id=amethystblock
 texture:id=amethystore

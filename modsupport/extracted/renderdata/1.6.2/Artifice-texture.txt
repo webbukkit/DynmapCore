@@ -1,11 +1,14 @@
 # Artifice textures
 modname:Artifice
+version:1.5.0-
+
 # configuration file
 cfgfile:config/Artifice.cfg
 
 texturepath:assets/minecraft/textures/blocks/
 texture:id=waterlily
-texturepath:assets/artifice/textures/blocks/
+[-1.5.2]texturepath:mods/artifice/textures/blocks/
+[1.6.0-]texturepath:assets/artifice/textures/blocks/
 texture:id=flora/bluebell
 texture:id=flora/orchid
 texture:id=flora/iris

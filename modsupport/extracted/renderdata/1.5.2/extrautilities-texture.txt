@@ -5,7 +5,8 @@ modname:ExtraUtilities
 cfgfile:config/ExtraUtilities.cfg
 
 #Files
-texturepath:assets/extrautils/textures/blocks
+[-1.5.2]texturepath:mods/extrautils/textures/blocks
+[1.6.0-]texturepath:assets/extrautils/textures/blocks
 texture:id=angelBlock
 texture:id=budoff
 texture:id=chandelier

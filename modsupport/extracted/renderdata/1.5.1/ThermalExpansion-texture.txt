@@ -8,12 +8,10 @@ var:LiquidRedstone=0,LiquidGlowstone=0,LiquidEnder=0
 cfgfile:config/cofh/ThermalExpansion.cfg
 
 # Files
-texturefile:id=blk0,filename=thermalexpansion/gfx/block_textures.png,xcount=16,ycount=16
-texturefile:id=steam,filename=assets/thermalexpansion/textures/blocks/Engine_Steam.png,xcount=8,ycount=4,format=CUSTOM,tile0=16:0/16:16,tile1=32:0/16:16,tile2=0:16/16:4/0:12,tile3=16:16/16:4/0:12,tile4=32:16/16:4/0:12,tile5=48:16/16:4/0:12,tile6=78:0/14:14/1:1,tile7=64:14/14:4/1:12,tile8=78:14/14:4/1:12,tile9=92:14/14:4/1:12,tile10=106:14/14:4/1:12,tile11=32:52/8:12/4:0,tile12=40:52/8:12/4:0,tile13=48:52/8:12/4:0,tile14=56:52/8:12/4:0,tile15=40:44/8:8/4:4
-texturefile:id=magmatic,filename=assets/thermalexpansion/textures/blocks/Engine_Magmatic.png,xcount=8,ycount=4,format=CUSTOM,,tile0=16:0/16:16,tile1=32:0/16:16,tile2=0:16/16:4/0:12,tile3=16:16/16:4/0:12,tile4=32:16/16:4/0:12,tile5=48:16/16:4/0:12,tile6=78:0/14:14/1:1,tile7=64:14/14:4/1:12,tile8=78:14/14:4/1:12,tile9=92:14/14:4/1:12,tile10=106:14/14:4/1:12,tile11=32:52/8:12/4:0,tile12=40:52/8:12/4:0,tile13=48:52/8:12/4:0,tile14=56:52/8:12/4:0,tile15=40:44/8:8/4:4
-texturefile:id=tank,filename=assets/thermalexpansion/textures/blocks/Tank_Portable.png,xcount=8,ycount=4
-texturefile:id=terrain,filename=terrain.png,xcount=16,ycount=16
-texturepath:assets/thermalexpansion/textures/blocks/
+[-1.5.2]texturepath:mods/thermalexpansion/textures/blocks/
+[1.6.0-]texturepath:assets/thermalexpansion/textures/blocks/
+texturefile:id=Engine_Steam,xcount=8,ycount=4,format=CUSTOM,tile0=16:0/16:16,tile1=32:0/16:16,tile2=0:16/16:4/0:12,tile3=16:16/16:4/0:12,tile4=32:16/16:4/0:12,tile5=48:16/16:4/0:12,tile6=78:0/14:14/1:1,tile7=64:14/14:4/1:12,tile8=78:14/14:4/1:12,tile9=92:14/14:4/1:12,tile10=106:14/14:4/1:12,tile11=32:52/8:12/4:0,tile12=40:52/8:12/4:0,tile13=48:52/8:12/4:0,tile14=56:52/8:12/4:0,tile15=40:44/8:8/4:4
+texturefile:id=Engine_Magmatic,xcount=8,ycount=4,format=CUSTOM,,tile0=16:0/16:16,tile1=32:0/16:16,tile2=0:16/16:4/0:12,tile3=16:16/16:4/0:12,tile4=32:16/16:4/0:12,tile5=48:16/16:4/0:12,tile6=78:0/14:14/1:1,tile7=64:14/14:4/1:12,tile8=78:14/14:4/1:12,tile9=92:14/14:4/1:12,tile10=106:14/14:4/1:12,tile11=32:52/8:12/4:0,tile12=40:52/8:12/4:0,tile13=48:52/8:12/4:0,tile14=56:52/8:12/4:0,tile15=40:44/8:8/4:4
 texture:id=Machine_Bottom
 texture:id=Machine_Side
 texture:id=Machine_Top
@@ -111,10 +109,10 @@ block:id=Lamp,data=0,allfaces=0:Lamp_Basic,stdrot=true
 
 # Engines
 # Steam
-block:id=Engine,data=0,patch0=0,patch1=1,patch2=2,patch3=3,patch4=4,patch5=5,patch6=7,patch7=8,patch8=9,patch9=10,patch10=11,patch11=12,patch12=13,patch13=14,patch14=15,patch15=6,txtid=steam,transparency=TRANSPARENT
+block:id=Engine,data=0,patch0=0,patch1=1,patch2=2,patch3=3,patch4=4,patch5=5,patch6=7,patch7=8,patch8=9,patch9=10,patch10=11,patch11=12,patch12=13,patch13=14,patch14=15,patch15=6,txtid=Engine_Steam,transparency=TRANSPARENT
 
 # Magmatic
-block:id=Engine,data=1,patch0=0,patch1=1,patch2=2,patch3=3,patch4=4,patch5=5,patch6=7,patch7=8,patch8=9,patch9=10,patch10=11,patch11=12,patch12=13,patch13=14,patch14=15,patch15=6,txtid=magmatic,transparency=TRANSPARENT
+block:id=Engine,data=1,patch0=0,patch1=1,patch2=2,patch3=3,patch4=4,patch5=5,patch6=7,patch7=8,patch8=9,patch9=10,patch10=11,patch11=12,patch12=13,patch13=14,patch14=15,patch15=6,txtid=Engine_Magmatic,transparency=TRANSPARENT
 
 # Tank (Just do as glass for now)
 block:id=Tank,allfaces=0:Glass_Hardened,stdrot=true,transparency=TRANSPARENT

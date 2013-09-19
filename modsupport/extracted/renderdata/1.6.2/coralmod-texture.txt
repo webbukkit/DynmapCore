@@ -3,7 +3,8 @@ modname:coralmod
 # configuration file
 cfgfile:config/coralreef/blockids.cfg
 
-texturepath:assets/coralmod/textures/blocks/
+[-1.5.2]texturepath:mods/nandonalt/coralmod/textures/blocks/
+[1.6.0-]texturepath:assets/coralmod/textures/blocks/
 texture:id=coral1
 texture:id=coral2
 texture:id=coral3

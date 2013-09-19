@@ -7,7 +7,8 @@ cfgfile:config/extrabiomes/extrabiomes.cfg
 # Files
 texturefile:id=blk0,filename=extrabiomes/extrabiomes.png,xcount=16,ycount=16
 
-texturepath:assets/extrabiomesxl/textures/blocks
+[1.6.0-]texturepath:assets/extrabiomesxl/textures/blocks
+[-1.5.2]texturepath:mods/extrabiomesxl/textures/blocks
 texture:id=autumnshrub
 texture:id=browngrassshort
 texture:id=browngrasstall

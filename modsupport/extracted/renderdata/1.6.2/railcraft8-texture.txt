@@ -11,7 +11,8 @@ cfgfile:config/railcraft/railcraft.cfg
 texturefile:id=blk0,filename=railcraft/client/textures/railcraft.png,xcount=16,ycount=16
 texturefile:id=mach,filename=railcraft/client/textures/machines.png,xcount=16,ycount=16
 texturefile:id=tracks,filename=railcraft/client/textures/tracks.png,xcount=16,ycount=16
-texturepath:assets/railcraft/textures/blocks/
+[-1.5.2]texturepath:mods/railcraft/textures/blocks/
+[1.6.0-]texturepath:assets/railcraft/textures/blocks/
 texture:id=brick.abyssal,xcount=6,ycount=1
 texture:id=brick.bleachedbone,xcount=6,ycount=1
 texture:id=brick.bloodstained,xcount=6,ycount=1

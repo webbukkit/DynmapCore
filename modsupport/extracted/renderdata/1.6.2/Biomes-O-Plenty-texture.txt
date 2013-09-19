@@ -9,7 +9,8 @@ cfgfile:config/BiomesOPlenty.cfg
 cfgfile:config/biomesoplenty/ids.cfg
 
 # Files
-texturepath:assets/biomesoplenty/textures/blocks/
+[1.6.0-]texturepath:assets/biomesoplenty/textures/blocks/
+[-1.5.2]texturepath:mods/biomesoplenty/textures/blocks/
 texture:id=algae
 texture:id=aloe
 texture:id=altarframe

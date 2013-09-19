@@ -1646,8 +1646,10 @@ public class TexturePack {
         int cnt = 0;
         HashMap<String,Integer> filetoidx = new HashMap<String,Integer>();
         HashMap<String,Integer> varvals = new HashMap<String,Integer>();
+        final String mcver = core.getDynmapPluginPlatformVersion();
         boolean mod_cfg_needed = false;
         String modname = null;
+        String modversion = null;
         String texturemod = null;
         String texturepath = null;
         boolean terrain_ok = true;
@@ -1655,7 +1657,28 @@ public class TexturePack {
             String line;
             rdr = new LineNumberReader(new InputStreamReader(txtfile));
             while((line = rdr.readLine()) != null) {
-                if(line.startsWith("block:")) {
+                boolean skip = false;
+                if ((line.length() > 0) && (line.charAt(0) == '[')) {    // If version constrained like
+                    int end = line.indexOf(']');    // Find end
+                    if (end < 0) {
+                        Log.severe("Format error - line " + rdr.getLineNumber() + " of " + txtname + ": bad version limit");
+                        return;
+                    }
+                    String vertst = line.substring(1, end);
+                    String tver = mcver;
+                    if (vertst.startsWith("mod:")) {    // If mod version ranged
+                        tver = modversion;
+                        vertst = vertst.substring(4);
+                    }
+                    if (!HDBlockModels.checkVersionRange(tver, vertst)) {
+                        skip = true;
+                    }
+                    line = line.substring(end+1);
+                }
+                // If we're skipping due to version restriction
+                if (skip) {
+                }
+                else if(line.startsWith("block:")) {
                     ArrayList<Integer> blkids = new ArrayList<Integer>();
                     int databits = -1;
                     int srctxtid = TXTID_TERRAINPNG;
@@ -1947,7 +1970,7 @@ public class TexturePack {
                             continue;
                         if(aval[0].equals("id")) {
                             id = aval[1];
-                            if ((fname == null) && istxt) {
+                            if (fname == null) {
                                 if (texturepath != null) {
                                     fname = texturepath + id + ".png";
                                 }
@@ -2042,6 +2065,7 @@ public class TexturePack {
                             Log.info(n + "[" + modver + "] textures enabled");
                             mod_cfg_needed = true;
                             modname = n;
+                            modversion = modver;
                             if(texturemod == null) texturemod = modname;
                             break;
                         }
@@ -2112,7 +2136,6 @@ public class TexturePack {
                 }
                 else if(line.startsWith("version:")) {
                     line = line.substring(line.indexOf(':')+1);
-                    String mcver = core.getDynmapPluginPlatformVersion();
                     int dash = line.indexOf('-');
                     if(dash < 0) {
                         if(!mcver.equals(line.trim())) { // If not match
