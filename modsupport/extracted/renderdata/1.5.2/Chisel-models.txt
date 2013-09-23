@@ -1,0 +1,12 @@
+modname:Chisel
+version:1.5.2-
+
+var:ice=0
+cfgfile:config/Chisel.cfg
+
+boxblock:id=blockMarblePillarSlab.bottom,data=*,ymax=0.5
+boxblock:id=blockMarblePillarSlab.top,data=*,ymin=0.5
+boxblock:id=blockMarbleSlab.bottom,data=*,ymax=0.5
+boxblock:id=blockMarbleSlab.top,data=*,ymin=0.5
+boxblock:id=blockLimestoneSlab.bottom,data=*,ymax=0.5
+boxblock:id=blockLimestoneSlab.top,data=*,ymin=0.5
