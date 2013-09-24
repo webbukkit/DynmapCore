@@ -5,8 +5,7 @@ modname:Natura
 # configuration file
 cfgfile:config/Natura.txt
 
-[-1.5.2]texturepath:mods/natura/textures/blocks
-[1.6.0-]texturepath:assets/natura/textures/blocks
+texturemod:natura
 texture:id=air_sulfur
 texture:id=apple_bark
 texture:id=apple_bookshelf

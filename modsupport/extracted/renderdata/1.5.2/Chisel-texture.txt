@@ -1,15 +1,12 @@
-modname:Chisel
 version:1.5.2-
 
-var:ice=0
+modname:Chisel
 cfgfile:config/Chisel.cfg
 
-[-1-5.2]texturepath:mods/chisel/textures/blocks/
-[1.6.0-]texturepath:assets/chisel/textures/blocks/
-
 #cobblestone
+
 texture:id=cobblestone/terrain-cobb-brickaligned
-texture:id=cobblestone/terrain-cobblargetiledark
+texture:id=cobblestone/terrain-cobblagetiledark
 texture:id=cobblestone/terrain-cobbsmalltile
 texture:id=cobblestone/terrain-cob-detailedbrick
 texture:id=cobblestone/terrain-cob-french
@@ -27,7 +24,7 @@ texture:id=cobblestone/terrain-pistonback-dungeontile
 block:id=stonebrick,data=1,allfaces=0:cobblestone/terrain-cobb-brickaligned,stdrot=true
 block:id=stonebrick,data=2,allfaces=0:cobblestone/terrain-cob-detailedbrick,stdrot=true
 block:id=stonebrick,data=3,allfaces=0:cobblestone/terrain-cob-smallbrick,stdrot=true
-block:id=stonebrick,data=4,allfaces=0:cobblestone/terrain-cobblargetiledark,stdrot=true
+block:id=stonebrick,data=4,allfaces=0:cobblestone/terrain-cobblagetiledark,stdrot=true
 block:id=stonebrick,data=5,allfaces=0:cobblestone/terrain-cobbsmalltile,stdrot=true
 block:id=stonebrick,data=6,allfaces=0:cobblestone/terrain-cob-french,stdrot=true
 block:id=stonebrick,data=7,allfaces=0:cobblestone/terrain-cob-french2,stdrot=true
@@ -620,28 +617,28 @@ block:id=blockMarble,data=11,allsides=0:marble/terrain-pistonback-marble-side,to
 
 #mawblepillar
 
-texture:id=marblepillarold/a1-stoneornamental-marblegreek-side
-texture:id=marblepillarold/a1-stoneornamental-marblegreek-top
-texture:id=marblepillarold/a1-stonepillar-greekbottomgreek-side
-texture:id=marblepillarold/a1-stonepillar-greekbottomgreek-top
-texture:id=marblepillarold/a1-stonepillar-greekbottomplain-side
-texture:id=marblepillarold/a1-stonepillar-greekbottomplain-top
-texture:id=marblepillarold/a1-stonepillar-greek-side
-texture:id=marblepillarold/a1-stonepillar-greek-top
-texture:id=marblepillarold/a1-stonepillar-greektopgreek-side
-texture:id=marblepillarold/a1-stonepillar-greektopgreek-top
-texture:id=marblepillarold/a1-stonepillar-greektopplain-side
-texture:id=marblepillarold/a1-stonepillar-greektopplain-top
-texture:id=marblepillarold/a1-stonepillar-plainbottomgreek-side
-texture:id=marblepillarold/a1-stonepillar-plainbottomgreek-top
-texture:id=marblepillarold/a1-stonepillar-plainbottomplain-side
-texture:id=marblepillarold/a1-stonepillar-plainbottomplain-top
-texture:id=marblepillarold/a1-stonepillar-plain-side
-texture:id=marblepillarold/a1-stonepillar-plain-top
-texture:id=marblepillarold/a1-stonepillar-plaintopgreek-side
-texture:id=marblepillarold/a1-stonepillar-plaintopgreek-top
-texture:id=marblepillarold/a1-stonepillar-plaintopplain-side
-texture:id=marblepillarold/a1-stonepillar-plaintopplain-top
+texture:id=marblepillar/a1-stoneornamental-marblegreek-side
+texture:id=marblepillar/a1-stoneornamental-marblegreek-top
+texture:id=marblepillar/a1-stonepillar-greekbottomgreek-side
+texture:id=marblepillar/a1-stonepillar-greekbottomgreek-top
+texture:id=marblepillar/a1-stonepillar-greekbottomplain-side
+texture:id=marblepillar/a1-stonepillar-greekbottomplain-top
+texture:id=marblepillar/a1-stonepillar-greek-side
+texture:id=marblepillar/a1-stonepillar-greek-top
+texture:id=marblepillar/a1-stonepillar-greektopgreek-side
+texture:id=marblepillar/a1-stonepillar-greektopgreek-top
+texture:id=marblepillar/a1-stonepillar-greektopplain-side
+texture:id=marblepillar/a1-stonepillar-greektopplain-top
+texture:id=marblepillar/a1-stonepillar-plainbottomgreek-side
+texture:id=marblepillar/a1-stonepillar-plainbottomgreek-top
+texture:id=marblepillar/a1-stonepillar-plainbottomplain-side
+texture:id=marblepillar/a1-stonepillar-plainbottomplain-top
+texture:id=marblepillar/a1-stonepillar-plain-side
+texture:id=marblepillar/a1-stonepillar-plain-top
+texture:id=marblepillar/a1-stonepillar-plaintopgreek-side
+texture:id=marblepillar/a1-stonepillar-plaintopgreek-top
+texture:id=marblepillar/a1-stonepillar-plaintopplain-side
+texture:id=marblepillar/a1-stonepillar-plaintopplain-top
 texture:id=marblepillar/base-side
 texture:id=marblepillar/base-top
 texture:id=marblepillar/capstone-side
@@ -653,17 +650,17 @@ texture:id=marblepillar/pillar-carved-top
 texture:id=marblepillar/small-side
 texture:id=marblepillar/small-top
 
-block:id=blockMarblePillar,data=5,allsides=0:marblepillarold/a1-stoneornamental-marblegreek-side,topbottom=0:marblepillarold/a1-stoneornamental-marblegreek-top,stdrot=true
-block:id=blockMarblePillar,data=14,allsides=0:marblepillarold/a1-stonepillar-greekbottomgreek-side,topbottom=0:marblepillarold/a1-stonepillar-greekbottomgreek-top,stdrot=true
-block:id=blockMarblePillar,data=10,allsides=0:marblepillarold/a1-stonepillar-greekbottomplain-side,topbottom=0:marblepillarold/a1-stonepillar-greekbottomplain-top,stdrot=true
-block:id=blockMarblePillar,data=6,allsides=0:marblepillarold/a1-stonepillar-greek-side,topbottom=0:marblepillarold/a1-stonepillar-greek-top,stdrot=true
-block:id=blockMarblePillar,data=12,allsides=0:marblepillarold/a1-stonepillar-greektopgreek-side,topbottom=0:marblepillarold/a1-stonepillar-greektopgreek-top,stdrot=true
-block:id=blockMarblePillar,data=8,allsides=0:marblepillarold/a1-stonepillar-greektopplain-side,topbottom=0:marblepillarold/a1-stonepillar-greektopplain-top,stdrot=true
-block:id=blockMarblePillar,data=15,allsides=0:marblepillarold/a1-stonepillar-plainbottomgreek-side,topbottom=0:marblepillarold/a1-stonepillar-plainbottomgreek-top,stdrot=true
-block:id=blockMarblePillar,data=11,allsides=0:marblepillarold/a1-stonepillar-plainbottomplain-side,topbottom=0:marblepillarold/a1-stonepillar-plainbottomplain-top,stdrot=true
-block:id=blockMarblePillar,data=7,allsides=0:marblepillarold/a1-stonepillar-plain-side,topbottom=0:marblepillarold/a1-stonepillar-plain-top,stdrot=true
-block:id=blockMarblePillar,data=13,allsides=0:marblepillarold/a1-stonepillar-plaintopgreek-side,topbottom=0:marblepillarold/a1-stonepillar-plaintopgreek-top,stdrot=true
-block:id=blockMarblePillar,data=9,allsides=0:marblepillarold/a1-stonepillar-plaintopplain-side,topbottom=0:marblepillarold/a1-stonepillar-plaintopplain-top,stdrot=true
+block:id=blockMarblePillar,data=5,allsides=0:marblepillar/a1-stoneornamental-marblegreek-side,topbottom=0:marblepillar/a1-stoneornamental-marblegreek-top,stdrot=true
+block:id=blockMarblePillar,data=14,allsides=0:marblepillar/a1-stonepillar-greekbottomgreek-side,topbottom=0:marblepillar/a1-stonepillar-greekbottomgreek-top,stdrot=true
+block:id=blockMarblePillar,data=10,allsides=0:marblepillar/a1-stonepillar-greekbottomplain-side,topbottom=0:marblepillar/a1-stonepillar-greekbottomplain-top,stdrot=true
+block:id=blockMarblePillar,data=6,allsides=0:marblepillar/a1-stonepillar-greek-side,topbottom=0:marblepillar/a1-stonepillar-greek-top,stdrot=true
+block:id=blockMarblePillar,data=12,allsides=0:marblepillar/a1-stonepillar-greektopgreek-side,topbottom=0:marblepillar/a1-stonepillar-greektopgreek-top,stdrot=true
+block:id=blockMarblePillar,data=8,allsides=0:marblepillar/a1-stonepillar-greektopplain-side,topbottom=0:marblepillar/a1-stonepillar-greektopplain-top,stdrot=true
+block:id=blockMarblePillar,data=15,allsides=0:marblepillar/a1-stonepillar-plainbottomgreek-side,topbottom=0:marblepillar/a1-stonepillar-plainbottomgreek-top,stdrot=true
+block:id=blockMarblePillar,data=11,allsides=0:marblepillar/a1-stonepillar-plainbottomplain-side,topbottom=0:marblepillar/a1-stonepillar-plainbottomplain-top,stdrot=true
+block:id=blockMarblePillar,data=7,allsides=0:marblepillar/a1-stonepillar-plain-side,topbottom=0:marblepillar/a1-stonepillar-plain-top,stdrot=true
+block:id=blockMarblePillar,data=13,allsides=0:marblepillar/a1-stonepillar-plaintopgreek-side,topbottom=0:marblepillar/a1-stonepillar-plaintopgreek-top,stdrot=true
+block:id=blockMarblePillar,data=9,allsides=0:marblepillar/a1-stonepillar-plaintopplain-side,topbottom=0:marblepillar/a1-stonepillar-plaintopplain-top,stdrot=true
 block:id=blockMarblePillar,data=2,allsides=0:marblepillar/base-side,topbottom=0:marblepillar/base-top,stdrot=true
 block:id=blockMarblePillar,data=1,allsides=0:marblepillar/capstone-side,topbottom=0:marblepillar/capstone-top,stdrot=true
 block:id=blockMarblePillar,data=0,allsides=0:marblepillar/column-side,topbottom=0:marblepillar/column-top,stdrot=true
@@ -705,22 +702,22 @@ texture:id=marblepillarslab/pillar-carved-top
 texture:id=marblepillarslab/small-side
 texture:id=marblepillarslab/small-top
 
-block:id=blockMarblePillarSlab.bottom,id=blockMarblePillarSlab.top,data=5,allsides=0:marblepillarslab/a1-stoneornamental-marblegreek-side,topbottom=0:marblepillarslab/a1-stoneornamental-marblegreek-top,stdrot=true
-block:id=blockMarblePillarSlab.bottom,id=blockMarblePillarSlab.top,data=14,allsides=0:marblepillarslab/a1-stonepillar-greekbottomgreek-side,topbottom=0:marblepillarslab/a1-stonepillar-greekbottomgreek-top,stdrot=true
-block:id=blockMarblePillarSlab.bottom,id=blockMarblePillarSlab.top,data=10,allsides=0:marblepillarslab/a1-stonepillar-greekbottomplain-side,topbottom=0:marblepillarslab/a1-stonepillar-greekbottomplain-top,stdrot=true
-block:id=blockMarblePillarSlab.bottom,id=blockMarblePillarSlab.top,data=6,allsides=0:marblepillarslab/a1-stonepillar-greek-side,topbottom=0:marblepillarslab/a1-stonepillar-greek-top,stdrot=true
-block:id=blockMarblePillarSlab.bottom,id=blockMarblePillarSlab.top,data=12,allsides=0:marblepillarslab/a1-stonepillar-greektopgreek-side,topbottom=0:marblepillarslab/a1-stonepillar-greektopgreek-top,stdrot=true
-block:id=blockMarblePillarSlab.bottom,id=blockMarblePillarSlab.top,data=8,allsides=0:marblepillarslab/a1-stonepillar-greektopplain-side,topbottom=0:marblepillarslab/a1-stonepillar-greektopplain-top,stdrot=true
-block:id=blockMarblePillarSlab.bottom,id=blockMarblePillarSlab.top,data=15,allsides=0:marblepillarslab/a1-stonepillar-plainbottomgreek-side,topbottom=0:marblepillarslab/a1-stonepillar-plainbottomgreek-top,stdrot=true
-block:id=blockMarblePillarSlab.bottom,id=blockMarblePillarSlab.top,data=11,allsides=0:marblepillarslab/a1-stonepillar-plainbottomplain-side,topbottom=0:marblepillarslab/a1-stonepillar-plainbottomplain-top,stdrot=true
-block:id=blockMarblePillarSlab.bottom,id=blockMarblePillarSlab.top,data=7,allsides=0:marblepillarslab/a1-stonepillar-plain-side,topbottom=0:marblepillarslab/a1-stonepillar-plain-top,stdrot=true
-block:id=blockMarblePillarSlab.bottom,id=blockMarblePillarSlab.top,data=13,allsides=0:marblepillarslab/a1-stonepillar-plaintopgreek-side,topbottom=0:marblepillarslab/a1-stonepillar-plaintopgreek-top,stdrot=true
-block:id=blockMarblePillarSlab.bottom,id=blockMarblePillarSlab.top,data=9,allsides=0:marblepillarslab/a1-stonepillar-plaintopplain-side,topbottom=0:marblepillarslab/a1-stonepillar-plaintopplain-top,stdrot=true
-block:id=blockMarblePillarSlab.bottom,id=blockMarblePillarSlab.top,data=2,allsides=0:marblepillarslab/base-side,topbottom=0:marblepillarslab/base-top,stdrot=true
-block:id=blockMarblePillarSlab.bottom,id=blockMarblePillarSlab.top,data=1,allsides=0:marblepillarslab/capstone-side,topbottom=0:marblepillarslab/capstone-top,stdrot=true
-block:id=blockMarblePillarSlab.bottom,id=blockMarblePillarSlab.top,data=0,allsides=0:marblepillarslab/column-side,topbottom=0:marblepillarslab/column-top,stdrot=true
-block:id=blockMarblePillarSlab.bottom,id=blockMarblePillarSlab.top,data=4,allsides=0:marblepillarslab/pillar-carved-side,topbottom=0:marblepillarslab/pillar-carved-top,stdrot=true
-block:id=blockMarblePillarSlab.bottom,id=blockMarblePillarSlab.top,data=3,allsides=0:marblepillarslab/small-side,topbottom=0:marblepillarslab/small-top,stdrot=true
+block:id=blockMarblePillarSlab,data=5,allsides=0:marblepillarslab/a1-stoneornamental-marblegreek-side,topbottom=0:marblepillarslab/a1-stoneornamental-marblegreek-top,stdrot=true
+block:id=blockMarblePillarSlab,data=14,allsides=0:marblepillarslab/a1-stonepillar-greekbottomgreek-side,topbottom=0:marblepillarslab/a1-stonepillar-greekbottomgreek-top,stdrot=true
+block:id=blockMarblePillarSlab,data=10,allsides=0:marblepillarslab/a1-stonepillar-greekbottomplain-side,topbottom=0:marblepillarslab/a1-stonepillar-greekbottomplain-top,stdrot=true
+block:id=blockMarblePillarSlab,data=6,allsides=0:marblepillarslab/a1-stonepillar-greek-side,topbottom=0:marblepillarslab/a1-stonepillar-greek-top,stdrot=true
+block:id=blockMarblePillarSlab,data=12,allsides=0:marblepillarslab/a1-stonepillar-greektopgreek-side,topbottom=0:marblepillarslab/a1-stonepillar-greektopgreek-top,stdrot=true
+block:id=blockMarblePillarSlab,data=8,allsides=0:marblepillarslab/a1-stonepillar-greektopplain-side,topbottom=0:marblepillarslab/a1-stonepillar-greektopplain-top,stdrot=true
+block:id=blockMarblePillarSlab,data=15,allsides=0:marblepillarslab/a1-stonepillar-plainbottomgreek-side,topbottom=0:marblepillarslab/a1-stonepillar-plainbottomgreek-top,stdrot=true
+block:id=blockMarblePillarSlab,data=11,allsides=0:marblepillarslab/a1-stonepillar-plainbottomplain-side,topbottom=0:marblepillarslab/a1-stonepillar-plainbottomplain-top,stdrot=true
+block:id=blockMarblePillarSlab,data=7,allsides=0:marblepillarslab/a1-stonepillar-plain-side,topbottom=0:marblepillarslab/a1-stonepillar-plain-top,stdrot=true
+block:id=blockMarblePillarSlab,data=13,allsides=0:marblepillarslab/a1-stonepillar-plaintopgreek-side,topbottom=0:marblepillarslab/a1-stonepillar-plaintopgreek-top,stdrot=true
+block:id=blockMarblePillarSlab,data=9,allsides=0:marblepillarslab/a1-stonepillar-plaintopplain-side,topbottom=0:marblepillarslab/a1-stonepillar-plaintopplain-top,stdrot=true
+block:id=blockMarblePillarSlab,data=2,allsides=0:marblepillarslab/base-side,topbottom=0:marblepillarslab/base-top,stdrot=true
+block:id=blockMarblePillarSlab,data=1,allsides=0:marblepillarslab/capstone-side,topbottom=0:marblepillarslab/capstone-top,stdrot=true
+block:id=blockMarblePillarSlab,data=0,allsides=0:marblepillarslab/column-side,topbottom=0:marblepillarslab/column-top,stdrot=true
+block:id=blockMarblePillarSlab,data=4,allsides=0:marblepillarslab/pillar-carved-side,topbottom=0:marblepillarslab/pillar-carved-top,stdrot=true
+block:id=blockMarblePillarSlab,data=3,allsides=0:marblepillarslab/small-side,topbottom=0:marblepillarslab/small-top,stdrot=true
 
 #FUUUCK marble!!!
 
@@ -754,22 +751,22 @@ texture:id=marbleslab/terrain-pistonback-marble-side
 texture:id=marbleslab/terrain-pistonback-marble-top
 texture:id=marble
 
-block:id=blockMarbleSlab.bottom,id-blockMarbleSlab.top,data=1,allsides=0:marbleslab/a1-stoneornamental-marblebrick-side,topbottom=0:marbleslab/a1-stoneornamental-marblebrick-top,stdrot=true
-block:id=blockMarbleSlab.bottom,id-blockMarbleSlab.top,data=9,allsides=0:marbleslab/a1-stoneornamental-marblecarvedradial-side,topbottom=0:marbleslab/a1-stoneornamental-marblecarvedradial-top,stdrot=true
-block:id=blockMarbleSlab.bottom,id-blockMarbleSlab.top,data=8,allsides=0:marbleslab/a1-stoneornamental-marblecarved-side,topbottom=0:marbleslab/a1-stoneornamental-marblecarved-top,stdrot=true
-block:id=blockMarbleSlab.bottom,id-blockMarbleSlab.top,data=2,allsides=0:marbleslab/a1-stoneornamental-marbleclassicpanel-side,topbottom=0:marbleslab/a1-stoneornamental-marbleclassicpanel-top,stdrot=true
-block:id=blockMarbleSlab.bottom,id-blockMarbleSlab.top,data=3,allsides=0:marbleslab/a1-stoneornamental-marbleornate-side,topbottom=0:marbleslab/a1-stoneornamental-marbleornate-top,stdrot=true
-block:id=blockMarbleSlab.bottom,id-blockMarbleSlab.top,data=4,allsides=0:marbleslab/a1-stoneornamental-marblepanel-side,topbottom=0:marbleslab/a1-stoneornamental-marblepanel-top,stdrot=true
-block:id=blockMarbleSlab.bottom,id-blockMarbleSlab.top,data=13,allsides=0:marbleslab/marble-arranged-bricks-side,topbottom=0:marbleslab/marble-arranged-bricks-top,stdrot=true
-block:id=blockMarbleSlab.bottom,id-blockMarbleSlab.top,data=15,allfaces=0:marbleslab/marble-blocks,stdrot=true
-block:id=blockMarbleSlab.bottom,id-blockMarbleSlab.top,data=12,allfaces=0:marbleslab/marble-bricks,stdrot=true
-block:id=blockMarbleSlab.bottom,id-blockMarbleSlab.top,data=14,allsides=0:marbleslab/marble-fancy-bricks-side,topbottom=0:marbleslab/marble-fancy-bricks-top,stdrot=true
-block:id=blockMarbleSlab.bottom,id-blockMarbleSlab.top,data=6,allsides=0:marbleslab/terrain-pistonback-marblecreeperdark-side,topbottom=0:marbleslab/terrain-pistonback-marblecreeperdark-top,stdrot=true
-block:id=blockMarbleSlab.bottom,id-blockMarbleSlab.top,data=7,allsides=0:marbleslab/terrain-pistonback-marblecreeperlight-side,topbottom=0:marbleslab/terrain-pistonback-marblecreeperlight-top,stdrot=true
-block:id=blockMarbleSlab.bottom,id-blockMarbleSlab.top,data=10,allsides=0:marbleslab/terrain-pistonback-marbledent-side,topbottom=0:marbleslab/terrain-pistonback-marbledent-top,stdrot=true
-block:id=blockMarbleSlab.bottom,id-blockMarbleSlab.top,data=11,allsides=0:marbleslab/terrain-pistonback-marbledent-small-side,topbottom=0:marbleslab/terrain-pistonback-marbledent-small-top,stdrot=true
-block:id=blockMarbleSlab.bottom,id-blockMarbleSlab.top,data=5,allsides=0:marbleslab/terrain-pistonback-marble-side,topbottom=0:marbleslab/terrain-pistonback-marble-top,stdrot=true
-block:id=blockMarbleSlab.bottom,id-blockMarbleSlab.top,data=0,allfaces=0:marble,stdrot=true
+block:id=blockMarbleSlab,data=1,allsides=0:marbleslab/a1-stoneornamental-marblebrick-side,topbottom=0:marbleslab/a1-stoneornamental-marblebrick-top,stdrot=true
+block:id=blockMarbleSlab,data=9,allsides=0:marbleslab/a1-stoneornamental-marblecarvedradial-side,topbottom=0:marbleslab/a1-stoneornamental-marblecarvedradial-top,stdrot=true
+block:id=blockMarbleSlab,data=8,allsides=0:marbleslab/a1-stoneornamental-marblecarved-side,topbottom=0:marbleslab/a1-stoneornamental-marblecarved-top,stdrot=true
+block:id=blockMarbleSlab,data=2,allsides=0:marbleslab/a1-stoneornamental-marbleclassicpanel-side,topbottom=0:marbleslab/a1-stoneornamental-marbleclassicpanel-top,stdrot=true
+block:id=blockMarbleSlab,data=3,allsides=0:marbleslab/a1-stoneornamental-marbleornate-side,topbottom=0:marbleslab/a1-stoneornamental-marbleornate-top,stdrot=true
+block:id=blockMarbleSlab,data=4,allsides=0:marbleslab/a1-stoneornamental-marblepanel-side,topbottom=0:marbleslab/a1-stoneornamental-marblepanel-top,stdrot=true
+block:id=blockMarbleSlab,data=13,allsides=0:marbleslab/marble-arranged-bricks-side,topbottom=0:marbleslab/marble-arranged-bricks-top,stdrot=true
+block:id=blockMarbleSlab,data=15,allfaces=0:marbleslab/marble-blocks,stdrot=true
+block:id=blockMarbleSlab,data=12,allfaces=0:marbleslab/marble-bricks,stdrot=true
+block:id=blockMarbleSlab,data=14,allsides=0:marbleslab/marble-fancy-bricks-side,topbottom=0:marbleslab/marble-fancy-bricks-top,stdrot=true
+block:id=blockMarbleSlab,data=6,allsides=0:marbleslab/terrain-pistonback-marblecreeperdark-side,topbottom=0:marbleslab/terrain-pistonback-marblecreeperdark-top,stdrot=true
+block:id=blockMarbleSlab,data=7,allsides=0:marbleslab/terrain-pistonback-marblecreeperlight-side,topbottom=0:marbleslab/terrain-pistonback-marblecreeperlight-top,stdrot=true
+block:id=blockMarbleSlab,data=10,allsides=0:marbleslab/terrain-pistonback-marbledent-side,topbottom=0:marbleslab/terrain-pistonback-marbledent-top,stdrot=true
+block:id=blockMarbleSlab,data=11,allsides=0:marbleslab/terrain-pistonback-marbledent-small-side,topbottom=0:marbleslab/terrain-pistonback-marbledent-small-top,stdrot=true
+block:id=blockMarbleSlab,data=5,allsides=0:marbleslab/terrain-pistonback-marble-side,topbottom=0:marbleslab/terrain-pistonback-marble-top,stdrot=true
+block:id=blockMarbleSlab,data=0,allfaces=0:marble,stdrot=true
 
 
 #netherbrick
