@@ -4,6 +4,7 @@ var:ice=0,blockMarblePillarSlab=0,blockMarbleSlab=0
 modname:Chisel
 cfgfile:config/Chisel.cfg
 
+texturepath:mods/chisel/textures/blocks/
 #cobblestone
 
 texture:id=cobblestone/terrain-cobb-brickaligned
@@ -838,7 +839,7 @@ block:id=hellrock,data=14,allfaces=0:netherrack/a1-netherrack-wells,stdrot=true
 
 #obsidian
 
-texture:id=obsidian/block
+texture:id=obsidian/blocks
 texture:id=obsidian/chiseled-side
 texture:id=obsidian/chiseled-top
 texture:id=obsidian/chunks
@@ -860,7 +861,7 @@ texture:id=obsidian/tiles
 texture:id=obsidian/map-b
 texture:id=obsidian/map-a
 
-block:id=obsidian,data=12,allfaces=0:obsidian/block,stdrot=true
+block:id=obsidian,data=12,allfaces=0:obsidian/blocks,stdrot=true
 block:id=obsidian,data=3,allsides=0:obsidian/chiseled-side,topbottom=0:obsidian/chiseled-top,stdrot=true
 block:id=obsidian,data=6,allfaces=0:obsidian/chunks,stdrot=true
 block:id=obsidian,data=15,bottom=0:obsidian/crate-bottom,top=0:obsidian/crate-top,allsides=0:obsidian/crate-side,stdrot=true
