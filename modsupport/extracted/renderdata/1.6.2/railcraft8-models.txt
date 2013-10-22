@@ -228,18 +228,18 @@ layer:0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15
 ----------------
 
 # block.stair
-[mod:8.0.0-]customblock:id=block.stair,data=*,class=org.dynmap.hdmap.renderer.StairBlockRenderer,textureindex=stair,texturecnt=34,textmap0=SANDY_BRICK,textmap1=INFERNAL_BRICK,textmap2=CONCRETE,textmap3=SNOW,,textmap4=ICE,textmap5=IRON,textmap6=GOLD,textmap7=DIAMOND,textmap8=FROSTBOUND_BRICK,textmap9=QUARRIED_BRICK,textmap10=BLEACHEDBONE_BRICK,textmap11=BLOODSTAINED_BRICK,textmap12=ABYSSAL_BRICK,textmap13=SANDY_FITTED,textmap14=INFERNAL_FITTED,textmap15=FROSTBOUND_FITTED,textmap16=QUARRIED_FITTED,textmap17=BLEACHEDBONE_FITTED,textmap18=BLOODSTAINED_FITTED,textmap19=ABYSSAL_FITTED,textmap20=SANDY_BLOCK,textmap21=INFERNAL_BLOCK,textmap22=FROSTBOUND_BLOCK,textmap23=QUARRIED_BLOCK,textmap24=BLEACHEDBONE_BLOCK,textmap25=BLOODSTAINED_BLOCK,textmap26=ABYSSAL_BLOCK,textmap27=SANDY_COBBLE,textmap28=INFERNAL_COBBLE,textmap29=FROSTBOUND_COBBLE,textmap30=QUARRIED_COBBLE,textmap31=BLEACHEDBONE_COBBLE,textmap32=BLOODSTAINED_COBBLE,textmap33=ABYSSAL_COBBLE
-[mod:-7.9.9]customblock:id=block.stair,data=*,class=org.dynmap.hdmap.renderer.StairBlockRenderer,textureindex=stair,texturecnt=8,textmap0=SANDY_BRICK,textmap1=INFERNAL_BRICK,textmap2=CONCRETE,textmap3=SNOW,,textmap4=ICE,textmap5=IRON,textmap6=GOLD,textmap7=DIAMOND
+[mod:7.3.0-]customblock:id=block.stair,data=*,class=org.dynmap.hdmap.renderer.StairBlockRenderer,textureindex=stair,texturecnt=34,textmap0=SANDY_BRICK,textmap1=INFERNAL_BRICK,textmap2=CONCRETE,textmap3=SNOW,,textmap4=ICE,textmap5=IRON,textmap6=GOLD,textmap7=DIAMOND,textmap8=FROSTBOUND_BRICK,textmap9=QUARRIED_BRICK,textmap10=BLEACHEDBONE_BRICK,textmap11=BLOODSTAINED_BRICK,textmap12=ABYSSAL_BRICK,textmap13=SANDY_FITTED,textmap14=INFERNAL_FITTED,textmap15=FROSTBOUND_FITTED,textmap16=QUARRIED_FITTED,textmap17=BLEACHEDBONE_FITTED,textmap18=BLOODSTAINED_FITTED,textmap19=ABYSSAL_FITTED,textmap20=SANDY_BLOCK,textmap21=INFERNAL_BLOCK,textmap22=FROSTBOUND_BLOCK,textmap23=QUARRIED_BLOCK,textmap24=BLEACHEDBONE_BLOCK,textmap25=BLOODSTAINED_BLOCK,textmap26=ABYSSAL_BLOCK,textmap27=SANDY_COBBLE,textmap28=INFERNAL_COBBLE,textmap29=FROSTBOUND_COBBLE,textmap30=QUARRIED_COBBLE,textmap31=BLEACHEDBONE_COBBLE,textmap32=BLOODSTAINED_COBBLE,textmap33=ABYSSAL_COBBLE
+[mod:-7.2.9]customblock:id=block.stair,data=*,class=org.dynmap.hdmap.renderer.StairBlockRenderer,textureindex=stair,texturecnt=8,textmap0=SANDY_BRICK,textmap1=INFERNAL_BRICK,textmap2=CONCRETE,textmap3=SNOW,,textmap4=ICE,textmap5=IRON,textmap6=GOLD,textmap7=DIAMOND
 
 # block.slab
-[mod:8.0.0-]customblock:id=block.slab,data=*,class=org.dynmap.hdmap.renderer.RailCraftSlabBlockRenderer,texturecnt=34,textmap0=SANDY_BRICK,textmap1=INFERNAL_BRICK,textmap2=CONCRETE,textmap3=SNOW,,textmap4=ICE,textmap5=IRON,textmap6=GOLD,textmap7=DIAMOND,textmap8=FROSTBOUND_BRICK,textmap9=QUARRIED_BRICK,textmap10=BLEACHEDBONE_BRICK,textmap11=BLOODSTAINED_BRICK,textmap12=ABYSSAL_BRICK,textmap13=SANDY_FITTED,textmap14=INFERNAL_FITTED,textmap15=FROSTBOUND_FITTED,textmap16=QUARRIED_FITTED,textmap17=BLEACHEDBONE_FITTED,textmap18=BLOODSTAINED_FITTED,textmap19=ABYSSAL_FITTED,textmap20=SANDY_BLOCK,textmap21=INFERNAL_BLOCK,textmap22=FROSTBOUND_BLOCK,textmap23=QUARRIED_BLOCK,textmap24=BLEACHEDBONE_BLOCK,textmap25=BLOODSTAINED_BLOCK,textmap26=ABYSSAL_BLOCK,textmap27=SANDY_COBBLE,textmap28=INFERNAL_COBBLE,textmap29=FROSTBOUND_COBBLE,textmap30=QUARRIED_COBBLE,textmap31=BLEACHEDBONE_COBBLE,textmap32=BLOODSTAINED_COBBLE,textmap33=ABYSSAL_COBBLE
+[mod:7.3.0-]customblock:id=block.slab,data=*,class=org.dynmap.hdmap.renderer.RailCraftSlabBlockRenderer,texturecnt=34,textmap0=SANDY_BRICK,textmap1=INFERNAL_BRICK,textmap2=CONCRETE,textmap3=SNOW,,textmap4=ICE,textmap5=IRON,textmap6=GOLD,textmap7=DIAMOND,textmap8=FROSTBOUND_BRICK,textmap9=QUARRIED_BRICK,textmap10=BLEACHEDBONE_BRICK,textmap11=BLOODSTAINED_BRICK,textmap12=ABYSSAL_BRICK,textmap13=SANDY_FITTED,textmap14=INFERNAL_FITTED,textmap15=FROSTBOUND_FITTED,textmap16=QUARRIED_FITTED,textmap17=BLEACHEDBONE_FITTED,textmap18=BLOODSTAINED_FITTED,textmap19=ABYSSAL_FITTED,textmap20=SANDY_BLOCK,textmap21=INFERNAL_BLOCK,textmap22=FROSTBOUND_BLOCK,textmap23=QUARRIED_BLOCK,textmap24=BLEACHEDBONE_BLOCK,textmap25=BLOODSTAINED_BLOCK,textmap26=ABYSSAL_BLOCK,textmap27=SANDY_COBBLE,textmap28=INFERNAL_COBBLE,textmap29=FROSTBOUND_COBBLE,textmap30=QUARRIED_COBBLE,textmap31=BLEACHEDBONE_COBBLE,textmap32=BLOODSTAINED_COBBLE,textmap33=ABYSSAL_COBBLE
 
 # block.post.metal
 # block.post
 customblock:id=block.post,id=block.post.metal,data=*,class=org.dynmap.hdmap.renderer.FenceWallBlockRenderer,type=fence,link0=block.post.metal,link1=block.post
 
 # block.glass
-[mod:8.0.0-]customblock:id=block.glass,data=*,class=org.dynmap.hdmap.renderer.CTMVertTextureRenderer
+[mod:7.3.0-]customblock:id=block.glass,data=*,class=org.dynmap.hdmap.renderer.CTMVertTextureRenderer
 
 # block.wall.alpha
 # block.wall.beta
@@ -247,10 +247,10 @@ customblock:id=block.wall.alpha,id=block.wall.beta,data=*,class=org.dynmap.hdmap
 
 # block.fluid.creosote
 # block.fluid.steam
-[mod:8.0.0-]boxblock:id=block.fluid.creosote,id=block.fluid.steam,data=1,ymax=0.875
-[mod:8.0.0-]boxblock:id=block.fluid.creosote,id=block.fluid.steam,data=2,ymax=0.75
-[mod:8.0.0-]boxblock:id=block.fluid.creosote,id=block.fluid.steam,data=3,ymax=0.625
-[mod:8.0.0-]boxblock:id=block.fluid.creosote,id=block.fluid.steam,data=4,ymax=0.5
-[mod:8.0.0-]boxblock:id=block.fluid.creosote,id=block.fluid.steam,data=5,ymax=0.375
-[mod:8.0.0-]boxblock:id=block.fluid.creosote,id=block.fluid.steam,data=6,ymax=0.25
-[mod:8.0.0-]boxblock:id=block.fluid.creosote,id=block.fluid.steam,data=7,ymax=0.125
+[mod:7.3.0-]boxblock:id=block.fluid.creosote,id=block.fluid.steam,data=1,ymax=0.875
+[mod:7.3.0-]boxblock:id=block.fluid.creosote,id=block.fluid.steam,data=2,ymax=0.75
+[mod:7.3.0-]boxblock:id=block.fluid.creosote,id=block.fluid.steam,data=3,ymax=0.625
+[mod:7.3.0-]boxblock:id=block.fluid.creosote,id=block.fluid.steam,data=4,ymax=0.5
+[mod:7.3.0-]boxblock:id=block.fluid.creosote,id=block.fluid.steam,data=5,ymax=0.375
+[mod:7.3.0-]boxblock:id=block.fluid.creosote,id=block.fluid.steam,data=6,ymax=0.25
+[mod:7.3.0-]boxblock:id=block.fluid.creosote,id=block.fluid.steam,data=7,ymax=0.125
