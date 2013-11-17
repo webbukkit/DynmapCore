@@ -272,6 +272,76 @@ texture:id=anvil_top_damaged_0
 texture:id=anvil_top_damaged_1
 texture:id=anvil_top_damaged_2
 texture:id=trip_wire_source
+# 1.7.2 textures
+[1.7.0-]texture:id=dirt_podzol_top
+[1.7.0-]texture:id=dirt_podzol_side
+[1.7.0-]texture:id=flower_blue_orchid
+[1.7.0-]texture:id=flower_allium
+[1.7.0-]texture:id=flower_houstonia
+[1.7.0-]texture:id=flower_tulip_red
+[1.7.0-]texture:id=flower_tulip_orange
+[1.7.0-]texture:id=flower_tulip_white
+[1.7.0-]texture:id=flower_tulip_pink
+[1.7.0-]texture:id=flower_oxeye_daisy
+[1.7.0-]texture:id=double_plant_fern_bottom
+[1.7.0-]texture:id=double_plant_fern_top
+[1.7.0-]texture:id=double_plant_grass_bottom
+[1.7.0-]texture:id=double_plant_grass_top
+[1.7.0-]texture:id=double_plant_paeonia_bottom
+[1.7.0-]texture:id=double_plant_paeonia_top
+[1.7.0-]texture:id=double_plant_rose_bottom
+[1.7.0-]texture:id=double_plant_rose_top
+[1.7.0-]texture:id=double_plant_sunflower_back
+[1.7.0-]texture:id=double_plant_sunflower_bottom
+[1.7.0-]texture:id=double_plant_sunflower_front
+[1.7.0-]texture:id=double_plant_sunflower_top
+[1.7.0-]texture:id=double_plant_syringa_bottom
+[1.7.0-]texture:id=double_plant_syringa_top
+[1.7.0-]texture:id=glass_black
+[1.7.0-]texture:id=glass_blue
+[1.7.0-]texture:id=glass_brown
+[1.7.0-]texture:id=glass_cyan
+[1.7.0-]texture:id=glass_gray
+[1.7.0-]texture:id=glass_green
+[1.7.0-]texture:id=glass_light_blue
+[1.7.0-]texture:id=glass_lime
+[1.7.0-]texture:id=glass_magenta
+[1.7.0-]texture:id=glass_orange
+[1.7.0-]texture:id=glass_pink
+[1.7.0-]texture:id=glass_purple
+[1.7.0-]texture:id=glass_red
+[1.7.0-]texture:id=glass_silver
+[1.7.0-]texture:id=glass_white
+[1.7.0-]texture:id=glass_yellow
+[1.7.0-]texture:id=glass_pane_top_black
+[1.7.0-]texture:id=glass_pane_top_blue
+[1.7.0-]texture:id=glass_pane_top_brown
+[1.7.0-]texture:id=glass_pane_top_cyan
+[1.7.0-]texture:id=glass_pane_top_gray
+[1.7.0-]texture:id=glass_pane_top_green
+[1.7.0-]texture:id=glass_pane_top_light_blue
+[1.7.0-]texture:id=glass_pane_top_lime
+[1.7.0-]texture:id=glass_pane_top_magenta
+[1.7.0-]texture:id=glass_pane_top_orange
+[1.7.0-]texture:id=glass_pane_top_pink
+[1.7.0-]texture:id=glass_pane_top_purple
+[1.7.0-]texture:id=glass_pane_top_red
+[1.7.0-]texture:id=glass_pane_top_silver
+[1.7.0-]texture:id=glass_pane_top_white
+[1.7.0-]texture:id=glass_pane_top_yellow
+[1.7.0-]texture:id=ice_packed
+[1.7.0-]texture:id=leaves_acacia
+[1.7.0-]texture:id=leaves_big_oak
+[1.7.0-]texture:id=log_acacia
+[1.7.0-]texture:id=log_acacia_top
+[1.7.0-]texture:id=log_big_oak
+[1.7.0-]texture:id=log_big_oak_top
+[1.7.0-]texture:id=planks_acacia
+[1.7.0-]texture:id=planks_big_oak
+[1.7.0-]texture:id=sapling_acacia
+[1.7.0-]texture:id=sapling_roofed_oak
+[1.7.0-]texture:id=red_sand
+
 ######
 # Stone
 block:id=1,allfaces=0:stone,stdrot=true
@@ -279,24 +349,34 @@ block:id=1,allfaces=0:stone,stdrot=true
 block:id=2,allsides=11000:grass_side,top=1000:grass_top,bottom=0:dirt,stdrot=true
 # Dirt
 block:id=3,allfaces=0:dirt,stdrot=true
+[1.7.0-]block:id=3,data=2,top=0:dirt_podzol_top,bottom=0:dirt,allsides=0:dirt_podzol_side,stdrot=true
 # Cobblestone
 block:id=4,allfaces=0:cobblestone,stdrot=true
 # Wooden Plank (oak)
-block:id=5,data=0,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,allfaces=0:planks_oak,stdrot=true
+[-1.6.4]block:id=5,data=0,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,allfaces=0:planks_oak,stdrot=true
+[1.7.0-]block:id=5,data=0,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,allfaces=0:planks_oak,stdrot=true
 # Wooden Plank (spruce)
 block:id=5,data=1,allfaces=0:planks_spruce,stdrot=true
 # Wooden Plank (birch)
 block:id=5,data=2,allfaces=0:planks_birch,stdrot=true
 # Wooden Plank (jungle)
 block:id=5,data=3,allfaces=0:planks_jungle,stdrot=true
+# Wooden Plank (acacia)
+[1.7.0-]block:id=5,data=4,allfaces=0:planks_acacia,stdrot=true
+# Wooden Plank (big oak)
+[1.7.0-]block:id=5,data=5,allfaces=0:planks_big_oak,stdrot=true
 # Sapling (Oak)
-block:id=6,data=0,data=4,data=8,data=12,patch0-1=0:sapling_oak,transparency=TRANSPARENT
+block:id=6,data=0,data=8,patch0-1=0:sapling_oak,transparency=TRANSPARENT
 # Sapling (Spruce)
-block:id=6,data=1,data=5,data=9,data=13,patch0-1=0:sapling_spruce,transparency=TRANSPARENT
+block:id=6,data=1,data=9,patch0-1=0:sapling_spruce,transparency=TRANSPARENT
 # Sapling (Birch)
-block:id=6,data=2,data=6,data=10,data=14,patch0-1=0:sapling_birch,transparency=TRANSPARENT
+block:id=6,data=2,data=10,patch0-1=0:sapling_birch,transparency=TRANSPARENT
 # Sapling (Jungle)
-block:id=6,data=3,data=7,data=11,data=15,patch0-1=0:sapling_jungle,transparency=TRANSPARENT
+block:id=6,data=3,data=11,patch0-1=0:sapling_jungle,transparency=TRANSPARENT
+# Sapling (Acacia)
+[1.7.0-]block:id=6,data=4,data=12,patch0-1=0:sapling_acacia,transparency=TRANSPARENT
+# Sapling (Roofed Oak)
+[1.7.0-]block:id=6,data=5,data=13,patch0-1=0:sapling_roofed_oak,transparency=TRANSPARENT
 # Bedrock
 block:id=7,allfaces=0:bedrock,stdrot=true
 # Water
@@ -310,6 +390,7 @@ block:id=10,allfaces=0:lava_flow,stdrot=true,transparency=SEMITRANSPARENT
 block:id=11,allfaces=0:lava_still,stdrot=true,transparency=SEMITRANSPARENT
 # Sand
 block:id=12,allfaces=0:sand,stdrot=true
+[1.7.0-]block:id=12,data=1,allfaces=0:red_sand,stdrot=true
 # Gravel
 block:id=13,allfaces=0:gravel,stdrot=true
 # Gold Ore
@@ -497,44 +578,39 @@ block:id=34,data=11,west=0:piston_top_sticky,east=0:piston_inner,top=4261,bottom
 block:id=34,data=12,north=0:piston_top_sticky,south=0:piston_inner,top=261,bottom=5261,east=6261,west=4261
 # Sticky piston extension - facing south (TODO:piston extension side)
 block:id=34,data=13,north=0:piston_inner,south=0:piston_top_sticky,top=5261,bottom=261,east=4261,west=6261
-# Wool - white
+# Wool
 block:id=35,data=0,allfaces=0:wool_colored_white,stdrot=true
-# Wool - orange
 block:id=35,data=1,allfaces=0:wool_colored_orange,stdrot=true
-# Wool - Magenta
 block:id=35,data=2,allfaces=0:wool_colored_magenta,stdrot=true
-# Wool - Light Blue
 block:id=35,data=3,allfaces=0:wool_colored_light_blue,stdrot=true
-# Wool - Yellow
 block:id=35,data=4,allfaces=0:wool_colored_yellow,stdrot=true
-# Wool - Light Green
 block:id=35,data=5,allfaces=0:wool_colored_lime,stdrot=true
-# Wool - Pink
 block:id=35,data=6,allfaces=0:wool_colored_pink,stdrot=true
-# Wool - Gray
 block:id=35,data=7,allfaces=0:wool_colored_gray,stdrot=true
-# Wool - Light Gray
 block:id=35,data=8,allfaces=0:wool_colored_silver,stdrot=true
-# Wool - Cyan
 block:id=35,data=9,allfaces=0:wool_colored_cyan,stdrot=true
-# Wool - Purple
 block:id=35,data=10,allfaces=0:wool_colored_purple,stdrot=true
-# Wool - Blue
 block:id=35,data=11,allfaces=0:wool_colored_blue,stdrot=true
-# Wool - Brown
 block:id=35,data=12,allfaces=0:wool_colored_brown,stdrot=true
-# Wool - Dark Green
 block:id=35,data=13,allfaces=0:wool_colored_green,stdrot=true
-# Wool - Red
 block:id=35,data=14,allfaces=0:wool_colored_red,stdrot=true
-# Wool - Black
 block:id=35,data=15,allfaces=0:wool_colored_black,stdrot=true
 # Block move by piston - don't render
 block:id=36
 # Dandelion
 block:id=37,patch0-1=0:flower_dandelion,transparency=TRANSPARENT
 # Rose
-block:id=38,patch0-1=0:flower_rose,transparency=TRANSPARENT
+[-1.6.4]block:id=38,patch0-1=0:flower_rose,transparency=TRANSPARENT
+[1.7.0-]block:id=38,data=0,data=9,data=10,data=11,data=12,data=13,data=14,data=15,patch0-1=0:flower_rose,transparency=TRANSPARENT
+[1.7.0-]block:id=38,data=1,patch0-1=0:flower_blue_orchid,transparency=TRANSPARENT
+[1.7.0-]block:id=38,data=2,patch0-1=0:flower_allium,transparency=TRANSPARENT
+[1.7.0-]block:id=38,data=3,patch0-1=0:flower_houstonia,transparency=TRANSPARENT
+[1.7.0-]block:id=38,data=4,patch0-1=0:flower_tulip_red,transparency=TRANSPARENT
+[1.7.0-]block:id=38,data=5,patch0-1=0:flower_tulip_orange,transparency=TRANSPARENT
+[1.7.0-]block:id=38,data=6,patch0-1=0:flower_tulip_white,transparency=TRANSPARENT
+[1.7.0-]block:id=38,data=7,patch0-1=0:flower_tulip_pink,transparency=TRANSPARENT
+[1.7.0-]block:id=38,data=8,patch0-1=0:flower_oxeye_daisy,transparency=TRANSPARENT
+
 # Brown mushroom
 block:id=39,patch0-1=0:mushroom_brown,transparency=TRANSPARENT
 # Red mushroom
@@ -786,8 +862,26 @@ block:id=94,data=1,data=5,data=9,data=13,top=5000:repeater_on,allsides=0:stone,b
 block:id=94,data=2,data=6,data=10,data=14,top=4000:repeater_on,allsides=0:stone,bottom=0:stone,transparency=TRANSPARENT
 # Repeater (on) facing west
 block:id=94,data=3,data=7,data=11,data=15,top=0:repeater_on,allsides=0:stone,bottom=0:stone,transparency=TRANSPARENT
-# Locked Chest
-block:id=95,data=*,top=6000,bottom=6005,south=2,north=1,east=4,west=3,txtid=chest
+# Locked Chest (95)
+[-1.6.4]block:id=95,data=*,top=6000,bottom=6005,south=2,north=1,east=4,west=3,txtid=chest
+# Stained Glass (95)
+[1.7.0-]block:id=95,data=0,allfaces=12000:glass_white,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=95,data=1,allfaces=12000:glass_orange,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=95,data=2,allfaces=12000:glass_magenta,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=95,data=3,allfaces=12000:glass_light_blue,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=95,data=4,allfaces=12000:glass_yellow,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=95,data=5,allfaces=12000:glass_lime,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=95,data=6,allfaces=12000:glass_pink,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=95,data=7,allfaces=12000:glass_gray,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=95,data=8,allfaces=12000:glass_silver,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=95,data=9,allfaces=12000:glass_cyan,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=95,data=10,allfaces=12000:glass_purple,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=95,data=11,allfaces=12000:glass_blue,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=95,data=12,allfaces=12000:glass_brown,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=95,data=13,allfaces=12000:glass_green,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=95,data=14,allfaces=12000:glass_red,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=95,data=15,allfaces=12000:glass_black,stdrot=true,transparency=TRANSPARENT
+
 # Trapdoor
 block:id=96,allfaces=0:trapdoor,stdrot=true,transparency=TRANSPARENT
 # Stone w/ silverfish inside
@@ -915,6 +1009,10 @@ block:id=125,data=1,data=9,allfaces=0:planks_spruce,stdrot=true
 block:id=125,data=2,data=10,allfaces=0:planks_birch,stdrot=true
 # Wooden Double Slab (Jungle)
 block:id=125,data=3,data=11,allfaces=0:planks_jungle,stdrot=true
+# Wooden Double Slab (Acacia)
+[1.7.0-]block:id=125,data=4,data=12,allfaces=0:planks_acacia,stdrot=true
+# Wooden Double Slab (Big Oak)
+[1.7.0-]block:id=125,data=5,data=13,allfaces=0:planks_big_oak,stdrot=true
 # Wooden Slab (Oak)
 block:id=126,data=0,data=8,allfaces=0:planks_oak,stdrot=true,transparency=SEMITRANSPARENT
 # Wooden Slab (Spruce)
@@ -923,6 +1021,10 @@ block:id=126,data=1,data=9,allfaces=0:planks_spruce,stdrot=true,transparency=SEM
 block:id=126,data=2,data=10,allfaces=0:planks_birch,stdrot=true,transparency=SEMITRANSPARENT
 # Wooden Slab (Jungle)
 block:id=126,data=3,data=11,allfaces=0:planks_jungle,stdrot=true,transparency=SEMITRANSPARENT
+# Wooden Slab (Acacia)
+[1.7.0-]block:id=126,data=4,data=12,allfaces=0:planks_acacia,stdrot=true,transparency=SEMITRANSPARENT
+# Wooden Slab (Big Oak)
+[1.7.0-]block:id=126,data=5,data=13,allfaces=0:planks_big_oak,stdrot=true,transparency=SEMITRANSPARENT
 # Cocoa Plant (TODO: handle different stages, orientations)
 block:id=127,data=*,allsides=0:cocoa_stage_2
 # Sandstone stairs
@@ -1105,6 +1207,44 @@ block:id=159,data=3,stdrot=true,allfaces=0:hardened_clay_stained_light_blue
 block:id=159,data=2,stdrot=true,allfaces=0:hardened_clay_stained_magenta
 block:id=159,data=1,stdrot=true,allfaces=0:hardened_clay_stained_orange
 block:id=159,data=0,stdrot=true,allfaces=0:hardened_clay_stained_white
+# (160) Stained Glass Pane
+[1.7.0-]block:id=160,data=0,patch0-3=12000:glass_white,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=1,patch0-3=12000:glass_orange,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=2,patch0-3=12000:glass_magenta,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=3,patch0-3=12000:glass_light_blue,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=4,patch0-3=12000:glass_yellow,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=5,patch0-3=12000:glass_lime,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=6,patch0-3=12000:glass_pink,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=7,patch0-3=12000:glass_gray,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=8,patch0-3=12000:glass_silver,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=9,patch0-3=12000:glass_cyan,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=10,patch0-3=12000:glass_purple,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=11,patch0-3=12000:glass_blue,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=12,patch0-3=12000:glass_brown,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=13,patch0-3=12000:glass_green,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=14,patch0-3=12000:glass_red,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=15,patch0-3=12000:glass_black,stdrot=true,transparency=TRANSPARENT
+
+# Leaves (acacia) (161)
+[1.7.0-]block:id=161,data=0,data=4,data=8,data=12,allfaces=2000:leaves_acacia,stdrot=true,transparency=LEAVES
+# Leaves (big oak) (161)
+[1.7.0-]block:id=161,data=1,data=5,data=9,data=13,allfaces=2000:leaves_big_oak,stdrot=true,transparency=LEAVES
+
+# Wood (acacia) (162)
+[1.7.0-]block:id=162,data=0,allsides=0:log_acacia,topbottom=0:log_acacia_top,stdrot=true
+[1.7.0-]block:id=162,data=4,north=0:log_acacia_top,south=0:log_acacia_top,east=4000:log_acacia,west=4000:log_acacia,top=0:log_acacia,bottom=0:log_acacia
+[1.7.0-]block:id=162,data=8,north=4000:log_acacia,south=4000:log_acacia,east=0:log_acacia_top,west=0:log_acacia_top,top=4000:log_acacia,bottom=4000:log_acacia
+[1.7.0-]block:id=162,data=12,allfaces=0:log_acacia,stdrot=true
+# Wood (big oak) (162)
+[1.7.0-]block:id=162,data=1,allsides=0:log_spruce,topbottom=0:log_spruce_top,stdrot=true
+[1.7.0-]block:id=162,data=5,north=0:log_spruce_top,south=0:log_spruce_top,east=4000:log_spruce,west=4000:log_spruce,top=0:log_spruce,bottom=0:log_spruce
+[1.7.0-]block:id=162,data=9,north=4000:log_spruce,south=4000:log_spruce,east=0:log_spruce_top,west=0:log_spruce_top,top=4000:log_spruce,bottom=4000:log_spruce
+[1.7.0-]block:id=162,data=13,allfaces=0:log_spruce,stdrot=true
+# Acacia Stairs (163)
+[1.7.0-]block:id=163,data=*,patch0-2=0:planks_acacia,transparency=SEMITRANSPARENT
+# Dark Oak Stairs (164)
+[1.7.0-]block:id=164,data=*,patch0-2=0:planks_big_oak,transparency=SEMITRANSPARENT
+
 # (170) Hay
 block:id=170,data=*,allsides=0:hay_block_side,topbottom=0:hay_block_top,stdrot=true
 # (171) Carpet
@@ -1128,3 +1268,19 @@ block:id=171,data=0,stdrot=true,allfaces=0:wool_colored_white
 block:id=172,data=*,stdrot=true,allfaces=0:hardened_clay
 # (173) Coal block    
 block:id=173,data=*,stdrot=true,allfaces=0:coal_block
+# (174) Packed Ice
+[1.7.0-]block:id=174,allfaces=12000:ice_packed,stdrot=true,transparency=TRANSPARENT
+# (175) Double Plant
+[1.7.0-]block:id=175,data=0,patch0-1=0:double_plant_sunflower_bottom,transparency=TRANSPARENT
+[1.7.0-]block:id=175,data=1,patch0-1=0:double_plant_syringa_bottom,transparency=TRANSPARENT
+[1.7.0-]block:id=175,data=2,patch0-1=1000:double_plant_grass_bottom,transparency=TRANSPARENT
+[1.7.0-]block:id=175,data=3,patch0-1=1000:double_plant_fern_bottom,transparency=TRANSPARENT
+[1.7.0-]block:id=175,data=4,patch0-1=0:double_plant_rose_bottom,transparency=TRANSPARENT
+[1.7.0-]block:id=175,data=5,patch0-1=0:double_plant_paeonia_bottom,transparency=TRANSPARENT
+[1.7.0-]block:id=175,data=8,patch0-1=0:double_plant_sunflower_top,transparency=TRANSPARENT
+[1.7.0-]block:id=175,data=9,patch0-1=0:double_plant_syringa_top,transparency=TRANSPARENT
+[1.7.0-]block:id=175,data=10,patch0-1=1000:double_plant_grass_top,transparency=TRANSPARENT
+[1.7.0-]block:id=175,data=11,patch0-1=1000:double_plant_fern_top,transparency=TRANSPARENT
+[1.7.0-]block:id=175,data=12,patch0-1=0:double_plant_rose_top,transparency=TRANSPARENT
+[1.7.0-]block:id=175,data=13,patch0-1=0:double_plant_paeonia_top,transparency=TRANSPARENT
+
