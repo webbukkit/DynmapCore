@@ -1492,7 +1492,7 @@ layer:11,12,13,14,15
 ****************
 
 # Colored glass pane (160) - TODO: need pane renderer
-patchblock:id=160,data=15,patch0=VertX05,patch1=VertX05@90,patch2=HorizY100ZTopStrip,patch3=HorizY100ZTopStrip@90
+patchblock:id=160,data=*,patch0=VertX05,patch1=VertX05@90,patch2=HorizY100ZTopStrip,patch3=HorizY100ZTopStrip@90
 # Acacia Stairs (163)
 # Dark Oak Stairs (164)
 [1.7.0-]customblock:id=163,id=164,data=*,class=org.dynmap.hdmap.renderer.StairBlockRenderer
