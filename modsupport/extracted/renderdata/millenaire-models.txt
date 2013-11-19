@@ -149,39 +149,6 @@ block:id=block_building_id,data=11,scale=16
 rotate:id=block_building_id,data=8,rot=90
 
 # block_panes_id
-# Glass pane - render alg
-linkmap:id=block_panes_id,linkalg=4
-patchblock:id=block_panes_id,data=0
-patchrotate:id=101,data=0,rot=0
-patchblock:id=block_panes_id,data=1
-patchrotate:id=101,data=1,rot=0
-patchblock:id=block_panes_id,data=2
-patchrotate:id=101,data=2,rot=0
-patchblock:id=block_panes_id,data=3
-patchrotate:id=101,data=3,rot=0
-patchblock:id=block_panes_id,data=4
-patchrotate:id=101,data=4,rot=0
-patchblock:id=block_panes_id,data=5
-patchrotate:id=101,data=5,rot=0
-patchblock:id=block_panes_id,data=6
-patchrotate:id=101,data=6,rot=0
-patchblock:id=block_panes_id,data=7
-patchrotate:id=101,data=7,rot=0
-patchblock:id=block_panes_id,data=8
-patchrotate:id=101,data=8,rot=0
-patchblock:id=block_panes_id,data=9
-patchrotate:id=101,data=9,rot=0
-patchblock:id=block_panes_id,data=10
-patchrotate:id=101,data=10,rot=0
-patchblock:id=block_panes_id,data=11
-patchrotate:id=101,data=11,rot=0
-patchblock:id=block_panes_id,data=12
-patchrotate:id=101,data=12,rot=0
-patchblock:id=block_panes_id,data=13
-patchrotate:id=101,data=13,rot=0
-patchblock:id=block_panes_id,data=14
-patchrotate:id=101,data=14,rot=0
-patchblock:id=block_panes_id,data=15
-patchrotate:id=101,data=15,rot=0
+customblock:id=block_panes_id,data=*,class=org.dynmap.hdmap.renderer.PaneRenderer
 
 # block_panel_id (TODO)

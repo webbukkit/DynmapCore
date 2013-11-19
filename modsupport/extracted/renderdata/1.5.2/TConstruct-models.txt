@@ -479,39 +479,7 @@ patch:id=HorizY001ZTop,Ox=0.0,Oy=0.01,Oz=0.0,Ux=1.0,Uy=0.01,Uz=0.0,Vx=0.0,Vy=0.0
 # Sloped patch - up to X+, top of texture at Z+
 patch:id=SlopeXUpZTop,Ox=0.0,Oy=0.0,Oz=0.0,Ux=0.0,Uy=0.0,Uz=1.0,Vx=1.0,Vy=1.0,Vz=0.0
 
-linkmap:id=Glass_Pane,linkalg=4
-patchblock:id=Glass_Pane,data=0,data=15,patch0=VertX05,patch1=VertX05@90,patch2=HorizY100ZTopStrip,patch3=HorizY100ZTopStrip@90
-patchblock:id=Glass_Pane,data=1,patch0=VertX05Left@90,patch1=HorizY100ZTopStripTop@90,patch2=VertX05Strip
-patchblock:id=Glass_Pane,data=2,patch0=VertX05Left@180,patch1=HorizY100ZTopStripTop@180,patch2=VertX05Strip@90
-patchblock:id=Glass_Pane,data=4,patch0=VertX05Left@270,patch1=HorizY100ZTopStripTop@270,patch2=VertX05Strip@180
-patchblock:id=Glass_Pane,data=8,patch0=VertX05Left,patch1=HorizY100ZTopStripTop,patch2=VertX05Strip@270
-patchblock:id=Glass_Pane,data=5,patch0=VertX05@90,patch1=HorizY100ZTopStrip@90
-patchblock:id=Glass_Pane,data=10,patch0=VertX05,patch1=HorizY100ZTopStrip
-patchblock:id=Glass_Pane,data=7,patch0=VertX05@90,patch1=HorizY100ZTopStrip@90,patch2=VertX05Left@180,patch3=HorizY100ZTopStripTop@180
-patchblock:id=Glass_Pane,data=14,patch0=VertX05@180,patch1=HorizY100ZTopStrip@180,patch2=VertX05Left@270,patch3=HorizY100ZTopStripTop@270
-patchblock:id=Glass_Pane,data=13,patch0=VertX05@270,patch1=HorizY100ZTopStrip@270,patch2=VertX05Left,patch3=HorizY100ZTopStripTop
-patchblock:id=Glass_Pane,data=11,patch0=VertX05,patch1=HorizY100ZTopStrip,patch2=VertX05Left@90,patch3=HorizY100ZTopStripTop@90
-patchblock:id=Glass_Pane,data=6,patch0=VertX05Left@180,patch1=HorizY100ZTopStripTop@180,patch2=VertX05Left@270,patch3=HorizY100ZTopStripTop@270
-patchblock:id=Glass_Pane,data=12,patch0=VertX05Left@270,patch1=HorizY100ZTopStripTop@270,patch2=VertX05Left,patch3=HorizY100ZTopStripTop
-patchblock:id=Glass_Pane,data=9,patch0=VertX05Left,patch1=HorizY100ZTopStripTop,patch2=VertX05Left@90,patch3=HorizY100ZTopStripTop@90
-patchblock:id=Glass_Pane,data=3,patch0=VertX05Left@90,patch1=HorizY100ZTopStripTop@90,patch2=VertX05Left@180,patch3=HorizY100ZTopStripTop@180
-
-linkmap:id=Clear_Stained_Glass_Pane,linkalg=4
-patchblock:id=Clear_Stained_Glass_Pane,data=0,data=15,patch0=VertX05,patch1=VertX05@90,patch2=HorizY100ZTopStrip,patch3=HorizY100ZTopStrip@90
-patchblock:id=Clear_Stained_Glass_Pane,data=1,patch0=VertX05Left@90,patch1=HorizY100ZTopStripTop@90,patch2=VertX05Strip
-patchblock:id=Clear_Stained_Glass_Pane,data=2,patch0=VertX05Left@180,patch1=HorizY100ZTopStripTop@180,patch2=VertX05Strip@90
-patchblock:id=Clear_Stained_Glass_Pane,data=4,patch0=VertX05Left@270,patch1=HorizY100ZTopStripTop@270,patch2=VertX05Strip@180
-patchblock:id=Clear_Stained_Glass_Pane,data=8,patch0=VertX05Left,patch1=HorizY100ZTopStripTop,patch2=VertX05Strip@270
-patchblock:id=Clear_Stained_Glass_Pane,data=5,patch0=VertX05@90,patch1=HorizY100ZTopStrip@90
-patchblock:id=Clear_Stained_Glass_Pane,data=10,patch0=VertX05,patch1=HorizY100ZTopStrip
-patchblock:id=Clear_Stained_Glass_Pane,data=7,patch0=VertX05@90,patch1=HorizY100ZTopStrip@90,patch2=VertX05Left@180,patch3=HorizY100ZTopStripTop@180
-patchblock:id=Clear_Stained_Glass_Pane,data=14,patch0=VertX05@180,patch1=HorizY100ZTopStrip@180,patch2=VertX05Left@270,patch3=HorizY100ZTopStripTop@270
-patchblock:id=Clear_Stained_Glass_Pane,data=13,patch0=VertX05@270,patch1=HorizY100ZTopStrip@270,patch2=VertX05Left,patch3=HorizY100ZTopStripTop
-patchblock:id=Clear_Stained_Glass_Pane,data=11,patch0=VertX05,patch1=HorizY100ZTopStrip,patch2=VertX05Left@90,patch3=HorizY100ZTopStripTop@90
-patchblock:id=Clear_Stained_Glass_Pane,data=6,patch0=VertX05Left@180,patch1=HorizY100ZTopStripTop@180,patch2=VertX05Left@270,patch3=HorizY100ZTopStripTop@270
-patchblock:id=Clear_Stained_Glass_Pane,data=12,patch0=VertX05Left@270,patch1=HorizY100ZTopStripTop@270,patch2=VertX05Left,patch3=HorizY100ZTopStripTop
-patchblock:id=Clear_Stained_Glass_Pane,data=9,patch0=VertX05Left,patch1=HorizY100ZTopStripTop,patch2=VertX05Left@90,patch3=HorizY100ZTopStripTop@90
-patchblock:id=Clear_Stained_Glass_Pane,data=3,patch0=VertX05Left@90,patch1=HorizY100ZTopStripTop@90,patch2=VertX05Left@180,patch3=HorizY100ZTopStripTop@180
+customblock:id=Glass_Pane,id=Clear_Stained_Glass_Pane,data=*,class=org.dynmap.hdmap.renderer.PaneRenderer
 
 # Redstone_Machines
 customblock:id=Redstone_Machines,data=*,class=org.dynmap.hdmap.renderer.RotatedBoxRenderer,textureIndex=Direction,index0=0,map0=S012345,index1=1,map1=S012345,index2=4,map2=S012345,index3=5,map3=S013254,index4=3,map4=S014532,index5=2,map5=S015423

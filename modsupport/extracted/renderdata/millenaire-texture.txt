@@ -72,5 +72,5 @@ block:id=block_crops_id,data=7,patch0-3=23,transparency=TRANSPARENT,txtid=blk0
 
 # block_panes_id
 # Glass pane
-block:id=block_panes_id,patch0-3=12032,transparency=TRANSPARENT,txtid=blk0
+block:id=block_panes_id,patch0-1=12032,transparency=TRANSPARENT,txtid=blk0
 

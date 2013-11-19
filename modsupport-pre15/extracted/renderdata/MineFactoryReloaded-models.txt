@@ -57,19 +57,4 @@ patchblock:id=ID.ConveyorBlock,data=3,patch0=HorizY001ZTop
 patchblock:id=ID.RubberSapling,data=*,patch0=VertX1Z0ToX0Z1,patch1=VertX1Z0ToX0Z1@90
 
 # ID.StainedGlassPane
-linkmap:id=ID.StainedGlassPane,linkalg=4
-patchblock:id=ID.StainedGlassPane,data=0,data=15,patch0=VertX05,patch1=VertX05@90,patch2=HorizY100ZTopStrip,patch3=HorizY100ZTopStrip@90
-patchblock:id=ID.StainedGlassPane,data=1,patch0=VertX05Left@90,patch1=HorizY100ZTopStripTop@90,patch2=VertX05Strip
-patchblock:id=ID.StainedGlassPane,data=2,patch0=VertX05Left@180,patch1=HorizY100ZTopStripTop@180,patch2=VertX05Strip@90
-patchblock:id=ID.StainedGlassPane,data=4,patch0=VertX05Left@270,patch1=HorizY100ZTopStripTop@270,patch2=VertX05Strip@180
-patchblock:id=ID.StainedGlassPane,data=8,patch0=VertX05Left,patch1=HorizY100ZTopStripTop,patch2=VertX05Strip@270
-patchblock:id=ID.StainedGlassPane,data=5,patch0=VertX05@90,patch1=HorizY100ZTopStrip@90
-patchblock:id=ID.StainedGlassPane,data=10,patch0=VertX05,patch1=HorizY100ZTopStrip
-patchblock:id=ID.StainedGlassPane,data=7,patch0=VertX05@90,patch1=HorizY100ZTopStrip@90,patch2=VertX05Left@180,patch3=HorizY100ZTopStripTop@180
-patchblock:id=ID.StainedGlassPane,data=14,patch0=VertX05@180,patch1=HorizY100ZTopStrip@180,patch2=VertX05Left@270,patch3=HorizY100ZTopStripTop@270
-patchblock:id=ID.StainedGlassPane,data=13,patch0=VertX05@270,patch1=HorizY100ZTopStrip@270,patch2=VertX05Left,patch3=HorizY100ZTopStripTop
-patchblock:id=ID.StainedGlassPane,data=11,patch0=VertX05,patch1=HorizY100ZTopStrip,patch2=VertX05Left@90,patch3=HorizY100ZTopStripTop@90
-patchblock:id=ID.StainedGlassPane,data=6,patch0=VertX05Left@180,patch1=HorizY100ZTopStripTop@180,patch2=VertX05Left@270,patch3=HorizY100ZTopStripTop@270
-patchblock:id=ID.StainedGlassPane,data=12,patch0=VertX05Left@270,patch1=HorizY100ZTopStripTop@270,patch2=VertX05Left,patch3=HorizY100ZTopStripTop
-patchblock:id=ID.StainedGlassPane,data=9,patch0=VertX05Left,patch1=HorizY100ZTopStripTop,patch2=VertX05Left@90,patch3=HorizY100ZTopStripTop@90
-patchblock:id=ID.StainedGlassPane,data=3,patch0=VertX05Left@90,patch1=HorizY100ZTopStripTop@90,patch2=VertX05Left@180,patch3=HorizY100ZTopStripTop@180
+customblock:id=ID.StainedGlassPane,data=*,class=org.dynmap.hdmap.renderer.PaneRenderer
