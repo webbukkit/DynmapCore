@@ -15,9 +15,39 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 
 public class FileLockResourceHandler extends ResourceHandler {
+    private static String getNormalizedPath(String p) {
+        p = p.replace('\\', '/');
+        String[] tok = p.split("/");
+        int i, j;
+        for(i = 0, j = 0; i < tok.length; i++) {
+            if((tok[i] == null) || (tok[i].length() == 0) || (tok[i].equals("."))) {
+                tok[i] = null;
+            }
+            else if(tok[i].equals("..")) {
+                if(j > 0) { j--; tok[j] = null;  }
+                tok[i] = null;
+            }
+            else {
+                tok[j] = tok[i];
+                j++;
+            }
+        }
+        String path = "";
+        for(i = 0; i < j; i++) {
+            if(tok[i] != null) {
+                path = path + "/" + tok[i];
+            }
+        }
+        if (path.length() == 0) {
+            path = "/";
+        }
+        return path;
+    }
+
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         Resource resource;
+        target = getNormalizedPath(target);
         try {
             resource = getResource(target);
         } catch(MalformedURLException ex) {
