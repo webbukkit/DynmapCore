@@ -112,6 +112,7 @@ texture:id=leaves_oak
 texture:id=leaves_spruce
 texture:id=sponge
 texture:id=glass
+texture:id=glass_pane_top
 texture:id=lapis_ore
 texture:id=lapis_block
 texture:id=furnace_side
@@ -948,9 +949,9 @@ block:id=100,data=14,topbottom=0:mushroom_block_skin_red,allsides=0:mushroom_blo
 # Red Mushroom Block - stem all sides
 block:id=99,id=100,data=15,allfaces=0:mushroom_block_skin_stem,stdrot=true
 # Iron fence
-block:id=101,patch0-3=0:iron_bars,transparency=TRANSPARENT
+block:id=101,patch0-1=0:iron_bars,transparency=TRANSPARENT
 # Glass pane
-block:id=102,patch0-3=12000:glass,transparency=TRANSPARENT
+block:id=102,patch0=12000:glass,patch1=12000:glass_pane_top,transparency=TRANSPARENT
 # Watermellon
 block:id=103,allsides=0:melon_side,topbottom=0:melon_top,stdrot=true
 # Pumpkin stem 
@@ -1208,22 +1209,22 @@ block:id=159,data=2,stdrot=true,allfaces=0:hardened_clay_stained_magenta
 block:id=159,data=1,stdrot=true,allfaces=0:hardened_clay_stained_orange
 block:id=159,data=0,stdrot=true,allfaces=0:hardened_clay_stained_white
 # (160) Stained Glass Pane
-[1.7.0-]block:id=160,data=0,patch0-3=12000:glass_white,stdrot=true,transparency=TRANSPARENT
-[1.7.0-]block:id=160,data=1,patch0-3=12000:glass_orange,stdrot=true,transparency=TRANSPARENT
-[1.7.0-]block:id=160,data=2,patch0-3=12000:glass_magenta,stdrot=true,transparency=TRANSPARENT
-[1.7.0-]block:id=160,data=3,patch0-3=12000:glass_light_blue,stdrot=true,transparency=TRANSPARENT
-[1.7.0-]block:id=160,data=4,patch0-3=12000:glass_yellow,stdrot=true,transparency=TRANSPARENT
-[1.7.0-]block:id=160,data=5,patch0-3=12000:glass_lime,stdrot=true,transparency=TRANSPARENT
-[1.7.0-]block:id=160,data=6,patch0-3=12000:glass_pink,stdrot=true,transparency=TRANSPARENT
-[1.7.0-]block:id=160,data=7,patch0-3=12000:glass_gray,stdrot=true,transparency=TRANSPARENT
-[1.7.0-]block:id=160,data=8,patch0-3=12000:glass_silver,stdrot=true,transparency=TRANSPARENT
-[1.7.0-]block:id=160,data=9,patch0-3=12000:glass_cyan,stdrot=true,transparency=TRANSPARENT
-[1.7.0-]block:id=160,data=10,patch0-3=12000:glass_purple,stdrot=true,transparency=TRANSPARENT
-[1.7.0-]block:id=160,data=11,patch0-3=12000:glass_blue,stdrot=true,transparency=TRANSPARENT
-[1.7.0-]block:id=160,data=12,patch0-3=12000:glass_brown,stdrot=true,transparency=TRANSPARENT
-[1.7.0-]block:id=160,data=13,patch0-3=12000:glass_green,stdrot=true,transparency=TRANSPARENT
-[1.7.0-]block:id=160,data=14,patch0-3=12000:glass_red,stdrot=true,transparency=TRANSPARENT
-[1.7.0-]block:id=160,data=15,patch0-3=12000:glass_black,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=0,patch0=12000:glass_white,patch1=12000:glass_pane_top_white,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=1,patch0=12000:glass_orange,patch1=12000:glass_pane_top_orange,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=2,patch0=12000:glass_magenta,patch1=12000:glass_pane_top_magenta,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=3,patch0=12000:glass_light_blue,patch1=12000:glass_pane_top_light_blue,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=4,patch0=12000:glass_yellow,patch1=12000:glass_pane_top_yellow,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=5,patch0=12000:glass_lime,patch1=12000:glass_pane_top_lime,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=6,patch0=12000:glass_pink,patch1=12000:glass_pane_top_pink,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=7,patch0=12000:glass_gray,patch1=12000:glass_pane_top_gray,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=8,patch0=12000:glass_silver,patch1=12000:glass_pane_top_silver,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=9,patch0=12000:glass_cyan,patch1=12000:glass_pane_top_cyan,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=10,patch0=12000:glass_purple,patch1=12000:glass_pane_top_purple,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=11,patch0=12000:glass_blue,patch1=12000:glass_pane_top_blue,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=12,patch0=12000:glass_brown,patch1=12000:glass_pane_top_brown,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=13,patch0=12000:glass_green,patch1=12000:glass_pane_top_green,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=14,patch0=12000:glass_red,patch1=12000:glass_pane_top_red,transparency=TRANSPARENT
+[1.7.0-]block:id=160,data=15,patch0=12000:glass_black,patch1=12000:glass_pane_top_black,transparency=TRANSPARENT
 
 # Leaves (acacia) (161)
 [1.7.0-]block:id=161,data=0,data=4,data=8,data=12,allfaces=2000:leaves_acacia,stdrot=true,transparency=LEAVES

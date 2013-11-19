@@ -730,54 +730,9 @@ rotate:id=34,data=2,rot=270
 # Piston extension - extended facing west
 block:id=34,data=5,data=13,scale=8
 rotate:id=34,data=2,rot=90
-# Glass pane - render alg
-# Iron fence - render alg
-linkmap:id=101,id=102,linkalg=4
-# Glass pane - no adjacent (0), all adjacent (15)
-# Iron fence - no adjacent (0), all adjacent (15)
-patchblock:id=102,id=101,data=0,data=15,patch0=VertX05,patch1=VertX05@90,patch2=HorizY100ZTopStrip,patch3=HorizY100ZTopStrip@90
-# Glass pane - N adjacent (1)
-# Iron fence - N adjacent (1)
-patchblock:id=102,id=101,data=1,patch0=VertX05Left@90,patch1=HorizY100ZTopStripTop@90,patch2=VertX05Strip
-# Glass pane - E adjacent (2)
-# Iron fence - E adjacent (2)
-patchblock:id=102,id=101,data=2,patch0=VertX05Left@180,patch1=HorizY100ZTopStripTop@180,patch2=VertX05Strip@90
-# Glass pane - S adjacent (4)
-# Iron fence - S adjacent (4)
-patchblock:id=102,id=101,data=4,patch0=VertX05Left@270,patch1=HorizY100ZTopStripTop@270,patch2=VertX05Strip@180
-# Glass pane - W adjacent (8)
-# Iron fence - W adjacent (8)
-patchblock:id=102,id=101,data=8,patch0=VertX05Left,patch1=HorizY100ZTopStripTop,patch2=VertX05Strip@270
-# Glass pane - NS adjacent (5)
-# Iron fence - NS adjacent (5)
-patchblock:id=102,id=101,data=5,patch0=VertX05@90,patch1=HorizY100ZTopStrip@90
-# Glass pane - EW adjacent (10)
-# Iron fence - EW adjacent (10)
-patchblock:id=102,id=101,data=10,patch0=VertX05,patch1=HorizY100ZTopStrip
-# Glass pane - NSE adjacent (7)
-# Iron fence - NSE adjacent (7)
-patchblock:id=102,id=101,data=7,patch0=VertX05@90,patch1=HorizY100ZTopStrip@90,patch2=VertX05Left@180,patch3=HorizY100ZTopStripTop@180
-# Glass pane - ESW adjacent (14)
-# Iron fence - ESW adjacent (14)
-patchblock:id=102,id=101,data=14,patch0=VertX05@180,patch1=HorizY100ZTopStrip@180,patch2=VertX05Left@270,patch3=HorizY100ZTopStripTop@270
-# Glass pane - SWN adjacent (13)
-# Iron fence - SWN adjacent (13)
-patchblock:id=102,id=101,data=13,patch0=VertX05@270,patch1=HorizY100ZTopStrip@270,patch2=VertX05Left,patch3=HorizY100ZTopStripTop
-# Glass pane - WNE adjacent (11)
-# Iron fence - WNE adjacent (11)
-patchblock:id=102,id=101,data=11,patch0=VertX05,patch1=HorizY100ZTopStrip,patch2=VertX05Left@90,patch3=HorizY100ZTopStripTop@90
-# Glass pane - SE adjacent (6)
-# Iron fence - SE adjacent (6)
-patchblock:id=102,id=101,data=6,patch0=VertX05Left@180,patch1=HorizY100ZTopStripTop@180,patch2=VertX05Left@270,patch3=HorizY100ZTopStripTop@270
-# Glass pane - SW adjacent (12)
-# Iron fence - SW adjacent (12)
-patchblock:id=102,id=101,data=12,patch0=VertX05Left@270,patch1=HorizY100ZTopStripTop@270,patch2=VertX05Left,patch3=HorizY100ZTopStripTop
-# Glass pane - NW adjacent (9)
-# Iron fence - NW adjacent (9)
-patchblock:id=102,id=101,data=9,patch0=VertX05Left,patch1=HorizY100ZTopStripTop,patch2=VertX05Left@90,patch3=HorizY100ZTopStripTop@90
-# Glass pane - NE adjacent (3)
-# Iron fence - NE adjacent (3)
-patchblock:id=102,id=101,data=3,patch0=VertX05Left@90,patch1=HorizY100ZTopStripTop@90,patch2=VertX05Left@180,patch3=HorizY100ZTopStripTop@180
+# Glass pane
+# Iron fence
+customblock:id=102,id=101,data=*,class=org.dynmap.hdmap.renderer.PaneRenderer
 # Web
 # Nether Wart
 # Rose
