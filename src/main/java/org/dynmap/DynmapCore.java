@@ -42,11 +42,13 @@ import org.dynmap.debug.Debugger;
 import org.dynmap.hdmap.HDBlockModels;
 import org.dynmap.hdmap.HDMapManager;
 import org.dynmap.hdmap.TexturePack;
+import org.dynmap.hdmap.TexturePack.HDTextureMap;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.impl.MarkerAPIImpl;
 import org.dynmap.servlet.FileLockResourceHandler;
 import org.dynmap.servlet.JettyNullLogger;
 import org.dynmap.servlet.LoginServlet;
+import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.FileLockManager;
 import org.dynmap.web.BanIPFilter;
 import org.dynmap.web.CustomHeaderFilter;
@@ -529,7 +531,66 @@ public class DynmapCore implements DynmapCommonAPI {
         
         VersionCheck.runCheck(this);
         
+        //dumpColorMap();
+        
         return true;
+    }
+    
+    private void dumpColorMap() {
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter("colormap.txt");
+            TexturePack tp = TexturePack.getTexturePack(this, "standard");
+            if (tp == null) return;
+            tp = tp.resampleTexturePack(1);
+            if (tp == null) return;
+            Color c = new Color();
+            for (int blkid = 1; blkid < 256; blkid++) {
+                for (int blkmeta = 0; blkmeta < 16; blkmeta++) {
+                    HDTextureMap map = HDTextureMap.getMap(blkid, blkmeta, blkmeta);
+                    boolean done = false;
+                    for (int i = 0; (!done) && (i < 6); i++) {
+                        int idx = map.getIndexForFace(i);
+                        if (idx < 0) continue;
+                        int rgb[] = tp.getTileARGB(idx % 1000000);
+                        if (rgb == null) continue;
+                        if (rgb[0] == 0) continue;
+                        c.setARGB(rgb[0]);
+                        idx = (idx / 1000000);
+                        switch(idx) {
+                            case 1: // grass
+                            case 18: // grass
+                                c.blendColor(0x208030);
+                                break;
+                            case 2: // foliage
+                            case 19: // foliage
+                            case 22: // foliage
+                                c.blendColor(0x208030);
+                                break;
+                            case 13: // pine
+                                c.blendColor(0x619961);
+                                break;
+                            case 14: // birch
+                                c.blendColor(0x80a755);
+                                break;
+                            case 15: // lily
+                                c.blendColor(0x208030);
+                                break;
+                        }
+                        String ln = blkid + ":" + blkmeta + " " + c.getRed() + " " + c.getGreen() + " " + c.getBlue() + " " + c.getAlpha();
+                        ln += " " + (c.getRed()*4/5) + " " + (c.getGreen()*4/5) + " " + (c.getBlue()*4/5) + " " + c.getAlpha();
+                        ln += " " + (c.getRed()/2) + " " + (c.getGreen()/2) + " " + (c.getBlue()/2) + " " + c.getAlpha();
+                        ln += " " + (c.getRed()*2/5) + " " + (c.getGreen()*2/5) + " " + (c.getBlue()*2/5) + " " + c.getAlpha() + "\n";
+                        fw.write(ln);
+                        done = true;
+                    }
+                }
+            }
+        } catch (IOException iox) {
+
+        } finally {
+            if (fw != null) { try { fw.close(); } catch (IOException x) {} }
+        }
     }
 
     private void playerJoined(DynmapPlayer p) {

@@ -385,6 +385,12 @@ public class TexturePack {
         private static boolean userenderdata[];
         private static HDTextureMap blank;
                 
+        public int getIndexForFace(int face) {
+            if ((faces != null) && (faces.length > face))
+                return faces[face];
+            return TILEINDEX_BLANK;
+        }
+        
         private static void initializeTable() {
             texmaps = new HDTextureMap[16*BLOCKTABLELEN];
             transp = new BlockTransparency[BLOCKTABLELEN];

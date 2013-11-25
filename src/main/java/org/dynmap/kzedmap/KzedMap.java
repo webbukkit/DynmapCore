@@ -343,7 +343,8 @@ public class KzedMap extends MapType {
     
     @Override
     public String getPrefix() {
-        throw new InvalidParameterException("getPrefix not valid on KzedMap");
+        //throw new InvalidParameterException("getPrefix not valid on KzedMap");
+        return "kzed";
     }
 
     @Override
