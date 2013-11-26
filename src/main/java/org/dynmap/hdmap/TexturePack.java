@@ -1238,9 +1238,9 @@ public class TexturePack {
             li.trivial_color = clr;
         }
         else {  /* Else, calculate color average for lower left quadrant */
-            int[] clr_scale = new int[4];
-            scaleTerrainPNGSubImage(li.width, 2, li.argb, clr_scale);
-            li.trivial_color = clr_scale[2];
+            int[] clr_scale = new int[16];
+            scaleTerrainPNGSubImage(li.width, 4, li.argb, clr_scale);
+            li.trivial_color = clr_scale[9];
         }
     }
     
@@ -2589,7 +2589,7 @@ public class TexturePack {
                         clrmult = map.colorMult;
                     }
                     if((clrmult & 0xFF000000) != 0) {
-                        clralpha = clrmult;
+                        clralpha = clrmult & 0xFF000000;
                     }
                     break;
             }
@@ -2845,5 +2845,31 @@ public class TexturePack {
             c.setRGBA(r & 0xFE, g & 0xFE, b & 0xFE, 0xFF);
             smooth_water_mult[i] = c.getARGB();
         }
+    }
+    
+    public int getTrivialFoliageMultiplier() {
+        return imgs[IMG_FOLIAGECOLOR].argb[BiomeMap.FOREST.biomeLookup()];
+    }
+    public int getTrivialGrassMultiplier() {
+        return imgs[IMG_GRASSCOLOR].argb[BiomeMap.FOREST.biomeLookup()];
+    }
+    public int getTrivialWaterMultiplier() {
+        if(imgs[IMG_WATERCOLORX] != null) {
+            return imgs[IMG_WATERCOLORX].argb[BiomeMap.FOREST.biomeLookup()];
+        }
+        else {
+            return 0xFFFFFF;
+        }
+    }
+    public int getCustomBlockMultiplier(int blkid, int blkdata) {
+        int blkindex = indexByIDMeta(blkid, blkdata);
+        if (hasBlockColoring.get(blkindex)) {
+            Integer idx = (Integer) this.blockColoring.get(blkindex);
+            LoadedImage img = imgs[idx];
+            if (img.argb != null) {
+                return img.argb[BiomeMap.FOREST.biomeLookup()];
+            }
+        }
+        return 0xFFFFFF;
     }
 }

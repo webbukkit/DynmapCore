@@ -537,6 +537,8 @@ public class DynmapCore implements DynmapCommonAPI {
     }
     
     private void dumpColorMap() {
+        int[] sides = new int[] { BlockStep.Y_MINUS.ordinal(), BlockStep.X_PLUS.ordinal(), BlockStep.Z_PLUS.ordinal(), 
+                BlockStep.Y_PLUS.ordinal(), BlockStep.X_MINUS.ordinal(), BlockStep.Z_MINUS.ordinal() };
         FileWriter fw = null;
         try {
             fw = new FileWriter("colormap.txt");
@@ -546,11 +548,12 @@ public class DynmapCore implements DynmapCommonAPI {
             if (tp == null) return;
             Color c = new Color();
             for (int blkid = 1; blkid < 256; blkid++) {
+                int meta0color = 0;
                 for (int blkmeta = 0; blkmeta < 16; blkmeta++) {
                     HDTextureMap map = HDTextureMap.getMap(blkid, blkmeta, blkmeta);
                     boolean done = false;
-                    for (int i = 0; (!done) && (i < 6); i++) {
-                        int idx = map.getIndexForFace(i);
+                    for (int i = 0; (!done) && (i < sides.length); i++) {
+                        int idx = map.getIndexForFace(sides[i]);
                         if (idx < 0) continue;
                         int rgb[] = tp.getTileARGB(idx % 1000000);
                         if (rgb == null) continue;
@@ -560,28 +563,59 @@ public class DynmapCore implements DynmapCommonAPI {
                         switch(idx) {
                             case 1: // grass
                             case 18: // grass
-                                c.blendColor(0x208030);
+                                System.out.println("Used grass for " + blkid + ":" + blkmeta);
+                                c.blendColor(tp.getTrivialGrassMultiplier() | 0xFF000000);
                                 break;
                             case 2: // foliage
                             case 19: // foliage
                             case 22: // foliage
-                                c.blendColor(0x208030);
+                                System.out.println("Used foliage for " + blkid + ":" + blkmeta);
+                                c.blendColor(tp.getTrivialFoliageMultiplier() | 0xFF000000);
                                 break;
                             case 13: // pine
-                                c.blendColor(0x619961);
+                                c.blendColor(0x619961 | 0xFF000000);
                                 break;
                             case 14: // birch
-                                c.blendColor(0x80a755);
+                                c.blendColor(0x80a755 | 0xFF000000);
                                 break;
                             case 15: // lily
-                                c.blendColor(0x208030);
+                                c.blendColor(0x208030 | 0xFF000000);
+                                break;
+                            case 3: // water
+                            case 20: // water
+                                System.out.println("Used water for " + blkid + ":" + blkmeta);
+                                c.blendColor(tp.getTrivialWaterMultiplier() | 0xFF000000);
+                                break;
+                            case 12: // clear inside
+                                if((blkid == 8) || (blkid == 9)) { // special case for water
+                                    System.out.println("Used water for " + blkid + ":" + blkmeta);
+                                    c.blendColor(tp.getTrivialWaterMultiplier() | 0xFF000000);
+                                }
                                 break;
                         }
-                        String ln = blkid + ":" + blkmeta + " " + c.getRed() + " " + c.getGreen() + " " + c.getBlue() + " " + c.getAlpha();
-                        ln += " " + (c.getRed()*4/5) + " " + (c.getGreen()*4/5) + " " + (c.getBlue()*4/5) + " " + c.getAlpha();
-                        ln += " " + (c.getRed()/2) + " " + (c.getGreen()/2) + " " + (c.getBlue()/2) + " " + c.getAlpha();
-                        ln += " " + (c.getRed()*2/5) + " " + (c.getGreen()*2/5) + " " + (c.getBlue()*2/5) + " " + c.getAlpha() + "\n";
-                        fw.write(ln);
+                        int custmult = tp.getCustomBlockMultiplier(blkid, blkmeta);
+                        if (custmult != 0xFFFFFF) {
+                            System.out.println(String.format("Custom color: %06x for %d:%d", custmult, blkid, blkmeta));
+                            if ((custmult & 0xFF000000) == 0) {
+                                custmult |= 0xFF000000;
+                            }
+                            c.blendColor(custmult);
+                        }
+                        String ln = "";
+                        if (blkmeta == 0) {
+                            meta0color = c.getARGB();
+                            ln = blkid + " ";
+                        }
+                        else {
+                            ln = blkid + ":" + blkmeta + " ";
+                        }
+                        if ((blkmeta == 0) || (meta0color != c.getARGB())) {
+                            ln += c.getRed() + " " + c.getGreen() + " " + c.getBlue() + " " + c.getAlpha();
+                            ln += " " + (c.getRed()*4/5) + " " + (c.getGreen()*4/5) + " " + (c.getBlue()*4/5) + " " + c.getAlpha();
+                            ln += " " + (c.getRed()/2) + " " + (c.getGreen()/2) + " " + (c.getBlue()/2) + " " + c.getAlpha();
+                            ln += " " + (c.getRed()*2/5) + " " + (c.getGreen()*2/5) + " " + (c.getBlue()*2/5) + " " + c.getAlpha() + "\n";
+                            fw.write(ln);
+                        }
                         done = true;
                     }
                 }
