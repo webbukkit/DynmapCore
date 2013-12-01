@@ -59,11 +59,6 @@
             			<goals>
               				<goal>jar</goal>
             			</goals>
-   			            <configuration>
-              				<excludes>
-                				<exclude>**/modsupport/*</exclude>
-              				</excludes>
-            			</configuration>
           			</execution>
           			<execution>
             			<id>modsupport-jar</id>

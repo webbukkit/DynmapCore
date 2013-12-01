@@ -216,17 +216,6 @@ layer:2,3
 ****
 ****
 # Snow
-block:id=78,data=0,data=8,scale=8
-layer:0
-********
-********
-********
-********
-********
-********
-********
-********
-# Snow
 boxblock:id=78,data=0,data=8,ymax=0.125
 boxblock:id=78,data=1,data=9,ymax=0.25
 boxblock:id=78,data=2,data=10,ymax=0.375

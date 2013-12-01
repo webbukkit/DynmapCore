@@ -45,6 +45,7 @@ import org.dynmap.hdmap.TexturePack;
 import org.dynmap.hdmap.TexturePack.HDTextureMap;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.impl.MarkerAPIImpl;
+import org.dynmap.modsupport.ModSupportImpl;
 import org.dynmap.servlet.FileLockResourceHandler;
 import org.dynmap.servlet.JettyNullLogger;
 import org.dynmap.servlet.LoginServlet;
@@ -444,6 +445,8 @@ public class DynmapCore implements DynmapCommonAPI {
         FileLockManager.preUpdateCommand = configuration.getString("custom-commands/image-updates/preupdatecommand", "");
         FileLockManager.postUpdateCommand = configuration.getString("custom-commands/image-updates/postupdatecommand", "");
 
+        /* Process mod support */
+        ModSupportImpl.complete(this.dataDirectory);
         /* Load block models */
         Log.verboseinfo("Loading models...");
         HDBlockModels.loadModels(this, configuration);
