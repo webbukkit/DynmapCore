@@ -1,6 +1,9 @@
 # Tinkers' Construct:1.5.2_1.4.3d4
 modname:TConstruct
 
+var:Congealed_Slime=0,Seared_Slab=0,Crafting_Slab=0,Essence_Extractor=0,Crafting_Station=0,Wool_Slab_1=0,Wool_Slab_2=0,Meat_Block=0,Slime_Tall_Grass=0,Slime_Grass=0
+var:Slime_Tree_Sapling=0,Slime_Grass_Leaves=0
+
 #configuration file
 cfgfile:config/TinkersWorkshop.txt
 
