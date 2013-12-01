@@ -1272,16 +1272,6 @@ block:id=173,data=*,stdrot=true,allfaces=0:coal_block
 # (174) Packed Ice
 [1.7.0-]block:id=174,allfaces=12000:ice_packed,stdrot=true,transparency=TRANSPARENT
 # (175) Double Plant
-[1.7.0-]block:id=175,data=0,patch0-1=0:double_plant_sunflower_bottom,transparency=TRANSPARENT
-[1.7.0-]block:id=175,data=1,patch0-1=0:double_plant_syringa_bottom,transparency=TRANSPARENT
-[1.7.0-]block:id=175,data=2,patch0-1=1000:double_plant_grass_bottom,transparency=TRANSPARENT
-[1.7.0-]block:id=175,data=3,patch0-1=1000:double_plant_fern_bottom,transparency=TRANSPARENT
-[1.7.0-]block:id=175,data=4,patch0-1=0:double_plant_rose_bottom,transparency=TRANSPARENT
-[1.7.0-]block:id=175,data=5,patch0-1=0:double_plant_paeonia_bottom,transparency=TRANSPARENT
-[1.7.0-]block:id=175,data=8,patch0-1=0:double_plant_sunflower_top,transparency=TRANSPARENT
-[1.7.0-]block:id=175,data=9,patch0-1=0:double_plant_syringa_top,transparency=TRANSPARENT
-[1.7.0-]block:id=175,data=10,patch0-1=1000:double_plant_grass_top,transparency=TRANSPARENT
-[1.7.0-]block:id=175,data=11,patch0-1=1000:double_plant_fern_top,transparency=TRANSPARENT
-[1.7.0-]block:id=175,data=12,patch0-1=0:double_plant_rose_top,transparency=TRANSPARENT
-[1.7.0-]block:id=175,data=13,patch0-1=0:double_plant_paeonia_top,transparency=TRANSPARENT
+[1.7.0-]block:id=175,data=0,data=1,data=2,data=3,data=4,data=5,patch0=0:double_plant_sunflower_bottom,patch1=0:double_plant_syringa_bottom,patch2=1000:double_plant_grass_bottom,patch3=1000:double_plant_fern_bottom,patch4=0:double_plant_rose_bottom,patch5=0:double_plant_paeonia_bottom,transparency=TRANSPARENT
+[1.7.0-]block:id=175,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,patch0=0:double_plant_sunflower_top,patch1=0:double_plant_syringa_top,patch2=1000:double_plant_grass_top,patch3=1000:double_plant_fern_top,patch4=0:double_plant_rose_top,patch5=0:double_plant_paeonia_top,transparency=TRANSPARENT
 

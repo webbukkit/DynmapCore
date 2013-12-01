@@ -1444,5 +1444,7 @@ layer:11,12,13,14,15
 # (171) Carpet
 boxblock:id=171,data=*,ymax=0.0625
 # (175) Double Plant
-[1.7.0-]patchblock:id=175,data=*,patch0=VertX1Z0ToX0Z1,patch1=VertX1Z0ToX0Z1@90
+[1.7.0-]customblock:id=175,data=0,data=1,data=2,data=3,data=4,data=5,class=org.dynmap.hdmap.renderer.PlantRenderer,metacnt=6
+[1.7.0-]customblock:id=175,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,class=org.dynmap.hdmap.renderer.PlantRenderer,metacnt=6,metasrc=below
+
 
