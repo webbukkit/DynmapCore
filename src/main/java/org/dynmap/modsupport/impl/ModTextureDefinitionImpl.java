@@ -225,9 +225,6 @@ public class ModTextureDefinitionImpl implements ModTextureDefinition {
             fw = new FileWriter(f);
             // Write modname line
             String s = "modname:" + this.modid;
-            if (this.modver != null) {
-                s += "[" + this.modver + "]";
-            }
             fw.write(s + "\n\n");
             // Loop through textures
             for (TextureFileImpl tfi : txtFileByID.values()) {

@@ -2047,6 +2047,7 @@ public class TexturePack {
                     }
                 }
                 else if(line.startsWith("cfgfile:")) { /* If config file */
+                    mod_cfg_needed = true;
                     File cfgfile = new File(line.substring(8).trim());
                     ForgeConfigFile cfg = new ForgeConfigFile(cfgfile);
                     if(cfg.load()) {
@@ -2069,7 +2070,6 @@ public class TexturePack {
                         if((modver != null) && ((rng == null) || HDBlockModels.checkVersionRange(modver, rng))) {
                             found = true;
                             Log.info(n + "[" + modver + "] textures enabled");
-                            mod_cfg_needed = true;
                             modname = n;
                             modversion = modver;
                             if(texturemod == null) texturemod = modname;
