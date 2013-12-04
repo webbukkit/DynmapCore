@@ -1270,7 +1270,7 @@ block:id=172,data=*,stdrot=true,allfaces=0:hardened_clay
 # (173) Coal block    
 block:id=173,data=*,stdrot=true,allfaces=0:coal_block
 # (174) Packed Ice
-[1.7.0-]block:id=174,allfaces=12000:ice_packed,stdrot=true,transparency=TRANSPARENT
+[1.7.0-]block:id=174,allfaces=0:ice_packed,stdrot=true
 # (175) Double Plant
 [1.7.0-]block:id=175,data=0,data=1,data=2,data=3,data=4,data=5,patch0=0:double_plant_sunflower_bottom,patch1=0:double_plant_syringa_bottom,patch2=1000:double_plant_grass_bottom,patch3=1000:double_plant_fern_bottom,patch4=0:double_plant_rose_bottom,patch5=0:double_plant_paeonia_bottom,transparency=TRANSPARENT
 [1.7.0-]block:id=175,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,patch0=0:double_plant_sunflower_top,patch1=0:double_plant_syringa_top,patch2=1000:double_plant_grass_top,patch3=1000:double_plant_fern_top,patch4=0:double_plant_rose_top,patch5=0:double_plant_paeonia_top,transparency=TRANSPARENT
