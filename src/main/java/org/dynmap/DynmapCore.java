@@ -36,7 +36,6 @@ import org.dynmap.common.DynmapListenerManager;
 import org.dynmap.common.DynmapListenerManager.EventType;
 import org.dynmap.common.DynmapPlayer;
 import org.dynmap.common.DynmapServerInterface;
-import org.dynmap.common.VersionCheck;
 import org.dynmap.debug.Debug;
 import org.dynmap.debug.Debugger;
 import org.dynmap.hdmap.HDBlockModels;
@@ -110,7 +109,6 @@ public class DynmapCore implements DynmapCommonAPI {
     private boolean transparentLeaves = true;
     private List<String> sortPermissionNodes;
     private int perTickLimit = 50;   // 50 ms
-    private boolean doVersionCheck = true;
         
     public CompassMode compassmode = CompassMode.PRE19;
     private int     config_hashcode;    /* Used to signal need to reload web configuration (world changes, config update, etc) */
@@ -532,10 +530,7 @@ public class DynmapCore implements DynmapCommonAPI {
         Log.info("version " + plugin_ver + " is enabled - core version " + version );
 
         events.<Object>trigger("initialized", null);
-        
-        if (doVersionCheck)
-            VersionCheck.runCheck(this);
-        
+                
         //dumpColorMap();
         
         return true;
@@ -2235,10 +2230,6 @@ public class DynmapCore implements DynmapCommonAPI {
     // Notice that server has finished starting (needed for forge, which starts dynmap before full server is running)
     public void serverStarted() {
         events.<Object>trigger("server-started", null);
-    }
-    // Placate dev.bukkit.org
-    public void disableVersionCheck() {
-        doVersionCheck = false;
     }
 }
 
