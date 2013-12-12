@@ -626,6 +626,7 @@ public class HDBlockModels {
         LineNumberReader rdr = null;
         int cnt = 0;
         boolean need_mod_cfg = false;
+        boolean mod_cfg_loaded = false;
         String modname = null;
         try {
             String line;
@@ -914,9 +915,13 @@ public class HDBlockModels {
                 else if(line.startsWith("cfgfile:")) { /* If config file */
                     File cfgfile = new File(line.substring(8).trim());
                     ForgeConfigFile cfg = new ForgeConfigFile(cfgfile);
+                    if (!mod_cfg_loaded) {
+                        need_mod_cfg = true;
+                    }
                     if(cfg.load()) {
                         cfg.addBlockIDs(varvals);
                         need_mod_cfg = false;
+                        mod_cfg_loaded = true;
                     }
                 }
                 else if(line.startsWith("patch:")) {
@@ -1194,7 +1199,6 @@ public class HDBlockModels {
                         if((modver != null) && ((rng == null) || checkVersionRange(modver, rng))) {
                             found = true;
                             Log.info(n + "[" + modver + "] models enabled");
-                            need_mod_cfg = true;
                             modname = n;
                             break;
                         }

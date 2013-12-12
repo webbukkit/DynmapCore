@@ -426,7 +426,20 @@ public class TexturePack {
             this.blockset = blockset;
             this.stdrotate = stdrot;
         }
-        
+ 
+        public HDTextureMap(List<Integer> blockids, int databits, HDTextureMap map) {
+            this.faces = map.faces;
+            this.layers = map.layers;
+            this.blockids = blockids;
+            this.databits = databits;
+            this.bt = map.bt;
+            this.colorMult = map.colorMult;
+            this.custColorMult = map.custColorMult;
+            this.userender = map.userender;
+            this.blockset = map.blockset;
+            this.stdrotate = map.stdrotate;
+        }
+ 
         public void addToTable() {
             /* Add entries to lookup table */
             for(Integer blkid : blockids) {
@@ -1654,6 +1667,7 @@ public class TexturePack {
         HashMap<String,Integer> varvals = new HashMap<String,Integer>();
         final String mcver = core.getDynmapPluginPlatformVersion();
         boolean mod_cfg_needed = false;
+        boolean mod_cfg_loaded = false;
         String modname = null;
         String modversion = null;
         String texturemod = null;
@@ -1857,6 +1871,51 @@ public class TexturePack {
                         Log.severe("Texture mapping missing required parameters = line " + rdr.getLineNumber() + " of " + txtname);
                     }
                 }
+                else if(line.startsWith("copyblock:")) {
+                    ArrayList<Integer> blkids = new ArrayList<Integer>();
+                    int databits = -1;
+                    line = line.substring(line.indexOf(':')+1);
+                    String[] args = line.split(",");
+                    int srcid = -1;
+                    int srcmeta = 0;
+                    for(String a : args) {
+                        String[] av = a.split("=");
+                        if(av.length < 2) continue;
+                        if(av[0].equals("id")) {
+                            blkids.add(getIntValue(varvals, av[1]));
+                        }
+                        else if(av[0].equals("data")) {
+                            if(databits < 0) databits = 0;
+                            if(av[1].equals("*"))
+                                databits = 0xFFFF;
+                            else
+                                databits |= (1 << getIntValue(varvals,av[1]));
+                        }
+                        else if(av[0].equals("srcid")) {
+                            srcid = getIntValue(varvals, av[1]);
+                        }
+                        else if(av[0].equals("srcmeta")) {
+                            srcmeta = getIntValue(varvals,av[1]);
+                        }
+                    }
+                    /* If no data bits, assume all */
+                    if(databits < 0) databits = 0xFFFF;
+                    /* If we have everything, build block */
+                    if((blkids.size() > 0) && (srcid > 0)) {
+                        HDTextureMap map = HDTextureMap.getMap(srcid, srcmeta, srcmeta);
+                        if (map == null) {
+                            Log.severe("Copy of texture mapping failed = line " + rdr.getLineNumber() + " of " + txtname);
+                        }
+                        else {
+                            HDTextureMap nmap = new HDTextureMap(blkids, databits, map);
+                            nmap.addToTable();
+                            cnt++;
+                        }
+                    }
+                    else {
+                        Log.severe("Texture mapping copy missing required parameters = line " + rdr.getLineNumber() + " of " + txtname);
+                    }
+                }
                 else if(line.startsWith("addtotexturemap:")) {
                     int srctxtid = -1;
                     String mapid = null;
@@ -2047,12 +2106,15 @@ public class TexturePack {
                     }
                 }
                 else if(line.startsWith("cfgfile:")) { /* If config file */
-                    mod_cfg_needed = true;
+                    if (!mod_cfg_loaded) {
+                        mod_cfg_needed = true;
+                    }
                     File cfgfile = new File(line.substring(8).trim());
                     ForgeConfigFile cfg = new ForgeConfigFile(cfgfile);
                     if(cfg.load()) {
                         cfg.addBlockIDs(varvals);
                         mod_cfg_needed = false;
+                        mod_cfg_loaded = true;
                     }
                 }
                 else if(line.startsWith("modname:")) {

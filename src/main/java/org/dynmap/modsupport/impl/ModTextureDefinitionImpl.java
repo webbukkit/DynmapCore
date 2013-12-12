@@ -9,6 +9,7 @@ import java.util.HashMap;
 import org.dynmap.modsupport.BigChestTextureFile;
 import org.dynmap.modsupport.BlockTextureRecord;
 import org.dynmap.modsupport.ChestTextureFile;
+import org.dynmap.modsupport.CopyBlockTextureRecord;
 import org.dynmap.modsupport.CustomTextureFile;
 import org.dynmap.modsupport.GridTextureFile;
 import org.dynmap.modsupport.ModModelDefinition;
@@ -26,6 +27,7 @@ public class ModTextureDefinitionImpl implements ModTextureDefinition {
     private String texturePath;
     private HashMap<String, TextureFileImpl> txtFileByID = new HashMap<String, TextureFileImpl>();
     private ArrayList<BlockTextureRecordImpl> blkTextureRec = new ArrayList<BlockTextureRecordImpl>();
+    private ArrayList<CopyBlockTextureRecordImpl> blkCopyTextureRec = new ArrayList<CopyBlockTextureRecordImpl>();
     private boolean published = false;
     
     public ModTextureDefinitionImpl(String modid, String modver) {
@@ -214,6 +216,15 @@ public class ModTextureDefinitionImpl implements ModTextureDefinition {
         blkTextureRec.add(btr);
         return btr;
     }
+    
+    @Override
+    public CopyBlockTextureRecord addCopyBlockTextureRecord(int blockID,
+            int srcBlockID, int srcMeta) {
+        CopyBlockTextureRecordImpl btr = new CopyBlockTextureRecordImpl(blockID, srcBlockID, srcMeta);
+        blkCopyTextureRec.add(btr);
+        return btr;
+    }
+
     public boolean isPublished() {
         return published;
     }
@@ -235,6 +246,13 @@ public class ModTextureDefinitionImpl implements ModTextureDefinition {
             }
             // Loop through block texture records
             for (BlockTextureRecordImpl btr : blkTextureRec) {
+                String line = btr.getLine();
+                if (line != null) {
+                    fw.write(line + "\n");
+                }
+            }
+            // Loop through copy block texture records
+            for (CopyBlockTextureRecordImpl btr : blkCopyTextureRec) {
                 String line = btr.getLine();
                 if (line != null) {
                     fw.write(line + "\n");
