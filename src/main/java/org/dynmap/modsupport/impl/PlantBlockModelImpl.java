@@ -9,7 +9,7 @@ public class PlantBlockModelImpl extends BlockModelImpl implements PlantBlockMod
     
     public PlantBlockModelImpl(int blkid, ModModelDefinitionImpl mdf) {
         super(blkid, mdf);
-        patch0 = mdf.getPatchID(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 100.0, SideVisible.FLIP, 0);
+        patch0 = mdf.getPatchID(1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 100.0, SideVisible.FLIP);
     }
 
 

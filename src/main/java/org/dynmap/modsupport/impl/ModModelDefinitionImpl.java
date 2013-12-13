@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.dynmap.hdmap.HDBlockModels;
 import org.dynmap.modsupport.BoxBlockModel;
@@ -11,6 +12,7 @@ import org.dynmap.modsupport.CuboidBlockModel;
 import org.dynmap.modsupport.ModModelDefinition;
 import org.dynmap.modsupport.ModTextureDefinition;
 import org.dynmap.modsupport.PaneBlockModel;
+import org.dynmap.modsupport.PatchBlockModel;
 import org.dynmap.modsupport.PlantBlockModel;
 import org.dynmap.modsupport.StairBlockModel;
 import org.dynmap.modsupport.VolumetricBlockModel;
@@ -25,6 +27,7 @@ public class ModModelDefinitionImpl implements ModModelDefinition {
     private boolean published = false;
     private ArrayList<BlockModelImpl> blkModel = new ArrayList<BlockModelImpl>();
     private ArrayList<PatchDefinition> blkPatch = new ArrayList<PatchDefinition>();
+    private HashMap<String, PatchDefinition> blkPatchMap = new HashMap<String, PatchDefinition>();
     private PatchDefinitionFactory pdf;
     
     public ModModelDefinitionImpl(ModTextureDefinitionImpl txtDef) {
@@ -99,18 +102,55 @@ public class ModModelDefinitionImpl implements ModModelDefinition {
         blkModel.add(mod);
         return mod;
     }
+    
+    @Override
+    public PatchBlockModel addPatchModel(int blockid) {
+        PatchBlockModelImpl mod = new PatchBlockModelImpl(blockid, this);
+        blkModel.add(mod);
+        return mod;
+    }
+
+    @Override
+    public PatchBlockModel addRotatedPatchModel(int blockid,
+        PatchBlockModel model, int xrot, int yrot, int zrot) {
+        PatchBlockModelImpl mod = new PatchBlockModelImpl(blockid, this, model, xrot, yrot, zrot);
+        blkModel.add(mod);
+        return mod;
+    }
 
     public String getPatchID(double x0, double y0, double z0, double xu,
             double yu, double zu, double xv, double yv, double zv, double umin,
-            double umax, double vmin, double vmax, double uplusvmax, SideVisible sidevis,
-            int textureids) {
-        PatchDefinition pd = pdf.getPatch(x0, y0, z0, xu, yu, zu, xv, yv, zv, umin, umax, vmin, vmax, uplusvmax, sidevis, textureids);
+            double umax, double vmin, double vmax, double uplusvmax, SideVisible sidevis) {
+        PatchDefinition pd = pdf.getPatch(x0, y0, z0, xu, yu, zu, xv, yv, zv, umin, umax, vmin, vmax, uplusvmax, sidevis, 0);
         for (int i = 0; i < blkPatch.size(); i++) {
-            if (blkPatch.get(i) == pd) { return "patch" + i; }
+            if (blkPatch.get(i) == pd) { 
+                return "patch" + i; 
+            }
         }
         blkPatch.add(pd);
-        return "patch" + (blkPatch.size() - 1);
+        String id = "patch" + (blkPatch.size() - 1);
+        blkPatchMap.put(id, pd);
+        return id;
     }
+
+    public String getRotatedPatchID(String patchid, int xrot, int yrot, int zrot) {
+        PatchDefinition pd = blkPatchMap.get(patchid);
+        if (pd == null) return null;
+        PatchDefinition newpd = (PatchDefinition) pdf.getRotatedPatch(pd, xrot, yrot, zrot, 0);
+        if (newpd != null) {
+            for (int i = 0; i < blkPatch.size(); i++) {
+                if (blkPatch.get(i) == newpd) { 
+                    return "patch" + i; 
+                }
+            }
+            blkPatch.add(pd);
+            String id = "patch" + (blkPatch.size() - 1);
+            blkPatchMap.put(id, pd);
+            return id;
+        }
+        return null;
+    }
+
 
     public boolean isPublished() {
         return published;
