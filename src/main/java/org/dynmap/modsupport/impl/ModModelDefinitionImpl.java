@@ -78,8 +78,9 @@ public class ModModelDefinitionImpl implements ModModelDefinition {
 
     @Override
     public CuboidBlockModel addCuboidModel(int blockid) {
-        // TODO Auto-generated method stub
-        return null;
+        CuboidBlockModelImpl mod = new CuboidBlockModelImpl(blockid, this);
+        blkModel.add(mod);
+        return mod;
     }
 
     @Override
