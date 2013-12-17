@@ -136,7 +136,9 @@ public class ModModelDefinitionImpl implements ModModelDefinition {
 
     public String getRotatedPatchID(String patchid, int xrot, int yrot, int zrot) {
         PatchDefinition pd = blkPatchMap.get(patchid);
-        if (pd == null) return null;
+        if (pd == null) {
+            return null;
+        }
         PatchDefinition newpd = (PatchDefinition) pdf.getRotatedPatch(pd, xrot, yrot, zrot, 0);
         if (newpd != null) {
             for (int i = 0; i < blkPatch.size(); i++) {
@@ -144,9 +146,9 @@ public class ModModelDefinitionImpl implements ModModelDefinition {
                     return "patch" + i; 
                 }
             }
-            blkPatch.add(pd);
+            blkPatch.add(newpd);
             String id = "patch" + (blkPatch.size() - 1);
-            blkPatchMap.put(id, pd);
+            blkPatchMap.put(id, newpd);
             return id;
         }
         return null;
