@@ -1140,6 +1140,10 @@ public class DynmapCore implements DynmapCommonAPI {
     }
     
     public boolean processCommand(DynmapCommandSender sender, String cmd, String commandLabel, String[] args) {
+        if (mapManager == null) { // Initialization faulure
+            sender.sendMessage("Dynmap failed to initialize properly: commands not available");
+            return true;
+        }
         if(cmd.equalsIgnoreCase("dmarker")) {
             if(!MarkerAPIImpl.onCommand(this, sender, cmd, commandLabel, args)) {
                 printCommandHelp(sender, cmd, (args.length > 0)?args[0]:"");
@@ -1189,7 +1193,12 @@ public class DynmapCore implements DynmapCommonAPI {
                 String mapname = null;
                 DynmapLocation loc = null;
                 if((args.length == 2) || (args.length == 3)) {  /* Just radius, or <radius> <map> */
-                    radius = Integer.parseInt(args[1]); /* Parse radius */
+                    try {
+                        radius = Integer.parseInt(args[1]); /* Parse radius */
+                    } catch (NumberFormatException nfe) {
+                        sender.sendMessage("Invalid radius: " + args[1]);
+                        return true;
+                    }
                     if(radius < 0)
                         radius = 0;
                     if(args.length > 2)
@@ -1205,10 +1214,26 @@ public class DynmapCore implements DynmapCommonAPI {
                         sender.sendMessage("World '" + args[1] + "' not defined/loaded");
                     }
                     int x = 0, z = 0;
-                    x = Integer.parseInt(args[2]);
-                    z = Integer.parseInt(args[3]);
-                    if(args.length > 4)
-                        radius = Integer.parseInt(args[4]);
+                    try {
+                        x = Integer.parseInt(args[2]);
+                    } catch (NumberFormatException nfe) {
+                        sender.sendMessage("Invalid x coord: " + args[2]);
+                        return true;
+                    }
+                    try {
+                        z = Integer.parseInt(args[3]);
+                    } catch (NumberFormatException nfe) {
+                        sender.sendMessage("Invalid z coord: " + args[3]);
+                        return true;
+                    }
+                    if(args.length > 4) {
+                        try {
+                            radius = Integer.parseInt(args[4]);
+                        } catch (NumberFormatException nfe) {
+                            sender.sendMessage("Invalid radius: " + args[4]);
+                            return true;
+                        }
+                    }
                     if(args.length > 5)
                         mapname = args[5];
                     if(w != null)
@@ -1225,7 +1250,7 @@ public class DynmapCore implements DynmapCommonAPI {
                     if (player != null)
                         loc = player.getLocation();
                     else
-                        sender.sendMessage("Command require <world> <x> <z> <radius> if issued from console.");
+                        sender.sendMessage("Command require <world> <x> <z> <mapname> if issued from console.");
                 }
                 else {  /* <world> <x> <z> */
                     DynmapWorld w = mapManager.worldsLookup.get(args[1]);   /* Look up world */
@@ -1233,8 +1258,18 @@ public class DynmapCore implements DynmapCommonAPI {
                         sender.sendMessage("World '" + args[1] + "' not defined/loaded");
                     }
                     int x = 0, z = 0;
-                    x = Integer.parseInt(args[2]);
-                    z = Integer.parseInt(args[3]);
+                    try {
+                        x = Integer.parseInt(args[2]);
+                    } catch (NumberFormatException nfe) {
+                        sender.sendMessage("Invalid x coord: " + args[2]);
+                        return true;
+                    }
+                    try {
+                        z = Integer.parseInt(args[3]);
+                    } catch (NumberFormatException nfe) {
+                        sender.sendMessage("Invalid z coord: " + args[3]);
+                        return true;
+                    }
                     if(args.length > 4)
                         mapname = args[4];
                     if(w != null)
