@@ -58,7 +58,8 @@ public class ModModelDefinitionImpl implements ModModelDefinition {
 
     @Override
     public VolumetricBlockModel addVolumetricModel(int blockid, int scale) {
-        // TODO Auto-generated method stub
+        VolumetricBlockModelImpl mod = new VolumetricBlockModelImpl(blockid, this, scale);
+        blkModel.add(mod);
         return null;
     }
 
