@@ -145,7 +145,7 @@ public class CTMTexturePack {
     };
 
     public enum CTMMethod {
-        NONE, CTM, HORIZONTAL, TOP, RANDOM, REPEAT, VERTICAL, FIXED
+        NONE, CTM, HORIZONTAL, TOP, RANDOM, REPEAT, VERTICAL, FIXED, HORIZONTAL_VERTICAL, VERTICAL_HORIZONTAL
     }
     public enum CTMConnect {
         NONE, BLOCK, TILE, MATERIAL, UNKNOWN
@@ -342,6 +342,12 @@ public class CTMTexturePack {
             }
             else if (v.equals("vertical")) {
                 method = CTMMethod.VERTICAL;
+            }
+            else if (v.equals("vertical+horizontal") || v.equals("v+h")) {
+                method = CTMMethod.VERTICAL_HORIZONTAL;
+            }
+            else if (v.equals("horizontal+vertical") || v.equals("h+v")) {
+                method = CTMMethod.HORIZONTAL_VERTICAL;
             }
             else if (v.equals("top") || v.equals("sandstone")) {
                 method = CTMMethod.TOP;
@@ -610,7 +616,13 @@ public class CTMTexturePack {
                     
                 case VERTICAL:
                     return isValidVertical(fname);
-                    
+
+                case HORIZONTAL_VERTICAL:
+                    return isValidHorizontalVertical(fname);
+
+                case VERTICAL_HORIZONTAL:
+                    return isValidVerticalHorizontal(fname);
+
                 case FIXED:
                     return isValidFixed(fname);
                     
@@ -656,6 +668,26 @@ public class CTMTexturePack {
             }
             if ((this.tiles == null) || (this.tiles.length != 4)) {
                 Log.info("Incorrect tile count for Vertical method: " + fname);
+                return false;
+            }
+            return true;
+        }
+        private boolean isValidHorizontalVertical(String fname) {
+            if (this.tiles == null) {
+                this.tiles = this.parseTileNames("0-6");
+            }
+            if ((this.tiles == null) || (this.tiles.length != 7)) {
+                Log.info("Incorrect tile count for Horizontal+Vertical method: " + fname);
+                return false;
+            }
+            return true;
+        }
+        private boolean isValidVerticalHorizontal(String fname) {
+            if (this.tiles == null) {
+                this.tiles = this.parseTileNames("0-6");
+            }
+            if ((this.tiles == null) || (this.tiles.length != 7)) {
+                Log.info("Incorrect tile count for Vertical+Horizontal method: " + fname);
                 return false;
             }
             return true;
@@ -884,7 +916,17 @@ public class CTMTexturePack {
             }
         }
     }
-    
+
+    // Constants for rotateUV
+    static final int REL_L = 0;
+    static final int REL_DL = 1;
+    static final int REL_D = 2;
+    static final int REL_DR = 3;
+    static final int REL_R = 4;
+    static final int REL_UR = 5;
+    static final int REL_U = 6;
+    static final int REL_UL = 7;
+
     private class Context {
         final MapIterator mapiter;
         final int blkid;
@@ -1103,6 +1145,12 @@ public class CTMTexturePack {
             case VERTICAL:
                 return mapTextureVertical(p, ctx);
 
+            case HORIZONTAL_VERTICAL:
+                return mapTextureHorizontalVertical(p, ctx);
+
+            case VERTICAL_HORIZONTAL:
+                return mapTextureVerticalHorizontal(p, ctx);
+                
             case FIXED:
                 return mapTextureFixed(p, ctx);
 
@@ -1273,7 +1321,111 @@ public class CTMTexturePack {
         }
         return p.tileIcons[neighborMapVertical[neighborBits]];
     }
-    
+
+    // Map texture using h+v method
+    // Index into this array is formed from these bit values:
+    // 32  16  8
+    //     *
+    // 1   2   4
+    private static final int[] neighborMapHorizontalVertical = new int[]{
+        3, 3, 6, 3, 3, 3, 3, 3, 3, 3, 6, 3, 3, 3, 3, 3,
+        4, 4, 5, 4, 4, 4, 4, 4, 3, 3, 6, 3, 3, 3, 3, 3,
+        3, 3, 6, 3, 3, 3, 3, 3, 3, 3, 6, 3, 3, 3, 3, 3,
+        3, 3, 6, 3, 3, 3, 3, 3, 3, 3, 6, 3, 3, 3, 3, 3,
+    };
+    private int mapTextureHorizontalVertical(CTMProps p, Context ctx) {
+        // Do horizontal first : only fall through if no match
+        int face = ctx.face;
+        if (face < 0) {
+            face = NORTH_FACE;
+        } else if (ctx.reorient(face) <= TOP_FACE) {
+            return -1;
+        }
+        int[][] offsets = NEIGHBOR_OFFSET[face];
+        int neighborBits = 0;
+        if (p.shouldConnect(ctx, offsets[ctx.rotateUV(0)])) {
+            neighborBits |= 1;
+        }
+        if (p.shouldConnect(ctx, offsets[ctx.rotateUV(4)])) {
+            neighborBits |= 2;
+        }
+        int idx = neighborMapHorizontal[neighborBits];
+        if (idx != 3) {
+            return p.tileIcons[idx];
+        }
+        // Now check diagonals and up down
+        neighborBits = 0;
+        if (p.shouldConnect(ctx, offsets[ctx.rotateUV(REL_DL)])) {
+            neighborBits |= 1;
+        }
+        if (p.shouldConnect(ctx, offsets[ctx.rotateUV(REL_D)])) {
+            neighborBits |= 2;
+        }
+        if (p.shouldConnect(ctx, offsets[ctx.rotateUV(REL_DR)])) {
+            neighborBits |= 4;
+        }
+        if (p.shouldConnect(ctx, offsets[ctx.rotateUV(REL_UR)])) {
+            neighborBits |= 8;
+        }
+        if (p.shouldConnect(ctx, offsets[ctx.rotateUV(REL_U)])) {
+            neighborBits |= 16;
+        }
+        if (p.shouldConnect(ctx, offsets[ctx.rotateUV(REL_UL)])) {
+            neighborBits |= 32;
+        }
+        return p.tileIcons[neighborMapHorizontalVertical[neighborBits]];
+    }
+    // Index into this array is formed from these bit values:
+    // 32     16
+    // 1   *   8
+    // 2       4
+    private static final int[] neighborMapVerticalHorizontal = new int[]{
+        3, 6, 3, 3, 3, 6, 3, 3, 4, 5, 4, 4, 3, 6, 3, 3,
+        3, 6, 3, 3, 3, 6, 3, 3, 3, 6, 3, 3, 3, 6, 3, 3,
+        3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 3, 3, 3, 3,
+        3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+    };
+    // Map texture using vertical+horizontal method
+    private int mapTextureVerticalHorizontal(CTMProps p, Context ctx) {
+        // Do vertical first : handle if any matches
+        if (ctx.reorient(ctx.face) <= TOP_FACE) {
+            return -1;
+        }
+        int[][] offsets = NEIGHBOR_OFFSET[ctx.face];
+        int neighborBits = 0;
+        if (p.shouldConnect(ctx, offsets[ctx.rotateUV(2)])) {
+            neighborBits |= 1;
+        }
+        if (p.shouldConnect(ctx, offsets[ctx.rotateUV(6)])) {
+            neighborBits |= 2;
+        }
+        int idx = neighborMapVertical[neighborBits];
+        if (idx != 3) {
+            return p.tileIcons[idx];
+        }
+        // Else, check horizontal and diagonals
+        neighborBits = 0;
+        if (p.shouldConnect(ctx, offsets[ctx.rotateUV(REL_L)])) {
+            neighborBits |= 1;
+        }
+        if (p.shouldConnect(ctx, offsets[ctx.rotateUV(REL_DL)])) {
+            neighborBits |= 2;
+        }
+        if (p.shouldConnect(ctx, offsets[ctx.rotateUV(REL_DR)])) {
+            neighborBits |= 4;
+        }
+        if (p.shouldConnect(ctx, offsets[ctx.rotateUV(REL_R)])) {
+            neighborBits |= 8;
+        }
+        if (p.shouldConnect(ctx, offsets[ctx.rotateUV(REL_UR)])) {
+            neighborBits |= 16;
+        }
+        if (p.shouldConnect(ctx, offsets[ctx.rotateUV(REL_UL)])) {
+            neighborBits |= 32;
+        }
+        return p.tileIcons[neighborMapVerticalHorizontal[neighborBits]];
+    }
+
     // Map texture using fixed method
     private int mapTextureFixed(CTMProps p, Context ctx) {
         return p.tileIcons[0];
