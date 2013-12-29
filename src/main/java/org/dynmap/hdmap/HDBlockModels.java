@@ -9,8 +9,12 @@ import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
 import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapCore;
@@ -38,7 +42,8 @@ public class HDBlockModels {
     private static PatchDefinitionFactory pdf = new PatchDefinitionFactory();
     private static BitSet customModelsRequestingTileData = new BitSet(); // Index by 16*id + data
     private static BitSet changeIgnoredBlocks = new BitSet();   // Index by 16*id + data
-
+    private static HashSet<String> loadedmods = new HashSet<String>();
+    
     public static final int getMaxPatchCount() { return max_patches; }
     public static final PatchDefinitionFactory getPatchDefinitionFactory() { return pdf; }
     
@@ -559,6 +564,8 @@ public class HDBlockModels {
         scaled_models_by_scale.clear();
         /* Reset change-ignored flags */
         changeIgnoredBlocks.clear();
+        /* Reset model list */
+        loadedmods.clear();
         
         /* Load block models */
         int i = 0;
@@ -575,6 +582,36 @@ public class HDBlockModels {
             }
             i++;
         }
+        /* Check mods to see if model files defined there */
+        for (String modid : core.getServer().getModList()) {
+            File f = core.getServer().getModContainerFile(modid);   // Get mod file
+            if (f.isFile()) {
+                ZipFile zf = null;
+                in = null;
+                try {
+                    zf = new ZipFile(f);
+                    String fn = "assets/" + modid.toLowerCase() + "/dynmap-models.txt";
+                    ZipEntry ze = zf.getEntry(fn);
+                    if (ze != null) {
+                        in = zf.getInputStream(ze);
+                        loadModelFile(in, fn, config, core, fn.substring(0, fn.indexOf("-models.txt")));
+                        loadedmods.add(modid);  // Add to set: prevent others definitions for same mod
+                    }
+                } catch (ZipException e) {
+                } catch (IOException e) {
+                } finally {
+                    if (in != null) {
+                        try { in.close(); } catch (IOException e) { }
+                        in = null;
+                    }
+                    if (zf != null) {
+                        try { zf.close(); } catch (IOException e) { }
+                        zf = null;
+                    }
+                }
+            }
+        }
+        // Load external model files
         ArrayList<String> files = new ArrayList<String>();
         File customdir = new File(datadir, "renderdata");
         addFiles(files, customdir, "");
@@ -582,7 +619,7 @@ public class HDBlockModels {
             File custom = new File(customdir, fn);
             if(custom.canRead()) {
                 try {
-                in = new FileInputStream(custom);
+                    in = new FileInputStream(custom);
                     loadModelFile(in, custom.getPath(), config, core, fn.substring(0, fn.indexOf("-models.txt")));
                 } catch (IOException iox) {
                     Log.severe("Error loading " + custom.getPath());
@@ -1195,6 +1232,9 @@ public class HDBlockModels {
                             rng = ntok[1].trim();
                         }
                         n = n.trim();
+                        if (loadedmods.contains(n)) {   // Already supplied by mod itself?
+                            return;
+                        }
                         String modver = core.getServer().getModVersion(n);
                         if((modver != null) && ((rng == null) || checkVersionRange(modver, rng))) {
                             found = true;

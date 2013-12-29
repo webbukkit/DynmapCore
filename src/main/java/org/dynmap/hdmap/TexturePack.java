@@ -13,9 +13,13 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
 import javax.imageio.ImageIO;
 
@@ -278,7 +282,9 @@ public class TexturePack {
     }
     private static ArrayList<DynamicTileFile> addonfiles = new ArrayList<DynamicTileFile>();
     private static Map<String, DynamicTileFile> addonfilesbyname = new HashMap<String, DynamicTileFile>();
-
+    // Mods supplying their own texture files
+    private static HashSet<String> loadedmods = new HashSet<String>();
+    
     private static String getBlockFileName(int idx) {
         if ((idx >= 0) && (idx < terrain_map.length) && (terrain_map[idx] != null)) {
             return "textures/blocks/" + terrain_map[idx] + ".png";
@@ -300,6 +306,7 @@ public class TexturePack {
         }
         addonfiles.clear();
         addonfilesbyname.clear();
+        loadedmods.clear();
         next_dynamic_tile = MAX_TILEINDEX+1;
         
         /* Now, load entries for vanilla v1.6.x RP files */
@@ -1471,6 +1478,36 @@ public class TexturePack {
             }
             i++;
         }
+        /* Check mods to see if texture files defined there */
+        for (String modid : core.getServer().getModList()) {
+            File f = core.getServer().getModContainerFile(modid);   // Get mod file
+            if (f.isFile()) {
+                ZipFile zf = null;
+                in = null;
+                try {
+                    zf = new ZipFile(f);
+                    String fn = "assets/" + modid.toLowerCase() + "/dynmap-texture.txt";
+                    ZipEntry ze = zf.getEntry(fn);
+                    if (ze != null) {
+                        in = zf.getInputStream(ze);
+                        loadTextureFile(in, fn, config, core, fn.substring(0,  fn.indexOf("-texture.txt")));
+                        loadedmods.add(modid);  // Add to set: prevent others definitions for same mod
+                    }
+                } catch (ZipException e) {
+                } catch (IOException e) {
+                } finally {
+                    if (in != null) {
+                        try { in.close(); } catch (IOException e) { }
+                        in = null;
+                    }
+                    if (zf != null) {
+                        try { zf.close(); } catch (IOException e) { }
+                        zf = null;
+                    }
+                }
+            }
+        }
+        // Load external tile sets
         File renderdir = new File(datadir, "renderdata");
         ArrayList<String> tsfiles = new ArrayList<String>();
         ArrayList<String> txfiles = new ArrayList<String>();
@@ -1488,6 +1525,7 @@ public class TexturePack {
                 }
             }
         }
+        // Load external texture files
         for(String fname : txfiles) {
             File custom = new File(renderdir, fname);
             if(custom.canRead()) {
@@ -2128,6 +2166,10 @@ public class TexturePack {
                             rng = ntok[1].trim();
                         }
                         n = n.trim();
+                        // If already supplied by mod, quit processing this file
+                        if (loadedmods.contains(n)) {
+                            return;
+                        }
                         String modver = core.getServer().getModVersion(n);
                         if((modver != null) && ((rng == null) || HDBlockModels.checkVersionRange(modver, rng))) {
                             found = true;

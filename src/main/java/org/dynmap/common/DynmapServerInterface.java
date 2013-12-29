@@ -159,4 +159,8 @@ public interface DynmapServerInterface {
      * @return file or directory, or null if not loaded
      */
     public File getModContainerFile(String mod);
+    /**
+     * Get mod list
+     */
+    public List<String> getModList();
 }
