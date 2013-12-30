@@ -248,6 +248,7 @@ public class MapManager {
         boolean shutdown = false;
         boolean pausedforworld = false;
         boolean updaterender = false;
+        boolean quiet = false;
         String mapname;
         AtomicLong total_render_ns = new AtomicLong(0L);
         AtomicInteger rendercalls = new AtomicInteger(0);
@@ -481,12 +482,14 @@ public class MapManager {
                         int rndcalls = rendercalls.get();
                         if(rndcalls == 0) rndcalls = 1;
                         double rendtime = total_render_ns.doubleValue() * 0.000001 / rndcalls;
-                        if(activemapcnt > 1)
+                        if(activemapcnt > 1) {
                             sendMessage(String.format("%s of maps [%s] of '%s' completed - %d tiles rendered each (%.2f msec/map-tile, %.2f msec per render)",
-                                    rendertype, activemaps, world.getName(), rendercnt, msecpertile, rendtime));
-                        else
+                                rendertype, activemaps, world.getName(), rendercnt, msecpertile, rendtime));
+                        }
+                        else {
                             sendMessage(String.format("%s of map '%s' of '%s' completed - %d tiles rendered (%.2f msec/map-tile, %.2f msec per render)",
-                                    rendertype, activemaps, world.getName(), rendercnt, msecpertile, rendtime));
+                                rendertype, activemaps, world.getName(), rendercnt, msecpertile, rendtime));
+                        }
                         /* Now, if fullrender, use the render bitmap to purge obsolete tiles */
                         if(rendertype.equals(RENDERTYPE_FULLRENDER)) {
                             if(activemapcnt == 1) {
@@ -730,7 +733,7 @@ public class MapManager {
                     if(!cache.isEmpty()) {
                         rendercnt++;
                         timeaccum += System.currentTimeMillis() - tstart;
-                        if((rendercnt % progressinterval) == 0) {
+                        if (((rendercnt % progressinterval) == 0) && (!quiet)) {
                             int rndcalls = rendercalls.get();
                             if (rndcalls == 0) rndcalls = 1;
                             double rendtime = total_render_ns.doubleValue() * 0.000001 / rndcalls;
@@ -1692,5 +1695,24 @@ public class MapManager {
     }
     public boolean getTPSZoomOutPause() {
         return tpspausezoomout;
+    }
+    public void setJobsQuiet(DynmapCommandSender sender) {
+        DynmapPlayer player = null;
+        if (sender instanceof DynmapPlayer) {
+            player = (DynmapPlayer) sender;
+        }
+        synchronized (lock) {
+            for (FullWorldRenderState job : active_renders.values()) {
+                if (job.sender instanceof DynmapPlayer) {
+                    DynmapPlayer js = (DynmapPlayer) job.sender;
+                    if ((player != null) && (player.getName().equals(js.getName()))) {
+                        job.quiet = true;
+                    }
+                }
+                else if (player == null) {  // If both are console
+                    job.quiet = true;
+                }
+            }
+        }
     }
 }

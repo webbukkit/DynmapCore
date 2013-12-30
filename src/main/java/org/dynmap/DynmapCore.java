@@ -977,6 +977,7 @@ public class DynmapCore implements DynmapCommonAPI {
         "purgequeue",
         "purgemap",
         "purgeworld",
+        "quiet",
         "ids-for-ip",
         "ips-for-id",
         "add-id-for-ip",
@@ -1038,6 +1039,7 @@ public class DynmapCore implements DynmapCommonAPI {
         new CommandInfo("dynmap", "purgeworld", "<world>", "Delete all existing directories for world <world>."),
         new CommandInfo("dynmap", "pause", "Show render pause state."),
         new CommandInfo("dynmap", "pause", "<all|none|full|update>", "Set render pause state."),
+        new CommandInfo("dynmap", "quiet", "Stop output from active jobs."),
         new CommandInfo("dynmap", "ids-for-ip", "<ipaddress>", "Show player IDs that have logged in from address <ipaddress>."),
         new CommandInfo("dynmap", "ips-for-id", "<player>", "Show IP addresses that have been used for player <player>."),
         new CommandInfo("dynmap", "add-id-for-ip", "<player> <ipaddress>", "Associate player <player> with IP address <ipaddress>."),
@@ -1486,6 +1488,9 @@ public class DynmapCore implements DynmapCommonAPI {
                     return authmgr.processWebRegisterCommand(this, sender, player, args);
                 else
                     sender.sendMessage("Login support is not enabled");
+            }
+            else if (c.equals("quiet") && checkPlayerPermission(sender, "quiet")) {
+                mapManager.setJobsQuiet(sender);
             }
             else if(c.equals("help")) {
                 printCommandHelp(sender, cmd, (args.length > 1)?args[1]:"");
