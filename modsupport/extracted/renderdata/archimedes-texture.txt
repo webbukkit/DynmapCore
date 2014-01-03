@@ -1,0 +1,65 @@
+# Archimedes Ships Block mapping (built against version 1.4.5 for MC1.6.x)
+modname:Archimedes' Ships,ArchimedesShipsMod
+# Configuration file
+cfgfile:config/ArchimedesShipsMod.cfg
+#Texture Path
+texturepath:assets/archimedes/textures/blocks/
+# Files
+#texture:id=balloon (Duplicate of balloon_white)
+texture:id=balloon_black
+texture:id=balloon_blue
+texture:id=balloon_brown
+texture:id=balloon_cyan
+texture:id=balloon_gray
+texture:id=balloon_green
+texture:id=balloon_light_blue
+texture:id=balloon_lime
+texture:id=balloon_magenta
+texture:id=balloon_orange
+texture:id=balloon_pink
+texture:id=balloon_purple
+texture:id=balloon_red
+texture:id=balloon_silver
+texture:id=balloon_white
+texture:id=balloon_yellow
+texture:id=buffer
+texture:id=engine
+texture:id=floater
+texture:id=gauge
+texture:id=gauge_ext
+texture:id=marker
+texture:id=marker_front
+#texture:id=seat
+# Blocks
+block:id=balloon,data=0,allfaces=0,txtid=balloon_white,stdrot=true
+block:id=balloon,data=1,allfaces=0,txtid=balloon_orange,stdrot=true
+block:id=balloon,data=2,allfaces=0,txtid=balloon_magenta,stdrot=true
+block:id=balloon,data=3,allfaces=0,txtid=balloon_light_blue,stdrot=true
+block:id=balloon,data=4,allfaces=0,txtid=balloon_yellow,stdrot=true
+block:id=balloon,data=5,allfaces=0,txtid=balloon_lime,stdrot=true
+block:id=balloon,data=6,allfaces=0,txtid=balloon_pink,stdrot=true
+block:id=balloon,data=7,allfaces=0,txtid=balloon_gray,stdrot=true
+block:id=balloon,data=8,allfaces=0,txtid=balloon_silver,stdrot=true
+block:id=balloon,data=9,allfaces=0,txtid=balloon_cyan,stdrot=true
+block:id=balloon,data=10,allfaces=0,txtid=balloon_purple,stdrot=true
+block:id=balloon,data=11,allfaces=0,txtid=balloon_blue,stdrot=true
+block:id=balloon,data=12,allfaces=0,txtid=balloon_brown,stdrot=true
+block:id=balloon,data=13,allfaces=0,txtid=balloon_green,stdrot=true
+block:id=balloon,data=14,allfaces=0,txtid=balloon_red,stdrot=true
+block:id=balloon,data=15,allfaces=0,txtid=balloon_black,stdrot=true
+block:id=buffer,data=0,allfaces=0,txtid=buffer,stdrot=true
+block:id=engine,data=0,allfaces=0,txtid=engine,stdrot=true
+block:id=floater,data=0,allfaces=0,txtid=floater,stdrot=true
+block:id=gauge,data=0,top=0,txtid=gauge,stdrot=true
+block:id=gauge,data=1,top=0,txtid=gauge_ext,stdrot=true
+#Helm
+#East facing helm
+block:id=mark_ship,data=0,topbottom=0:marker,north=0:marker,south=0:marker,east=0:marker_front,west=0:marker,stdrot=true
+#South facing helm
+block:id=mark_ship,data=1,topbottom=0:marker,north=0:marker,south=0:marker_front,east=0:marker,west=0:marker,stdrot=true
+#West facing helm
+block:id=mark_ship,data=2,topbottom=0:marker,north=0:marker,south=0:marker,east=0:marker,west=0:marker_front,stdrot=true
+#North facing helm
+block:id=mark_ship,data=3,topbottom=0:marker,north=0:marker_front,south=0:marker,east=0:marker,west=0:marker,stdrot=true
+#Seat (object has 4 data ID's 0-3 similar to the Helm for the direction the back of the seat is facing)
+#Seat requires a model and file to be created to display properly on map
