@@ -9,7 +9,7 @@ import org.dynmap.utils.BlockStep;
 
 public class ShadowHDLighting extends DefaultHDLighting {
 
-    protected final int   shadowscale[];  /* index=skylight level, value = 256 * scaling value */
+    protected final int   defLightingTable[];  /* index=skylight level, value = 256 * scaling value */
     protected final int   lightscale[];   /* scale skylight level (light = lightscale[skylight] */
     protected final boolean night_and_day;    /* If true, render both day (prefix+'-day') and night (prefix) tiles */
     protected final boolean smooth;
@@ -17,14 +17,14 @@ public class ShadowHDLighting extends DefaultHDLighting {
     public ShadowHDLighting(DynmapCore core, ConfigurationNode configuration) {
         super(core, configuration);
         double shadowweight = configuration.getDouble("shadowstrength", 0.0);
-        shadowscale = new int[16];
-        shadowscale[15] = 256;
+        defLightingTable = new int[16];
+        defLightingTable[15] = 256;
         /* Normal brightness weight in MC is a 20% relative dropoff per step */
         for(int i = 14; i >= 0; i--) {
-            double v = shadowscale[i+1] * (1.0 - (0.2 * shadowweight));
-            shadowscale[i] = (int)v;
-            if(shadowscale[i] > 256) shadowscale[i] = 256;
-            if(shadowscale[i] < 0) shadowscale[i] = 0;
+            double v = defLightingTable[i+1] * (1.0 - (0.2 * shadowweight));
+            defLightingTable[i] = (int)v;
+            if(defLightingTable[i] > 256) defLightingTable[i] = 256;
+            if(defLightingTable[i] < 0) defLightingTable[i] = 0;
         }
         int v = configuration.getInteger("ambientlight", -1);
         if(v < 0) v = 15;
@@ -40,7 +40,7 @@ public class ShadowHDLighting extends DefaultHDLighting {
         smooth = configuration.getBoolean("smooth-lighting", MapManager.mapman.getSmoothLighting());
     }
     
-    private void    applySmoothLighting(HDPerspectiveState ps, HDShaderState ss, Color incolor, Color[] outcolor) {
+    private void    applySmoothLighting(HDPerspectiveState ps, HDShaderState ss, Color incolor, Color[] outcolor, int[] shadowscale) {
         int[] xyz = ps.getSubblockCoord();
         int scale = (int)ps.getScale();
         int mid = scale/2;
@@ -212,14 +212,23 @@ public class ShadowHDLighting extends DefaultHDLighting {
     
     /* Apply lighting to given pixel colors (1 outcolor if normal, 2 if night/day) */
     public void    applyLighting(HDPerspectiveState ps, HDShaderState ss, Color incolor, Color[] outcolor) {
+        int[] shadowscale = null;
         if(smooth) {
-            applySmoothLighting(ps, ss, incolor, outcolor);
+            shadowscale = ss.getLightingTable();
+            if (shadowscale == null) {
+                shadowscale = defLightingTable;
+            }
+            applySmoothLighting(ps, ss, incolor, outcolor, shadowscale);
             return;
         }
         LightLevels ll = null;
         int lightlevel = 15, lightlevel_day = 15;
         /* If processing for shadows, use sky light level as base lighting */
-        if(shadowscale != null) {
+        if(defLightingTable != null) {
+            shadowscale = ss.getLightingTable();
+            if (shadowscale == null) {
+                shadowscale = defLightingTable;
+            }
             ll = ps.getCachedLightLevels(0);
             ps.getLightLevels(ll);
             lightlevel = lightlevel_day = ll.sky;
@@ -235,7 +244,7 @@ public class ShadowHDLighting extends DefaultHDLighting {
         /* Figure out our color, with lighting if needed */
         outcolor[0].setColor(incolor);
         if(lightlevel < 15) {
-            shadowColor(outcolor[0], lightlevel);
+            shadowColor(outcolor[0], lightlevel, shadowscale);
         }
         if(outcolor.length > 1) {
             if(lightlevel_day == lightlevel) {
@@ -244,13 +253,13 @@ public class ShadowHDLighting extends DefaultHDLighting {
             else {
                 outcolor[1].setColor(incolor);
                 if(lightlevel_day < 15) {
-                    shadowColor(outcolor[1], lightlevel_day);
+                    shadowColor(outcolor[1], lightlevel_day, shadowscale);
                 }
             }
         }
     }
 
-    private final void shadowColor(Color c, int lightlevel) {
+    private final void shadowColor(Color c, int lightlevel, int[] shadowscale) {
         int scale = shadowscale[lightlevel];
         if(scale < 256)
             c.setRGBA((c.getRed() * scale) >> 8, (c.getGreen() * scale) >> 8, 

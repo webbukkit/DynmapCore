@@ -48,11 +48,12 @@ public class MapManager {
     private int tileupdatedelay = 30;
     private int savependingperiod = 15 * 60; // every 15 minutes, by default
     private boolean saverestorepending = true;
+    private boolean pauseupdaterenders = false;
     private boolean hideores = false;
+    private boolean useBrightnessTable = false;
     private boolean usenormalpriority = false;
     private short blockidalias[];
     
-    private boolean pauseupdaterenders = false;
     private boolean pausefullrenders = false;
 
     // TPS based render pauses
@@ -872,6 +873,8 @@ public class MapManager {
 
         /* Get block hiding data, if any */
         hideores = configuration.getBoolean("hideores", false);
+        useBrightnessTable = configuration.getBoolean("use-brightness-table", false);
+        
         blockidalias = new short[4096];
         for (int i = 0; i < blockidalias.length; i++) {
             blockidalias[i] = (short) i;
@@ -1714,5 +1717,8 @@ public class MapManager {
                 }
             }
         }
+    }
+    public boolean useBrightnessTable() {
+        return useBrightnessTable;
     }
 }

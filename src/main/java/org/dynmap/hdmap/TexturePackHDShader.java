@@ -89,6 +89,7 @@ public class TexturePackHDShader implements HDShader {
         final boolean do_biome_shading;
         final boolean do_better_grass;
         DynLongHashMap ctm_cache;
+        final int[] lightingTable;
         
         protected ShaderState(MapIterator mapiter, HDMap map, MapChunkCache cache, int scale) {
             this.mapiter = mapiter;
@@ -111,6 +112,12 @@ public class TexturePackHDShader implements HDShader {
             /* Biome raw data only works on normal worlds at this point */
             do_biome_shading = biome_shaded; // && (cache.getWorld().getEnvironment() == Environment.NORMAL);
             do_better_grass = bettergrass;
+            if (MapManager.mapman.useBrightnessTable()) {
+                lightingTable = cache.getWorld().getBrightnessTable();
+            }
+            else {
+                lightingTable = null;
+            }
         }
         /**
          * Get our shader
@@ -162,22 +169,49 @@ public class TexturePackHDShader implements HDShader {
 
             if (c.getAlpha() > 0) {
                 /* Scale brightness depending upon face */
-                switch(ps.getLastBlockStep()) {
-                    case X_MINUS:
-                    case X_PLUS:
-                        /* 60% brightness */
-                        c.blendColor(0xFFA0A0A0);
-                        break;
-                    case Y_MINUS:
-                    case Y_PLUS:
-                        /* 85% brightness for even, 90% for even*/
-                        if((mapiter.getY() & 0x01) == 0) 
-                            c.blendColor(0xFFD9D9D9);
-                        else
-                            c.blendColor(0xFFE6E6E6);
-                        break;
-                    default:
-                        break;
+                if (this.lightingTable != null) {
+                    switch(ps.getLastBlockStep()) {
+                        case X_MINUS:
+                        case X_PLUS:
+                            /* 60% brightness */
+                            c.blendColor(0xFF999999);
+                            break;
+                        case Y_MINUS:
+                            // 95% for even
+                            if((mapiter.getY() & 0x01) == 0) {
+                                c.blendColor(0xFFF3F3F3);
+                            }
+                            break;
+                        case Y_PLUS:
+                            /* 50%*/
+                            c.blendColor(0xFF808080);
+                            break;
+                        case Z_MINUS:
+                        case Z_PLUS:
+                        default:
+                            /* 80%*/
+                            c.blendColor(0xFFCDCDCD);
+                            break;
+                    }
+                }
+                else {
+                    switch(ps.getLastBlockStep()) {
+                        case X_MINUS:
+                        case X_PLUS:
+                            /* 60% brightness */
+                            c.blendColor(0xFFA0A0A0);
+                            break;
+                        case Y_MINUS:
+                        case Y_PLUS:
+                            /* 85% brightness for even, 90% for even*/
+                            if((mapiter.getY() & 0x01) == 0) 
+                                c.blendColor(0xFFD9D9D9);
+                            else
+                                c.blendColor(0xFFE6E6E6);
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 /* Handle light level, if needed */
                 lighting.applyLighting(ps, this, c, tmpcolor);
@@ -246,6 +280,10 @@ public class TexturePackHDShader implements HDShader {
                 ctm_cache = new DynLongHashMap();
             }
             return ctm_cache;
+        }
+        @Override
+        public int[] getLightingTable() {
+            return lightingTable;
         }
     }
 

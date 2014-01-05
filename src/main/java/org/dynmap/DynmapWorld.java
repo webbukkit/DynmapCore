@@ -54,6 +54,7 @@ public abstract class DynmapWorld {
     public int tileupdatedelay;
     private boolean is_enabled;
     boolean is_protected;   /* If true, user needs 'dynmap.world.<worldid>' privilege to see world */
+    protected int[] brightnessTable = new int[16];  // 0-256 scaled brightness table
     
     /* World height data */
     public final int worldheight;
@@ -72,7 +73,25 @@ public abstract class DynmapWorld {
         for(shift = 0; ((1 << shift) < worldheight); shift++) {}
         heightshift = shift;
         heightmask = (1 << shift) - 1;
+        /* Generate default brightness table for surface world */
+        for (int i = 0; i <= 15; ++i) {
+            float f1 = 1.0F - (float)i / 15.0F;
+            setBrightnessTableEntry(i, ((1.0F - f1) / (f1 * 3.0F + 1.0F)));
+        }
     }
+    protected void setBrightnessTableEntry(int level, float value) {
+        if ((level < 0) || (level > 15)) return;
+        this.brightnessTable[level] = (int)(256.0 * value);
+        if (this.brightnessTable[level] > 256) this.brightnessTable[level] = 256;
+        if (this.brightnessTable[level] < 0) this.brightnessTable[level] = 0;
+    }
+    /**
+     * Get world's brightness table
+     */
+    public int[] getBrightnessTable() {
+        return brightnessTable;
+    }
+    
     @SuppressWarnings("unchecked")
     public void setExtraZoomOutLevels(int lvl) {
         extrazoomoutlevels = lvl;

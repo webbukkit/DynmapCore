@@ -47,4 +47,8 @@ public interface HDShaderState {
      * Get CTM texture cache
      */
     DynLongHashMap getCTMTextureCache();
+    /**
+     * Get lighting table
+     */
+    int[] getLightingTable();
 }
