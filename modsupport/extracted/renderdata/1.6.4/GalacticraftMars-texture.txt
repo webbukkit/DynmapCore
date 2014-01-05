@@ -1,0 +1,4 @@
+modname:GalacticraftMars[2.0.6-]
+
+# All in GalacticraftCore - all the textures are in that mod, not GalacticraftMars, for some reason....
+

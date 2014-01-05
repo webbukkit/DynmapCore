@@ -1,0 +1,75 @@
+modname:GalacticraftMars[2.0.6-]
+cfgfile:config/Galacticraft/mars.conf
+
+patch:id=VertX1Z0ToX0Z1,Ox=1.0,Oy=0.0,Oz=0.0,Ux=0.0,Uy=0.0,Uz=1.0,Vx=1.0,Vy=1.0,Vz=0.0,visibility=flip
+patch:id=VertX075,Ox=0.75,Oy=0.0,Oz=1.0,Ux=0.75,Uy=0.0,Uz=0.0,Vx=0.75,Vy=1.0,Vz=1.0
+patch:id=HorizY001ZTop,Ox=0.0,Oy=0.01,Oz=0.0,Ux=1.0,Uy=0.01,Uz=0.0,Vx=0.0,Vy=0.01,Vz=1.0
+patch:id=SlopeXUpZTop,Ox=0.0,Oy=0.0,Oz=0.0,Ux=0.0,Uy=0.0,Uz=1.0,Vx=1.0,Vy=1.0,Vz=0.0
+
+# idBlockBacterialSludge:0 : tile.sludge: render=CUSTOM(40), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSludge
+# idBlockBacterialSludge:1 : tile.sludge: render=CUSTOM(40), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSludge
+# idBlockBacterialSludge:2 : tile.sludge: render=CUSTOM(40), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSludge
+# idBlockBacterialSludge:3 : tile.sludge: render=CUSTOM(40), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSludge
+# idBlockBacterialSludge:4 : tile.sludge: render=CUSTOM(40), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSludge
+# idBlockBacterialSludge:5 : tile.sludge: render=CUSTOM(40), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSludge
+# idBlockBacterialSludge:6 : tile.sludge: render=CUSTOM(40), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSludge
+# idBlockBacterialSludge:7 : tile.sludge: render=CUSTOM(40), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSludge
+# idBlockBacterialSludge:8 : tile.sludge: render=CUSTOM(40), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSludge
+# idBlockBacterialSludge:9 : tile.sludge: render=CUSTOM(40), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSludge
+# idBlockBacterialSludge:10 : tile.sludge: render=CUSTOM(40), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSludge
+# idBlockBacterialSludge:11 : tile.sludge: render=CUSTOM(40), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSludge
+# idBlockBacterialSludge:12 : tile.sludge: render=CUSTOM(40), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSludge
+# idBlockBacterialSludge:13 : tile.sludge: render=CUSTOM(40), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSludge
+# idBlockBacterialSludge:14 : tile.sludge: render=CUSTOM(40), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSludge
+# idBlockBacterialSludge:15 : tile.sludge: render=CUSTOM(40), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSludge
+# idBlockVine:0 : tile.cavernVines: render=CUSTOM(49), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockVine
+# idBlockVine:1 : tile.cavernVines: render=CUSTOM(49), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockVine
+# idBlockVine:2 : tile.cavernVines: render=CUSTOM(49), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockVine
+# idBlockRock:0 : tile.slimelingEgg: render=CUSTOM(50), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSlimelingEgg
+# idBlockRock:1 : tile.slimelingEgg: render=CUSTOM(50), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSlimelingEgg
+# idBlockRock:2 : tile.slimelingEgg: render=CUSTOM(50), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSlimelingEgg
+# idBlockRock:3 : tile.slimelingEgg: render=CUSTOM(50), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSlimelingEgg
+# idBlockRock:4 : tile.slimelingEgg: render=CUSTOM(50), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSlimelingEgg
+# idBlockRock:5 : tile.slimelingEgg: render=CUSTOM(50), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSlimelingEgg
+# idBlockRock:6 : tile.slimelingEgg: render=CUSTOM(50), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSlimelingEgg
+# idBlockRock:7 : tile.slimelingEgg: render=CUSTOM(50), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSlimelingEgg
+# idBlockRock:8 : tile.slimelingEgg: render=CUSTOM(50), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSlimelingEgg
+# idBlockRock:9 : tile.slimelingEgg: render=CUSTOM(50), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSlimelingEgg
+# idBlockRock:10 : tile.slimelingEgg: render=CUSTOM(50), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSlimelingEgg
+# idBlockRock:11 : tile.slimelingEgg: render=CUSTOM(50), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSlimelingEgg
+# idBlockRock:12 : tile.slimelingEgg: render=CUSTOM(50), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSlimelingEgg
+# idBlockRock:13 : tile.slimelingEgg: render=CUSTOM(50), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSlimelingEgg
+# idBlockRock:14 : tile.slimelingEgg: render=CUSTOM(50), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSlimelingEgg
+# idBlockRock:15 : tile.slimelingEgg: render=CUSTOM(50), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockSlimelingEgg
+# idBlockCreeperEgg:0 : tile.creeperEgg: render=DRAGONEGG(27), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockCreeperEgg
+# idBlockCreeperEgg:1 : tile.creeperEgg: render=DRAGONEGG(27), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockCreeperEgg
+# idBlockCreeperEgg:2 : tile.creeperEgg: render=DRAGONEGG(27), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockCreeperEgg
+# idBlockCreeperEgg:3 : tile.creeperEgg: render=DRAGONEGG(27), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockCreeperEgg
+# idBlockCreeperEgg:4 : tile.creeperEgg: render=DRAGONEGG(27), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockCreeperEgg
+# idBlockCreeperEgg:5 : tile.creeperEgg: render=DRAGONEGG(27), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockCreeperEgg
+# idBlockCreeperEgg:6 : tile.creeperEgg: render=DRAGONEGG(27), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockCreeperEgg
+# idBlockCreeperEgg:7 : tile.creeperEgg: render=DRAGONEGG(27), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockCreeperEgg
+# idBlockCreeperEgg:8 : tile.creeperEgg: render=DRAGONEGG(27), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockCreeperEgg
+# idBlockCreeperEgg:9 : tile.creeperEgg: render=DRAGONEGG(27), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockCreeperEgg
+# idBlockCreeperEgg:10 : tile.creeperEgg: render=DRAGONEGG(27), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockCreeperEgg
+# idBlockCreeperEgg:11 : tile.creeperEgg: render=DRAGONEGG(27), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockCreeperEgg
+# idBlockCreeperEgg:12 : tile.creeperEgg: render=DRAGONEGG(27), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockCreeperEgg
+# idBlockCreeperEgg:13 : tile.creeperEgg: render=DRAGONEGG(27), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockCreeperEgg
+# idBlockCreeperEgg:14 : tile.creeperEgg: render=DRAGONEGG(27), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockCreeperEgg
+# idBlockCreeperEgg:15 : tile.creeperEgg: render=DRAGONEGG(27), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockCreeperEgg
+# idBlockTintedGlassPane:0 : tile.tintedGlassPane: render=CUSTOM(53), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockTintedGlassPane
+# idBlockTintedGlassPane:1 : tile.tintedGlassPane: render=CUSTOM(53), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockTintedGlassPane
+# idBlockTintedGlassPane:2 : tile.tintedGlassPane: render=CUSTOM(53), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockTintedGlassPane
+# idBlockTintedGlassPane:3 : tile.tintedGlassPane: render=CUSTOM(53), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockTintedGlassPane
+# idBlockTintedGlassPane:4 : tile.tintedGlassPane: render=CUSTOM(53), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockTintedGlassPane
+# idBlockTintedGlassPane:5 : tile.tintedGlassPane: render=CUSTOM(53), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockTintedGlassPane
+# idBlockTintedGlassPane:6 : tile.tintedGlassPane: render=CUSTOM(53), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockTintedGlassPane
+# idBlockTintedGlassPane:7 : tile.tintedGlassPane: render=CUSTOM(53), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockTintedGlassPane
+# idBlockTintedGlassPane:8 : tile.tintedGlassPane: render=CUSTOM(53), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockTintedGlassPane
+# idBlockTintedGlassPane:9 : tile.tintedGlassPane: render=CUSTOM(53), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockTintedGlassPane
+# idBlockTintedGlassPane:10 : tile.tintedGlassPane: render=CUSTOM(53), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockTintedGlassPane
+# idBlockTintedGlassPane:11 : tile.tintedGlassPane: render=CUSTOM(53), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockTintedGlassPane
+# idBlockTintedGlassPane:12 : tile.tintedGlassPane: render=CUSTOM(53), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockTintedGlassPane
+# idBlockTintedGlassPane:13 : tile.tintedGlassPane: render=CUSTOM(53), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockTintedGlassPane
+# idBlockTintedGlassPane:14 : tile.tintedGlassPane: render=CUSTOM(53), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockTintedGlassPane
+# idBlockTintedGlassPane:15 : tile.tintedGlassPane: render=CUSTOM(53), class=micdoodle8.mods.galacticraft.mars.blocks.GCMarsBlockTintedGlassPane
