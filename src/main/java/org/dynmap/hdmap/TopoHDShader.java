@@ -8,6 +8,7 @@ import org.dynmap.Color;
 import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapCore;
 import org.dynmap.Log;
+import org.dynmap.MapManager;
 import org.dynmap.utils.DynLongHashMap;
 import org.dynmap.utils.MapChunkCache;
 import org.dynmap.utils.MapIterator;
@@ -127,6 +128,7 @@ public class TopoHDShader implements HDShader {
         private int scale;
         private int heightshift;    /* Divide to keep in 0-127 range of colors */
         private boolean inWater;
+        final int[] lightingTable;
         
         private OurShaderState(MapIterator mapiter, HDMap map, MapChunkCache cache, int scale) {
             this.mapiter = mapiter;
@@ -148,6 +150,12 @@ public class TopoHDShader implements HDShader {
             while(wh > 256) {
                 heightshift++;
                 wh >>= 1;
+            }
+            if (MapManager.mapman.useBrightnessTable()) {
+                lightingTable = cache.getWorld().getBrightnessTable();
+            }
+            else {
+                lightingTable = null;
             }
             inWater = false;
         }
@@ -293,6 +301,10 @@ public class TopoHDShader implements HDShader {
         @Override
         public DynLongHashMap getCTMTextureCache() {
             return null;
+        }
+        @Override
+        public int[] getLightingTable() {
+            return lightingTable;
         }
     }
 
