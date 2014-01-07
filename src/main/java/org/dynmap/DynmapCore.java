@@ -109,6 +109,7 @@ public class DynmapCore implements DynmapCommonAPI {
     private boolean transparentLeaves = true;
     private List<String> sortPermissionNodes;
     private int perTickLimit = 50;   // 50 ms
+    private boolean dumpMissing = false;
         
     public CompassMode compassmode = CompassMode.PRE19;
     private int     config_hashcode;    /* Used to signal need to reload web configuration (world changes, config update, etc) */
@@ -439,6 +440,8 @@ public class DynmapCore implements DynmapCommonAPI {
         
         perTickLimit = configuration.getInteger("per-tick-time-limit", 50);
         if (perTickLimit < 5) perTickLimit = 5;
+        
+        dumpMissing = configuration.getBoolean("dump-missing-blocks", false);
         
         /* Load preupdate/postupdate commands */
         FileLockManager.preUpdateCommand = configuration.getString("custom-commands/image-updates/preupdatecommand", "");
@@ -2266,6 +2269,9 @@ public class DynmapCore implements DynmapCommonAPI {
     
     public int getMaxTickUseMS() {
         return perTickLimit;
+    }
+    public boolean dumpMissingBlocks() {
+        return dumpMissing;
     }
     // Notice that server has finished starting (needed for forge, which starts dynmap before full server is running)
     public void serverStarted() {

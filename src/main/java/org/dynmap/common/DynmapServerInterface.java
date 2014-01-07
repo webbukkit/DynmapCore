@@ -2,6 +2,7 @@ package org.dynmap.common;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -163,4 +164,8 @@ public interface DynmapServerInterface {
      * Get mod list
      */
     public List<String> getModList();
+    /**
+     * Get block ID map (modID:blockname, keyed by block ID)
+     */
+    public Map<Integer, String> getBlockIDMap();
 }

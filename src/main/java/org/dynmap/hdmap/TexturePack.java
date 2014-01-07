@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.TreeSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -1554,6 +1555,32 @@ public class TexturePack {
                 for(i = tm.faces.length; i < cnt; i++) {
                     newfaces[i] = TILEINDEX_BLANK;
                 }
+            }
+        }
+        // Check to see if any blocks exist without corresponding mappings
+        if (core.dumpMissingBlocks()) {
+            Map<Integer, String> blks = core.getServer().getBlockIDMap();
+            String missing = "";
+            for (Integer blkid : new TreeSet<Integer>(blks.keySet())) {
+                if (blkid.intValue() == 0) continue;
+                boolean blank = true;
+                for (int blkiddata = 16 * blkid; blank && (blkiddata < 16 * (blkid+1)); blkiddata++) {
+                    if (HDTextureMap.texmaps[blkiddata] != HDTextureMap.blank) {
+                        blank = false;
+                    }
+                }
+                if (blank) {
+                    String id = blks.get(blkid);
+                    if ((id != null) && (id.length() > 0)) {
+                        missing += blkid + "(" + id + ") ";
+                    }
+                    else {
+                        missing += blkid + " ";
+                    }
+                }
+            }
+            if (missing.length() > 0) {
+                Log.warning("Blocks missing texture definition: " + missing);
             }
         }
     }
