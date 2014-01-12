@@ -73,7 +73,10 @@ public class TexturePackLoader {
         } catch (IOException iox) {
         }
         // Fall through - load as resource from mod, if possible, or from jar
-        InputStream is = null;
+        InputStream is = dsi.openResource(modname, rname);
+        if (is != null) { 
+            return is;
+        }
         if (modname != null) {
             ModSource ms = src_by_mod.get(modname);
             if (ms == null) {

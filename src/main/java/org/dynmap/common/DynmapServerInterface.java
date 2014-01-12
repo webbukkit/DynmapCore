@@ -1,6 +1,7 @@
 package org.dynmap.common;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -168,4 +169,11 @@ public interface DynmapServerInterface {
      * Get block ID map (modID:blockname, keyed by block ID)
      */
     public Map<Integer, String> getBlockIDMap();
+    /**
+     * Open resource (check all mods)
+     * @param modid - mod id
+     * @param rname - resource namep
+     * @returns stream, or null
+     */
+    public InputStream openResource(String modid, String rname);
 }
