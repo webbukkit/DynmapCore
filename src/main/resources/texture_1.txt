@@ -748,18 +748,9 @@ block:id=62,data=4,top=0:furnace_top,north=0:furnace_front_on,south=0:furnace_si
 block:id=62,data=5,top=0:furnace_top,south=0:furnace_front_on,north=0:furnace_side,east=0:furnace_side,west=0:furnace_side,bottom=0:furnace_top,stdrot=true
 # Signpost
 block:id=63,patch0=0,patch1=1,patch2=2,patch3=3,patch4=4,patch5=5,patch6=6,patch7=7,patch8=8,patch9=9,transparency=TRANSPARENT,txtid=sign
-# Wooden Door - bottom (left hinge)
-block:id=64,data=0,data=1,patch0=0:door_wood_lower,patch1=7000:door_wood_lower,patch2=7000:door_wood_lower,patch3=0:door_wood_lower,patch4=4000:door_wood_lower,patch5=4000:door_wood_lower,transparency=TRANSPARENT,userenderdata=true
-block:id=64,data=2,data=3,patch0=7000:door_wood_lower,patch1=0:door_wood_lower,patch2=7000:door_wood_lower,patch3=0:door_wood_lower,patch4=4000:door_wood_lower,patch5=4000:door_wood_lower,transparency=TRANSPARENT,userenderdata=true
-# Wooden Door - bottom (right hinge)
-block:id=64,data=4,data=5,patch0=7000:door_wood_lower,patch1=0:door_wood_lower,patch2=7000:door_wood_lower,patch3=0:door_wood_lower,patch4=4000:door_wood_lower,patch5=4000:door_wood_lower,transparency=TRANSPARENT,userenderdata=true
-block:id=64,data=6,data=7,patch0=0:door_wood_lower,patch1=7000:door_wood_lower,patch2=7000:door_wood_lower,patch3=0:door_wood_lower,patch4=4000:door_wood_lower,patch5=4000:door_wood_lower,transparency=TRANSPARENT,userenderdata=true
-# Wooden Door - top (left hinge)
-block:id=64,data=8,data=9,patch0=0:door_wood_upper,patch1=7000:door_wood_upper,patch2=7000:door_wood_upper,patch3=0:door_wood_upper,patch4=4000:door_wood_upper,patch5=4000:door_wood_upper,transparency=TRANSPARENT,userenderdata=true
-block:id=64,data=10,data=11,patch0=7000:door_wood_upper,patch1=0:door_wood_upper,patch2=7000:door_wood_upper,patch3=0:door_wood_upper,patch4=4000:door_wood_upper,patch5=4000:door_wood_upper,transparency=TRANSPARENT,userenderdata=true
-# Wooden Door - top (right hinge)
-block:id=64,data=12,data=13,patch0=7000:door_wood_upper,patch1=0:door_wood_upper,patch2=7000:door_wood_upper,patch3=0:door_wood_upper,patch4=4000:door_wood_upper,patch5=4000:door_wood_upper,transparency=TRANSPARENT,userenderdata=true
-block:id=64,data=14,data=15,patch0=0:door_wood_upper,patch1=7000:door_wood_upper,patch2=7000:door_wood_upper,patch3=0:door_wood_upper,patch4=4000:door_wood_upper,patch5=4000:door_wood_upper,transparency=TRANSPARENT,userenderdata=true
+# Wooden Door
+block:id=64,data=*,patch0=0:door_wood_upper,patch1=0:door_wood_lower,transparency=TRANSPARENT
+
 # Ladder
 block:id=65,patch0=0:ladder,transparency=TRANSPARENT
 # Rail - heading east-west
@@ -785,18 +776,10 @@ block:id=68,patch0=0,patch1=1,patch2=2,patch3=3,patch4=4,patch5=5,transparency=T
 block:id=69,patch0-4=0:cobblestone,patch5-8=0:lever,transparency=TRANSPARENT
 # Stone pressure plate
 block:id=70,allfaces=0:stone,stdrot=true,transparency=TRANSPARENT
-# Iron Door - bottom (left hinge)
-block:id=71,data=0,data=1,patch0=0:door_iron_lower,patch1=7000:door_iron_lower,patch2=7000:door_iron_lower,patch3=0:door_iron_lower,patch4=4000:door_iron_lower,patch5=4000:door_iron_lower,transparency=TRANSPARENT,userenderdata=true
-block:id=71,data=2,data=3,patch0=7000:door_iron_lower,patch1=0:door_iron_lower,patch2=7000:door_iron_lower,patch3=0:door_iron_lower,patch4=4000:door_iron_lower,patch5=4000:door_iron_lower,transparency=TRANSPARENT,userenderdata=true
-# Iron Door - bottom (right hinge)
-block:id=71,data=4,data=5,patch0=7000:door_iron_lower,patch1=0:door_iron_lower,patch2=7000:door_iron_lower,patch3=0:door_iron_lower,patch4=4000:door_iron_lower,patch5=4000:door_iron_lower,transparency=TRANSPARENT,userenderdata=true
-block:id=71,data=6,data=7,patch0=0:door_iron_lower,patch1=7000:door_iron_lower,patch2=7000:door_iron_lower,patch3=0:door_iron_lower,patch4=4000:door_iron_lower,patch5=4000:door_iron_lower,transparency=TRANSPARENT,userenderdata=true
-# Iron Door - top (left hinge)
-block:id=71,data=8,data=9,patch0=0:door_iron_upper,patch1=7000:door_iron_upper,patch2=7000:door_iron_upper,patch3=0:door_iron_upper,patch4=4000:door_iron_upper,patch5=4000:door_iron_upper,transparency=TRANSPARENT,userenderdata=true
-block:id=71,data=10,data=11,patch0=7000:door_iron_upper,patch1=0:door_iron_upper,patch2=7000:door_iron_upper,patch3=0:door_iron_upper,patch4=4000:door_iron_upper,patch5=4000:door_iron_upper,transparency=TRANSPARENT,userenderdata=true
-# Iron Door - top (right hinge)
-block:id=71,data=12,data=13,patch0=7000:door_iron_upper,patch1=0:door_iron_upper,patch2=7000:door_iron_upper,patch3=0:door_iron_upper,patch4=4000:door_iron_upper,patch5=4000:door_iron_upper,transparency=TRANSPARENT,userenderdata=true
-block:id=71,data=14,data=15,patch0=0:door_iron_upper,patch1=7000:door_iron_upper,patch2=7000:door_iron_upper,patch3=0:door_iron_upper,patch4=4000:door_iron_upper,patch5=4000:door_iron_upper,transparency=TRANSPARENT,userenderdata=true
+
+# Iron Door
+block:id=71,data=*,patch0=0:door_iron_upper,patch1=0:door_iron_lower,transparency=TRANSPARENT
+
 # Wooden pressure plate
 block:id=72,allfaces=0:planks_oak,stdrot=true,transparency=TRANSPARENT
 # Redstone Ore
