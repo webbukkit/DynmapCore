@@ -338,6 +338,7 @@ public class TexturePack {
         int[] argb;
         int width, height;
         int trivial_color;
+        boolean isLoaded;
     }    
     
     private int[][]   tile_argb;
@@ -1177,8 +1178,9 @@ public class TexturePack {
             imgs[idx].argb = new int[imgs[idx].width * imgs[idx].height];
             img.getRGB(0, 0, imgs[idx].width, imgs[idx].height, imgs[idx].argb, 0, imgs[idx].width);
             img.flush();
+            imgs[idx].isLoaded = true;
         }
-        else {
+        else {  // Pad with blank image
             imgs[idx].width = 16;
             imgs[idx].height = 16;
             imgs[idx].argb = new int[imgs[idx].width * imgs[idx].height];
@@ -1262,6 +1264,15 @@ public class TexturePack {
             int[] clr_scale = new int[16];
             scaleTerrainPNGSubImage(li.width, 4, li.argb, clr_scale);
             li.trivial_color = clr_scale[9];
+        }
+        // If we didn't actually load, don't use color lookup for this (handle broken RPs like John Smith)
+        if (li.isLoaded == false) {
+            // See who uses this biome map
+            List<Integer> badcolors = this.blockColoring.keysWithValue(idx);
+            for (Integer idm : badcolors) {
+                this.blockColoring.remove(idm);
+                this.hasBlockColoring.clear(idm);
+            }
         }
     }
     

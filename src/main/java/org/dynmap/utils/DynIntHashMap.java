@@ -1,6 +1,8 @@
 package org.dynmap.utils;
 
+import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
+import java.util.List;
 
 /**
  * This is a copy of java.util.HashMap which uses longs as keys
@@ -431,5 +433,31 @@ public class DynIntHashMap
 
     float loadFactor() {
         return loadFactor;
+    }
+
+    // Return keys matching given value
+    public List<Integer> keysWithValue(Object value) {
+        Entry tab[] = table;
+        ArrayList<Integer> match = new ArrayList<Integer>();
+
+        if (value==null) {
+            for (int i = tab.length ; i-- > 0 ;) {
+                for (Entry e = tab[i] ; e != null ; e = e.next) {
+                    if (e.value==null) {
+                        match.add(e.key);
+                    }
+                }
+            }
+        } else {
+            for (int i = tab.length ; i-- > 0 ;) {
+                for (Entry e = tab[i] ; e != null ; e = e.next) {
+                    if (value.equals(e.value)) {
+                        match.add(e.key);
+                    }
+                }
+            }
+        }
+
+        return match;
     }
 }
