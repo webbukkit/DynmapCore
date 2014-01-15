@@ -1220,7 +1220,7 @@ public class MapManager {
             }
             /* Get saved render job, if any */
             ConfigurationNode job = cn.getNode("job");
-            if(job != null) {
+            if((job != null) && (active_renders.get(wname) == null)) {
                 try {
                     FullWorldRenderState j = new FullWorldRenderState(job);
                     active_renders.put(wname, j);
