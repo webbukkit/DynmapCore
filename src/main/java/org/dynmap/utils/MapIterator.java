@@ -88,4 +88,8 @@ public interface MapIterator extends MapDataContext {
      * Test if current section (16 x 16 x 16) is empty (all air)
      */
     boolean isEmptySection();
+    /**
+     * Get inhabited ticks for current position
+     */
+    long getInhabitedTicks();
 }
