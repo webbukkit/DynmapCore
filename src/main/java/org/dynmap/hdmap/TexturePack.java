@@ -1197,6 +1197,8 @@ public class TexturePack {
         switch(format) {
             case GRID:  /* If grid format tile file */
                 int dim = li.width / dtf.tilecnt_x; /* Dimension of each tile */
+                int dim2 = li.height / dtf.tilecnt_y;
+                if (dim2 < dim) dim = dim2;
                 int old_argb[] = new int[dim*dim];
                 for(int x = 0; x < dtf.tilecnt_x; x++) {
                     for(int y = 0; y < dtf.tilecnt_y; y++) {
@@ -1813,7 +1815,6 @@ public class TexturePack {
                             else
                                 databits |= (1 << getIntValue(varvals,av[1]));
                         }
-
                         else if(av[0].equals("top") || av[0].equals("y-") || av[0].equals("face1")) {
                             faces[BlockStep.Y_MINUS.ordinal()] = parseTextureIndex(filetoidx, srctxtid, av[1]);
                         }
@@ -1831,6 +1832,30 @@ public class TexturePack {
                         }
                         else if(av[0].equals("east") || av[0].equals("z+") || av[0].equals("face2")) {
                             faces[BlockStep.Z_PLUS.ordinal()] = parseTextureIndex(filetoidx, srctxtid, av[1]);
+                        }
+                        else if(av[0].startsWith("face")) {
+                            int fid0, fid1;
+                            String idrange = av[0].substring(4);
+                            String[] ids = idrange.split("-");
+                            if(ids.length > 1) {
+                                fid0 = Integer.parseInt(ids[0]);
+                                fid1 = Integer.parseInt(ids[1]);
+                            }
+                            else {
+                                fid0 = fid1 = Integer.parseInt(ids[0]);
+                            }
+                            if((fid0 < 0) || (fid1 < fid0)) {
+                                Log.severe("Texture mapping has invalid face index - " + av[1] + " - line " + rdr.getLineNumber() + " of " + txtname);
+                                return;
+                            }
+                            int faceToOrd[] = { BlockStep.Y_PLUS.ordinal(), BlockStep.Y_MINUS.ordinal(),
+                                    BlockStep.Z_PLUS.ordinal(), BlockStep.Z_MINUS.ordinal(),
+                                    BlockStep.X_PLUS.ordinal(), BlockStep.X_MINUS.ordinal()
+                            };
+                            int txtid = parseTextureIndex(filetoidx, srctxtid, av[1]);
+                            for(int i = fid0; (i <= fid1) && (i < 6); i++) {
+                                faces[faceToOrd[i]] = txtid;
+                            }
                         }
                         else if(av[0].equals("allfaces")) {
                             int id = parseTextureIndex(filetoidx, srctxtid, av[1]);
