@@ -1,8 +1,0 @@
-# Immibis Microblocks block mapping
-modname:ImmibisMicroblocks
-# configuration file
-cfgfile:config/immibis.cfg
-
-# Microblocks (blockMultipart.id)
-customblock:id=blockMultipart.id,data=*,class=org.dynmap.hdmap.renderer.ImmibisMicroRenderer
-

@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -582,11 +583,39 @@ public class HDBlockModels {
             }
             i++;
         }
+        // Load internal texture files
+        ZipFile zf = null;
+        try {
+            zf = new ZipFile(core.getPluginJarFile());
+            Enumeration<? extends ZipEntry> e = zf.entries();
+            while (e.hasMoreElements()) {
+                ZipEntry ze = e.nextElement();
+                String n = ze.getName();
+                if (!n.startsWith("renderdata/")) continue;
+                if (!n.endsWith("-models.txt")) continue;
+                in = zf.getInputStream(ze);
+                if (in != null) {
+                    loadModelFile(in, n, config, core, n.substring(0, n.indexOf("-models.txt")));
+                    try { in.close(); } catch (IOException x) { in = null; }
+                }
+            }
+        } catch (IOException iox) {
+            Log.severe("Error processing nodel files");
+        } finally {
+            if (in != null) {
+                try { in.close(); } catch (IOException iox) {}
+                in = null;
+            }
+            if (zf != null) {
+                try { zf.close(); } catch (IOException iox) {}
+                zf = null;
+            }
+        }
         /* Check mods to see if model files defined there */
         for (String modid : core.getServer().getModList()) {
             File f = core.getServer().getModContainerFile(modid);   // Get mod file
             if (f.isFile()) {
-                ZipFile zf = null;
+                zf = null;
                 in = null;
                 try {
                     zf = new ZipFile(f);

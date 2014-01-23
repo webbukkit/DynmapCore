@@ -1,7 +1,0 @@
-# ObsidiPlates Texture mapping
-modname:ObsidiPlates
-# configuration file
-cfgfile:config/ObsidiPlates.cfg
-
-# Blocks
-boxblock:id=obsidianPlate,data=*,xmin=0.0625,xmax=0.9275,ymax=0.0625,zmin=0.0625,zmax=0.9275

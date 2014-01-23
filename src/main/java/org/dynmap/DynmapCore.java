@@ -1,11 +1,13 @@
 package org.dynmap;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
@@ -2197,6 +2199,25 @@ public class DynmapCore implements DynmapCommonAPI {
         if (prevver.equals(this.getDynmapCoreVersion())) {
             return;
         }
+        /* Get deleted file list */
+        InputStream in = getClass().getResourceAsStream("/deleted.txt");
+        if(in != null) {
+            try {
+                BufferedReader br = new BufferedReader(new InputStreamReader(in));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if (line.length() == 0) continue;
+                    if (line.startsWith("#")) continue;
+                    File newfile = new File(df, line);
+                    newfile.delete();
+                }
+            } catch (IOException iox) {
+                Log.warning("Exception while processing deleted files - " + iox.getMessage());
+            } finally {
+                try { in.close(); } catch (IOException x) {}
+            }
+        }
+
         /* Open JAR as ZIP */
         ZipFile zf = null;
         FileOutputStream fos = null;

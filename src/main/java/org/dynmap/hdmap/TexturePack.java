@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -1537,6 +1539,34 @@ public class TexturePack {
                 } finally {
                     if(in != null) { try { in.close(); } catch (IOException x) {} in = null; }
                 }
+            }
+        }
+        // Load internal texture files
+        ZipFile zf = null;
+        try {
+            zf = new ZipFile(core.getPluginJarFile());
+            Enumeration<? extends ZipEntry> e = zf.entries();
+            while (e.hasMoreElements()) {
+                ZipEntry ze = e.nextElement();
+                String n = ze.getName();
+                if (!n.startsWith("renderdata/")) continue;
+                if (!n.endsWith("-texture.txt")) continue;
+                in = zf.getInputStream(ze);
+                if (in != null) {
+                    loadTextureFile(in, n, config, core, n.substring(0, n.indexOf("-texture.txt")));
+                    try { in.close(); } catch (IOException x) { in = null; }
+                }
+            }
+        } catch (IOException iox) {
+            Log.severe("Error processing texture files");
+        } finally {
+            if (in != null) {
+                try { in.close(); } catch (IOException iox) {}
+                in = null;
+            }
+            if (zf != null) {
+                try { zf.close(); } catch (IOException iox) {}
+                zf = null;
             }
         }
         // Load external texture files

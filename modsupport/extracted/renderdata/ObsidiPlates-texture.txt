@@ -1,7 +1,0 @@
-# ObsidiPlates Texture mapping
-modname:ObsidiPlates
-# configuration file
-cfgfile:config/ObsidiPlates.cfg
-
-# Blocks
-block:id=obsidianPlate,data=*,allfaces=37,stdrot=true,transparency=TRANSPARENT

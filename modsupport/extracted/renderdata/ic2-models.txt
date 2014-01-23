@@ -1,9 +1,0 @@
-# Industrial Craft 2 Texture mapping
-modname:mod_IC2,IC2
-# configuration file
-cfgfile:config/IC2.cfg
-# Wire
-customblock:id=blockCable,data=*,class=org.dynmap.hdmap.renderer.FrameRenderer,linkid_0=blockCable,linkid_1=blockMachine2,linkid_2=blockPersonal,linkid_3=blockLuminator,linkid_4=blockElectric,linkid_5=blockCable,linkid_6=blockReactorChamber,linkid_7=blockNuke,linkid_8=blockGenerator,linkid_9=blockMachine,diameter=0.375
-
-# Iron Fence - set render algorithm
-customblock:id=blockFenceIron,data=*,class=org.dynmap.hdmap.renderer.FenceWallBlockRenderer,type=fence,link0=107
