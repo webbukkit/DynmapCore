@@ -1494,7 +1494,7 @@ public class TexturePack {
             }
             i++;
         }
-        /* Check mods to see if texture files defined there */
+        // Check mods to see if texture files defined there
         for (String modid : core.getServer().getModList()) {
             File f = core.getServer().getModContainerFile(modid);   // Get mod file
             if (f.isFile()) {
@@ -1523,7 +1523,7 @@ public class TexturePack {
                 }
             }
         }
-        // Load external tile sets
+        // Load external tile sets (before internals, to allow them to override them)
         File renderdir = new File(datadir, "renderdata");
         ArrayList<String> tsfiles = new ArrayList<String>();
         ArrayList<String> txfiles = new ArrayList<String>();
@@ -1541,7 +1541,7 @@ public class TexturePack {
                 }
             }
         }
-        // Load internal texture files
+        // Load internal texture files (last, so that others can override)
         ZipFile zf = null;
         try {
             zf = new ZipFile(core.getPluginJarFile());
@@ -2270,6 +2270,7 @@ public class TexturePack {
                             modname = n;
                             modversion = modver;
                             if(texturemod == null) texturemod = modname;
+                            loadedmods.add(n);
                             break;
                         }
                     }

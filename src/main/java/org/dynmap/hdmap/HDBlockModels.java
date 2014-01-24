@@ -572,6 +572,7 @@ public class HDBlockModels {
         int i = 0;
         boolean done = false;
         InputStream in = null;
+        ZipFile zf;
         while (!done) {
             in = TexturePack.class.getResourceAsStream("/models_" + i + ".txt");
             if(in != null) {
@@ -583,35 +584,7 @@ public class HDBlockModels {
             }
             i++;
         }
-        // Load internal texture files
-        ZipFile zf = null;
-        try {
-            zf = new ZipFile(core.getPluginJarFile());
-            Enumeration<? extends ZipEntry> e = zf.entries();
-            while (e.hasMoreElements()) {
-                ZipEntry ze = e.nextElement();
-                String n = ze.getName();
-                if (!n.startsWith("renderdata/")) continue;
-                if (!n.endsWith("-models.txt")) continue;
-                in = zf.getInputStream(ze);
-                if (in != null) {
-                    loadModelFile(in, n, config, core, n.substring(0, n.indexOf("-models.txt")));
-                    try { in.close(); } catch (IOException x) { in = null; }
-                }
-            }
-        } catch (IOException iox) {
-            Log.severe("Error processing nodel files");
-        } finally {
-            if (in != null) {
-                try { in.close(); } catch (IOException iox) {}
-                in = null;
-            }
-            if (zf != null) {
-                try { zf.close(); } catch (IOException iox) {}
-                zf = null;
-            }
-        }
-        /* Check mods to see if model files defined there */
+        /* Check mods to see if model files defined there: do these first, as they trump other sources */
         for (String modid : core.getServer().getModList()) {
             File f = core.getServer().getModContainerFile(modid);   // Get mod file
             if (f.isFile()) {
@@ -640,7 +613,7 @@ public class HDBlockModels {
                 }
             }
         }
-        // Load external model files
+        // Load external model files (these go before internal versions, to allow external overrides)
         ArrayList<String> files = new ArrayList<String>();
         File customdir = new File(datadir, "renderdata");
         addFiles(files, customdir, "");
@@ -658,6 +631,34 @@ public class HDBlockModels {
                         in = null;
                     }
                 }
+            }
+        }
+        // Load internal texture files (these go last, to allow other versions to replace them)
+        zf = null;
+        try {
+            zf = new ZipFile(core.getPluginJarFile());
+            Enumeration<? extends ZipEntry> e = zf.entries();
+            while (e.hasMoreElements()) {
+                ZipEntry ze = e.nextElement();
+                String n = ze.getName();
+                if (!n.startsWith("renderdata/")) continue;
+                if (!n.endsWith("-models.txt")) continue;
+                in = zf.getInputStream(ze);
+                if (in != null) {
+                    loadModelFile(in, n, config, core, n.substring(0, n.indexOf("-models.txt")));
+                    try { in.close(); } catch (IOException x) { in = null; }
+                }
+            }
+        } catch (IOException iox) {
+            Log.severe("Error processing nodel files");
+        } finally {
+            if (in != null) {
+                try { in.close(); } catch (IOException iox) {}
+                in = null;
+            }
+            if (zf != null) {
+                try { zf.close(); } catch (IOException iox) {}
+                zf = null;
             }
         }
     }
@@ -1269,6 +1270,7 @@ public class HDBlockModels {
                             found = true;
                             Log.info(n + "[" + modver + "] models enabled");
                             modname = n;
+                            loadedmods.add(n);  // Add to loaded mods
                             break;
                         }
                     }
