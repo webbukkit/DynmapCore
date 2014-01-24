@@ -944,7 +944,7 @@ block:id=105,allsides=1000:melon_stem_disconnected,stdrot=true,transparency=TRAN
 # Vines
 block:id=106,patch0-4=2000:vine,transparency=TRANSPARENT
 # Fence gate
-block:id=107,allfaces=0:planks_oak,stdrot=true,transparency=TRANSPARENT
+block:id=107,patch0-2=0:planks_oak,stdrot=true,transparency=TRANSPARENT
 # Brick stair
 block:id=108,data=*,patch0-2=0:brick,transparency=SEMITRANSPARENT
 # Stone brick stair

@@ -612,7 +612,7 @@ block:id=105,allsides=1111,stdrot=true,transparency=TRANSPARENT
 # Vines
 block:id=106,patch0=2143,patch1=2143,patch2=2143,patch3=2143,patch4=2143,transparency=TRANSPARENT
 # Fence gate
-block:id=107,allfaces=4,stdrot=true,transparency=TRANSPARENT
+block:id=107,patch0-2=4,stdrot=true,transparency=TRANSPARENT
 # Brick stair
 block:id=108,data=*,patch0-2=7,transparency=SEMITRANSPARENT
 # Stone brick stair
