@@ -1523,7 +1523,7 @@ public class TexturePack {
                 }
             }
         }
-        // Load external tile sets (before internals, to allow them to override them)
+        // Load external tile sets
         File renderdir = new File(datadir, "renderdata");
         ArrayList<String> tsfiles = new ArrayList<String>();
         ArrayList<String> txfiles = new ArrayList<String>();
@@ -1541,6 +1541,21 @@ public class TexturePack {
                 }
             }
         }
+        // Load external texture files (before internals, to allow them to override them)
+        for(String fname : txfiles) {
+            File custom = new File(renderdir, fname);
+            if(custom.canRead()) {
+                try {
+                    in = new FileInputStream(custom);
+                    loadTextureFile(in, custom.getPath(), config, core, fname.substring(0,  fname.indexOf("-texture.txt")));
+                } catch (IOException iox) {
+                    Log.severe("Error loading " + custom.getPath() + " - " + iox);
+                } finally {
+                    if(in != null) { try { in.close(); } catch (IOException x) {} in = null; }
+                }
+            }
+        }
+
         // Load internal texture files (last, so that others can override)
         ZipFile zf = null;
         try {
@@ -1567,20 +1582,6 @@ public class TexturePack {
             if (zf != null) {
                 try { zf.close(); } catch (IOException iox) {}
                 zf = null;
-            }
-        }
-        // Load external texture files
-        for(String fname : txfiles) {
-            File custom = new File(renderdir, fname);
-            if(custom.canRead()) {
-                try {
-                    in = new FileInputStream(custom);
-                    loadTextureFile(in, custom.getPath(), config, core, fname.substring(0,  fname.indexOf("-texture.txt")));
-                } catch (IOException iox) {
-                    Log.severe("Error loading " + custom.getPath() + " - " + iox);
-                } finally {
-                    if(in != null) { try { in.close(); } catch (IOException x) {} in = null; }
-                }
             }
         }
         /* Finish processing of texture maps */
