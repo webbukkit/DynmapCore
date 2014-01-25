@@ -2341,21 +2341,8 @@ public class TexturePack {
                 }
                 else if(line.startsWith("version:")) {
                     line = line.substring(line.indexOf(':')+1);
-                    int dash = line.indexOf('-');
-                    if(dash < 0) {
-                        if(!mcver.equals(line.trim())) { // If not match
-                            return;
-                        }
-                    }
-                    else {
-                        String s1 = line.substring(0, dash).trim();
-                        String s2 = line.substring(dash+1).trim();
-                        if( (s1.equals("") || (s1.compareTo(mcver) <= 0)) &&
-                                (s2.equals("") || (s2.compareTo(mcver) >= 0))) {
-                        }
-                        else {
-                            return;
-                        }
+                    if (!HDBlockModels.checkVersionRange(mcver, line)) {
+                        return;
                     }
                 }
                 else if(line.startsWith("noterrainpng:")) {
