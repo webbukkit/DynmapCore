@@ -2921,8 +2921,10 @@ public class TexturePack {
     public static int findOrAddDynamicTile(int dynfile_idx, int tile_id) {
         DynamicTileFile f = addonfiles.get(dynfile_idx);
         if(f == null) {
-            Log.warning("Invalid add-on file index: " + dynfile_idx);
-            return 0;
+            throw new NumberFormatException("Invalid add-on file index: " + dynfile_idx);
+        }
+        if (tile_id >= f.tile_to_dyntile.length) {
+            throw new NumberFormatException("Invalid index " + tile_id + " for texture file " + f.filename + " on mod " + f.modname);
         }
         if(f.tile_to_dyntile[tile_id] < 0) {   /* Not assigned yet? */
             f.tile_to_dyntile[tile_id] = next_dynamic_tile;
