@@ -476,7 +476,7 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
                             }
                             if(useplayerloginip) {  /* Try to match using IPs of player logins */
                                 List<String> ids = core.getIDsForIP(name);
-                                if(ids != null) {
+                                if(ids != null && !ids.isEmpty()) {
                                     name = ids.get(0);
                                     isip = false;
                                     if(checkuserban) {
