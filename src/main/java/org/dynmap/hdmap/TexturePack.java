@@ -321,6 +321,7 @@ public class TexturePack {
                 DynamicTileFile dtf = addonfiles.get(idx);
                 if (dtf != null) {  // Fix mapping of tile ID to global table index
                     dtf.tile_to_dyntile[0] = i;
+                    dtf.used = true;
                 }
             }
         }
@@ -331,6 +332,7 @@ public class TexturePack {
                 int idx = findOrAddDynamicTileFile(fn, null, 1, 1, TileFileFormat.GRID, new String[0]);
                 DynamicTileFile dtf = addonfiles.get(idx);
                 if (dtf != null) {  // Fix mapping of tile ID to global table index
+                    dtf.used = true;
                     dtf.tile_to_dyntile[0] = i;
                 }
             }
