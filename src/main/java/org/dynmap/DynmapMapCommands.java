@@ -3,7 +3,9 @@ package org.dynmap;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.common.DynmapPlayer;
@@ -49,6 +51,9 @@ public class DynmapMapCommands {
         }
         else if(cmd.equalsIgnoreCase("maplist")) {
             rslt = handleMapList(sender, args, core);
+        }
+        else if(cmd.equalsIgnoreCase("blocklist")) {
+            rslt = handleBlockList(sender, args, core);
         }
         /* Other commands are edits - must be paused to run these */
         else if(checkIfActive(core, sender)) {
@@ -630,4 +635,14 @@ public class DynmapMapCommands {
         return true;
     }
 
+    private boolean handleBlockList(DynmapCommandSender sender, String[] args, DynmapCore core) {
+        if(!core.checkPlayerPermission(sender, "dmap.blklist"))
+            return true;
+        Map<String, Integer> map = core.getServer().getBlockUniqueIDMap();
+        TreeSet<String> keys = new TreeSet<String>(map.keySet());
+        for (String k : keys) {
+            sender.sendMessage(k + ": " + map.get(k));
+        }
+        return true;
+    }
 }

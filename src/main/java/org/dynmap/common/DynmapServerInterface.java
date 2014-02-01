@@ -2,6 +2,7 @@ package org.dynmap.common;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -17,61 +18,61 @@ import org.dynmap.utils.MapChunkCache;
  * This interface defines a server-neutral interface for the DynmapCore and other neutral components to use to access server provided
  * services.  Platform-specific plugin must supply DynmapCore with an instance of an object implementing this interface.
  */
-public interface DynmapServerInterface {
+public abstract class DynmapServerInterface {
     /**
      * Schedule task to run on server-safe thread (one suitable for other server API calls)
      * @param run - runnable method
      * @param delay - delay in server ticks (50msec)
      */
-    public void scheduleServerTask(Runnable run, long delay);
+    public abstract void scheduleServerTask(Runnable run, long delay);
     /**
      * Call method on server-safe thread
      * @param call - Callable method
      * @return future for completion of call
      */
-    public <T> Future<T> callSyncMethod(Callable<T> task);
+    public abstract <T> Future<T> callSyncMethod(Callable<T> task);
     /**
      * Get list of online players
      * @return list of online players
      */
-    public DynmapPlayer[] getOnlinePlayers();
+    public abstract DynmapPlayer[] getOnlinePlayers();
     /**
      * Request reload of plugin
      */
-    public void reload();
+    public abstract void reload();
     /**
      * Get active player
      * @param name - player name
      * @return player
      */
-    public DynmapPlayer getPlayer(String name);
+    public abstract DynmapPlayer getPlayer(String name);
     /**
      * Get offline player
      * @param name - player name
      * @reurn player (offline or not)
      */
-    public DynmapPlayer getOfflinePlayer(String name);
+    public abstract DynmapPlayer getOfflinePlayer(String name);
     
     /**
      * Get banned IPs
      */
-    public Set<String> getIPBans();
+    public abstract Set<String> getIPBans();
     /**
      * Get server name
      */
-    public String getServerName();
+    public abstract String getServerName();
     /**
      * Test if player ID is banned
      */
-    public boolean isPlayerBanned(String pid);    
+    public abstract boolean isPlayerBanned(String pid);    
     /**
      * Strip out chat color
      */
-    public String stripChatColor(String s);
+    public abstract String stripChatColor(String s);
     /**
      * Request notificiation for given events (used by DynmapListenerManager)
      */
-    public boolean requestEventNotification(EventType type);
+    public abstract boolean requestEventNotification(EventType type);
     /**
      * Send notification of web chat message
      * @param source - source
@@ -79,61 +80,65 @@ public interface DynmapServerInterface {
      * @param msg - message text
      * @return true if not cancelled
      */
-    public boolean sendWebChatEvent(String source, String name, String msg);
+    public abstract boolean sendWebChatEvent(String source, String name, String msg);
     /**
      * Broadcast message to players
      * @param msg
      */
-    public void broadcastMessage(String msg);
+    public abstract void broadcastMessage(String msg);
     /**
      * Get Biome ID list
      */
-    public String[] getBiomeIDs();
+    public abstract String[] getBiomeIDs();
     /**
      * Get snapshot cache hit rate
      */
-    public double getCacheHitRate();
+    public abstract double getCacheHitRate();
     /**
      * Reset cache stats
      */
-    public void resetCacheStats();
+    public abstract void resetCacheStats();
     /**
      * Get world by name
      */
-    public DynmapWorld getWorldByName(String wname);
+    public abstract DynmapWorld getWorldByName(String wname);
     /**
      * Test which of given set of permisssions a possibly offline user has
      */
-    public Set<String> checkPlayerPermissions(String player, Set<String> perms);
+    public abstract Set<String> checkPlayerPermissions(String player, Set<String> perms);
     /**
      * Test single permission attribute
      */
-    public boolean checkPlayerPermission(String player, String perm);
+    public abstract boolean checkPlayerPermission(String player, String perm);
     /**
      * Render processor helper - used by code running on render threads to request chunk snapshot cache
      */
-    public MapChunkCache createMapChunkCache(DynmapWorld w, List<DynmapChunk> chunks, 
+    public abstract MapChunkCache createMapChunkCache(DynmapWorld w, List<DynmapChunk> chunks, 
         boolean blockdata, boolean highesty, boolean biome, boolean rawbiome);
     /**
      * Get maximum player count
      */
-    public int getMaxPlayers();
+    public abstract int getMaxPlayers();
     /**
      * Get current player count
      */
-    public int getCurrentPlayers();
+    public abstract int getCurrentPlayers();
     /**
      * Test if given mod is loaded (Forge)
      * @param name - mod name
      */
-    public boolean isModLoaded(String name);
+    public boolean isModLoaded(String name) {
+        return false;
+    }
     /**
      * Get version of mod with given name
      * 
      * @param name - name of mod
      * @return version, or null of not found
      */
-    public String getModVersion(String name);
+    public String getModVersion(String name) {
+        return null;
+    }
 
     /**
      * Get block ID at given coordinate in given world (if chunk is loaded)
@@ -143,37 +148,57 @@ public interface DynmapServerInterface {
      * @param z - Z coordinate
      * @return block ID, or -1 if chunk at given coordainte isnt loaded
      */
-    public int getBlockIDAt(String wname, int x, int y, int z);
+    public abstract int getBlockIDAt(String wname, int x, int y, int z);
     /**
      * Get current TPS for server (20.0 is nominal)
      * @returns ticks per second
      */
-    public double getServerTPS();
+    public abstract double getServerTPS();
     /**
      * Get address configured for server
      * 
      * @return "" or null if none configured
      */
-    public String getServerIP();
+    public abstract String getServerIP();
     /**
      * Get file/directory for given mod (for loading mod resources)
      * @param mod - mod name
      * @return file or directory, or null if not loaded
      */
-    public File getModContainerFile(String mod);
+    public File getModContainerFile(String mod) {
+        return null;
+    }
     /**
      * Get mod list
      */
-    public List<String> getModList();
+    public List<String> getModList() {
+        return Collections.emptyList();
+    }
     /**
      * Get block ID map (modID:blockname, keyed by block ID)
      */
-    public Map<Integer, String> getBlockIDMap();
+    public Map<Integer, String> getBlockIDMap() {
+        return Collections.emptyMap();
+    }
     /**
      * Open resource (check all mods)
      * @param modid - mod id
      * @param rname - resource namep
      * @returns stream, or null
      */
-    public InputStream openResource(String modid, String rname);
+    public InputStream openResource(String modid, String rname) {
+        return null;
+    }
+    /**
+     * Get block unique ID map (module:blockid)
+     */
+    public Map<String, Integer> getBlockUniqueIDMap() {
+        return Collections.emptyMap();
+    }
+    /**
+     * Get item unique ID map (module:itemid)
+     */
+    public Map<String, Integer> getItemUniqueIDMap() {
+        return Collections.emptyMap();
+    }
 }

@@ -126,6 +126,8 @@ public class DynmapCore implements DynmapCommonAPI {
     private String[] blocknames = new String[0];
     private int[] blockmaterialmap = new int[0];
     private String[] biomenames = new String[0];
+    private Map<String, Integer> blockmap = null;
+    private Map<String, Integer> itemmap = null;
     
     private boolean loginRequired;
     
@@ -448,6 +450,10 @@ public class DynmapCore implements DynmapCommonAPI {
         /* Load preupdate/postupdate commands */
         FileLockManager.preUpdateCommand = configuration.getString("custom-commands/image-updates/preupdatecommand", "");
         FileLockManager.postUpdateCommand = configuration.getString("custom-commands/image-updates/postupdatecommand", "");
+
+        /* Get block and item maps */
+        blockmap = server.getBlockUniqueIDMap();
+        itemmap = server.getItemUniqueIDMap();
 
         /* Process mod support */
         ModSupportImpl.complete(this.dataDirectory);
@@ -2297,6 +2303,32 @@ public class DynmapCore implements DynmapCommonAPI {
     // Notice that server has finished starting (needed for forge, which starts dynmap before full server is running)
     public void serverStarted() {
         events.<Object>trigger("server-started", null);
+    }
+    // Normalize ID (strip out submods)
+    public String getNormalizedModID(String mod) {
+        int idx = mod.indexOf('|');
+        if (idx > 0) mod = mod.substring(0, idx);
+        return mod;
+    }
+    // Add mod block IDs to value map
+    public void addModBlockItemIDs(String mod, Map<String, Integer> modvals) {
+        mod = getNormalizedModID(mod);
+        for (String k : blockmap.keySet()) {
+            String[] ks = k.split(":");
+            int id = blockmap.get(k);
+            ks[0] = getNormalizedModID(ks[0]);
+            if (mod.equals(ks[0])) {
+                modvals.put("%" + ks[1], id);
+            }
+        }
+        for (String k : itemmap.keySet()) {
+            String[] ks = k.split(":");
+            int id = itemmap.get(k);
+            ks[0] = getNormalizedModID(ks[0]);
+            if (mod.equals(ks[0])) {
+                modvals.put("&" + ks[1], id);
+            }
+        }
     }
 }
 

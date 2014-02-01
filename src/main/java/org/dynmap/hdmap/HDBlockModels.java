@@ -663,7 +663,8 @@ public class HDBlockModels {
         }
     }
     private static Integer getIntValue(Map<String,Integer> vars, String val) throws NumberFormatException {
-        if(Character.isLetter(val.charAt(0))) {
+        char c = val.charAt(0);
+        if(Character.isLetter(c) || (c == '%') || (c == '&')) {
             int off = val.indexOf('+');
             int offset = 0;
             if (off > 0) {
@@ -671,8 +672,15 @@ public class HDBlockModels {
                 val = val.substring(0,  off);
             }
             Integer v = vars.get(val);
-            if(v == null)
-                throw new NumberFormatException("invalid ID - " + val);
+            if(v == null) {
+                if ((c == '%') || (c == '&')) { // block/item unique IDs
+                    vars.put(val, 0);
+                    v = 0;
+                }
+                else {
+                    throw new NumberFormatException("invalid ID - " + val);
+                }
+            }
             if((offset != 0) && (v.intValue() > 0))
                 v = v.intValue() + offset;
             return v;
@@ -1271,6 +1279,8 @@ public class HDBlockModels {
                             Log.info(n + "[" + modver + "] models enabled");
                             modname = n;
                             loadedmods.add(n);  // Add to loaded mods
+                            // Prime values from block and item unique IDs
+                            core.addModBlockItemIDs(modname, varvals);
                             break;
                         }
                     }
