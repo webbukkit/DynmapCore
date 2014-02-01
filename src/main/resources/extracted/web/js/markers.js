@@ -7,19 +7,35 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 	function removeAllMarkers() {
 		$.each(dynmapmarkersets, function(setname, set) {
 			$.each(set.markers, function(mname, marker) {
-				set.layergroup.removeLayer(marker.our_marker);
+				if (marker.our_marker) {
+					set.layergroup.removeLayer(marker.our_marker);
+					delete marker.our_marker;
+					marker.our_marker = null;
+				}
 			});
 			set.markers = {};
 			$.each(set.areas, function(aname, area) {
-				set.layergroup.removeLayer(area.our_area);
+				if (area.our_area) {
+					set.layergroup.removeLayer(area.our_area);
+					delete area.our_area;
+					area.our_area = null;
+				}
 			});
 			set.areas = {};			
 			$.each(set.lines, function(lname, line) {
-				set.layergroup.removeLayer(line.our_line);
+				if (line.our_line) {
+					set.layergroup.removeLayer(line.our_line);
+					delete line.our_line;
+					line.our_line = null;
+				}
 			});
 			set.lines = {};			
 			$.each(set.circles, function(cname, circle) {
-				set.layergroup.removeLayer(circle.our_circle);
+				if (circle.our_circle) {
+					set.layergroup.removeLayer(circle.our_circle);
+					delete circle.our_circle;
+					circle.our_circle = null;
+				}
 			});
 			set.circles = {};			
 		});
@@ -140,9 +156,12 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 	function createArea(set, area, ts) {
 		var style = { color: area.color, opacity: area.opacity, weight: area.weight, fillOpacity: area.fillopacity, fillColor: area.fillcolor, smoothFactor: 0.0 };
 
-		if(area.our_area && dynmap.map.hasLayer(area.our_area))
+		if(area.our_area) {
 			set.layergroup.removeLayer(area.our_area);
-
+			delete area.our_area;
+			area.our_area = null;
+		}
+		
 		if(area.x.length == 2) {	/* Only 2 points */
 			if(area.ytop == area.ybottom) {
 				area.our_area = create2DBoxLayer(area.x[0], area.x[1], area.ytop, area.ybottom, area.z[0], area.z[1], style);
@@ -181,9 +200,12 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 	function createLine(set, line, ts) {
 		var style = { color: line.color, opacity: line.opacity, weight: line.weight, smoothFactor: 0.0 };
 
-		if(line.our_line && dynmap.map.hasLayer(line.our_line))
+		if(line.our_line) {
 			set.layergroup.removeLayer(line.our_line);
-
+			delete line.our_line;
+			line.our_line = null;
+		}
+		
 		var llist = [];
 		var i;
 		for(i = 0; i < line.x.length; i++) {
@@ -212,8 +234,11 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 	function createCircle(set, circle, ts) {
 		var style = { color: circle.color, opacity: circle.opacity, weight: circle.weight, fillOpacity: circle.fillopacity, fillColor: circle.fillcolor };
 
-		if(circle.our_circle && dynmap.map.hasLayer(circle.our_circle))
+		if(circle.our_circle) {
 			set.layergroup.removeLayer(circle.our_circle);
+			delete circle.our_circle;
+			circle.our_circle = null;
+		}	
 		var x = [];
 		var z = [];
 		var i;
@@ -342,7 +367,6 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 			var marker = dynmapmarkersets[msg.set].markers[msg.id];
 			if(marker && marker.our_marker) {
 				dynmapmarkersets[msg.set].layergroup.removeLayer(marker.our_marker);
-				delete marker.our_marker;
 			}
 			marker = { x: msg.x, y: msg.y, z: msg.z, icon: msg.icon, label: msg.label, markup: msg.markup, desc: msg.desc, dim: msg.dim || '16x16' };
 			dynmapmarkersets[msg.set].markers[msg.id] = marker;
@@ -352,6 +376,8 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 			var marker = dynmapmarkersets[msg.set].markers[msg.id];
 			if(marker && marker.our_marker) {
 				dynmapmarkersets[msg.set].layergroup.removeLayer(marker.our_marker);
+				delete marker.our_marker;
+				marker.our_marker = null;
 			}
 			delete dynmapmarkersets[msg.set].markers[msg.id];
 		}
@@ -391,6 +417,7 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 			if(area && area.our_area) {
 				dynmapmarkersets[msg.set].layergroup.removeLayer(area.our_area);
 				delete area.our_area;
+				area.our_area = null;
 			}
 			area = { x: msg.x, ytop: msg.ytop, ybottom: msg.ybottom, z: msg.z, label: msg.label, markup: msg.markup, desc: msg.desc,
 				color: msg.color, weight: msg.weight, opacity: msg.opacity, fillcolor: msg.fillcolor, fillopacity: msg.fillopacity };
@@ -401,6 +428,8 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 			var area = dynmapmarkersets[msg.set].areas[msg.id];
 			if(area && area.our_area) {
 				dynmapmarkersets[msg.set].layergroup.removeLayer(area.our_area);
+				delete area.our_area;
+				area.our_area = null;
 			}
 			delete dynmapmarkersets[msg.set].areas[msg.id];
 		}
@@ -409,6 +438,7 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 			if(line && line.our_line) {
 				dynmapmarkersets[msg.set].layergroup.removeLayer(line.our_line);
 				delete line.our_line;
+				line.our_line = null;
 			}
 			line = { x: msg.x, y: msg.y, z: msg.z, label: msg.label, markup: msg.markup, desc: msg.desc,
 				color: msg.color, weight: msg.weight, opacity: msg.opacity };
@@ -419,6 +449,8 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 			var line = dynmapmarkersets[msg.set].lines[msg.id];
 			if(line && line.our_line) {
 				dynmapmarkersets[msg.set].layergroup.removeLayer(line.our_line);
+				delete line.our_line;
+				line.our_line = null;
 			}
 			delete dynmapmarkersets[msg.set].lines[msg.id];
 		}
@@ -427,6 +459,7 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 			if(circle && circle.our_circle) {
 				dynmapmarkersets[msg.set].layergroup.removeLayer(circle.our_circle);
 				delete circle.our_circle;
+				circle.our_circle = null;
 			}
 			circle = { x: msg.x, y: msg.y, z: msg.z, xr: msg.xr, zr: msg.zr, label: msg.label, markup: msg.markup, desc: msg.desc,
 				color: msg.color, weight: msg.weight, opacity: msg.opacity, fillcolor: msg.fillcolor, fillopacity: msg.fillopacity };
@@ -437,6 +470,8 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 			var circle = dynmapmarkersets[msg.set].circles[msg.id];
 			if(circle && circle.our_circle) {
 				dynmapmarkersets[msg.set].layergroup.removeLayer(circle.our_circle);
+				delete circle.our_circle;
+				circle.our_circle = null;
 			}
 			delete dynmapmarkersets[msg.set].circles[msg.id];
 		}
@@ -446,16 +481,30 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 	$(dynmap).bind('mapchanging', function(event) {
 		$.each(dynmapmarkersets, function(setname, set) {
 			$.each(set.markers, function(mname, marker) {
-				set.layergroup.removeLayer(marker.our_marker);
+				if (marker.our_marker) {
+					set.layergroup.removeLayer(marker.our_marker);
+				}
 			});
 			$.each(set.areas, function(aname, area) {
-				set.layergroup.removeLayer(area.our_area);
+				if (area.our_area) {
+					set.layergroup.removeLayer(area.our_area);
+					delete area.our_area;
+					area.our_area = null;
+				}
 			});
 			$.each(set.lines, function(lname, line) {
-				set.layergroup.removeLayer(line.our_line);
+				if (line.our_line) {
+					set.layergroup.removeLayer(line.our_line);
+					delete line.our_line;
+					line.our_line = null;
+				}
 			});
 			$.each(set.circles, function(cname, circle) {
-				set.layergroup.removeLayer(circle.our_circle);
+				if (circle.our_circle) {
+					set.layergroup.removeLayer(circle.our_circle);
+					delete circle.our_circle;
+					circle.our_circle = null;
+				}
 			});
 		});
 	});
@@ -496,33 +545,41 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 							set.layergroup.addLayer(marker.our_marker);
 					});
 					$.each(set.areas, function(aname, area) {
-						if(dynmap.map.hasLayer(area.our_area))
-							set.layergroup.removeLayer(area.our_area);
 						createArea(set, area, area.timestamp);
 					});
 					$.each(set.lines, function(lname, line) {
-						if(dynmap.map.hasLayer(line.our_line))
-							set.layergroup.removeLayer(line.our_line);
 						createLine(set, line, line.timestamp);
 					});
 					$.each(set.circles, function(cname, circle) {
-						if(dynmap.map.hasLayer(circle.our_circle))
-							set.layergroup.removeLayer(circle.our_circle);
 						createCircle(set, circle, circle.timestamp);
 					});
 				}
 				else {
 					$.each(set.markers, function(mname, marker) {
-						set.layergroup.removeLayer(marker.our_marker);
+						if (marker.our_marker) {
+							set.layergroup.removeLayer(marker.our_marker);
+						}
 					});
 					$.each(set.areas, function(aname, area) {
-						set.layergroup.removeLayer(area.our_area);
+						if (area.our_area) {
+							set.layergroup.removeLayer(area.our_area);
+							delete area.our_area;
+							area.our_area = null;
+						}
 					});
 					$.each(set.lines, function(lname, line) {
-						set.layergroup.removeLayer(line.our_line);
+						if(line.our_line) {
+							set.layergroup.removeLayer(line.our_line);
+							delete line.our_line;
+							line.our_line = null;
+						}
 					});
 					$.each(set.circles, function(cname, circle) {
-						set.layergroup.removeLayer(circle.our_circle);
+						if(circle.our_circle) {
+							set.layergroup.removeLayer(circle.our_circle);
+							delete circle.our_circle;
+							circle.our_circle = null;
+						}
 					});
 				}
 			}
