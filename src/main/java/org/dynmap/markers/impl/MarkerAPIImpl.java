@@ -88,6 +88,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         public boolean markup;
         public String desc;
         public String dim;
+        public int minzoom;
         
         public MarkerUpdated(Marker m, boolean deleted) {
             this.id = m.getMarkerID();
@@ -100,6 +101,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             this.markup = m.isLabelMarkup();
             this.desc = m.getDescription();
             this.dim = m.getMarkerIcon().getMarkerIconSize().getSize();
+            this.minzoom = m.getMinZoom();
             if(deleted) 
                 msg = "markerdeleted";
             else
@@ -134,6 +136,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         public String label;
         public String set;
         public String desc;
+        public int minzoom;
         
         public AreaMarkerUpdated(AreaMarker m, boolean deleted) {
             this.id = m.getMarkerID();
@@ -153,7 +156,8 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             fillcolor = String.format("#%06X", m.getFillColor());
             fillopacity = m.getFillOpacity();
             desc = m.getDescription();
-            
+            this.minzoom = m.getMinZoom();
+
             this.set = m.getMarkerSet().getMarkerSetID();
             if(deleted) 
                 msg = "areadeleted";
@@ -186,6 +190,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         public String label;
         public String set;
         public String desc;
+        public int minzoom;
         
         public PolyLineMarkerUpdated(PolyLineMarker m, boolean deleted) {
             this.id = m.getMarkerID();
@@ -203,7 +208,8 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             weight = m.getLineWeight();
             opacity = m.getLineOpacity();
             desc = m.getDescription();
-            
+            this.minzoom = m.getMinZoom();
+
             this.set = m.getMarkerSet().getMarkerSetID();
             if(deleted) 
                 msg = "polydeleted";
@@ -240,6 +246,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         public String label;
         public String set;
         public String desc;
+        public int minzoom;
         
         public CircleMarkerUpdated(CircleMarker m, boolean deleted) {
             this.id = m.getMarkerID();
@@ -255,7 +262,8 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             fillcolor = String.format("#%06X", m.getFillColor());
             fillopacity = m.getFillOpacity();
             desc = m.getDescription();
-            
+            this.minzoom = m.getMinZoom();
+
             this.set = m.getMarkerSet().getMarkerSetID();
             if(deleted) 
                 msg = "circledeleted";
@@ -802,6 +810,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             double fopacity = marker.getFillOpacity();
             int sweight = marker.getLineWeight();
             boolean boost = marker.getBoostFlag();
+            int minzoom = marker.getMinZoom();
 
             val = parms.get(ARG_STROKECOLOR);
             if(val != null)
@@ -824,6 +833,9 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             val = parms.get(ARG_YBOTTOM);
             if(val != null)
                 ybottom = Double.parseDouble(val);
+            val = parms.get(ARG_MINZOOM);
+            if (val != null)
+                minzoom = Integer.parseInt(val);
             val = parms.get(ARG_BOOST);
             if(val != null) {
                 if(api.core.checkPlayerPermission(sender, "marker.boost")) {
@@ -841,6 +853,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             else
                 marker.setRangeY(ybottom, ytop);
             marker.setBoostFlag(boost);
+            marker.setMinZoom(minzoom);
         } catch (NumberFormatException nfx) {
             sender.sendMessage("Invalid parameter format: " + val);
             return false;
@@ -854,6 +867,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             int scolor = marker.getLineColor();
             double sopacity = marker.getLineOpacity();
             int sweight = marker.getLineWeight();
+            int minzoom = marker.getMinZoom();
 
             val = parms.get(ARG_STROKECOLOR);
             if(val != null)
@@ -864,7 +878,11 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             val = parms.get(ARG_STROKEWEIGHT);
             if(val != null)
                 sweight = Integer.parseInt(val);
+            val = parms.get(ARG_MINZOOM);
+            if(val != null)
+                minzoom = Integer.parseInt(val);
             marker.setLineStyle(sweight, sopacity, scolor);
+            marker.setMinZoom(minzoom);
         } catch (NumberFormatException nfx) {
             sender.sendMessage("Invalid parameter format: " + val);
             return false;
@@ -887,6 +905,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             double z = marker.getCenterZ();
             String world = marker.getWorld();
             boolean boost = marker.getBoostFlag();
+            int minzoom = marker.getMinZoom();
             
             val = parms.get(ARG_STROKECOLOR);
             if(val != null)
@@ -934,11 +953,16 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                     return false;
                 }
             }
+            val = parms.get(ARG_MINZOOM);
+            if (val != null) {
+                minzoom = Integer.parseInt(val);
+            }
             marker.setCenter(world, x, y, z);
             marker.setLineStyle(sweight, sopacity, scolor);
             marker.setFillStyle(fopacity, fcolor);
             marker.setRadius(xr, zr);
             marker.setBoostFlag(boost);
+            marker.setMinZoom(minzoom);
         } catch (NumberFormatException nfx) {
             sender.sendMessage("Invalid parameter format: " + val);
             return false;
@@ -1201,6 +1225,16 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             x = parms.get(ARG_X);
             y = parms.get(ARG_Y);
             z = parms.get(ARG_Z);
+            String minzoom = parms.get(ARG_MINZOOM);
+            int min_zoom = -1;
+            if (minzoom != null) {
+                try {
+                    min_zoom = Integer.parseInt(minzoom);
+                } catch (NumberFormatException nfx) {
+                    sender.sendMessage("Invalid minzoom: " + minzoom);
+                    return true;
+                }
+            }
             world = DynmapWorld.normalizeWorldName(parms.get(ARG_WORLD));
             if(world != null) {
                 normalized_world = DynmapWorld.normalizeWorldName(world);
@@ -1253,6 +1287,9 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 sender.sendMessage("Error: invalid icon - " + iconid);
                 return true;
             }
+            if (minzoom != null) {
+                
+            }
             boolean isMarkup = "true".equals(markup);
             Marker m = set.createMarker(id, label, isMarkup,
                     loc.world, loc.x, loc.y, loc.z, ico, true);
@@ -1260,6 +1297,9 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 sender.sendMessage("Error creating marker");
             }
             else {
+                if (min_zoom > 0) {
+                    m.setMinZoom(min_zoom);
+                }
                 sender.sendMessage("Added marker id:'" + m.getMarkerID() + "' (" + m.getLabel() + ") to set '" + set.getMarkerSetID() + "'");
             }
         }
@@ -1334,6 +1374,16 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             x = parms.get(ARG_X);
             y = parms.get(ARG_Y);
             z = parms.get(ARG_Z);
+            String minzoom = parms.get(ARG_MINZOOM);
+            int min_zoom = -1;
+            if (minzoom != null) {
+                try {
+                    min_zoom = Integer.parseInt(minzoom);
+                } catch (NumberFormatException nfx) {
+                    sender.sendMessage("Invalid minzoom: " + minzoom);
+                    return true;
+                }
+            }
             world = parms.get(ARG_WORLD);
             if(world != null) {
                 if(api.core.getWorld(world) == null) {
@@ -1396,6 +1446,9 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             }
             if(loc != null)
                 marker.setLocation(loc.world, loc.x, loc.y, loc.z);
+            if (min_zoom > 0) {
+                marker.setMinZoom(min_zoom);
+            }
             if(newset != null) {
                 MarkerSet ms = api.getMarkerSet(newset);
                 if(ms == null) {
@@ -2809,6 +2862,9 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 mdata.put("markup", m.isLabelMarkup());
                 if(m.getDescription() != null)
                     mdata.put("desc", m.getDescription());
+                if (m.getMinZoom() > 0) {
+                    mdata.put("minzoom", m.getMinZoom());
+                }
                 /* Add to markers */
                 markers.put(m.getMarkerID(), mdata);
             }
@@ -2839,6 +2895,9 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 mdata.put("markup", m.isLabelMarkup());
                 if(m.getDescription() != null)
                     mdata.put("desc", m.getDescription());
+                if (m.getMinZoom() > 0) {
+                    mdata.put("minzoom", m.getMinZoom());
+                }
                 /* Add to markers */
                 areas.put(m.getMarkerID(), mdata);
             }
@@ -2868,6 +2927,9 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 mdata.put("markup", m.isLabelMarkup());
                 if(m.getDescription() != null)
                     mdata.put("desc", m.getDescription());
+                if (m.getMinZoom() > 0) {
+                    mdata.put("minzoom", m.getMinZoom());
+                }
                 /* Add to markers */
                 lines.put(m.getMarkerID(), mdata);
             }
@@ -2892,6 +2954,9 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 mdata.put("markup", m.isLabelMarkup());
                 if(m.getDescription() != null)
                     mdata.put("desc", m.getDescription());
+                if (m.getMinZoom() > 0) {
+                    mdata.put("minzoom", m.getMinZoom());
+                }
                 /* Add to markers */
                 circles.put(m.getMarkerID(), mdata);
             }

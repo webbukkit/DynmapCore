@@ -22,6 +22,7 @@ class MarkerImpl implements Marker {
     private String normalized_world;
     private MarkerIconImpl icon;
     private boolean ispersistent;
+    private int minzoom;
     
     /** 
      * Create marker
@@ -49,6 +50,7 @@ class MarkerImpl implements Marker {
         this.desc = null;
         ispersistent = persistent;
         markerset = set;
+        this.minzoom = -1;
     }
     /**
      * Make bare marker - used for persistence load
@@ -63,6 +65,7 @@ class MarkerImpl implements Marker {
         desc = null;
         x = z = 0; y = 64; world = normalized_world = "world";
         icon = MarkerAPIImpl.getMarkerIconImpl(MarkerIcon.DEFAULT);
+        this.minzoom = -1;
     }
     /**
      *  Load marker from configuration node
@@ -77,6 +80,7 @@ class MarkerImpl implements Marker {
         world = node.getString("world", "world");
         normalized_world = DynmapWorld.normalizeWorldName(world);
         desc = node.getString("desc", null);
+        minzoom = node.getInteger("minzoom", -1);
         icon = MarkerAPIImpl.getMarkerIconImpl(node.getString("icon", MarkerIcon.DEFAULT)); 
         if(icon == null)
             icon = MarkerAPIImpl.getMarkerIconImpl(MarkerIcon.DEFAULT);
@@ -171,6 +175,9 @@ class MarkerImpl implements Marker {
         node.put("z", Double.valueOf(z));
         node.put("world", world);
         node.put("icon", icon.getMarkerIconID());
+        if (this.minzoom >= 0) {
+            node.put("minzoom", Integer.valueOf(minzoom));
+        }
         if(desc != null)
             node.put("desc", desc);
 
@@ -248,5 +255,18 @@ class MarkerImpl implements Marker {
             }
         }
         return c;
+    }
+    @Override
+    public int getMinZoom() {
+        return minzoom;
+    }
+    @Override
+    public void setMinZoom(int zoom) {
+        if (zoom < 1) zoom = -1;
+        if (this.minzoom == zoom) return;
+        this.minzoom = zoom;
+        MarkerAPIImpl.markerUpdated(this, MarkerUpdate.UPDATED);
+        if(ispersistent)
+            MarkerAPIImpl.saveMarkers();
     }
 }

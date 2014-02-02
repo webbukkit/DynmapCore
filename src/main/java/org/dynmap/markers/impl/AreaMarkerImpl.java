@@ -33,6 +33,7 @@ class AreaMarkerImpl implements AreaMarker {
     private double ytop = 64.0;
     private double ybottom = 64.0;
     private boolean boostflag = false;
+    private int minzoom;
     
     private static class Coord {
         double x, z;
@@ -81,6 +82,7 @@ class AreaMarkerImpl implements AreaMarker {
                 ytop = ybottom = w.sealevel+1;    /* Default to world sealevel */
             }
         }
+        this.minzoom = -1;
     }
     /**
      * Make bare area marker - used for persistence load
@@ -95,6 +97,7 @@ class AreaMarkerImpl implements AreaMarker {
         desc = null;
         corners = new ArrayList<Coord>();
         world = normalized_world = "world";
+        this.minzoom = -1;
     }
     /**
      *  Load marker from configuration node
@@ -124,6 +127,8 @@ class AreaMarkerImpl implements AreaMarker {
         fillopacity = node.getDouble("fillOpacity", 0.35);
         fillcolor = node.getInteger("fillColor", 0xFF0000);
         boostflag = node.getBoolean("boostFlag",  false);
+        minzoom = node.getInteger("minzoom", -1);
+
         ispersistent = true;    /* Loaded from config, so must be */
         
         return true;
@@ -207,6 +212,9 @@ class AreaMarkerImpl implements AreaMarker {
         node.put("fillColor", fillcolor);
         if (boostflag) {
             node.put("boostFlag", true);
+        }
+        if (minzoom > 0) {
+            node.put("minzoom", minzoom);
         }
         return node;
     }
@@ -480,5 +488,18 @@ class AreaMarkerImpl implements AreaMarker {
         // }
         //System.out.println("tile: " + tile_x + " / " + tile_y + " - hit");
         return false;
+    }
+    @Override
+    public int getMinZoom() {
+        return minzoom;
+    }
+    @Override
+    public void setMinZoom(int zoom) {
+        if (zoom < 1) zoom = -1;
+        if (this.minzoom == zoom) return;
+        this.minzoom = zoom;
+        MarkerAPIImpl.areaMarkerUpdated(this, MarkerUpdate.UPDATED);
+        if(ispersistent)
+            MarkerAPIImpl.saveMarkers();
     }
 }

@@ -32,6 +32,7 @@ class CircleMarkerImpl implements CircleMarker {
     private double fillopacity = 0.35;
     private int fillcolor = 0xFF0000;
     private boolean boostflag = false;
+    private int minzoom = -1;
 
     private static class BoundingBox {
         double xmin, xmax;
@@ -67,6 +68,7 @@ class CircleMarkerImpl implements CircleMarker {
         this.world = world;
         this.normalized_world = DynmapWorld.normalizeWorldName(world);
         this.desc = null;
+        this.minzoom = -1;
         ispersistent = persistent;
         markerset = set;
     }
@@ -82,6 +84,7 @@ class CircleMarkerImpl implements CircleMarker {
         markup = false;
         desc = null;
         world = normalized_world = "world";
+        this.minzoom = -1;
         x = z = 0;
         y = 64;
         xr = zr = 0;
@@ -110,6 +113,8 @@ class CircleMarkerImpl implements CircleMarker {
         fillopacity = node.getDouble("fillOpacity", 0.35);
         fillcolor = node.getInteger("fillColor", 0xFF0000);
         boostflag = node.getBoolean("boostFlag", false);
+        minzoom = node.getInteger("minzoom", -1);
+
         ispersistent = true;    /* Loaded from config, so must be */
         
         return true;
@@ -186,6 +191,9 @@ class CircleMarkerImpl implements CircleMarker {
         node.put("fillColor", fillcolor);
         if(boostflag) {
             node.put("boostFlag", true);
+        }
+        if (minzoom > 0) {
+            node.put("minzoom", minzoom);
         }
         return node;
     }
@@ -408,5 +416,18 @@ class CircleMarkerImpl implements CircleMarker {
         // }
         //System.out.println("tile: " + tile_x + " / " + tile_y + " - hit");
         return false;
+    }
+    @Override
+    public int getMinZoom() {
+        return minzoom;
+    }
+    @Override
+    public void setMinZoom(int zoom) {
+        if (zoom < 1) zoom = -1;
+        if (this.minzoom == zoom) return;
+        this.minzoom = zoom;
+        MarkerAPIImpl.circleMarkerUpdated(this, MarkerUpdate.UPDATED);
+        if(ispersistent)
+            MarkerAPIImpl.saveMarkers();
     }
 }
