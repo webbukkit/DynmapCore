@@ -135,15 +135,17 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 	}
 
 	function updateMarker(set, marker, mapzoom) {
-		// marker specific zoom supercedes set specific zoom
-		var minzoom = (marker.minzoom >= 0) ? marker.minzoom : set.minzoom;
-		var maxzoom = (marker.maxzoom >= 0) ? marker.maxzoom : set.maxzoom;
-		if (maxzoom < 0) maxzoom = 100;
-		if ((mapzoom >= minzoom) && (mapzoom <= maxzoom)) {  
-			set.layergroup.addLayer(marker.our_layer);
-		}
-		else {
-			set.layergroup.removeLayer(marker.our_layer);
+		if (set && marker) {
+			// marker specific zoom supercedes set specific zoom
+			var minzoom = (marker.minzoom >= 0) ? marker.minzoom : set.minzoom;
+			var maxzoom = (marker.maxzoom >= 0) ? marker.maxzoom : set.maxzoom;
+			if (maxzoom < 0) maxzoom = 100;
+			if ((mapzoom >= minzoom) && (mapzoom <= maxzoom)) {  
+				set.layergroup.addLayer(marker.our_layer);
+			}
+			else {
+				set.layergroup.removeLayer(marker.our_layer);
+			}
 		}
 	}
 	
@@ -151,9 +153,7 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 		if(marker && marker.our_layer) {
 			set.layergroup.removeLayer(marker.our_layer);
 			delete marker.our_layer;
-			marker.our_layer = null;
 		}
-		delete marker;
 	}	
 	
 	function createMarkerSet(set, ts) {
@@ -374,14 +374,17 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 	
 	$(dynmap).bind('component.markers', function(event, msg) {
 		if(msg.msg == 'markerupdated') {
-			deleteMarker(dynmapmarkersets[msg.set], dynmapmarkersets[msg.set].markers[msg.id]);
+			var set = dynmapmarkersets[msg.set];
+			deleteMarker(set, set.markers[msg.id]);
 			
 			var marker = { x: msg.x, y: msg.y, z: msg.z, icon: msg.icon, label: msg.label, markup: msg.markup, desc: msg.desc, dim: msg.dim || '16x16', minzoom: msg.minzoom || -1, maxzoom: msg.maxzoom };
-			dynmapmarkersets[msg.set].markers[msg.id] = marker;
-			createMarker(dynmapmarkersets[msg.set], marker, msg.timestamp);
+			set.markers[msg.id] = marker;
+			createMarker(set, marker, msg.timestamp);
 		}
 		else if(msg.msg == 'markerdeleted') {
-			deleteMarker(dynmapmarkersets[msg.set], dynmapmarkersets[msg.set].markers[msg.id]);
+			var set = dynmapmarkersets[msg.set];
+			deleteMarker(set, set.markers[msg.id]);
+			delete set.markers[msg.id];
 		}
 		else if(msg.msg == 'setupdated') {
 			if(msg.showlabels == undefined) msg.showlabels = configuration.showlabel;
@@ -411,44 +414,52 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 		}
 		else if(msg.msg == 'setdeleted') {
 			if(dynmapmarkersets[msg.id]) {
-				//dynmap.layercontrol.removeLayer(dynmapmarkersets[msg.id].layergroup);
 				dynmap.removeFromLayerSelector(dynmapmarkersets[msg.id].layergroup);
 				delete dynmapmarkersets[msg.id].layergroup;
 				delete dynmapmarkersets[msg.id];
 			}
 		}		
 		else if(msg.msg == 'areaupdated') {
-			deleteMarker(dynmapmarkersets[msg.set], dynmapmarkersets[msg.set].areas[msg.id]);
+			var set = dynmapmarkersets[msg.set];
+			deleteMarker(set, set.areas[msg.id]);
 
 			var area = { x: msg.x, ytop: msg.ytop, ybottom: msg.ybottom, z: msg.z, label: msg.label, markup: msg.markup, desc: msg.desc,
 				color: msg.color, weight: msg.weight, opacity: msg.opacity, fillcolor: msg.fillcolor, fillopacity: msg.fillopacity, minzoom: msg.minzoom || -1, maxzoom: msg.maxzoom || -1 };
-			dynmapmarkersets[msg.set].areas[msg.id] = area;
-			createArea(dynmapmarkersets[msg.set], area, msg.timestamp);
+			set.areas[msg.id] = area;
+			createArea(set, area, msg.timestamp);
 		}
 		else if(msg.msg == 'areadeleted') {
-			deleteMarker(dynmapmarkersets[msg.set], dynmapmarkersets[msg.set].areas[msg.id]);
+			var set = dynmapmarkersets[msg.set];
+			deleteMarker(set, set.areas[msg.id]);
+			delete set.areas[msg.id];
 		}
 		else if(msg.msg == 'polyupdated') {
-			deleteMarker(dynmapmarkersets[msg.set], dynmapmarkersets[msg.set].lines[msg.id]);
+			var set = dynmapmarkersets[msg.set];
+			deleteMarker(set, set.lines[msg.id]);
 			
 			var line = { x: msg.x, y: msg.y, z: msg.z, label: msg.label, markup: msg.markup, desc: msg.desc,
 				color: msg.color, weight: msg.weight, opacity: msg.opacity, minzoom: msg.minzoom || -1, maxzoom: msg.maxzoom || -1 };
-			dynmapmarkersets[msg.set].lines[msg.id] = line;
-			createLine(dynmapmarkersets[msg.set], line, msg.timestamp);
+			set.lines[msg.id] = line;
+			createLine(set, line, msg.timestamp);
 		}
 		else if(msg.msg == 'linedeleted') {
-			deleteMarker(dynmapmarkersets[msg.set], dynmapmarkersets[msg.set].lines[msg.id]);
+			var set = dynmapmarkersets[msg.set];
+			deleteMarker(set, set.lines[msg.id]);
+			delete set.lines[msg.id];
 		}
 		else if(msg.msg == 'circleupdated') {
-			deleteMarker(dynmapmarkersets[msg.set], dynmapmarkersets[msg.set].circle[msg.id]);
+			var set = dynmapmarkersets[msg.set];
+			deleteMarker(set, set.circle[msg.id]);
 
 			var circle = { x: msg.x, y: msg.y, z: msg.z, xr: msg.xr, zr: msg.zr, label: msg.label, markup: msg.markup, desc: msg.desc,
 				color: msg.color, weight: msg.weight, opacity: msg.opacity, fillcolor: msg.fillcolor, fillopacity: msg.fillopacity, minzoom: msg.minzoom || -1, maxzoom: msg.maxzoom || -1 };
-			dynmapmarkersets[msg.set].circles[msg.id] = circle;
-			createCircle(dynmapmarkersets[msg.set], circle, msg.timestamp);
+			set.circles[msg.id] = circle;
+			createCircle(set, circle, msg.timestamp);
 		}
 		else if(msg.msg == 'circledeleted') {
-			deleteMarker(dynmapmarkersets[msg.set], dynmapmarkersets[msg.set].circle[msg.id]);
+			var set = dynmapmarkersets[msg.set];
+			deleteMarker(set, set.circle[msg.id]);
+			delete set.circle[msg.id];
 		}
 	});
 	
@@ -490,26 +501,18 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 	$(dynmap).bind('zoomchanged', function(event) {
 		var zoom = dynmap.map.getZoom();
 		$.each(dynmapmarkersets, function(setname, set) {
-			if (set && set.markers) {
-				$.each(set.markers, function(mname, marker) {
-					updateMarker(set, marker, zoom);
-				});
-			}
-			if (set && set.areas) {
-				$.each(set.areas, function(aname, area) {
-					updateMarker(set, area, zoom);
-				});
-			}
-			if (set && set.lines) {
-				$.each(set.lines, function(lname, line) {
-					updateMarker(set, line, zoom);
-				});
-			}
-			if (set && set.circles) {
-				$.each(set.circles, function(cname, circle) {
-					updateMarker(set, circle, zoom);
-				});
-			}
+			$.each(set.markers, function(mname, marker) {
+				updateMarker(set, marker, zoom);
+			});
+			$.each(set.areas, function(aname, area) {
+				updateMarker(set, area, zoom);
+			});
+			$.each(set.lines, function(lname, line) {
+				updateMarker(set, line, zoom);
+			});
+			$.each(set.circles, function(cname, circle) {
+				updateMarker(set, circle, zoom);
+			});
 		});
 	});
 
