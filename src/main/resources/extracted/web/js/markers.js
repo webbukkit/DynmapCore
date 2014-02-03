@@ -136,9 +136,9 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 
 	function updateMarker(set, marker, mapzoom) {
 		// marker specific zoom supercedes set specific zoom
-		var minzoom = (marker.minzoom > 0) ? marker.minzoom : set.minzoom;
-		var maxzoom = (marker.maxzoom > 0) ? marker.maxzoom : set.maxzoom;
-		if (maxzoom < 1) maxzoom = 100;
+		var minzoom = (marker.minzoom >= 0) ? marker.minzoom : set.minzoom;
+		var maxzoom = (marker.maxzoom >= 0) ? marker.maxzoom : set.maxzoom;
+		if (maxzoom < 0) maxzoom = 100;
 		if ((mapzoom >= minzoom) && (mapzoom <= maxzoom)) {  
 			if(dynmap.map.hasLayer(marker.our_layer) == false)
 				set.layergroup.addLayer(marker.our_layer);
@@ -257,7 +257,7 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 		var i;
 		for(i = 0; i < 360; i++) {
 			var rad = i * Math.PI / 180.0;
-			x[i] = circle.xr * Math.sin(rad) + circle.x
+			x[i] = circle.xr * Math.sin(rad) + circle.x;
 			z[i] = circle.zr * Math.cos(rad) + circle.z;
 		}
 		circle.our_layer = create2DOutlineLayer(x, circle.y, circle.y, z, style);
@@ -388,7 +388,7 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 		else if(msg.msg == 'setupdated') {
 			if(msg.showlabels == undefined) msg.showlabels = configuration.showlabel;
 			if(!dynmapmarkersets[msg.id]) {
-				dynmapmarkersets[msg.id] = { id: msg.id, label: msg.label, layerprio: msg.layerprio, minzoom: msg.minzoom, 
+				dynmapmarkersets[msg.id] = { id: msg.id, label: msg.label, layerprio: msg.layerprio, minzoom: msg.minzoom,  maxzoom: msg.maxzoom,
 					showlabels: msg.showlabels, markers:{} };
 				createMarkerSet(dynmapmarkersets[msg.id]);
 			}
@@ -406,6 +406,9 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 				if(dynmapmarkersets[msg.id].minzoom != msg.minzoom) {
 					dynmapmarkersets[msg.id].minzoom = msg.minzoom;
 				}			
+				if(dynmapmarkersets[msg.id].maxzoom != msg.maxzoom) {
+					dynmapmarkersets[msg.id].maxzoom = msg.maxzoom;
+				}			
 			}
 		}
 		else if(msg.msg == 'setdeleted') {
@@ -420,7 +423,7 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 			deleteMarker(dynmapmarkersets[msg.set], dynmapmarkersets[msg.set].areas[msg.id]);
 
 			var area = { x: msg.x, ytop: msg.ytop, ybottom: msg.ybottom, z: msg.z, label: msg.label, markup: msg.markup, desc: msg.desc,
-				color: msg.color, weight: msg.weight, opacity: msg.opacity, fillcolor: msg.fillcolor, fillopacity: msg.fillopacity, minzoom: msg.minzoom || -1 };
+				color: msg.color, weight: msg.weight, opacity: msg.opacity, fillcolor: msg.fillcolor, fillopacity: msg.fillopacity, minzoom: msg.minzoom || -1, maxzoom: msg.maxzoom || -1 };
 			dynmapmarkersets[msg.set].areas[msg.id] = area;
 			createArea(dynmapmarkersets[msg.set], area, msg.timestamp);
 		}
@@ -431,7 +434,7 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 			deleteMarker(dynmapmarkersets[msg.set], dynmapmarkersets[msg.set].lines[msg.id]);
 			
 			var line = { x: msg.x, y: msg.y, z: msg.z, label: msg.label, markup: msg.markup, desc: msg.desc,
-				color: msg.color, weight: msg.weight, opacity: msg.opacity, minzoom: msg.minzoom || -1 };
+				color: msg.color, weight: msg.weight, opacity: msg.opacity, minzoom: msg.minzoom || -1, maxzoom: msg.maxzoom || -1 };
 			dynmapmarkersets[msg.set].lines[msg.id] = line;
 			createLine(dynmapmarkersets[msg.set], line, msg.timestamp);
 		}
@@ -442,7 +445,7 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 			deleteMarker(dynmapmarkersets[msg.set], dynmapmarkersets[msg.set].circle[msg.id]);
 
 			var circle = { x: msg.x, y: msg.y, z: msg.z, xr: msg.xr, zr: msg.zr, label: msg.label, markup: msg.markup, desc: msg.desc,
-				color: msg.color, weight: msg.weight, opacity: msg.opacity, fillcolor: msg.fillcolor, fillopacity: msg.fillopacity, minzoom: msg.minzoom || -1 };
+				color: msg.color, weight: msg.weight, opacity: msg.opacity, fillcolor: msg.fillcolor, fillopacity: msg.fillopacity, minzoom: msg.minzoom || -1, maxzoom: msg.maxzoom || -1 };
 			dynmapmarkersets[msg.set].circles[msg.id] = circle;
 			createCircle(dynmapmarkersets[msg.set], circle, msg.timestamp);
 		}

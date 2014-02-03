@@ -33,7 +33,8 @@ class MarkerSetImpl implements MarkerSet {
     private boolean hide_by_def;
     private boolean ispersistent;
     private int prio = 0;
-    private int minzoom = 0;
+    private int minzoom = -1;
+    private int maxzoom = -1;
     private Boolean showlabels = null;
     private MarkerIcon deficon;
     
@@ -399,7 +400,10 @@ class MarkerSetImpl implements MarkerSet {
         setnode.put("circles", cnode);
         setnode.put("hide", hide_by_def);
         setnode.put("layerprio", prio);
-        setnode.put("minzoom", minzoom);
+        if (minzoom >= 0)
+            setnode.put("minzoom", minzoom);
+        if (maxzoom >= 0)
+            setnode.put("maxzoom", maxzoom);
         if(deficon != null) {
             setnode.put("deficon", deficon.getMarkerIconID());
         }
@@ -493,7 +497,9 @@ class MarkerSetImpl implements MarkerSet {
         }
         hide_by_def = node.getBoolean("hide", false);
         prio = node.getInteger("layerprio", 0);
-        minzoom = node.getInteger("minzoom", 0);
+        minzoom = node.getInteger("minzoom", -1);
+        maxzoom = node.getInteger("maxzoom", -1);
+        if (minzoom == 0) minzoom = -1;
         if(node.containsKey("showlabels"))
             showlabels = node.getBoolean("showlabels", false);
         else
@@ -622,6 +628,7 @@ class MarkerSetImpl implements MarkerSet {
 
     @Override
     public void setMinZoom(int minzoom) {
+        if (minzoom < 0) minzoom = -1;
         if(this.minzoom != minzoom) {
             this.minzoom = minzoom;
             MarkerAPIImpl.markerSetUpdated(this, MarkerUpdate.UPDATED);
@@ -632,6 +639,20 @@ class MarkerSetImpl implements MarkerSet {
     @Override
     public int getMinZoom() {
         return this.minzoom;
+    }
+    @Override
+    public void setMaxZoom(int maxzoom) {
+        if (maxzoom < 0) maxzoom = -1;
+        if(this.maxzoom != maxzoom) {
+            this.maxzoom = maxzoom;
+            MarkerAPIImpl.markerSetUpdated(this, MarkerUpdate.UPDATED);
+            if(ispersistent)
+                MarkerAPIImpl.saveMarkers();
+        }
+    }
+    @Override
+    public int getMaxZoom() {
+        return this.maxzoom;
     }
     @Override
     public void setLabelShow(Boolean show) {

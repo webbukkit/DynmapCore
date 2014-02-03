@@ -25,6 +25,7 @@ class PolyLineMarkerImpl implements PolyLineMarker {
     private double lineopacity = 0.8;
     private int linecolor = 0xFF0000;
     private int minzoom;
+    private int maxzoom;
     
     private static class Coord {
         double x, y, z;
@@ -60,6 +61,7 @@ class PolyLineMarkerImpl implements PolyLineMarker {
         this.normalized_world = DynmapWorld.normalizeWorldName(world);
         this.desc = null;
         this.minzoom = -1;
+        this.maxzoom = -1;
         ispersistent = persistent;
         markerset = set;
     }
@@ -76,6 +78,7 @@ class PolyLineMarkerImpl implements PolyLineMarker {
         desc = null;
         corners = new ArrayList<Coord>();
         this.minzoom = -1;
+        this.maxzoom = -1;
         world = normalized_world = "world";
     }
     /**
@@ -104,6 +107,7 @@ class PolyLineMarkerImpl implements PolyLineMarker {
         lineopacity = node.getDouble("strokeOpacity", 0.8);
         linecolor = node.getInteger("strokeColor", 0xFF0000);
         this.minzoom = node.getInteger("minzoom", -1);
+        this.maxzoom = node.getInteger("maxzoom", -1);
         ispersistent = true;    /* Loaded from config, so must be */
         
         return true;
@@ -184,8 +188,11 @@ class PolyLineMarkerImpl implements PolyLineMarker {
         node.put("strokeWeight", lineweight);
         node.put("strokeOpacity", lineopacity);
         node.put("strokeColor", linecolor);
-        if (minzoom > 0) {
+        if (minzoom >= 0) {
             node.put("minzoom", minzoom);
+        }
+        if (maxzoom >= 0) {
+            node.put("maxzoom", maxzoom);
         }
 
         return node;
@@ -336,9 +343,22 @@ class PolyLineMarkerImpl implements PolyLineMarker {
     }
     @Override
     public void setMinZoom(int zoom) {
-        if (zoom < 1) zoom = -1;
+        if (zoom < 0) zoom = -1;
         if (this.minzoom == zoom) return;
         this.minzoom = zoom;
+        MarkerAPIImpl.polyLineMarkerUpdated(this, MarkerUpdate.UPDATED);
+        if(ispersistent)
+            MarkerAPIImpl.saveMarkers();
+    }
+    @Override
+    public int getMaxZoom() {
+        return maxzoom;
+    }
+    @Override
+    public void setMaxZoom(int zoom) {
+        if (zoom < 0) zoom = -1;
+        if (this.maxzoom == zoom) return;
+        this.maxzoom = zoom;
         MarkerAPIImpl.polyLineMarkerUpdated(this, MarkerUpdate.UPDATED);
         if(ispersistent)
             MarkerAPIImpl.saveMarkers();

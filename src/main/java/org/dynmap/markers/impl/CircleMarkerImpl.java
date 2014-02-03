@@ -33,6 +33,7 @@ class CircleMarkerImpl implements CircleMarker {
     private int fillcolor = 0xFF0000;
     private boolean boostflag = false;
     private int minzoom = -1;
+    private int maxzoom = -1;
 
     private static class BoundingBox {
         double xmin, xmax;
@@ -69,6 +70,7 @@ class CircleMarkerImpl implements CircleMarker {
         this.normalized_world = DynmapWorld.normalizeWorldName(world);
         this.desc = null;
         this.minzoom = -1;
+        this.maxzoom = -1;
         ispersistent = persistent;
         markerset = set;
     }
@@ -85,6 +87,7 @@ class CircleMarkerImpl implements CircleMarker {
         desc = null;
         world = normalized_world = "world";
         this.minzoom = -1;
+        this.maxzoom = -1;
         x = z = 0;
         y = 64;
         xr = zr = 0;
@@ -114,6 +117,7 @@ class CircleMarkerImpl implements CircleMarker {
         fillcolor = node.getInteger("fillColor", 0xFF0000);
         boostflag = node.getBoolean("boostFlag", false);
         minzoom = node.getInteger("minzoom", -1);
+        maxzoom = node.getInteger("maxzoom", -1);
 
         ispersistent = true;    /* Loaded from config, so must be */
         
@@ -192,8 +196,11 @@ class CircleMarkerImpl implements CircleMarker {
         if(boostflag) {
             node.put("boostFlag", true);
         }
-        if (minzoom > 0) {
+        if (minzoom >= 0) {
             node.put("minzoom", minzoom);
+        }
+        if (maxzoom >= 0) {
+            node.put("maxzoom", maxzoom);
         }
         return node;
     }
@@ -423,9 +430,22 @@ class CircleMarkerImpl implements CircleMarker {
     }
     @Override
     public void setMinZoom(int zoom) {
-        if (zoom < 1) zoom = -1;
+        if (zoom < 0) zoom = -1;
         if (this.minzoom == zoom) return;
         this.minzoom = zoom;
+        MarkerAPIImpl.circleMarkerUpdated(this, MarkerUpdate.UPDATED);
+        if(ispersistent)
+            MarkerAPIImpl.saveMarkers();
+    }
+    @Override
+    public int getMaxZoom() {
+        return maxzoom;
+    }
+    @Override
+    public void setMaxZoom(int zoom) {
+        if (zoom < 0) zoom = -1;
+        if (this.maxzoom == zoom) return;
+        this.maxzoom = zoom;
         MarkerAPIImpl.circleMarkerUpdated(this, MarkerUpdate.UPDATED);
         if(ispersistent)
             MarkerAPIImpl.saveMarkers();

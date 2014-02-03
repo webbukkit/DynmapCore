@@ -23,6 +23,7 @@ class MarkerImpl implements Marker {
     private MarkerIconImpl icon;
     private boolean ispersistent;
     private int minzoom;
+    private int maxzoom;
     
     /** 
      * Create marker
@@ -51,6 +52,7 @@ class MarkerImpl implements Marker {
         ispersistent = persistent;
         markerset = set;
         this.minzoom = -1;
+        this.maxzoom = -1;
     }
     /**
      * Make bare marker - used for persistence load
@@ -66,6 +68,7 @@ class MarkerImpl implements Marker {
         x = z = 0; y = 64; world = normalized_world = "world";
         icon = MarkerAPIImpl.getMarkerIconImpl(MarkerIcon.DEFAULT);
         this.minzoom = -1;
+        this.maxzoom = -1;
     }
     /**
      *  Load marker from configuration node
@@ -81,6 +84,7 @@ class MarkerImpl implements Marker {
         normalized_world = DynmapWorld.normalizeWorldName(world);
         desc = node.getString("desc", null);
         minzoom = node.getInteger("minzoom", -1);
+        maxzoom = node.getInteger("maxzoom", -1);
         icon = MarkerAPIImpl.getMarkerIconImpl(node.getString("icon", MarkerIcon.DEFAULT)); 
         if(icon == null)
             icon = MarkerAPIImpl.getMarkerIconImpl(MarkerIcon.DEFAULT);
@@ -176,7 +180,10 @@ class MarkerImpl implements Marker {
         node.put("world", world);
         node.put("icon", icon.getMarkerIconID());
         if (this.minzoom >= 0) {
-            node.put("minzoom", Integer.valueOf(minzoom));
+            node.put("minzoom", minzoom);
+        }
+        if (this.maxzoom >= 0) {
+            node.put("maxzoom", maxzoom);
         }
         if(desc != null)
             node.put("desc", desc);
@@ -262,9 +269,22 @@ class MarkerImpl implements Marker {
     }
     @Override
     public void setMinZoom(int zoom) {
-        if (zoom < 1) zoom = -1;
+        if (zoom < 0) zoom = -1;
         if (this.minzoom == zoom) return;
         this.minzoom = zoom;
+        MarkerAPIImpl.markerUpdated(this, MarkerUpdate.UPDATED);
+        if(ispersistent)
+            MarkerAPIImpl.saveMarkers();
+    }
+    @Override
+    public int getMaxZoom() {
+        return maxzoom;
+    }
+    @Override
+    public void setMaxZoom(int zoom) {
+        if (zoom < 0) zoom = -1;
+        if (this.maxzoom == zoom) return;
+        this.maxzoom = zoom;
         MarkerAPIImpl.markerUpdated(this, MarkerUpdate.UPDATED);
         if(ispersistent)
             MarkerAPIImpl.saveMarkers();
