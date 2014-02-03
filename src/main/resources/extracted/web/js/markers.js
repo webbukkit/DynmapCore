@@ -140,17 +140,15 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 		var maxzoom = (marker.maxzoom >= 0) ? marker.maxzoom : set.maxzoom;
 		if (maxzoom < 0) maxzoom = 100;
 		if ((mapzoom >= minzoom) && (mapzoom <= maxzoom)) {  
-			if(dynmap.map.hasLayer(marker.our_layer) == false)
-				set.layergroup.addLayer(marker.our_layer);
+			set.layergroup.addLayer(marker.our_layer);
 		}
 		else {
-			if(dynmap.map.hasLayer(marker.our_layer))
-				set.layergroup.removeLayer(marker.our_layer);
+			set.layergroup.removeLayer(marker.our_layer);
 		}
 	}
 	
 	function deleteMarker(set, marker) {
-		if(marker && marker.our_layer && dynmap.map.hasLayer(marker.our_layer)) {
+		if(marker && marker.our_layer) {
 			set.layergroup.removeLayer(marker.our_layer);
 			delete marker.our_layer;
 			marker.our_layer = null;
@@ -492,18 +490,26 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 	$(dynmap).bind('zoomchanged', function(event) {
 		var zoom = dynmap.map.getZoom();
 		$.each(dynmapmarkersets, function(setname, set) {
-			$.each(set.markers, function(mname, marker) {
-				updateMarker(set, marker, zoom);
-			});
-			$.each(set.areas, function(aname, area) {
-				updateMarker(set, area, zoom);
-			});
-			$.each(set.lines, function(lname, line) {
-				updateMarker(set, line, zoom);
-			});
-			$.each(set.circles, function(cname, circle) {
-				updateMarker(set, circle, zoom);
-			});
+			if (set && set.markers) {
+				$.each(set.markers, function(mname, marker) {
+					updateMarker(set, marker, zoom);
+				});
+			}
+			if (set && set.areas) {
+				$.each(set.areas, function(aname, area) {
+					updateMarker(set, area, zoom);
+				});
+			}
+			if (set && set.lines) {
+				$.each(set.lines, function(lname, line) {
+					updateMarker(set, line, zoom);
+				});
+			}
+			if (set && set.circles) {
+				$.each(set.circles, function(cname, circle) {
+					updateMarker(set, circle, zoom);
+				});
+			}
 		});
 	});
 
