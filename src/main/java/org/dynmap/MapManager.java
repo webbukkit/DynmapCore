@@ -72,13 +72,8 @@ public class MapManager {
 
     /* Chunk load performance numbers */
     AtomicInteger chunk_caches_created = new AtomicInteger(0);
-    AtomicInteger chunk_caches_attempted = new AtomicInteger(0);
-    AtomicLong total_chunk_cache_loadtime_ns = new AtomicLong(0);
-    AtomicInteger chunks_read = new AtomicInteger(0);;
-    AtomicInteger chunks_attempted = new AtomicInteger(0);
-    AtomicLong total_loadtime_ns = new AtomicLong(0L);
-    AtomicLong total_exceptions = new AtomicLong(0L);
-    AtomicInteger ticklistcalls = new AtomicInteger(0);
+    AtomicInteger chunks_read[];
+    AtomicLong chunks_read_times[];
     
     /* Tile hash manager */
     public TileHashManager hashman;
@@ -685,12 +680,9 @@ public class MapManager {
                 if(!good) requiredChunks = Collections.emptyList();
             }
             /* Fetch chunk cache from server thread */
-            long clt0 = System.nanoTime();
             MapChunkCache cache = core.getServer().createMapChunkCache(world, requiredChunks, tile.isBlockTypeDataNeeded(), 
                                                       tile.isHightestBlockYDataNeeded(), tile.isBiomeDataNeeded(), 
                                                       tile.isRawBiomeDataNeeded());
-            total_chunk_cache_loadtime_ns.addAndGet(System.nanoTime() - clt0);
-            chunk_caches_attempted.incrementAndGet();
             if(cache == null) {
                 /* If world unloaded, don't cancel */
                 if(world.isLoaded() == false) {
@@ -700,10 +692,10 @@ public class MapManager {
             }
             /* Update stats */
             chunk_caches_created.incrementAndGet();
-            chunks_read.addAndGet(cache.getChunksLoaded());
-            chunks_attempted.addAndGet(cache.getChunkLoadsAttempted());
-            total_loadtime_ns.addAndGet(cache.getTotalRuntimeNanos());
-            total_exceptions.addAndGet(cache.getExceptionCount());
+            for (MapChunkCache.ChunkStats cs : MapChunkCache.ChunkStats.values()) {
+                chunks_read[cs.ordinal()].addAndGet(cache.getChunksLoaded(cs));
+                chunks_read_times[cs.ordinal()].addAndGet(cache.getTotalRuntimeNanos(cs));
+            }
             if(tile0 != null) {    /* Single tile? */
                 if(cache.isEmpty() == false)
                     tile.render(cache, null);
@@ -870,6 +862,13 @@ public class MapManager {
     public MapManager(DynmapCore core, ConfigurationNode configuration) {
         this.core = core;
         mapman = this;
+        
+        chunks_read = new AtomicInteger[MapChunkCache.ChunkStats.values().length];
+        chunks_read_times = new AtomicLong[MapChunkCache.ChunkStats.values().length];
+        for (int i = 0; i < MapChunkCache.ChunkStats.values().length; i++) {
+            chunks_read[i] = new AtomicInteger(0);
+            chunks_read_times[i] = new AtomicLong(0L);
+        }
 
         /* Get block hiding data, if any */
         hideores = configuration.getBoolean("hideores", false);
@@ -1457,19 +1456,12 @@ public class MapManager {
         /* Chunk load stats */
         sender.sendMessage("Chunk Loading Statistics:");
         sender.sendMessage(String.format("  Cache hit rate: %.2f%%", core.getServer().getCacheHitRate()));
-        int setcnt = chunk_caches_attempted.get();
-        sender.sendMessage(String.format("  Chunk sets: created=%d, attempted=%d", chunk_caches_created.get(), chunk_caches_attempted.get()));
-        int readcnt = chunks_read.get();
-        sender.sendMessage(String.format("  Chunk: loaded=%d, attempted=%d", readcnt, chunks_attempted.get()));
-        double ns = total_loadtime_ns.doubleValue() * 0.000001;    /* Convert to milliseconds */
-        double chunkloadns = total_chunk_cache_loadtime_ns.doubleValue() * 0.000001;
-        if(readcnt == 0) readcnt = 1;
-        if(setcnt == 0) setcnt = 1;
-        sender.sendMessage(String.format("  Chunk load times: %.2f msec (%.2f msec/chunk)", ns, (ns / readcnt)));
-        sender.sendMessage(String.format("  Chunk set load times: %.2f msec (%.2f msec/set)", chunkloadns, (chunkloadns / setcnt)));
-        sender.sendMessage(String.format("  Chunk set delay times: %.2f msec (%.2f msec/set)", chunkloadns-ns, ((chunkloadns-ns) / setcnt)));
-        sender.sendMessage(String.format("  Chunk set exceptions: %d", total_exceptions.get()));
-        sender.sendMessage(String.format("  World tick list processing calls: %d", ticklistcalls.get()));
+        for (MapChunkCache.ChunkStats cs : MapChunkCache.ChunkStats.values()) {
+            int cnt = chunks_read[cs.ordinal()].get();
+            if (cnt == 0) cnt = 1;
+            long ts = chunks_read_times[cs.ordinal()].get();
+            sender.sendMessage(String.format("  Chunks processed: %s: count=%d, %.2f msec/chunk", cs.getLabel(), cnt, 0.000001 * (ts / cnt)));
+        }
     }
     /**
      * Print trigger statistics command
@@ -1505,13 +1497,10 @@ public class MapManager {
                 ts.tilesqueued = 0;
             }
             chunk_caches_created.set(0);
-            chunk_caches_attempted.set(0);
-            chunks_read.set(0);
-            chunks_attempted.set(0);
-            total_loadtime_ns.set(0);
-            total_chunk_cache_loadtime_ns.set(0);
-            total_exceptions.set(0);
-            ticklistcalls.set(0);
+            for (int i = 0; i < chunks_read.length; i++) {
+                chunks_read[i].set(0);
+                chunks_read_times[i].set(0);
+            }
         }
         core.getServer().resetCacheStats();
         sender.sendMessage("Tile Render Statistics reset");
@@ -1575,9 +1564,6 @@ public class MapManager {
         return pauseupdaterenders;
     }
     
-    public void incExtraTickList() {
-        ticklistcalls.incrementAndGet();
-    }
     /* Connect any jobs tied to this player back to the player (resumes output to player) */
     void connectTasksToPlayer(DynmapPlayer p) {
         String pn = p.getName();
