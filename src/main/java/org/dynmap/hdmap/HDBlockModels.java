@@ -553,6 +553,13 @@ public class HDBlockModels {
             }
         }
     }
+    public static String getModIDFromFileName(String fn) {
+        int off = fn.lastIndexOf('/');
+        if (off > 0) fn = fn.substring(off+1);
+        off = fn.lastIndexOf('-');
+        if (off > 0) fn = fn.substring(0, off);
+        return fn;
+    }
     /**
      * Load models 
      */
@@ -596,7 +603,7 @@ public class HDBlockModels {
                     ZipEntry ze = zf.getEntry(fn);
                     if (ze != null) {
                         in = zf.getInputStream(ze);
-                        loadModelFile(in, fn, config, core, fn.substring(0, fn.indexOf("-models.txt")));
+                        loadModelFile(in, fn, config, core, modid);
                         loadedmods.add(modid);  // Add to set: prevent others definitions for same mod
                     }
                 } catch (ZipException e) {
@@ -622,7 +629,7 @@ public class HDBlockModels {
             if(custom.canRead()) {
                 try {
                     in = new FileInputStream(custom);
-                    loadModelFile(in, custom.getPath(), config, core, fn.substring(0, fn.indexOf("-models.txt")));
+                    loadModelFile(in, custom.getPath(), config, core, getModIDFromFileName(fn));
                 } catch (IOException iox) {
                     Log.severe("Error loading " + custom.getPath());
                 } finally {
@@ -645,7 +652,7 @@ public class HDBlockModels {
                 if (!n.endsWith("-models.txt")) continue;
                 in = zf.getInputStream(ze);
                 if (in != null) {
-                    loadModelFile(in, n, config, core, n.substring(0, n.indexOf("-models.txt")));
+                    loadModelFile(in, n, config, core, getModIDFromFileName(n));
                     try { in.close(); } catch (IOException x) { in = null; }
                 }
             }

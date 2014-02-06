@@ -1512,7 +1512,7 @@ public class TexturePack {
                     ZipEntry ze = zf.getEntry(fn);
                     if (ze != null) {
                         in = zf.getInputStream(ze);
-                        loadTextureFile(in, fn, config, core, fn.substring(0,  fn.indexOf("-texture.txt")));
+                        loadTextureFile(in, fn, config, core, modid);
                         loadedmods.add(modid);  // Add to set: prevent others definitions for same mod
                     }
                 } catch (ZipException e) {
@@ -1539,7 +1539,7 @@ public class TexturePack {
             if(custom.canRead()) {
                 try {
                     in = new FileInputStream(custom);
-                    loadTileSetsFile(in, custom.getPath(), config, core, fname.substring(0,  fname.indexOf("-tilesets.txt")));
+                    loadTileSetsFile(in, custom.getPath(), config, core, HDBlockModels.getModIDFromFileName(fname));
                 } catch (IOException iox) {
                     Log.severe("Error loading " + custom.getPath() + " - " + iox);
                 } finally {
@@ -1553,7 +1553,7 @@ public class TexturePack {
             if(custom.canRead()) {
                 try {
                     in = new FileInputStream(custom);
-                    loadTextureFile(in, custom.getPath(), config, core, fname.substring(0,  fname.indexOf("-texture.txt")));
+                    loadTextureFile(in, custom.getPath(), config, core, HDBlockModels.getModIDFromFileName(fname));
                 } catch (IOException iox) {
                     Log.severe("Error loading " + custom.getPath() + " - " + iox);
                 } finally {
@@ -1574,7 +1574,7 @@ public class TexturePack {
                 if (!n.endsWith("-texture.txt")) continue;
                 in = zf.getInputStream(ze);
                 if (in != null) {
-                    loadTextureFile(in, n, config, core, n.substring(0, n.indexOf("-texture.txt")));
+                    loadTextureFile(in, n, config, core, HDBlockModels.getModIDFromFileName(n));
                     try { in.close(); } catch (IOException x) { in = null; }
                 }
             }
