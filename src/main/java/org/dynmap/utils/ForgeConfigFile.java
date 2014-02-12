@@ -88,6 +88,7 @@ public class ForgeConfigFile {
                                 }
                                 break;
                             case '=':
+                            case ':':
                                 intok = instr = false;
                                 String propertyName = tok;
                                 tok = "";
@@ -126,7 +127,7 @@ public class ForgeConfigFile {
             val = val.trim();
             if ((val.length() > 0) && Character.isDigit(val.charAt(0))) {
                 try {
-                    return Integer.parseInt(val);
+                    return (int) Double.parseDouble(val);   // Handle floats - used by weird mods like Minegicka for some reason
                 } catch (NumberFormatException nfx) {
                 }
             }
