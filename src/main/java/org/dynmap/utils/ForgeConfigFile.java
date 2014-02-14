@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.dynmap.Log;
+
 public class ForgeConfigFile {
     private File cfg;
     private HashMap<String, String> settings = new HashMap<String, String>();
@@ -36,6 +38,10 @@ public class ForgeConfigFile {
                 boolean intok = false;
                 tok = "";
                 char last_c = ' ';
+                int off = line.indexOf(": ");   // If "tok: value style (Minegicka), fix to look normal
+                if (off > 0) {
+                    line = line.substring(0, off).replace(' ', '_') + "=" + line.substring(off+1);
+                }
                 for (int i = 0; i < line.length() && !skip; ++i) {
                     char c = line.charAt(i);
                     if(instr) {
@@ -55,7 +61,7 @@ public class ForgeConfigFile {
                             intok = instr = true;
                         }
                     }
-                    else if(Character.isLetterOrDigit(line.charAt(i)) || ALLOWED_CHARS.indexOf(line.charAt(i)) != -1) {
+                    else if(Character.isLetterOrDigit(c) || ALLOWED_CHARS.indexOf(c) != -1) {
                         if(intok) {
                             tok += c;
                         }
@@ -64,7 +70,7 @@ public class ForgeConfigFile {
                             intok = true;
                         }
                     }
-                    else if (Character.isWhitespace(line.charAt(i))) {
+                    else if (Character.isWhitespace(c)) {
                         if((!instr) && intok) {
                             intok = false;
                         }
@@ -88,11 +94,10 @@ public class ForgeConfigFile {
                                 }
                                 break;
                             case '=':
-                            case ':':
                                 intok = instr = false;
                                 String propertyName = tok;
                                 tok = "";
-                                int off = propertyName.indexOf(':');
+                                off = propertyName.indexOf(':');
                                 if(off >= 0) {  /* Trim off the Forge 6.4.1+ type prefix */
                                     propertyName = propertyName.substring(off+1);
                                 }
@@ -120,6 +125,7 @@ public class ForgeConfigFile {
     }
     
     public int getBlockID(String id) {
+        int idval = -1;
         String val = settings.get(id);
         if (val == null)
             val = settings.get("block/" + id);  /* Check for "block/" */
@@ -127,12 +133,12 @@ public class ForgeConfigFile {
             val = val.trim();
             if ((val.length() > 0) && Character.isDigit(val.charAt(0))) {
                 try {
-                    return (int) Double.parseDouble(val);   // Handle floats - used by weird mods like Minegicka for some reason
+                    idval = (int) Double.parseDouble(val);   // Handle floats - used by weird mods like Minegicka for some reason
                 } catch (NumberFormatException nfx) {
                 }
             }
         }
-        return -1;
+        return idval;
     }
     public void addBlockIDs(Map<String,Integer> map) {
         for(String k : settings.keySet()) {
