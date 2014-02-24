@@ -22,11 +22,15 @@ import org.dynmap.DynmapCore;
 import org.dynmap.Log;
 import org.dynmap.MapManager;
 import org.dynmap.debug.Debug;
+import org.dynmap.hdmap.TexturePack.BlockTransparency;
+import org.dynmap.hdmap.TexturePack.HDTextureMap;
 import org.dynmap.renderer.CustomRenderer;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory.SideVisible;
+import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.ForgeConfigFile;
+import org.dynmap.utils.MapIterator;
 import org.dynmap.utils.PatchDefinition;
 import org.dynmap.utils.PatchDefinitionFactory;
 
@@ -44,7 +48,22 @@ public class HDBlockModels {
     private static BitSet customModelsRequestingTileData = new BitSet(); // Index by 16*id + data
     private static BitSet changeIgnoredBlocks = new BitSet();   // Index by 16*id + data
     private static HashSet<String> loadedmods = new HashSet<String>();
+
+    // special render data algorithms
+    private static final int FENCE_ALGORITHM = 1;
+    private static final int CHEST_ALGORITHM = 2;
+    private static final int REDSTONE_ALGORITHM = 3;
+    private static final int GLASS_IRONFENCE_ALG = 4;
+    private static final int WIRE_ALGORITHM = 5;
+    private static final int DOOR_ALGORITHM = 6;
+
+    private static final int REDSTONE_BLKTYPEID = 55;
+    private static final int FENCEGATE_BLKTYPEID = 107;
     
+    private enum ChestData {
+        SINGLE_WEST, SINGLE_SOUTH, SINGLE_EAST, SINGLE_NORTH, LEFT_WEST, LEFT_SOUTH, LEFT_EAST, LEFT_NORTH, RIGHT_WEST, RIGHT_SOUTH, RIGHT_EAST, RIGHT_NORTH
+    };
+
     public static final int getMaxPatchCount() { return max_patches; }
     public static final PatchDefinitionFactory getPatchDefinitionFactory() { return pdf; }
     
@@ -1387,5 +1406,294 @@ public class HDBlockModels {
             return false;
         }
         return true;
+    }
+    /**
+     * Get render data for block
+     */
+    public static int getBlockRenderData(int blocktypeid, MapIterator map) {
+        int blockrenderdata = -1;
+        switch(HDBlockModels.getLinkAlgID(blocktypeid)) {
+            case FENCE_ALGORITHM:   /* Fence algorithm */
+                blockrenderdata = generateFenceBlockData(blocktypeid, map);
+                break;
+            case CHEST_ALGORITHM:
+                blockrenderdata = generateChestBlockData(blocktypeid, map);
+                break;
+            case REDSTONE_ALGORITHM:
+                blockrenderdata = generateRedstoneWireBlockData(map);
+                break;
+            case GLASS_IRONFENCE_ALG:
+                blockrenderdata = generateIronFenceGlassBlockData(blocktypeid, map);
+                break;
+            case WIRE_ALGORITHM:
+                blockrenderdata = generateWireBlockData(HDBlockModels.getLinkIDs(blocktypeid), map);
+                break;
+            case DOOR_ALGORITHM:
+                blockrenderdata = generateDoorBlockData(blocktypeid, map);
+                break;
+        }
+        return blockrenderdata;
+    }
+    private static int generateFenceBlockData(int blkid, MapIterator mapiter) {
+        int blockdata = 0;
+        int id;
+        /* Check north */
+        id = mapiter.getBlockTypeIDAt(BlockStep.X_MINUS);
+        if((id == blkid) || (id == FENCEGATE_BLKTYPEID) || 
+                ((id > 0) && (HDTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {    /* Fence? */
+            blockdata |= 1;
+        }
+        /* Look east */
+        id = mapiter.getBlockTypeIDAt(BlockStep.Z_MINUS);
+        if((id == blkid) || (id == FENCEGATE_BLKTYPEID) ||
+                ((id > 0) && (HDTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {    /* Fence? */
+            blockdata |= 2;
+        }
+        /* Look south */
+        id = mapiter.getBlockTypeIDAt(BlockStep.X_PLUS);
+        if((id == blkid) || (id == FENCEGATE_BLKTYPEID) ||
+                ((id > 0) && (HDTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {    /* Fence? */
+            blockdata |= 4;
+        }
+        /* Look west */
+        id = mapiter.getBlockTypeIDAt(BlockStep.Z_PLUS);
+        if((id == blkid) || (id == FENCEGATE_BLKTYPEID) ||
+                ((id > 0) && (HDTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {    /* Fence? */
+            blockdata |= 8;
+        }
+        return blockdata;
+    }
+    /**
+     * Generate chest block to drive model selection:
+     *   0 = single facing west
+     *   1 = single facing south
+     *   2 = single facing east
+     *   3 = single facing north
+     *   4 = left side facing west
+     *   5 = left side facing south
+     *   6 = left side facing east
+     *   7 = left side facing north
+     *   8 = right side facing west
+     *   9 = right side facing south
+     *   10 = right side facing east
+     *   11 = right side facing north
+     * @return
+     */
+    private static int generateChestBlockData(int blktype, MapIterator mapiter) {
+        int blkdata = mapiter.getBlockData();   /* Get block data */
+        ChestData cd = ChestData.SINGLE_WEST;   /* Default to single facing west */
+        switch(blkdata) {   /* First, use orientation data */
+            case 2: /* East (now north) */
+                if(mapiter.getBlockTypeIDAt(BlockStep.X_MINUS) == blktype) { /* Check north */
+                    cd = ChestData.LEFT_EAST;
+                }
+                else if(mapiter.getBlockTypeIDAt(BlockStep.X_PLUS) == blktype) {    /* Check south */
+                    cd = ChestData.RIGHT_EAST;
+                }
+                else {
+                    cd = ChestData.SINGLE_EAST;
+                }
+                break;
+            case 4: /* North */
+                if(mapiter.getBlockTypeIDAt(BlockStep.Z_MINUS) == blktype) { /* Check east */
+                    cd = ChestData.RIGHT_NORTH;
+                }
+                else if(mapiter.getBlockTypeIDAt(BlockStep.Z_PLUS) == blktype) {    /* Check west */
+                    cd = ChestData.LEFT_NORTH;
+                }
+                else {
+                    cd = ChestData.SINGLE_NORTH;
+                }
+                break;
+            case 5: /* South */
+                if(mapiter.getBlockTypeIDAt(BlockStep.Z_MINUS) == blktype) { /* Check east */
+                    cd = ChestData.LEFT_SOUTH;
+                }
+                else if(mapiter.getBlockTypeIDAt(BlockStep.Z_PLUS) == blktype) {    /* Check west */
+                    cd = ChestData.RIGHT_SOUTH;
+                }
+                else {
+                    cd = ChestData.SINGLE_SOUTH;
+                }
+                break;
+            case 3: /* West */
+            default:
+                if(mapiter.getBlockTypeIDAt(BlockStep.X_MINUS) == blktype) { /* Check north */
+                    cd = ChestData.RIGHT_WEST;
+                }
+                else if(mapiter.getBlockTypeIDAt(BlockStep.X_PLUS) == blktype) {    /* Check south */
+                    cd = ChestData.LEFT_WEST;
+                }
+                else {
+                    cd = ChestData.SINGLE_WEST;
+                }
+                break;
+        }
+        return cd.ordinal();
+    }
+    /**
+     * Generate redstone wire model data:
+     *   0 = NSEW wire
+     *   1 = NS wire
+     *   2 = EW wire
+     *   3 = NE wire
+     *   4 = NW wire
+     *   5 = SE wire
+     *   6 = SW wire
+     *   7 = NSE wire
+     *   8 = NSW wire
+     *   9 = NEW wire
+     *   10 = SEW wire
+     *   11 = none
+     * @return
+     */
+    private static int generateRedstoneWireBlockData(MapIterator mapiter) {
+        /* Check adjacent block IDs */
+        int ids[] = { mapiter.getBlockTypeIDAt(BlockStep.Z_PLUS),  /* To west */
+            mapiter.getBlockTypeIDAt(BlockStep.X_PLUS),            /* To south */
+            mapiter.getBlockTypeIDAt(BlockStep.Z_MINUS),           /* To east */
+            mapiter.getBlockTypeIDAt(BlockStep.X_MINUS) };         /* To north */
+        int flags = 0;
+        for(int i = 0; i < 4; i++)
+            if(ids[i] == REDSTONE_BLKTYPEID)
+                flags |= (1<<i);
+        switch(flags) {
+            case 0: /* Nothing nearby */
+                return 11;
+            case 15: /* NSEW */
+                return 0;   /* NSEW graphic */
+            case 2: /* S */
+            case 8: /* N */
+            case 10: /* NS */
+                return 1;   /* NS graphic */
+            case 1: /* W */
+            case 4: /* E */
+            case 5: /* EW */
+                return 2;   /* EW graphic */
+            case 12: /* NE */
+                return 3;
+            case 9: /* NW */
+                return 4;
+            case 6: /* SE */
+                return 5;
+            case 3: /* SW */
+                return 6;
+            case 14: /* NSE */
+                return 7;
+            case 11: /* NSW */
+                return 8;
+            case 13: /* NEW */
+                return 9;
+            case 7: /* SEW */
+                return 10;
+        }
+        return 0;
+    }
+    /**
+     * Generate block render data for glass pane and iron fence.
+     *  - bit 0 = X-minus axis
+     *  - bit 1 = Z-minus axis
+     *  - bit 2 = X-plus axis
+     *  - bit 3 = Z-plus axis
+     *  
+     * @param typeid - ID of our material (test is for adjacent material OR nontransparent)
+     * @return
+     */
+    private static int generateIronFenceGlassBlockData(int typeid, MapIterator mapiter) {
+        int blockdata = 0;
+        int id;
+        /* Check north */
+        id = mapiter.getBlockTypeIDAt(BlockStep.X_MINUS);
+        if((id == typeid) || ((id > 0) && (HDTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {
+            blockdata |= 1;
+        }
+        /* Look east */
+        id = mapiter.getBlockTypeIDAt(BlockStep.Z_MINUS);
+        if((id == typeid) || ((id > 0) && (HDTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {
+            blockdata |= 2;
+        }
+        /* Look south */
+        id = mapiter.getBlockTypeIDAt(BlockStep.X_PLUS);
+        if((id == typeid) || ((id > 0) && (HDTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {
+            blockdata |= 4;
+        }
+        /* Look west */
+        id = mapiter.getBlockTypeIDAt(BlockStep.Z_PLUS);
+        if((id == typeid) || ((id > 0) && (HDTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {
+            blockdata |= 8;
+        }
+        return blockdata;
+    }
+    /**
+     * Generate render data for doors
+     *  - bit 3 = top half (1) or bottom half (0)
+     *  - bit 2 = right hinge (0), left hinge (1)
+     *  - bit 1,0 = 00=west,01=north,10=east,11=south
+     * @param typeid - ID of our material
+     * @return
+     */
+    private static int generateDoorBlockData(int typeid, MapIterator mapiter) {
+        int blockdata = 0;
+        int topdata = mapiter.getBlockData();   /* Get block data */
+        int bottomdata = 0;
+        if((topdata & 0x08) != 0) { /* We're door top */
+            blockdata |= 0x08;  /* Set top bit */
+            mapiter.stepPosition(BlockStep.Y_MINUS);
+            bottomdata = mapiter.getBlockData();
+            mapiter.unstepPosition(BlockStep.Y_MINUS);
+        }
+        else {  /* Else, we're bottom */
+            bottomdata = topdata;
+            mapiter.stepPosition(BlockStep.Y_PLUS);
+            topdata = mapiter.getBlockData();
+            mapiter.unstepPosition(BlockStep.Y_PLUS);
+        }
+        boolean onright = false;
+        if((topdata & 0x01) == 1) { /* Right hinge */
+            blockdata |= 0x4; /* Set hinge bit */
+            onright = true;
+        }
+        blockdata |= (bottomdata & 0x3);    /* Set side bits */
+        /* If open, rotate data appropriately */
+        if((bottomdata & 0x4) > 0) {
+            if(onright) {   /* Hinge on right? */
+                blockdata = (blockdata & 0x8) | 0x0 | ((blockdata-1) & 0x3);
+            }
+            else {
+                blockdata = (blockdata & 0x8) | 0x4 | ((blockdata+1) & 0x3);
+            }
+        }
+        return blockdata;
+    }
+    private static boolean containsID(int id, int[] linkids) {
+        for(int i = 0; i < linkids.length; i++)
+            if(id == linkids[i])
+                return true;
+        return false;
+    }
+    private static int generateWireBlockData(int[] linkids, MapIterator mapiter) {
+        int blockdata = 0;
+        int id;
+        /* Check north */
+        id = mapiter.getBlockTypeIDAt(BlockStep.X_MINUS);
+        if(containsID(id, linkids)) {
+            blockdata |= 1;
+        }
+        /* Look east */
+        id = mapiter.getBlockTypeIDAt(BlockStep.Z_MINUS);
+        if(containsID(id, linkids)) {
+            blockdata |= 2;
+        }
+        /* Look south */
+        id = mapiter.getBlockTypeIDAt(BlockStep.X_PLUS);
+        if(containsID(id, linkids)) {
+            blockdata |= 4;
+        }
+        /* Look west */
+        id = mapiter.getBlockTypeIDAt(BlockStep.Z_PLUS);
+        if(containsID(id, linkids)) {
+            blockdata |= 8;
+        }
+        return blockdata;
     }
 }

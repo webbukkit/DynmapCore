@@ -4,7 +4,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,6 +18,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -32,9 +32,13 @@ import org.dynmap.DynmapCore;
 import org.dynmap.Log;
 import org.dynmap.MapManager;
 import org.dynmap.common.BiomeMap;
+import org.dynmap.exporter.OBJExport;
 import org.dynmap.renderer.CustomColorMultiplier;
+import org.dynmap.renderer.RenderPatch;
 import org.dynmap.utils.BlockStep;
+import org.dynmap.utils.BufferOutputStream;
 import org.dynmap.utils.DynIntHashMap;
+import org.dynmap.utils.DynmapBufferedImage;
 import org.dynmap.utils.ForgeConfigFile;
 import org.dynmap.utils.MapIterator;
 
@@ -535,6 +539,13 @@ public class TexturePack {
             tile_argb = Arrays.copyOf(tile_argb, 3*idx/2);
         }
         tile_argb[idx] = buf;
+    }
+    /**
+     * Get number of entries in tile list
+     * @return length of tile list
+     */
+    public final int getTileARGBCount() {
+        return tile_argb.length;
     }
     /**
      * Get tile ARGB buffer at index
@@ -3100,5 +3111,210 @@ public class TexturePack {
             }
         }
         return 0xFFFFFF;
+    }
+
+    private static class ExportedTexture {
+        public String filename;
+        public Color diffuseColor;
+    }
+
+    private static class ExportedTexturePack {
+        Map<String, ExportedTexture> txtids = new HashMap<String, ExportedTexture>();
+        DynmapBufferedImage img;
+        OBJExport exp;
+        String name;
+    }
+    
+    // Encode image as PNG and add to ZIP
+    private void addImageToZip(int idx, int colormult, ExportedTexturePack etp) throws IOException {
+        colormult = colormult & 0xFFFFFF;   // Mask multiplier
+        String idstr = "txt" + idx;
+        if (colormult != 0xFFFFFF) {    // Nontrivial multiplier
+            idstr = String.format("txt%d_%06X", idx, colormult);
+        }
+        else {
+            idstr = String.format("txt%d", idx);
+        }
+        if (etp.txtids.containsKey(idstr)) {   // Already in set?
+            return;
+        }
+        int[] argb = getTileARGB(idx);  // Look up tile data
+        if (colormult != 0xFFFFFF) {   // Non-trivial color multiplier
+            colormult |= 0xFF000000;
+            for (int i = 0; i < etp.img.argb_buf.length; i++) {
+                etp.img.argb_buf[i] = Color.blendColor(argb[i], colormult);
+            }
+        }
+        else {  // Else, just copy into destination
+            for (int i = 0; i < etp.img.argb_buf.length; i++) {
+                etp.img.argb_buf[i] = argb[i];
+            }
+        }
+        // Compute simple color
+        double r = 0.0, g = 0.0, b = 0.0, w = 0.0;
+        for (int i = 0; i < etp.img.argb_buf.length; i++) {
+            int v = etp.img.argb_buf[i];
+            int ww = (v >> 24) & 0xFF;
+            int rr = (v >> 16) & 0xFF;
+            int gg = (v >> 8) & 0xFF;
+            int bb = v & 0xFF;
+            r += ww * rr;
+            g += ww * gg;
+            b += ww * bb;
+            w += ww;
+        }
+        BufferOutputStream baos = new BufferOutputStream();
+        
+        ImageIO.setUseCache(false); /* Don't use file cache - too small to be worth it */
+
+        String fname = etp.name + "/" + idstr + ".png";
+        etp.exp.startExportedFile(fname);
+        
+        ImageIO.write(etp.img.buf_img, "png", baos);
+
+        etp.exp.addBytesToExportedFile(baos.buf, 0, baos.len);
+        etp.exp.finishExportedFile();
+
+        ExportedTexture et = new ExportedTexture();
+        et.filename = fname;
+        if (w > 0)
+            et.diffuseColor = new Color((int)(r / w), (int)(g / w), (int)(b / w));
+        else
+            et.diffuseColor = new Color();
+        etp.txtids.put(idstr, et);  // Add to set
+    }
+    // Export texture pack as OBJ format material library
+    public void exportAsOBJMaterialLibrary(OBJExport exp, String name) throws IOException {
+        ExportedTexturePack etp = new ExportedTexturePack();
+        etp.img = DynmapBufferedImage.allocateBufferedImage(this.native_scale, this.native_scale);
+        etp.name = name;
+        etp.exp = exp;
+        // Get set of texture references from export
+        Set<String> txtids = exp.getMaterialIDs();
+        // Loop through them, adding the textures needed
+        for (String txt : txtids) {
+            if (txt.startsWith("txt") == false) {
+                continue;
+            }
+            // Parse ID : see if we have shading to do
+            String[] tok = txt.split("_");
+            int mult = -1;
+            if (tok.length > 1) {
+                try {
+                    mult = Integer.parseInt(tok[1], 16);
+                } catch (NumberFormatException x) {
+                    Log.warning("Invalid multiplier " + tok[1]);
+                }
+            }
+            int id = -1;
+            try {
+                id = Integer.parseInt(tok[0].substring(3));
+            } catch (NumberFormatException x) {
+                Log.warning("Invalid texture ID " + tok[0]);
+            }
+            if (id >= 0) {
+                addImageToZip(id, mult, etp);
+            }
+        }
+        // Build MTL file
+        exp.startExportedFile(etp.name + ".mtl");
+        TreeSet<String> ids = new TreeSet<String>(etp.txtids.keySet());
+        for (String id : ids) {
+            ExportedTexture et = etp.txtids.get(id);
+            String lines = "newmtl " + id + "\n";
+            lines += String.format("Kd %.3f %.3f %.3f\n", (double)et.diffuseColor.getRed() / 256.0, (double)et.diffuseColor.getGreen() / 256.0, (double) et.diffuseColor.getBlue() / 256.0);
+            lines += "Ks 0.000 0.000 0.000\n";
+            lines += "map_Kd " + et.filename + "\n\n";
+            exp.addStringToExportedFile(lines);
+        }
+        exp.finishExportedFile();
+    }
+    public String[] getCurrentBlockMaterials(int blkid, int blkdata, int renderdata, MapIterator mapiter) {
+        HDTextureMap map = HDTextureMap.getMap(blkid, blkdata, renderdata);
+        int blkindex = indexByIDMeta(blkid, blkdata);
+        String[] rslt = new String[map.faces.length];   // One for each face
+        for (int faceindex = 0; faceindex < rslt.length; faceindex++) {
+            int textid = map.faces[faceindex];
+            if (ctm != null) {
+                int mod = 0;
+                if(textid >= COLORMOD_MULT_INTERNAL) {
+                    mod = (textid / COLORMOD_MULT_INTERNAL) * COLORMOD_MULT_INTERNAL;
+                    textid -= mod;
+                }
+                textid = mod + ctm.mapTexture(mapiter, blkid, blkdata, BlockStep.values()[faceindex%6], textid, null);
+            }
+            if (textid >= 0) {
+                int mod = textid / COLORMOD_MULT_INTERNAL;
+                textid = textid % COLORMOD_MULT_INTERNAL;
+                rslt[faceindex] = "txt" + textid;   // Default texture
+                int mult = 0xFFFFFF;
+                BiomeMap bio;
+                switch (mod) {
+                    case COLORMOD_GRASSTONED:
+                    case COLORMOD_GRASSTONED270:
+                        bio = mapiter.getBiome();
+                        if ((bio == BiomeMap.SWAMPLAND) && (imgs[IMG_SWAMPGRASSCOLOR] != null)) {
+                            mult = getBiomeTonedColor(imgs[IMG_SWAMPGRASSCOLOR], -1, bio, blkindex);
+                        }
+                        else {
+                            mult = getBiomeTonedColor(imgs[IMG_GRASSCOLOR], -1, bio, blkindex);
+                        }
+                        break;
+                    case COLORMOD_FOLIAGETONED:
+                    case COLORMOD_FOLIAGETONED270:
+                    case COLORMOD_FOLIAGEMULTTONED:
+                        mult = getBiomeTonedColor(imgs[IMG_FOLIAGECOLOR], -1, mapiter.getBiome(), blkindex);
+                        break;
+                    case COLORMOD_WATERTONED:
+                    case COLORMOD_WATERTONED270:
+                        mult = getBiomeTonedColor(imgs[IMG_WATERCOLORX], -1, mapiter.getBiome(), blkindex);
+                        break;
+                    case COLORMOD_PINETONED:
+                        mult = getBiomeTonedColor(imgs[IMG_PINECOLOR], colorMultPine, mapiter.getBiome(), blkindex);
+                        break;
+                    case COLORMOD_BIRCHTONED:
+                        mult = getBiomeTonedColor(imgs[IMG_BIRCHCOLOR], colorMultBirch, mapiter.getBiome(), blkindex);
+                        break;
+                    case COLORMOD_LILYTONED:
+                        mult = getBiomeTonedColor(null, colorMultLily, mapiter.getBiome(), blkindex);
+                        break;
+                    case COLORMOD_MULTTONED:
+                    case COLORMOD_MULTTONED_CLEARINSIDE:
+                        if(map.custColorMult == null) { //TODO: don't handle custom multipler functions yet
+                            mult = getBiomeTonedColor(null, map.colorMult, mapiter.getBiome(), blkindex);
+                        }
+                        break;
+                    default:
+                        mult = getBiomeTonedColor(null, -1, mapiter.getBiome(), blkindex);
+                        break;
+                }
+                if ((mult & 0xFFFFFF) != 0xFFFFFF) {
+                    rslt[faceindex] += String.format("_%06X", mult & 0xFFFFFF);
+                }
+            }
+        }
+        return rslt;
+    }
+    
+    // Get biome-specific color multpliers
+    private int getBiomeTonedColor(LoadedImage tonemap, int defcolormult, BiomeMap biome, int blkidx) {
+        int mult;
+        if (tonemap == null) { // No map? just use trivial
+            mult = defcolormult;
+        }
+        else if (tonemap.argb == null) {    // No details, use trivial
+            mult = tonemap.trivial_color;
+        }
+        else {
+            mult = tonemap.argb[biome.biomeLookup()];
+        }
+        if(hasBlockColoring.get(blkidx)) {
+            Integer cidx = (Integer) this.blockColoring.get(blkidx);
+            LoadedImage custimg = imgs[cidx];
+            if (custimg.argb != null) {
+                mult = Color.blendColor(mult, custimg.argb[biome.biomeLookup()]);
+            }
+        }
+        return mult;
     }
 }

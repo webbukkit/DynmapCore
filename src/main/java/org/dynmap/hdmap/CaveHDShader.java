@@ -2,12 +2,16 @@ package org.dynmap.hdmap;
 
 import static org.dynmap.JSONUtils.s;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.dynmap.Color;
 import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapCore;
 import org.dynmap.MapManager;
+import org.dynmap.common.DynmapCommandSender;
+import org.dynmap.exporter.OBJExport;
 import org.dynmap.utils.DynLongHashMap;
 import org.dynmap.utils.MapChunkCache;
 import org.dynmap.utils.MapIterator;
@@ -238,5 +242,14 @@ public class CaveHDShader implements HDShader {
     /* Add shader's contributions to JSON for map object */
     public void addClientConfiguration(JSONObject mapObject) {
         s(mapObject, "shader", name);
+    }
+    @Override
+    public void exportAsMaterialLibrary(DynmapCommandSender sender, OBJExport out) throws IOException {
+        throw new IOException("Export unsupported");
+    }
+    private static final String[] nulllist = new String[0];
+    @Override
+    public String[] getCurrentBlockMaterials(int blkid, int blkdata, int renderdata, MapIterator mapiter) {
+        return nulllist;
     }
 }

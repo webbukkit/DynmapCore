@@ -40,6 +40,7 @@ import org.dynmap.common.DynmapPlayer;
 import org.dynmap.common.DynmapServerInterface;
 import org.dynmap.debug.Debug;
 import org.dynmap.debug.Debugger;
+import org.dynmap.exporter.DynmapExpCommands;
 import org.dynmap.hdmap.HDBlockModels;
 import org.dynmap.hdmap.HDMapManager;
 import org.dynmap.hdmap.TexturePack;
@@ -99,6 +100,7 @@ public class DynmapCore implements DynmapCommonAPI {
     public Events events = new Events();
     public String deftemplatesuffix = "";
     private DynmapMapCommands dmapcmds = new DynmapMapCommands();
+    private DynmapExpCommands dynmapexpcmds = new DynmapExpCommands();
     boolean bettergrass = false;
     boolean smoothlighting = false;
     private boolean ctmsupport = false;
@@ -145,6 +147,7 @@ public class DynmapCore implements DynmapCommonAPI {
     
     private File dataDirectory;
     private File tilesDirectory;
+    private File exportDirectory;
     private String plugin_ver;
     
     private String[] deftriggers = { };
@@ -185,7 +188,9 @@ public class DynmapCore implements DynmapCommonAPI {
     public final File getTilesFolder() {
         return tilesDirectory;
     }
-    
+    public final File getExportFolder() {
+        return exportDirectory;
+    }
     public void setMinecraftVersion(String mcver) {
         this.platformVersion = mcver;
     }
@@ -381,6 +386,11 @@ public class DynmapCore implements DynmapCommonAPI {
         tilesDirectory = getFile(configuration.getString("tilespath", "web/tiles"));
         if (!tilesDirectory.isDirectory() && !tilesDirectory.mkdirs()) {
             Log.warning("Could not create directory for tiles ('" + tilesDirectory + "').");
+        }
+        // Prime the exports directory
+        exportDirectory = getFile(configuration.getString("exportpath", "export"));
+        if (!exportDirectory.isDirectory() && !exportDirectory.mkdirs()) {
+            Log.warning("Could not create directory for exports ('" + exportDirectory + "').");
         }
         
         /* Register API with plugin, if needed */
@@ -1165,6 +1175,12 @@ public class DynmapCore implements DynmapCommonAPI {
         }
         if (cmd.equalsIgnoreCase("dmap")) {
             if(!dmapcmds.processCommand(sender, cmd, commandLabel, args, this)) {
+                printCommandHelp(sender, cmd, (args.length > 0)?args[0]:"");
+            }
+            return true;
+        }
+        if (cmd.equalsIgnoreCase("dynmapexp")) {
+            if(!dynmapexpcmds.processCommand(sender, cmd, commandLabel, args, this)) {
                 printCommandHelp(sender, cmd, (args.length > 0)?args[0]:"");
             }
             return true;

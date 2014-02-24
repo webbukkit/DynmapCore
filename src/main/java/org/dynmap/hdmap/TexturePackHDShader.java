@@ -2,11 +2,16 @@ package org.dynmap.hdmap;
 
 import static org.dynmap.JSONUtils.s;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.dynmap.Color;
 import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapCore;
 import org.dynmap.Log;
 import org.dynmap.MapManager;
+import org.dynmap.common.DynmapCommandSender;
+import org.dynmap.exporter.OBJExport;
 import org.dynmap.utils.DynLongHashMap;
 import org.dynmap.utils.MapChunkCache;
 import org.dynmap.utils.MapIterator;
@@ -302,5 +307,22 @@ public class TexturePackHDShader implements HDShader {
     /* Add shader's contributions to JSON for map object */
     public void addClientConfiguration(JSONObject mapObject) {
         s(mapObject, "shader", name);
+    }
+
+    @Override
+    public void exportAsMaterialLibrary(DynmapCommandSender sender, OBJExport out) throws IOException {
+        if (tp != null) {
+            tp.exportAsOBJMaterialLibrary(out, name);
+            return;
+        }
+        throw new IOException("Export unsupported - invalid texture pack");
+    }
+    private static final String[] nulllist = new String[0];
+    @Override
+    public String[] getCurrentBlockMaterials(int blkid, int blkdata, int renderdata, MapIterator mapiter) {
+        if (tp != null) {
+            return tp.getCurrentBlockMaterials(blkid, blkdata, renderdata, mapiter);
+        }
+        return nulllist;
     }
 }

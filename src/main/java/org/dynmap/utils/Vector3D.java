@@ -44,4 +44,19 @@ public class Vector3D {
     public String toString() {
         return "{ " + x + ", " + y + ", " + z + " }";
     }
+    
+    @Override
+    public boolean equals(Object v) {
+        if (v instanceof Vector3D) {
+            Vector3D vv = (Vector3D) v;
+            return (vv.x == x) && (vv.y == y) && (vv.z == z);
+        }
+        return false;
+    }
+    
+    @Override
+    public int hashCode() {
+        long v = Double.doubleToLongBits(x) ^ Double.doubleToLongBits(y) ^ Double.doubleToLongBits(z);
+        return (int) (v ^ (v >> 32));
+    }
 }

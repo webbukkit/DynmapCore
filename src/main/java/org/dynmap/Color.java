@@ -71,4 +71,14 @@ public class Color {
         nval = nval | (((val & 0xFF) * (argb & 0xFF)) / 255);
         val = nval;
     }
+    /**
+     * Scale each color component, based on the corresponding component
+     */
+    public static final int blendColor(int argb0, int argb1) {
+        int nval = (((((argb0 >> 24) & 0xFF) * ((argb1 >> 24) & 0xFF)) / 255) << 24);
+        nval = nval | (((((argb0 >> 16) & 0xFF) * ((argb1 >> 16) & 0xFF)) / 255) << 16);
+        nval = nval | (((((argb0 >> 8) & 0xFF) * ((argb1 >> 8) & 0xFF)) / 255) << 8);
+        nval = nval | (((argb0 & 0xFF) * (argb1 & 0xFF)) / 255);
+        return nval;
+    }
 }

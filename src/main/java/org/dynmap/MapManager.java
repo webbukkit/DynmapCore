@@ -28,6 +28,7 @@ import org.dynmap.DynmapCore.CompassMode;
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.common.DynmapPlayer;
 import org.dynmap.debug.Debug;
+import org.dynmap.exporter.OBJExport;
 import org.dynmap.hdmap.HDMapManager;
 import org.dynmap.utils.MapChunkCache;
 import org.dynmap.utils.TileFlags;
@@ -765,6 +766,15 @@ public class MapManager {
         }
     }
 
+    private class ProcessOBJExport implements Runnable {
+        private OBJExport exp;
+        private DynmapCommandSender sender;
+        
+        public void run() {
+            exp.processExport(sender);
+        }
+    }
+    
     private class CheckWorldTimes implements Runnable {
         public void run() {
             Future<Integer> f = core.getServer().callSyncMethod(new Callable<Integer>() {
@@ -1001,6 +1011,13 @@ public class MapManager {
         /* Schedule first tile to be worked */
         scheduleDelayedJob(rndr, 0);
         sender.sendMessage("Render of " + radius + " block radius starting on world '" + wname + "'...");
+    }
+    
+    public void startOBJExport(OBJExport exp, DynmapCommandSender sender) {
+        ProcessOBJExport e = new ProcessOBJExport();
+        e.exp = exp;
+        e.sender = sender;
+        scheduleDelayedJob(e, 0);
     }
 
     void cancelRender(String w, DynmapCommandSender sender) {

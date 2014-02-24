@@ -1018,11 +1018,15 @@ public class CTMTexturePack {
             return textid;
         }
         // See if cached result
-        DynLongHashMap cache = ss.getCTMTextureCache();
-        long idx = (mapiter.getBlockKey() << 8) | laststep.ordinal();
-        Integer val = (Integer) cache.get(idx);
-        if (val != null) {
-            return val.intValue();
+        DynLongHashMap cache = null;
+        long idx = 0;
+        if (ss != null) {
+            cache = ss.getCTMTextureCache();
+            idx = (mapiter.getBlockKey() << 8) | laststep.ordinal();
+            Integer val = (Integer) cache.get(idx);
+            if (val != null) {
+                return val.intValue();
+            }
         }
             
         Context ctx = new Context(mapiter, blkid, blkdata, laststep, textid);
@@ -1063,8 +1067,9 @@ public class CTMTexturePack {
             }
         }
         // Add result to cache 
-        cache.put(idx, textid);
-        
+        if (cache != null) {
+            cache.put(idx, textid);
+        }
         return textid;
     }
     

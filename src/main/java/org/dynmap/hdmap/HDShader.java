@@ -1,8 +1,12 @@
 package org.dynmap.hdmap;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.dynmap.common.DynmapCommandSender;
+import org.dynmap.exporter.OBJExport;
 import org.dynmap.utils.MapChunkCache;
 import org.dynmap.utils.MapIterator;
-
 import org.json.simple.JSONObject;
 
 public interface HDShader {
@@ -31,5 +35,8 @@ public interface HDShader {
     boolean isEmittedLightLevelNeeded();
     /* Add shader's contributions to JSON for map object */
     void addClientConfiguration(JSONObject mapObject);
-
+    /* Export shader as material library */
+    void exportAsMaterialLibrary(DynmapCommandSender sender, OBJExport exp) throws IOException;
+    /* Get materials for each patch on the current block (with +N for N*90 degree rotations) */
+    String[] getCurrentBlockMaterials(int blkid, int blkdata, int renderdata, MapIterator mapiter);
 }
