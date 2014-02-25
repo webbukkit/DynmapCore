@@ -321,6 +321,15 @@ public class OBJExport {
      * Add patch as face to output
      */
     private void addPatch(PatchDefinition pd, double x, double y, double z, String[] mats) throws IOException {
+        // Look up material
+        String material = null;
+        if ((mats != null) && (mats.length > pd.textureindex)) {
+            material = mats[pd.textureindex];
+        }
+        // No material?  No face
+        if (material == null) {
+            return;
+        }
         int[] v = new int[4];
         int[] uv = new int[4];
         // Get offsets for U and V from origin
@@ -346,12 +355,6 @@ public class OBJExport {
         // Forth is end of V (umin, vmax)
         v[3] = vertices.getVectorIndex(x + ux*pd.umin + vx*pd.vmax, y + uy*pd.umin + vy*pd.vmax, z + uz*pd.umin + vz*pd.vmax);
         uv[3] = uvs.getVectorIndex(pd.umin, pd.vmax, 0);
-        // Look up material
-        String material = null;
-        if ((mats != null) && (mats.length > pd.textureindex)) {
-            material = mats[pd.textureindex];
-        }
-        if (material == null) material = "";
         // Add patch to file
         addPatchToFile(v, uv, pd.sidevis, material);
     }

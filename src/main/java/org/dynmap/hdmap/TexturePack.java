@@ -3262,17 +3262,28 @@ public class TexturePack {
         String[] rslt = new String[map.faces.length];   // One for each face
         for (int faceindex = 0; faceindex < rslt.length; faceindex++) {
             int textid = map.faces[faceindex];
-            if (ctm != null) {
-                int mod = 0;
-                if(textid >= COLORMOD_MULT_INTERNAL) {
-                    mod = (textid / COLORMOD_MULT_INTERNAL) * COLORMOD_MULT_INTERNAL;
-                    textid -= mod;
+            int mod = textid / COLORMOD_MULT_INTERNAL;
+            textid = textid % COLORMOD_MULT_INTERNAL;
+            BlockStep step = BlockStep.values()[faceindex%6];
+            /* If clear-inside op, get out early */
+            if((mod == COLORMOD_CLEARINSIDE) || (mod == COLORMOD_MULTTONED_CLEARINSIDE)) {
+                /* Check if previous block is same block type as we are: surface is transparent if it is */
+                if(blkid == mapiter.getBlockTypeIDAt(step.opposite())) {
+                    continue;   // Skip: no texture
                 }
-                textid = mod + ctm.mapTexture(mapiter, blkid, blkdata, BlockStep.values()[faceindex%6], textid, null);
+                /* If water block, to watercolor tone op */
+                if ((blkid == 8) || (blkid == 9)) {
+                    mod = COLORMOD_WATERTONED;
+                }
+                else if (mod == COLORMOD_MULTTONED_CLEARINSIDE) {
+                    mod = COLORMOD_MULTTONED;
+                }
+            }
+            
+            if (ctm != null) {
+                textid = ctm.mapTexture(mapiter, blkid, blkdata, step, textid, null);
             }
             if (textid >= 0) {
-                int mod = textid / COLORMOD_MULT_INTERNAL;
-                textid = textid % COLORMOD_MULT_INTERNAL;
                 rslt[faceindex] = "txt" + textid;   // Default texture
                 int mult = 0xFFFFFF;
                 BiomeMap bio;
