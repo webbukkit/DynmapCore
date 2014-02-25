@@ -2339,6 +2339,7 @@ public class DynmapCore implements DynmapCommonAPI {
         mod = getNormalizedModID(mod);
         for (String k : blockmap.keySet()) {
             String[] ks = k.split(":");
+            if (ks.length != 2) continue;
             int id = blockmap.get(k);
             ks[0] = getNormalizedModID(ks[0]);
             if (mod.equals(ks[0])) {
@@ -2347,6 +2348,7 @@ public class DynmapCore implements DynmapCommonAPI {
         }
         for (String k : itemmap.keySet()) {
             String[] ks = k.split(":");
+            if (ks.length != 2) continue;
             int id = itemmap.get(k);
             ks[0] = getNormalizedModID(ks[0]);
             if (mod.equals(ks[0])) {
