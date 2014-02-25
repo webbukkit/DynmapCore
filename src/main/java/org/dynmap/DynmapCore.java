@@ -1125,7 +1125,15 @@ public class DynmapCore implements DynmapCommonAPI {
         new CommandInfo("dmap", "mapadd", "<world>:<map> <attrib>:<value> <attrib>:<value>", "Create map for world <world> with name <map> using provided attributes."),
         new CommandInfo("dmap", "mapset", "<world>:<map> <attrib>:<value> <attrib>:<value>", "Update map <map> of world <world> with new attribute values."),
         new CommandInfo("dmap", "worldreset", "<world>", "Reset world <world> to default template for world type"),
-        new CommandInfo("dmap", "worldreset", "<world> <templatename>", "Reset world <world> to temaplte <templatename>.")
+        new CommandInfo("dmap", "worldreset", "<world> <templatename>", "Reset world <world> to temaplte <templatename>."),
+        new CommandInfo("dynmapexp", "", "Set and execute exports in OBJ format."),
+        new CommandInfo("dynmapexp", "set", "<attrib> <value> ...", "Set bounds attributes for OBJ export."),
+        new CommandInfo("dynmapexp", "reset", "Reset all bounds for OBJ export."),
+        new CommandInfo("dynmapexp", "pos0", "Set first corner of bounds to player's position."),
+        new CommandInfo("dynmapexp", "pos1", "Set second corner of bounds to player's position."),
+        new CommandInfo("dynmapexp", "radius", "<radius>", "Set bounds to radius <radius> around player's position."),
+        new CommandInfo("dynmapexp", "export", "<name>", "Export map data to <name>.zip in export path."),
+        new CommandInfo("dynmapexp", "purge", "<name>", "Purge exported map data <name>.zip from export path.")
     };
     
     public void printCommandHelp(DynmapCommandSender sender, String cmd, String subcmd) {

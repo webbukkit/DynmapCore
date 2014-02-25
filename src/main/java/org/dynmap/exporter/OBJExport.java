@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -43,10 +44,10 @@ public class OBJExport {
     private ZipOutputStream zos;        // Output stream ZIP for result
     private double originX, originY, originZ;   // Origin for exported model
     private double scale = 1.0;         // Scale for exported model
+    private boolean centerOrigin = true;    // Center at origin
     private PatchDefinition[] defaultPathces;   // Default patches for solid block, indexed by BlockStep.ordinal()
-    private String curMaterial = "";
     private HashSet<String> matIDs = new HashSet<String>();     // Set of defined material ids for RP
-    
+    private HashMap<String, List<String>> facesByTexture = new HashMap<String, List<String>>();
     // Vertex set
     private IndexedVector3DList vertices;
     // UV set
@@ -143,7 +144,7 @@ public class OBJExport {
         }
         if (minY < 0) minY = 0;
         if (maxY >= world.worldheight) maxY = world.worldheight - 1;
-        if ((originX == 0.0) && (originY == 0.0) && (originZ == 0.0)) {
+        if (centerOrigin) {
             originX = (maxX + minX) / 2.0;
             originY = (maxY + minY) / 2.0;
             originZ = (maxZ + minZ) / 2.0;
@@ -159,6 +160,7 @@ public class OBJExport {
         originX = ox;
         originY = oy;
         originZ = oz;
+        centerOrigin = false;
     }
     /**
      * Set scale for exported model
@@ -219,6 +221,17 @@ public class OBJExport {
                             }
                         }
                     }
+                    // Output faces by texture
+                    for (String material : facesByTexture.keySet()) {
+                        List<String> faces = facesByTexture.get(material);
+                        matIDs.add(material);   // Record material use
+                        addStringToExportedFile(String.format("usemtl %s\n", material)); 
+                        for (String face : faces) {
+                            addStringToExportedFile(face);
+                        }
+                    }
+                    // Clear face table
+                    facesByTexture.clear();
                     // Clean up vertices we've moved past
                     vertices.resetSet(minX, minY, minZ, cx * 16 + 64, maxY, cz * 16 + 64);
                 }
@@ -359,25 +372,25 @@ public class OBJExport {
         addPatchToFile(v, uv, pd.sidevis, material);
     }
     private void addPatchToFile(int[] v, int[] uv, SideVisible sv, String material) throws IOException {
-        if (curMaterial.equals(material) == false) {
-            matIDs.add(material);   // Record material use
-            addStringToExportedFile(String.format("usemtl %s\n", material)); 
-            curMaterial = material;
+        List<String> faces = facesByTexture.get(material);
+        if (faces == null) {
+            faces = new ArrayList<String>();
+            facesByTexture.put(material, faces);
         }
         switch (sv) {
             case TOP:
-                addStringToExportedFile(String.format("f %d/%d %d/%d %d/%d %d/%d\n", v[0], uv[0], v[1], uv[1], v[2], uv[2], v[3], uv[3])); 
+                faces.add(String.format("f %d/%d %d/%d %d/%d %d/%d\n", v[0], uv[0], v[1], uv[1], v[2], uv[2], v[3], uv[3])); 
                 break;
             case BOTTOM:
-                addStringToExportedFile(String.format("f %d/%d %d/%d %d/%d %d/%d\n", v[3], uv[3], v[2], uv[2], v[1], uv[1], v[0], uv[0])); 
+                faces.add(String.format("f %d/%d %d/%d %d/%d %d/%d\n", v[3], uv[3], v[2], uv[2], v[1], uv[1], v[0], uv[0])); 
                 break;
             case BOTH:
-                addStringToExportedFile(String.format("f %d/%d %d/%d %d/%d %d/%d\n", v[0], uv[0], v[1], uv[1], v[2], uv[2], v[3], uv[3])); 
-                addStringToExportedFile(String.format("f %d/%d %d/%d %d/%d %d/%d\n", v[3], uv[3], v[2], uv[2], v[1], uv[1], v[0], uv[0])); 
+                faces.add(String.format("f %d/%d %d/%d %d/%d %d/%d\n", v[0], uv[0], v[1], uv[1], v[2], uv[2], v[3], uv[3])); 
+                faces.add(String.format("f %d/%d %d/%d %d/%d %d/%d\n", v[3], uv[3], v[2], uv[2], v[1], uv[1], v[0], uv[0])); 
                 break;
             case FLIP:
-                addStringToExportedFile(String.format("f %d/%d %d/%d %d/%d %d/%d\n", v[0], uv[0], v[1], uv[1], v[2], uv[2], v[3], uv[3])); 
-                addStringToExportedFile(String.format("f %d/%d %d/%d %d/%d %d/%d\n", v[3], uv[2], v[2], uv[3], v[1], uv[0], v[0], uv[1])); 
+                faces.add(String.format("f %d/%d %d/%d %d/%d %d/%d\n", v[0], uv[0], v[1], uv[1], v[2], uv[2], v[3], uv[3])); 
+                faces.add(String.format("f %d/%d %d/%d %d/%d %d/%d\n", v[3], uv[2], v[2], uv[3], v[1], uv[0], v[0], uv[1])); 
                 break;
         }
     }
