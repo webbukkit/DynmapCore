@@ -3116,6 +3116,7 @@ public class TexturePack {
     private static class ExportedTexture {
         public String filename;
         public Color diffuseColor;
+        public String filename_a;
     }
 
     private static class ExportedTexturePack {
@@ -3150,6 +3151,7 @@ public class TexturePack {
                 etp.img.argb_buf[i] = argb[i];
             }
         }
+        boolean hasAlpha = false;
         // Compute simple color
         double r = 0.0, g = 0.0, b = 0.0, w = 0.0;
         for (int i = 0; i < etp.img.argb_buf.length; i++) {
@@ -3162,6 +3164,9 @@ public class TexturePack {
             g += ww * gg;
             b += ww * bb;
             w += ww;
+            if (ww != 0xFF) {   // Non-trivial alpha?
+                hasAlpha = true;
+            }
         }
         BufferOutputStream baos = new BufferOutputStream();
         
@@ -3174,9 +3179,27 @@ public class TexturePack {
 
         etp.exp.addBytesToExportedFile(baos.buf, 0, baos.len);
         etp.exp.finishExportedFile();
+        String fname_a = null;
+        // If has alpha, convert to gray scale for alpha image
+        if (hasAlpha) {
+            for (int i = 0; i < etp.img.argb_buf.length; i++) {
+                int v = etp.img.argb_buf[i];
+                int ww = (v >> 24) & 0xFF;
+                etp.img.argb_buf[i] = (ww << 24) | (ww << 16) | (ww << 8) | ww;
+            }
+            fname_a = etp.name + "/" + idstr + "_a.png";
+            etp.exp.startExportedFile(fname_a);
+            
+            baos.reset();
+            ImageIO.write(etp.img.buf_img, "png", baos);
 
+            etp.exp.addBytesToExportedFile(baos.buf, 0, baos.len);
+            etp.exp.finishExportedFile();
+        }
+        
         ExportedTexture et = new ExportedTexture();
         et.filename = fname;
+        et.filename_a = fname_a;
         if (w > 0)
             et.diffuseColor = new Color((int)(r / w), (int)(g / w), (int)(b / w));
         else
@@ -3224,7 +3247,11 @@ public class TexturePack {
             String lines = "newmtl " + id + "\n";
             lines += String.format("Kd %.3f %.3f %.3f\n", (double)et.diffuseColor.getRed() / 256.0, (double)et.diffuseColor.getGreen() / 256.0, (double) et.diffuseColor.getBlue() / 256.0);
             lines += "Ks 0.000 0.000 0.000\n";
-            lines += "map_Kd " + et.filename + "\n\n";
+            lines += "map_Kd " + et.filename + "\n";
+            if (et.filename_a != null) {
+                lines += "map_d " + et.filename_a + "\n";
+            }
+            lines += "\n";
             exp.addStringToExportedFile(lines);
         }
         exp.finishExportedFile();
