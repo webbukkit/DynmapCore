@@ -3329,6 +3329,24 @@ public class TexturePack {
                 if ((mult & 0xFFFFFF) != 0xFFFFFF) {
                     rslt[faceindex] += String.format("_%06X", mult & 0xFFFFFF);
                 }
+                // Handle rotations
+                switch (mod) {
+                    case COLORMOD_ROT90:
+                        rslt[faceindex] += "@" + OBJExport.ROT90;
+                        break;
+                    case COLORMOD_ROT180:
+                        rslt[faceindex] += "@" + OBJExport.ROT180;
+                        break;
+                    case COLORMOD_ROT270:
+                    case COLORMOD_GRASSTONED270:
+                    case COLORMOD_FOLIAGETONED270:
+                    case COLORMOD_WATERTONED270:
+                        rslt[faceindex] += "@" +  + OBJExport.ROT270;
+                        break;
+                    case COLORMOD_FLIPHORIZ:
+                        rslt[faceindex] += "@" + OBJExport.HFLIP;
+                        break;
+                }
             }
         }
         return rslt;

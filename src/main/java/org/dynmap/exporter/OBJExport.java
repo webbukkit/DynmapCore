@@ -55,6 +55,12 @@ public class OBJExport {
     // Scaled models
     private HDScaledBlockModels models;
     
+    public static final int ROT0 = 0;
+    public static final int ROT90 = 1;
+    public static final int ROT180 = 2;
+    public static final int ROT270 = 3;
+    public static final int HFLIP = 4;
+    
     private static final double[][] pp = {
         { 0, 0, 0, 1, 0, 0, 0, 0, 1 },
         { 0, 1, 1, 1, 1, 1, 0, 1, 0 },
@@ -198,7 +204,7 @@ public class OBJExport {
                     requiredChunks.clear();
                     for (int i = -1; i < 5; i++) {
                         for (int j = -1; j < 5; j++) {
-                            if (((cx+i+1) <= maxcx) && ((cz+j+1) <= maxcz)) {
+                            if (((cx+i) <= maxcx) && ((cz+j) <= maxcz) && ((cx+i) >= mincx) && ((cz+j) >= mincz)) {
                                 requiredChunks.add(new DynmapChunk(cx + i, cz + j));
                             }
                         }
@@ -343,6 +349,12 @@ public class OBJExport {
         if (material == null) {
             return;
         }
+        int rot = 0;
+        int rotidx = material.indexOf('@'); // Check for rotation modifier
+        if (rotidx >= 0) {
+            rot = material.charAt(rotidx+1) - '0';  // 0-3
+            material = material.substring(0, rotidx);
+        }
         int[] v = new int[4];
         int[] uv = new int[4];
         // Get offsets for U and V from origin
@@ -369,13 +381,28 @@ public class OBJExport {
         v[3] = vertices.getVectorIndex(x + ux*pd.umin + vx*pd.vmax, y + uy*pd.umin + vy*pd.vmax, z + uz*pd.umin + vz*pd.vmax);
         uv[3] = uvs.getVectorIndex(pd.umin, pd.vmax, 0);
         // Add patch to file
-        addPatchToFile(v, uv, pd.sidevis, material);
+        addPatchToFile(v, uv, pd.sidevis, material, rot);
     }
-    private void addPatchToFile(int[] v, int[] uv, SideVisible sv, String material) throws IOException {
+    private void addPatchToFile(int[] v, int[] uv, SideVisible sv, String material, int rot) throws IOException {
         List<String> faces = facesByTexture.get(material);
         if (faces == null) {
             faces = new ArrayList<String>();
             facesByTexture.put(material, faces);
+        }
+        // If needed, rotate the UV sequence
+        if (rot == HFLIP) { // Flip horizonntal
+            int newuv[] = new int[uv.length];
+            for (int i = 0; i < uv.length; i++) {
+                newuv[i] = uv[i ^ 1];
+            }
+            uv = newuv;
+        }
+        else if (rot != ROT0) {
+            int newuv[] = new int[uv.length];
+            for (int i = 0; i < uv.length; i++) {
+                newuv[i] = uv[(i+rot) % uv.length];
+            }
+            uv = newuv;
         }
         switch (sv) {
             case TOP:
