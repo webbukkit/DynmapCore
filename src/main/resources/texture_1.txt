@@ -498,29 +498,29 @@ block:id=28,data=1,patch0=0:rail_detector,transparency=TRANSPARENT
 # Detector rail - incline to south
 block:id=28,data=2,data=3,patch0=0:rail_detector,transparency=TRANSPARENT
 # Sticky piston - facing down
-block:id=29,data=0,top=0:piston_bottom,bottom=0:piston_top_sticky,allsides=5000:piston_side
+block:id=29,data=0,top=0:piston_bottom,bottom=0:piston_top_sticky,allsides=5000:piston_side,transparency=TRANSPARENT
 # Sticky piston - facing up
-block:id=29,data=1,top=0:piston_top_sticky,bottom=0:piston_bottom,allsides=0:piston_side
+block:id=29,data=1,top=0:piston_top_sticky,bottom=0:piston_bottom,allsides=0:piston_side,transparency=TRANSPARENT
 # Sticky piston - facing east
-block:id=29,data=2,east=0:piston_top_sticky,west=0:piston_bottom,top=6000:piston_side,bottom=4000:piston_side,north=4000:piston_side,south=6000:piston_side
+block:id=29,data=2,east=0:piston_top_sticky,west=0:piston_bottom,top=6000:piston_side,bottom=4000:piston_side,north=4000:piston_side,south=6000:piston_side,transparency=TRANSPARENT
 # Sticky piston - facing west
-block:id=29,data=3,west=0:piston_top_sticky,east=0:piston_bottom,top=4000:piston_side,bottom=6000:piston_side,north=6000:piston_side,south=4000:piston_side
+block:id=29,data=3,west=0:piston_top_sticky,east=0:piston_bottom,top=4000:piston_side,bottom=6000:piston_side,north=6000:piston_side,south=4000:piston_side,transparency=TRANSPARENT
 # Sticky piston - facing north
-block:id=29,data=4,north=0:piston_top_sticky,south=0:piston_bottom,top=0:piston_side,bottom=5000:piston_side,east=6000:piston_side,west=4000:piston_side
+block:id=29,data=4,north=0:piston_top_sticky,south=0:piston_bottom,top=0:piston_side,bottom=5000:piston_side,east=6000:piston_side,west=4000:piston_side,transparency=TRANSPARENT
 # Sticky piston - facing south
-block:id=29,data=5,north=0:piston_bottom,south=0:piston_top_sticky,top=5000:piston_side,bottom=0:piston_side,east=4000:piston_side,west=6000:piston_side
+block:id=29,data=5,north=0:piston_bottom,south=0:piston_top_sticky,top=5000:piston_side,bottom=0:piston_side,east=4000:piston_side,west=6000:piston_side,transparency=TRANSPARENT
 # Sticky piston - extended facing down (TODO: side)
-block:id=29,data=8,top=0:piston_bottom,bottom=0:piston_inner,allsides=5262
+block:id=29,data=8,top=0:piston_bottom,bottom=0:piston_inner,allsides=5262,transparency=TRANSPARENT
 # Sticky piston - extended facing up  (TODO: side)
-block:id=29,data=9,top=0:piston_inner,bottom=0:piston_bottom,allsides=262
+block:id=29,data=9,top=0:piston_inner,bottom=0:piston_bottom,allsides=262,transparency=TRANSPARENT
 # Sticky piston - extended facing east (TODO: side)
-block:id=29,data=10,east=0:piston_inner,west=0:piston_bottom,top=6262,bottom=4262,north=4262,south=6262
+block:id=29,data=10,east=0:piston_inner,west=0:piston_bottom,top=6262,bottom=4262,north=4262,south=6262,transparency=TRANSPARENT
 # Sticky piston - extended facing west (TODO: side)
-block:id=29,data=11,west=0:piston_inner,east=0:piston_bottom,top=4262,bottom=6262,north=6262,south=4262
+block:id=29,data=11,west=0:piston_inner,east=0:piston_bottom,top=4262,bottom=6262,north=6262,south=4262,transparency=TRANSPARENT
 # Sticky piston - extended facing north (TODO: side)
-block:id=29,data=12,north=0:piston_inner,south=0:piston_bottom,top=262,bottom=5262,east=6262,west=4262
+block:id=29,data=12,north=0:piston_inner,south=0:piston_bottom,top=262,bottom=5262,east=6262,west=4262,transparency=TRANSPARENT
 # Sticky piston - extended facing south (TODO: side)
-block:id=29,data=13,north=0:piston_bottom,south=0:piston_inner,top=5262,bottom=262,east=4262,west=6262
+block:id=29,data=13,north=0:piston_bottom,south=0:piston_inner,top=5262,bottom=262,east=4262,west=6262,transparency=TRANSPARENT
 # Web
 block:id=30,patch0-1=0:web,transparency=TRANSPARENT
 # Dead shrub
@@ -532,53 +532,53 @@ block:id=31,data=2,patch0-1=1000:fern,transparency=TRANSPARENT
 # Dead shrub
 block:id=32,patch0-1=0:deadbush,transparency=TRANSPARENT
 # Piston - facing down
-block:id=33,data=0,top=0:piston_bottom,bottom=0:piston_top_normal,allsides=5000:piston_side
+block:id=33,data=0,top=0:piston_bottom,bottom=0:piston_top_normal,allsides=5000:piston_side,transparency=TRANSPARENT
 # Piston - facing up
-block:id=33,data=1,top=0:piston_top_normal,bottom=0:piston_bottom,allsides=0:piston_side
+block:id=33,data=1,top=0:piston_top_normal,bottom=0:piston_bottom,allsides=0:piston_side,transparency=TRANSPARENT
 # Piston - facing east
-block:id=33,data=2,east=0:piston_top_normal,west=0:piston_bottom,top=6000:piston_side,bottom=4000:piston_side,north=4000:piston_side,south=6000:piston_side
+block:id=33,data=2,east=0:piston_top_normal,west=0:piston_bottom,top=6000:piston_side,bottom=4000:piston_side,north=4000:piston_side,south=6000:piston_side,transparency=TRANSPARENT
 # Piston - facing west
-block:id=33,data=3,west=0:piston_top_normal,east=0:piston_bottom,top=4000:piston_side,bottom=6000:piston_side,north=6000:piston_side,south=4000:piston_side
+block:id=33,data=3,west=0:piston_top_normal,east=0:piston_bottom,top=4000:piston_side,bottom=6000:piston_side,north=6000:piston_side,south=4000:piston_side,transparency=TRANSPARENT
 # Piston - facing north
-block:id=33,data=4,north=0:piston_top_normal,south=0:piston_bottom,top=0:piston_side,bottom=5000:piston_side,east=6000:piston_side,west=4000:piston_side
+block:id=33,data=4,north=0:piston_top_normal,south=0:piston_bottom,top=0:piston_side,bottom=5000:piston_side,east=6000:piston_side,west=4000:piston_side,transparency=TRANSPARENT
 # Piston - facing south
-block:id=33,data=5,north=0:piston_bottom,south=0:piston_top_normal,top=5000:piston_side,bottom=0:piston_side,east=4000:piston_side,west=6000:piston_side
+block:id=33,data=5,north=0:piston_bottom,south=0:piston_top_normal,top=5000:piston_side,bottom=0:piston_side,east=4000:piston_side,west=6000:piston_side,transparency=TRANSPARENT
 # Piston - extended facing down (TODO:piston extension side)
-block:id=33,data=8,top=0:piston_bottom,bottom=0:piston_inner,allsides=5262
+block:id=33,data=8,top=0:piston_bottom,bottom=0:piston_inner,allsides=5262,transparency=TRANSPARENT
 # Piston - extended facing up (TODO:piston extension side)
-block:id=33,data=9,top=0:piston_inner,bottom=0:piston_bottom,allsides=262
+block:id=33,data=9,top=0:piston_inner,bottom=0:piston_bottom,allsides=262,transparency=TRANSPARENT
 # Piston - extended facing east (TODO:piston extension side)
-block:id=33,data=10,east=0:piston_inner,west=0:piston_bottom,top=6262,bottom=4262,north=4262,south=6262
+block:id=33,data=10,east=0:piston_inner,west=0:piston_bottom,top=6262,bottom=4262,north=4262,south=6262,transparency=TRANSPARENT
 # Piston - extended facing west (TODO:piston extension side)
-block:id=33,data=11,west=0:piston_inner,east=0:piston_bottom,top=4262,bottom=6262,north=6262,south=4262
+block:id=33,data=11,west=0:piston_inner,east=0:piston_bottom,top=4262,bottom=6262,north=6262,south=4262,transparency=TRANSPARENT
 # Piston - extended facing north (TODO:piston extension side)
-block:id=33,data=12,north=0:piston_inner,south=0:piston_bottom,top=262,bottom=5262,east=6262,west=4262
+block:id=33,data=12,north=0:piston_inner,south=0:piston_bottom,top=262,bottom=5262,east=6262,west=4262,transparency=TRANSPARENT
 # Piston - extended facing south (TODO:piston extension side)
-block:id=33,data=13,north=0:piston_bottom,south=0:piston_inner,top=5262,bottom=262,east=4262,west=6262
+block:id=33,data=13,north=0:piston_bottom,south=0:piston_inner,top=5262,bottom=262,east=4262,west=6262,transparency=TRANSPARENT
 # Piston extension- facing down (TODO:piston extension side)
-block:id=34,data=0,top=0:piston_inner,bottom=0:piston_top_normal,allsides=5261
+block:id=34,data=0,top=0:piston_inner,bottom=0:piston_top_normal,allsides=5261,transparency=TRANSPARENT
 # Piston extension - facing up (TODO:piston extension side)
-block:id=34,data=1,top=0:piston_top_normal,bottom=0:piston_inner,allsides=261
+block:id=34,data=1,top=0:piston_top_normal,bottom=0:piston_inner,allsides=261,transparency=TRANSPARENT
 # Piston extension - facing east (TODO:piston extension side)
-block:id=34,data=2,east=0:piston_top_normal,west=0:piston_inner,top=6261,bottom=4261,north=4261,south=6261
+block:id=34,data=2,east=0:piston_top_normal,west=0:piston_inner,top=6261,bottom=4261,north=4261,south=6261,transparency=TRANSPARENT
 # Piston extension - facing west (TODO:piston extension side)
-block:id=34,data=3,west=0:piston_top_normal,east=0:piston_inner,top=4261,bottom=6261,north=6261,south=4261
+block:id=34,data=3,west=0:piston_top_normal,east=0:piston_inner,top=4261,bottom=6261,north=6261,south=4261,transparency=TRANSPARENT
 # Piston extension - facing north (TODO:piston extension side)
-block:id=34,data=4,north=0:piston_top_normal,south=0:piston_inner,top=261,bottom=5261,east=6261,west=4261
+block:id=34,data=4,north=0:piston_top_normal,south=0:piston_inner,top=261,bottom=5261,east=6261,west=4261,transparency=TRANSPARENT
 # Piston extension - facing south (TODO:piston extension side)
-block:id=34,data=5,north=0:piston_inner,south=0:piston_top_normal,top=5261,bottom=261,east=4261,west=6261
+block:id=34,data=5,north=0:piston_inner,south=0:piston_top_normal,top=5261,bottom=261,east=4261,west=6261,transparency=TRANSPARENT
 # Sticky piston extension - facing down (TODO:piston extension side)
-block:id=34,data=8,top=0:piston_inner,bottom=0:piston_top_sticky,allsides=5261
+block:id=34,data=8,top=0:piston_inner,bottom=0:piston_top_sticky,allsides=5261,transparency=TRANSPARENT
 # Sticky piston extension - facing up (TODO:piston extension side)
-block:id=34,data=9,top=0:piston_top_sticky,bottom=0:piston_inner,allsides=261
+block:id=34,data=9,top=0:piston_top_sticky,bottom=0:piston_inner,allsides=261,transparency=TRANSPARENT
 # Sticky piston extension - facing east (TODO:piston extension side)
-block:id=34,data=10,east=0:piston_top_sticky,west=0:piston_inner,top=6261,bottom=4261,north=4261,south=6261
+block:id=34,data=10,east=0:piston_top_sticky,west=0:piston_inner,top=6261,bottom=4261,north=4261,south=6261,transparency=TRANSPARENT
 # Sticky piston extension - facing west (TODO:piston extension side)
-block:id=34,data=11,west=0:piston_top_sticky,east=0:piston_inner,top=4261,bottom=6261,north=6261,south=4261
+block:id=34,data=11,west=0:piston_top_sticky,east=0:piston_inner,top=4261,bottom=6261,north=6261,south=4261,transparency=TRANSPARENT
 # Sticky piston extension - facing north (TODO:piston extension side)
-block:id=34,data=12,north=0:piston_top_sticky,south=0:piston_inner,top=261,bottom=5261,east=6261,west=4261
+block:id=34,data=12,north=0:piston_top_sticky,south=0:piston_inner,top=261,bottom=5261,east=6261,west=4261,transparency=TRANSPARENT
 # Sticky piston extension - facing south (TODO:piston extension side)
-block:id=34,data=13,north=0:piston_inner,south=0:piston_top_sticky,top=5261,bottom=261,east=4261,west=6261
+block:id=34,data=13,north=0:piston_inner,south=0:piston_top_sticky,top=5261,bottom=261,east=4261,west=6261,transparency=TRANSPARENT
 # Wool
 block:id=35,data=0,allfaces=0:wool_colored_white,stdrot=true
 block:id=35,data=1,allfaces=0:wool_colored_orange,stdrot=true

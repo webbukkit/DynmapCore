@@ -335,7 +335,7 @@ public class TopoHDShader implements HDShader {
     }
     private static final String[] nulllist = new String[0];
     @Override
-    public String[] getCurrentBlockMaterials(int blkid, int blkdata, int renderdata, MapIterator mapiter) {
+    public String[] getCurrentBlockMaterials(int blkid, int blkdata, int renderdata, MapIterator mapiter, boolean handlestdrot) {
         return nulllist;
     }
 }

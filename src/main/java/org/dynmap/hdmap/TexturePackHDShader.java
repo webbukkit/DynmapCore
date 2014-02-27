@@ -319,9 +319,9 @@ public class TexturePackHDShader implements HDShader {
     }
     private static final String[] nulllist = new String[0];
     @Override
-    public String[] getCurrentBlockMaterials(int blkid, int blkdata, int renderdata, MapIterator mapiter) {
+    public String[] getCurrentBlockMaterials(int blkid, int blkdata, int renderdata, MapIterator mapiter, boolean handlestdrot) {
         if (tp != null) {
-            return tp.getCurrentBlockMaterials(blkid, blkdata, renderdata, mapiter);
+            return tp.getCurrentBlockMaterials(blkid, blkdata, renderdata, mapiter, handlestdrot);
         }
         return nulllist;
     }

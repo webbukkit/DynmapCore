@@ -3256,7 +3256,7 @@ public class TexturePack {
         }
         exp.finishExportedFile();
     }
-    public String[] getCurrentBlockMaterials(int blkid, int blkdata, int renderdata, MapIterator mapiter) {
+    public String[] getCurrentBlockMaterials(int blkid, int blkdata, int renderdata, MapIterator mapiter, boolean handlestdrot) {
         HDTextureMap map = HDTextureMap.getMap(blkid, blkdata, renderdata);
         int blkindex = indexByIDMeta(blkid, blkdata);
         String[] rslt = new String[map.faces.length];   // One for each face
@@ -3328,6 +3328,26 @@ public class TexturePack {
                 }
                 if ((mult & 0xFFFFFF) != 0xFFFFFF) {
                     rslt[faceindex] += String.format("_%06X", mult & 0xFFFFFF);
+                }
+                if (handlestdrot && (!map.stdrotate) && ((step == BlockStep.Y_MINUS) || (step == BlockStep.Y_PLUS))) {
+                    // Handle rotations
+                    switch (mod) {
+                        case COLORMOD_ROT90:
+                            mod = COLORMOD_ROT180;
+                            break;
+                        case COLORMOD_ROT180:
+                            mod = COLORMOD_ROT270;
+                            break;
+                        case COLORMOD_ROT270:
+                        case COLORMOD_GRASSTONED270:
+                        case COLORMOD_FOLIAGETONED270:
+                        case COLORMOD_WATERTONED270:
+                            mod = 0;
+                            break;
+                        default:
+                            mod = COLORMOD_ROT90;
+                            break;
+                    }
                 }
                 // Handle rotations
                 switch (mod) {

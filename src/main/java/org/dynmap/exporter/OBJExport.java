@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.zip.ZipOutputStream;
 import org.dynmap.DynmapChunk;
 import org.dynmap.DynmapCore;
 import org.dynmap.DynmapWorld;
+import org.dynmap.Log;
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.hdmap.HDBlockModels;
 import org.dynmap.hdmap.HDShader;
@@ -23,6 +25,7 @@ import org.dynmap.hdmap.TexturePack;
 import org.dynmap.hdmap.HDBlockModels.CustomBlockModel;
 import org.dynmap.hdmap.HDBlockModels.HDScaledBlockModels;
 import org.dynmap.hdmap.TexturePack.BlockTransparency;
+import org.dynmap.renderer.CustomRenderer;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory.SideVisible;
 import org.dynmap.utils.BlockStep;
@@ -48,6 +51,8 @@ public class OBJExport {
     private PatchDefinition[] defaultPathces;   // Default patches for solid block, indexed by BlockStep.ordinal()
     private HashSet<String> matIDs = new HashSet<String>();     // Set of defined material ids for RP
     private HashMap<String, List<String>> facesByTexture = new HashMap<String, List<String>>();
+    private static final int MODELSCALE = 16;
+    private static final double BLKSIZE = 1.0 / (double) MODELSCALE;
     // Vertex set
     private IndexedVector3DList vertices;
     // UV set
@@ -112,7 +117,7 @@ public class OBJExport {
             }
         });
         // Get models
-        models = HDBlockModels.getModelsForScale(16);
+        models = HDBlockModels.getModelsForScale(MODELSCALE);
     }
     /**
      * Set render bounds
@@ -307,10 +312,9 @@ public class OBJExport {
      * @param iter - iterator
      */
     private void handleBlock(int blkid, MapIterator map) throws IOException {
+        boolean handlestdrot = true;
         int data = map.getBlockData();             
         int renderdata = HDBlockModels.getBlockRenderData(blkid, map);  // Get render data, if needed
-        // Get materials for patches
-        String[] mats = shader.getCurrentBlockMaterials(blkid, data, renderdata, map);
         // See if the block has a patch model
         RenderPatch[] patches = models.getPatchModel(blkid,  data,  renderdata);
         /* If no patches, see if custom model */
@@ -320,6 +324,18 @@ public class OBJExport {
                 patches = cbm.getMeshForBlock(map);
             }
         }
+        if (patches != null) {
+            handlestdrot = false;   // No stdrot for patch based models (custom or no)
+        }
+        if (patches == null) {  // See if volumetric
+            short[] smod = models.getScaledModel(blkid, data, renderdata);
+            if (smod != null) {
+                patches = getScaledModelAsPatches(smod);
+            }
+        }
+        // Get materials for patches
+        String[] mats = shader.getCurrentBlockMaterials(blkid, data, renderdata, map, handlestdrot);
+        
         if (patches != null) {  // Patch based model?
             for (RenderPatch p : patches) {
                 addPatch((PatchDefinition) p, map.getX(), map.getY(), map.getZ(), mats);
@@ -400,7 +416,7 @@ public class OBJExport {
         else if (rot != ROT0) {
             int newuv[] = new int[uv.length];
             for (int i = 0; i < uv.length; i++) {
-                newuv[i] = uv[(i+rot) % uv.length];
+                newuv[i] = uv[(i+4-rot) % uv.length];
             }
             uv = newuv;
         }
@@ -424,5 +440,74 @@ public class OBJExport {
     
     public Set<String> getMaterialIDs() {
         return matIDs;
+    }
+    
+    private static final boolean getSubblock(short[] mod, int x, int y, int z) {
+        if ((x >= 0) && (x < MODELSCALE) && (y >= 0) && (y < MODELSCALE) && (z >= 0) && (z < MODELSCALE)) {
+            return mod[MODELSCALE*MODELSCALE*y + MODELSCALE*z + x] != 0;
+        }
+        return false;
+    }
+    // Scan along X axis
+    private int scanX(short[] tmod, int x, int y, int z) {
+        int xlen = 0;
+        while (getSubblock(tmod, x+xlen, y, z)) { 
+            xlen++;
+        }
+        return xlen;
+    }
+    // Scan along Z axis for rows matching given x length
+    private int scanZ(short[] tmod, int x, int y, int z, int xlen) {
+        int zlen = 0;
+        while (scanX(tmod, x, y, z+zlen) >= xlen) {
+            zlen++;
+        }
+        return zlen;
+    }
+    // Scan along Y axis for layers matching given X and Z lengths
+    private int scanY(short[] tmod, int x, int y, int z, int xlen, int zlen) {
+        int ylen = 0;
+        while (scanZ(tmod, x, y+ylen, z, xlen) >= zlen) {
+            ylen++;
+        }
+        return ylen;
+    }
+    private void addSubblock(short[] tmod, int x, int y, int z, List<RenderPatch> list) {
+        // Find dimensions of cuboid
+        int xlen = scanX(tmod, x, y, z);
+        int zlen = scanZ(tmod, x, y, z, xlen);
+        int ylen = scanY(tmod, x, y, z, xlen, zlen);
+        // Add equivalent of boxblock
+        CustomRenderer.addBox(HDBlockModels.getPatchDefinitionFactory(), list, 
+                BLKSIZE * x, BLKSIZE * (x+xlen), 
+                BLKSIZE * y, BLKSIZE * (y+ylen),
+                BLKSIZE * z, BLKSIZE * (z+zlen), 
+                HDBlockModels.boxPatchList);
+        // And remove blocks from model (since we have them covered)
+        for (int xx = 0; xx < xlen; xx++) {
+            for (int yy = 0; yy < ylen; yy++) {
+                for (int zz = 0; zz < zlen; zz++) {
+                    tmod[MODELSCALE*MODELSCALE*(y+yy) + MODELSCALE*(z+zz) + (x+xx)] = 0;
+                }
+            }
+        }
+    }
+    private PatchDefinition[] getScaledModelAsPatches(short[] mod) {
+        ArrayList<RenderPatch> list = new ArrayList<RenderPatch>();
+        short[] tmod = Arrays.copyOf(mod, mod.length);  // Make copy
+        for (int y = 0; y < MODELSCALE; y++) {
+            for (int z = 0; z < MODELSCALE; z++) {
+                for (int x = 0; x < MODELSCALE; x++) {
+                    if (getSubblock(tmod, x, y, z)) {   // If occupied, try to add to list
+                        addSubblock(tmod, x, y, z, list);
+                    }
+                }
+            }
+        }
+        PatchDefinition[] pd = new PatchDefinition[list.size()];
+        for (int i = 0; i < pd.length; i++) {
+            pd[i] = (PatchDefinition) list.get(i);
+        }
+        return pd;
     }
 }

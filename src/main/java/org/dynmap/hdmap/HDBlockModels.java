@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -717,7 +718,7 @@ public class HDBlockModels {
     }
     
     // Patch index ordering, corresponding to BlockStep ordinal order
-    private static final int boxPatchList[] = { 1, 4, 2, 5, 0, 3 };
+    public static final int boxPatchList[] = { 1, 4, 2, 5, 0, 3 };
 
     /**
      * Load models from file
