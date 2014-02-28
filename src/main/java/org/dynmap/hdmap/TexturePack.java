@@ -34,7 +34,7 @@ import org.dynmap.MapManager;
 import org.dynmap.common.BiomeMap;
 import org.dynmap.exporter.OBJExport;
 import org.dynmap.renderer.CustomColorMultiplier;
-import org.dynmap.renderer.RenderPatch;
+import org.dynmap.renderer.MapDataContext;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.BufferOutputStream;
 import org.dynmap.utils.DynIntHashMap;
@@ -2960,7 +2960,6 @@ public class TexturePack {
         f.idx = addonfiles.size();
         addonfiles.add(f);
         addonfilesbyname.put(f.filename, f);
-        //Log.info("File " + fname + "(" + f.idx + ")=" + fmt.toString());
         return f.idx;
     }
     /**
@@ -3256,15 +3255,20 @@ public class TexturePack {
         }
         exp.finishExportedFile();
     }
-    public String[] getCurrentBlockMaterials(int blkid, int blkdata, int renderdata, MapIterator mapiter, boolean handlestdrot) {
+    private static final int[] deftxtidx = { 0, 1, 2, 3, 4, 5 };
+    
+    public String[] getCurrentBlockMaterials(int blkid, int blkdata, int renderdata, MapIterator mapiter, int[] txtidx, BlockStep[] steps) {
         HDTextureMap map = HDTextureMap.getMap(blkid, blkdata, renderdata);
         int blkindex = indexByIDMeta(blkid, blkdata);
-        String[] rslt = new String[map.faces.length];   // One for each face
-        for (int faceindex = 0; faceindex < rslt.length; faceindex++) {
+        if (txtidx == null) txtidx = deftxtidx;
+        String[] rslt = new String[txtidx.length];   // One for each face
+        boolean handlestdrot = (steps != null) && (!map.stdrotate);
+        for (int patchidx = 0; patchidx < txtidx.length; patchidx++) {
+            int faceindex = txtidx[patchidx];
             int textid = map.faces[faceindex];
             int mod = textid / COLORMOD_MULT_INTERNAL;
             textid = textid % COLORMOD_MULT_INTERNAL;
-            BlockStep step = BlockStep.values()[faceindex%6];
+            BlockStep step = steps[patchidx];
             /* If clear-inside op, get out early */
             if((mod == COLORMOD_CLEARINSIDE) || (mod == COLORMOD_MULTTONED_CLEARINSIDE)) {
                 /* Check if previous block is same block type as we are: surface is transparent if it is */
@@ -3284,7 +3288,7 @@ public class TexturePack {
                 textid = ctm.mapTexture(mapiter, blkid, blkdata, step, textid, null);
             }
             if (textid >= 0) {
-                rslt[faceindex] = "txt" + textid;   // Default texture
+                rslt[patchidx] = "txt" + textid;   // Default texture
                 int mult = 0xFFFFFF;
                 BiomeMap bio;
                 switch (mod) {
@@ -3318,8 +3322,11 @@ public class TexturePack {
                         break;
                     case COLORMOD_MULTTONED:
                     case COLORMOD_MULTTONED_CLEARINSIDE:
-                        if(map.custColorMult == null) { //TODO: don't handle custom multipler functions yet
+                        if(map.custColorMult == null) {
                             mult = getBiomeTonedColor(null, map.colorMult, mapiter.getBiome(), blkindex);
+                        }
+                        else {
+                            mult = map.custColorMult.getColorMultiplier(mapiter);
                         }
                         break;
                     default:
@@ -3327,9 +3334,10 @@ public class TexturePack {
                         break;
                 }
                 if ((mult & 0xFFFFFF) != 0xFFFFFF) {
-                    rslt[faceindex] += String.format("_%06X", mult & 0xFFFFFF);
+                    rslt[patchidx] += String.format("_%06X", mult & 0xFFFFFF);
                 }
                 if (handlestdrot && (!map.stdrotate) && ((step == BlockStep.Y_MINUS) || (step == BlockStep.Y_PLUS))) {
+                    int oldmod = mod;
                     // Handle rotations
                     switch (mod) {
                         case COLORMOD_ROT90:
@@ -3352,19 +3360,19 @@ public class TexturePack {
                 // Handle rotations
                 switch (mod) {
                     case COLORMOD_ROT90:
-                        rslt[faceindex] += "@" + OBJExport.ROT90;
+                        rslt[patchidx] += "@" + OBJExport.ROT90;
                         break;
                     case COLORMOD_ROT180:
-                        rslt[faceindex] += "@" + OBJExport.ROT180;
+                        rslt[patchidx] += "@" + OBJExport.ROT180;
                         break;
                     case COLORMOD_ROT270:
                     case COLORMOD_GRASSTONED270:
                     case COLORMOD_FOLIAGETONED270:
                     case COLORMOD_WATERTONED270:
-                        rslt[faceindex] += "@" +  + OBJExport.ROT270;
+                        rslt[patchidx] += "@" +  + OBJExport.ROT270;
                         break;
                     case COLORMOD_FLIPHORIZ:
-                        rslt[faceindex] += "@" + OBJExport.HFLIP;
+                        rslt[patchidx] += "@" + OBJExport.HFLIP;
                         break;
                 }
             }

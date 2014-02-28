@@ -158,7 +158,7 @@ public class DynmapExpCommands {
             return true;
         }
         int radius = 16;
-        if (args.length < 2) {
+        if (args.length >= 2) {
             try {
                 radius = Integer.parseInt(args[1]);
                 if (radius < 0) {

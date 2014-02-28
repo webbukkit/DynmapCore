@@ -718,7 +718,7 @@ public class HDBlockModels {
     }
     
     // Patch index ordering, corresponding to BlockStep ordinal order
-    public static final int boxPatchList[] = { 1, 4, 2, 5, 0, 3 };
+    public static final int boxPatchList[] = { 1, 4, 0, 3, 2, 5 };
 
     /**
      * Load models from file

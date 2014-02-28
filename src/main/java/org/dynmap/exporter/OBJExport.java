@@ -17,7 +17,6 @@ import java.util.zip.ZipOutputStream;
 import org.dynmap.DynmapChunk;
 import org.dynmap.DynmapCore;
 import org.dynmap.DynmapWorld;
-import org.dynmap.Log;
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.hdmap.HDBlockModels;
 import org.dynmap.hdmap.HDShader;
@@ -312,7 +311,8 @@ public class OBJExport {
      * @param iter - iterator
      */
     private void handleBlock(int blkid, MapIterator map) throws IOException {
-        boolean handlestdrot = true;
+        BlockStep[] steps = BlockStep.values();
+        int[] txtidx = null;
         int data = map.getBlockData();             
         int renderdata = HDBlockModels.getBlockRenderData(blkid, map);  // Get render data, if needed
         // See if the block has a patch model
@@ -325,20 +325,32 @@ public class OBJExport {
             }
         }
         if (patches != null) {
-            handlestdrot = false;   // No stdrot for patch based models (custom or no)
+            steps = new BlockStep[patches.length];
+            txtidx = new int[patches.length];
+            for (int i = 0; i < txtidx.length; i++) {
+                txtidx[i] = ((PatchDefinition) patches[i]).getTextureIndex();
+                steps[i] = ((PatchDefinition) patches[i]).step;
+            }
         }
-        if (patches == null) {  // See if volumetric
+        else {  // See if volumetric
             short[] smod = models.getScaledModel(blkid, data, renderdata);
             if (smod != null) {
                 patches = getScaledModelAsPatches(smod);
+                steps = new BlockStep[patches.length];
+                txtidx = new int[patches.length];
+                for (int i = 0; i < patches.length; i++) {
+                    PatchDefinition pd = (PatchDefinition) patches[i];
+                    steps[i] = pd.step;
+                    txtidx[i] = pd.getTextureIndex();
+                }
             }
         }
         // Get materials for patches
-        String[] mats = shader.getCurrentBlockMaterials(blkid, data, renderdata, map, handlestdrot);
+        String[] mats = shader.getCurrentBlockMaterials(blkid, data, renderdata, map, txtidx, steps);
         
         if (patches != null) {  // Patch based model?
-            for (RenderPatch p : patches) {
-                addPatch((PatchDefinition) p, map.getX(), map.getY(), map.getZ(), mats);
+            for (int i = 0; i < patches.length; i++) {
+                addPatch((PatchDefinition) patches[i], map.getX(), map.getY(), map.getZ(), mats[i]);
             }
         }
         else {
@@ -347,20 +359,55 @@ public class OBJExport {
                 int id2 = map.getBlockTypeIDAt(s.opposite());  // Get block in direction
                 // If we're not solid, or adjacent block is not solid, draw side
                 if ((!opaque) || (id2 == 0) || (TexturePack.HDTextureMap.getTransparency(id2) != BlockTransparency.OPAQUE)) {
-                    addPatch(defaultPathces[s.ordinal()], map.getX(), map.getY(), map.getZ(), mats);
+                    addPatch(defaultPathces[s.ordinal()], map.getX(), map.getY(), map.getZ(), mats[s.ordinal()]);
                 }
             }
         }
     }
+    private int[] getTextureUVs(PatchDefinition pd, int rot) {
+        int[] uv = new int[4];
+        if (rot == ROT0) {
+            uv[0] = uvs.getVectorIndex(pd.umin, pd.vmin, 0);
+            uv[1] = uvs.getVectorIndex(pd.umax, pd.vmin, 0);
+            uv[2] = uvs.getVectorIndex(pd.umax, pd.vmax, 0);
+            uv[3] = uvs.getVectorIndex(pd.umin, pd.vmax, 0);
+        }
+        else if (rot == ROT90) {    // 90 degrees on texture
+            uv[0] = uvs.getVectorIndex(1.0 - pd.vmin, pd.umin, 0);
+            uv[1] = uvs.getVectorIndex(1.0 - pd.vmin, pd.umax, 0);
+            uv[2] = uvs.getVectorIndex(1.0 - pd.vmax, pd.umax, 0);
+            uv[3] = uvs.getVectorIndex(1.0 - pd.vmax, pd.umin, 0);
+        }
+        else if (rot == ROT180) {    // 180 degrees on texture
+            uv[0] = uvs.getVectorIndex(1.0 - pd.umin, 1.0 - pd.vmin, 0);
+            uv[1] = uvs.getVectorIndex(1.0 - pd.umax, 1.0 - pd.vmin, 0);
+            uv[2] = uvs.getVectorIndex(1.0 - pd.umax, 1.0 - pd.vmax, 0);
+            uv[3] = uvs.getVectorIndex(1.0 - pd.umin, 1.0 - pd.vmax, 0);
+        }
+        else if (rot == ROT270) {    // 270 degrees on texture
+            uv[0] = uvs.getVectorIndex(pd.vmin, 1.0 - pd.umin, 0);
+            uv[1] = uvs.getVectorIndex(pd.vmin, 1.0 - pd.umax, 0);
+            uv[2] = uvs.getVectorIndex(pd.vmax, 1.0 - pd.umax, 0);
+            uv[3] = uvs.getVectorIndex(pd.vmax, 1.0 - pd.umin, 0);
+        }
+        else if (rot == HFLIP) {
+            uv[0] = uvs.getVectorIndex(1.0 - pd.umin, pd.vmin, 0);
+            uv[1] = uvs.getVectorIndex(1.0 - pd.umax, pd.vmin, 0);
+            uv[2] = uvs.getVectorIndex(1.0 - pd.umax, pd.vmax, 0);
+            uv[3] = uvs.getVectorIndex(1.0 - pd.umin, pd.vmax, 0);
+        }
+        else {
+            uv[0] = uvs.getVectorIndex(pd.umin, pd.vmin, 0);
+            uv[1] = uvs.getVectorIndex(pd.umax, pd.vmin, 0);
+            uv[2] = uvs.getVectorIndex(pd.umax, pd.vmax, 0);
+            uv[3] = uvs.getVectorIndex(pd.umin, pd.vmax, 0);
+        }
+        return uv;
+    }
     /**
      * Add patch as face to output
      */
-    private void addPatch(PatchDefinition pd, double x, double y, double z, String[] mats) throws IOException {
-        // Look up material
-        String material = null;
-        if ((mats != null) && (mats.length > pd.textureindex)) {
-            material = mats[pd.textureindex];
-        }
+    private void addPatch(PatchDefinition pd, double x, double y, double z, String material) throws IOException {
         // No material?  No face
         if (material == null) {
             return;
@@ -372,7 +419,7 @@ public class OBJExport {
             material = material.substring(0, rotidx);
         }
         int[] v = new int[4];
-        int[] uv = new int[4];
+        int[] uv = getTextureUVs(pd, rot);
         // Get offsets for U and V from origin
         double ux = pd.xu - pd.x0;
         double uy = pd.yu - pd.y0;
