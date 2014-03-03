@@ -312,18 +312,23 @@ public class TexturePackHDShader implements HDShader {
 
     @Override
     public void exportAsMaterialLibrary(DynmapCommandSender sender, OBJExport out) throws IOException {
+        if (tp == null) {
+            getTexturePack();   // Make sure its loaded
+        }
         if (tp != null) {
             tp.exportAsOBJMaterialLibrary(out, name);
             return;
         }
         throw new IOException("Export unsupported - invalid texture pack");
     }
-    private static final String[] nulllist = new String[0];
     @Override
     public String[] getCurrentBlockMaterials(int blkid, int blkdata, int renderdata, MapIterator mapiter, int[] txtidx, BlockStep[] steps) {
+        if (tp == null) {
+            getTexturePack();   // Make sure its loaded
+        }
         if (tp != null) {
             return tp.getCurrentBlockMaterials(blkid, blkdata, renderdata, mapiter, txtidx, steps);
         }
-        return nulllist;
+        return new String[txtidx.length];
     }
 }

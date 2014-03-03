@@ -34,7 +34,6 @@ import org.dynmap.MapManager;
 import org.dynmap.common.BiomeMap;
 import org.dynmap.exporter.OBJExport;
 import org.dynmap.renderer.CustomColorMultiplier;
-import org.dynmap.renderer.MapDataContext;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.BufferOutputStream;
 import org.dynmap.utils.DynIntHashMap;
@@ -193,6 +192,22 @@ public class TexturePack {
         BIOME
     };
     
+    // Material type: used for setting advanced rendering/export characteristics for image in given file
+    // (e.g. reflective surfaces, index of refraction, etc)
+    public static enum MaterialType {
+        GLASS(1.5, 200, 3),  // Glass material: Ni=1.5, Ns=100, illum=3
+        WATER(1.33, 100, 3);  // Water material: Ni=1.33, Ns=95, illum=3
+        
+        public final double Ni;
+        public final double Ns;
+        public final int illum;
+        MaterialType(double Ni, double Ns, int illum) {
+            this.Ni = Ni;
+            this.Ns = Ns;
+            this.illum = illum;
+        }
+    }
+    
     /* Map of 1.5 texture files to 0-255 texture indices */
     private static final String[] terrain_map = {
         "grass_top", "stone", "dirt", "grass_side", "wood", "stoneslab_side", "stoneslab_top", "brick", 
@@ -287,9 +302,13 @@ public class TexturePack {
         List<CustomTileRec> cust;
         String[] tilenames;         /* For TILESET, array of tilenames, indexed by tile index */
         boolean used;               // Set to true if any active references to the file
+        MaterialType material;      // Material type, if specified
     }
     private static ArrayList<DynamicTileFile> addonfiles = new ArrayList<DynamicTileFile>();
     private static Map<String, DynamicTileFile> addonfilesbyname = new HashMap<String, DynamicTileFile>();
+    private Map<Integer, MaterialType> materialbytileid = new HashMap<Integer, MaterialType>();
+    private Map<Integer, String> matIDByTileID = new HashMap<Integer, String>();
+    private Map<String, Integer> tileIDByMatID = new HashMap<String, Integer>();
     // Mods supplying their own texture files
     private static HashSet<String> loadedmods = new HashSet<String>();
     
@@ -1256,6 +1275,16 @@ public class TexturePack {
             default:
                 break;
         }
+        if (dtf.tile_to_dyntile != null) {
+            for (int i = 0; i < dtf.tile_to_dyntile.length; i++) {
+                if (dtf.tile_to_dyntile[i] >= 0) {
+                    if (dtf.material != null) {
+                        materialbytileid.put(dtf.tile_to_dyntile[i], dtf.material);
+                    }
+                    setMatIDForTileID(dtf.filename, dtf.tile_to_dyntile[i]);
+                }
+            }
+        }
     }
     /* Load biome shading image into image array */
     private void loadBiomeShadingImage(InputStream is, int idx) throws IOException {
@@ -2200,6 +2229,7 @@ public class TexturePack {
                     String fname = null;
                     String id = null;
                     TileFileFormat fmt = TileFileFormat.GRID;
+                    MaterialType mt = null;
                     if(istxt) {
                         xdim = ydim = 1;
                         fmt = TileFileFormat.GRID;
@@ -2232,11 +2262,20 @@ public class TexturePack {
                                 return;
                             }
                         }
+                        else if(aval[0].equals("material")) {
+                            mt = MaterialType.valueOf(aval[1]);
+                            if (mt == null) {
+                                Log.warning("Bad custom material type: " + aval[1]);
+                            }
+                        }
                     }
                     if((fname != null) && (id != null)) {
                         /* Register the file */
                         int fid = findOrAddDynamicTileFile(fname, modname, xdim, ydim, fmt, args);
                         filetoidx.put(id, fid); /* Save lookup */
+                        if (mt != null) {
+                            addonfiles.get(fid).material = mt;
+                        }
                     }
                     else {
                         Log.severe("Format error - line " + rdr.getLineNumber() + " of " + txtname);
@@ -3116,6 +3155,7 @@ public class TexturePack {
         public String filename;
         public Color diffuseColor;
         public String filename_a;
+        public MaterialType material;
     }
 
     private static class ExportedTexturePack {
@@ -3126,18 +3166,11 @@ public class TexturePack {
     }
     
     // Encode image as PNG and add to ZIP
-    private void addImageToZip(int idx, int colormult, ExportedTexturePack etp) throws IOException {
-        colormult = colormult & 0xFFFFFF;   // Mask multiplier
-        String idstr = "txt" + idx;
-        if (colormult != 0xFFFFFF) {    // Nontrivial multiplier
-            idstr = String.format("txt%d_%06X", idx, colormult);
-        }
-        else {
-            idstr = String.format("txt%d", idx);
-        }
+    private void addImageToZip(String idstr, int idx, int colormult, ExportedTexturePack etp) throws IOException {
         if (etp.txtids.containsKey(idstr)) {   // Already in set?
             return;
         }
+        colormult = colormult & 0xFFFFFF;   // Mask multiplier
         int[] argb = getTileARGB(idx);  // Look up tile data
         if (colormult != 0xFFFFFF) {   // Non-trivial color multiplier
             colormult |= 0xFF000000;
@@ -3203,6 +3236,7 @@ public class TexturePack {
             et.diffuseColor = new Color((int)(r / w), (int)(g / w), (int)(b / w));
         else
             et.diffuseColor = new Color();
+        et.material = getMaterialTypeByTile(idx);
         etp.txtids.put(idstr, et);  // Add to set
     }
     // Export texture pack as OBJ format material library
@@ -3215,27 +3249,35 @@ public class TexturePack {
         Set<String> txtids = exp.getMaterialIDs();
         // Loop through them, adding the textures needed
         for (String txt : txtids) {
-            if (txt.startsWith("txt") == false) {
-                continue;
-            }
-            // Parse ID : see if we have shading to do
-            String[] tok = txt.split("_");
+            int off = txt.lastIndexOf("__");
             int mult = -1;
-            if (tok.length > 1) {
+            String txtbase = txt;
+            if ((off > 0) && ((off + 8) == txt.length())) {
+                String end = txt.substring(off+2);
                 try {
-                    mult = Integer.parseInt(tok[1], 16);
+                    mult = Integer.parseInt(end, 16);
                 } catch (NumberFormatException x) {
-                    Log.warning("Invalid multiplier " + tok[1]);
+                    Log.warning("Invalid multiplier " + end);
+                }
+                txtbase = txt.substring(0, off);
+            }
+            Integer txt_id = tileIDByMatID.get(txtbase);
+            int id = -1;
+            if (txt_id == null) {
+                if (txtbase.startsWith("txt") == false) {
+                    continue;
+                }
+                try {
+                    id = Integer.parseInt(txtbase.substring(3));
+                } catch (NumberFormatException x) {
+                    Log.warning("Invalid texture ID " + txtbase);
                 }
             }
-            int id = -1;
-            try {
-                id = Integer.parseInt(tok[0].substring(3));
-            } catch (NumberFormatException x) {
-                Log.warning("Invalid texture ID " + tok[0]);
+            else {
+                id = txt_id;
             }
             if (id >= 0) {
-                addImageToZip(id, mult, etp);
+                addImageToZip(txt, id, mult, etp);
             }
         }
         // Build MTL file
@@ -3244,11 +3286,21 @@ public class TexturePack {
         for (String id : ids) {
             ExportedTexture et = etp.txtids.get(id);
             String lines = "newmtl " + id + "\n";
+            lines += String.format("Ka %.3f %.3f %.3f\n", (double)et.diffuseColor.getRed() / 256.0, (double)et.diffuseColor.getGreen() / 256.0, (double) et.diffuseColor.getBlue() / 256.0);
             lines += String.format("Kd %.3f %.3f %.3f\n", (double)et.diffuseColor.getRed() / 256.0, (double)et.diffuseColor.getGreen() / 256.0, (double) et.diffuseColor.getBlue() / 256.0);
-            lines += "Ks 0.000 0.000 0.000\n";
             lines += "map_Kd " + et.filename + "\n";
+            lines += "map_Ka " + et.filename + "\n";
             if (et.filename_a != null) {
                 lines += "map_d " + et.filename_a + "\n";
+            }
+            if (et.material != null) {
+                lines += String.format("Ni %.3f\n", et.material.Ni);
+                lines += String.format("Ns %.3f\n", et.material.Ns);
+                lines += "Ks 0.500 0.500 0.500\n";
+                lines += String.format("illum %d\n", et.material.illum);
+            }
+            else {
+                lines += "Ks 0.000 0.000 0.000\n";
             }
             lines += "\n";
             exp.addStringToExportedFile(lines);
@@ -3289,7 +3341,7 @@ public class TexturePack {
                 textid = ctm.mapTexture(mapiter, blkid, blkdata, step, textid, null);
             }
             if (textid >= 0) {
-                rslt[patchidx] = "txt" + textid;   // Default texture
+                rslt[patchidx] = getMatIDForTileID(textid);   // Default texture
                 int mult = 0xFFFFFF;
                 BiomeMap bio;
                 switch (mod) {
@@ -3335,10 +3387,9 @@ public class TexturePack {
                         break;
                 }
                 if ((mult & 0xFFFFFF) != 0xFFFFFF) {
-                    rslt[patchidx] += String.format("_%06X", mult & 0xFFFFFF);
+                    rslt[patchidx] += String.format("__%06X", mult & 0xFFFFFF);
                 }
                 if (handlestdrot && (!map.stdrotate) && ((step == BlockStep.Y_MINUS) || (step == BlockStep.Y_PLUS))) {
-                    int oldmod = mod;
                     // Handle rotations
                     switch (mod) {
                         case COLORMOD_ROT90:
@@ -3401,5 +3452,56 @@ public class TexturePack {
             }
         }
         return mult;
+    }
+    
+    public MaterialType getMaterialTypeByTile(int tileidx) {
+        return materialbytileid.get(tileidx);
+    }
+
+    private void setMatIDForTileID(String matid, int tileid) {
+        String id = matIDByTileID.get(tileid);
+        if (id != null) return;
+        id = matid;
+        String[] tok = id.split("/");
+        if (tok.length < 5) {
+            id = tok[tok.length-1];
+        }
+        else {
+            id = tok[4];
+            for (int i = 5; i < tok.length; i++) {
+                id = id + "_" + tok[i];
+            }
+        }
+        id = id.replace(' ', '_');
+        int off = id.lastIndexOf('.');
+        if (off > 0) {
+            id = id.substring(0, off);
+        }
+        int cnt = 2;
+        String baseid = id;
+        while (true) {
+            Integer v = tileIDByMatID.get(id);   
+            if (v == null) {    // Not defined, use ID
+                tileIDByMatID.put(id, tileid);
+                matIDByTileID.put(tileid, id);
+                return;
+            }
+            else if ((v != null) && (v.intValue() == tileid)) {
+                return;
+            }
+            id = baseid + "_" + cnt;
+            cnt++;
+        }
+    }
+    
+    private String getMatIDForTileID(int txtid) {
+        String id = matIDByTileID.get(txtid);
+        if (id == null) {
+            id = "txt" + txtid;
+            matIDByTileID.put(txtid, id);
+            tileIDByMatID.put(id, txtid);
+        }
+
+        return id;
     }
 }
