@@ -156,7 +156,7 @@ public class OBJExport {
         if (maxY >= world.worldheight) maxY = world.worldheight - 1;
         if (centerOrigin) {
             originX = (maxX + minX) / 2.0;
-            originY = (maxY + minY) / 2.0;
+            originY = minY;
             originZ = (maxZ + minZ) / 2.0;
         }
     }
@@ -196,6 +196,7 @@ public class OBJExport {
             int maxcx = (maxX + 15) >> 4;
             int mincz = (minZ >> 4);
             int maxcz = (maxZ + 15) >> 4;
+            boolean[] edgebits = new boolean[6];
 
             startExportedFile("minecraft.obj");
             // Add material library
@@ -220,14 +221,34 @@ public class OBJExport {
                     }
                     MapIterator iter = cache.getIterator(minX, minY, minZ);
                     for (int x = cx * 16; (x < (cx * 16 + 64)) && (x <= maxX); x++) {
+                        edgebits[BlockStep.X_MINUS.ordinal()] = (x == minX);
+                        edgebits[BlockStep.X_PLUS.ordinal()] = (x == maxX);
                         for (int z = cz * 16; (z < (cz * 16 + 64)) && (z <= maxZ); z++) {
+                            edgebits[BlockStep.Z_MINUS.ordinal()] = (z == minZ);
+                            edgebits[BlockStep.Z_PLUS.ordinal()] = (z == maxZ);
                             iter.initialize(x, minY, z);
-                            for (int y = minY; y <= maxY; y++) {
+                            // Do first (bottom)
+                            edgebits[BlockStep.Y_MINUS.ordinal()] = true;
+                            edgebits[BlockStep.Y_PLUS.ordinal()] = false;
+                            int id = iter.getBlockTypeID();
+                            if (id > 0) {  // Not air
+                                handleBlock(id, iter, edgebits);
+                            }
+                            // Do middle
+                            edgebits[BlockStep.Y_MINUS.ordinal()] = false;
+                            for (int y = minY + 1; y < maxY; y++) {
                                 iter.setY(y);
-                                int id = iter.getBlockTypeID();
+                                id = iter.getBlockTypeID();
                                 if (id > 0) {  // Not air
-                                    handleBlock(id, iter);
+                                    handleBlock(id, iter, edgebits);
                                 }
+                            }
+                            // Do top
+                            edgebits[BlockStep.Y_PLUS.ordinal()] = true;
+                            iter.setY(maxY);
+                            id = iter.getBlockTypeID();
+                            if (id > 0) {  // Not air
+                                handleBlock(id, iter, edgebits);
                             }
                         }
                     }
@@ -309,8 +330,9 @@ public class OBJExport {
      * Handle block at current iterator coord
      * @param id - block ID
      * @param iter - iterator
+     * @param edgebits - bit N corresponds to side N being an endge (forge render)
      */
-    private void handleBlock(int blkid, MapIterator map) throws IOException {
+    private void handleBlock(int blkid, MapIterator map, boolean[] edgebits) throws IOException {
         BlockStep[] steps = BlockStep.values();
         int[] txtidx = null;
         int data = map.getBlockData();             
@@ -355,11 +377,11 @@ public class OBJExport {
         }
         else {
             boolean opaque = TexturePack.HDTextureMap.getTransparency(blkid) == BlockTransparency.OPAQUE;
-            for (BlockStep s : BlockStep.values()) {
-                int id2 = map.getBlockTypeIDAt(s.opposite());  // Get block in direction
+            for (int face = 0; face < 6; face++) {
+                int id2 = map.getBlockTypeIDAt(BlockStep.oppositeValues[face]);  // Get block in direction
                 // If we're not solid, or adjacent block is not solid, draw side
-                if ((!opaque) || (id2 == 0) || (TexturePack.HDTextureMap.getTransparency(id2) != BlockTransparency.OPAQUE)) {
-                    addPatch(defaultPathces[s.ordinal()], map.getX(), map.getY(), map.getZ(), mats[s.ordinal()]);
+                if ((!opaque) || (id2 == 0) || edgebits[face] || (TexturePack.HDTextureMap.getTransparency(id2) != BlockTransparency.OPAQUE)) {
+                    addPatch(defaultPathces[face], map.getX(), map.getY(), map.getZ(), mats[face]);
                 }
             }
         }

@@ -14,7 +14,7 @@ public enum BlockStep {
     public final int yoff;
     public final int zoff;
     
-    private static final BlockStep op[] = { X_MINUS, Y_MINUS, Z_MINUS, X_PLUS, Y_PLUS, Z_PLUS };
+    public static final BlockStep oppositeValues[] = { X_MINUS, Y_MINUS, Z_MINUS, X_PLUS, Y_PLUS, Z_PLUS };
             
     BlockStep(int f, int xoff, int yoff, int zoff) {
         face = f;
@@ -24,7 +24,7 @@ public enum BlockStep {
     }
     
     public final BlockStep opposite() {
-        return op[ordinal()];
+        return oppositeValues[ordinal()];
     }
     // MC index of face entered by step
     public final int getFaceEntered() {
