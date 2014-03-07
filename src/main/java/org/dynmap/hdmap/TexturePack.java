@@ -3325,7 +3325,7 @@ public class TexturePack {
             if((mod == COLORMOD_CLEARINSIDE) || (mod == COLORMOD_MULTTONED_CLEARINSIDE)) {
                 BlockStep dir = step.opposite();
                 /* Check if previous block is same block type as we are: surface is transparent if it is */
-                if((blkid == mapiter.getBlockTypeIDAt(dir)) && (blkdata == mapiter.getBlockTypeIDAt(dir.xoff, dir.yoff, dir.zoff))) {
+                if((blkid == mapiter.getBlockTypeIDAt(dir)) && (blkdata == mapiter.getBlockDataAt(dir.xoff, dir.yoff, dir.zoff))) {
                     continue;   // Skip: no texture
                 }
                 /* If water block, to watercolor tone op */
