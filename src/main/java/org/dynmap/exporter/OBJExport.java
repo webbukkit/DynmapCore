@@ -49,9 +49,26 @@ public class OBJExport {
     private boolean centerOrigin = true;    // Center at origin
     private PatchDefinition[] defaultPathces;   // Default patches for solid block, indexed by BlockStep.ordinal()
     private HashSet<String> matIDs = new HashSet<String>();     // Set of defined material ids for RP
-    private HashMap<String, List<String>> facesByTexture = new HashMap<String, List<String>>();
+    
+    private static class Face {
+        String groupLine;
+        String faceLine;
+    }
+    
+    private HashMap<String, List<Face>> facesByTexture = new HashMap<String, List<Face>>();
     private static final int MODELSCALE = 16;
     private static final double BLKSIZE = 1.0 / (double) MODELSCALE;
+    
+    // Index of group settings
+    public static final int GROUP_CHUNK = 0;
+    public static final int GROUP_TEXTURE = 1;
+    public static final int GROUP_BLOCKID = 2;
+    public static final int GROUP_BLOCKIDMETA = 3;
+    public static final int GROUP_COUNT = 4;
+    private String[] group = new String[GROUP_COUNT];
+    private boolean[] enabledGroups = new boolean[GROUP_COUNT];
+    private String groupline = null;
+    
     // Vertex set
     private IndexedVector3DList vertices;
     // UV set
@@ -227,6 +244,7 @@ public class OBJExport {
                             edgebits[BlockStep.Z_MINUS.ordinal()] = (z == minZ);
                             edgebits[BlockStep.Z_PLUS.ordinal()] = (z == maxZ);
                             iter.initialize(x, minY, z);
+                            updateGroup(GROUP_CHUNK, "chunk" + (x >> 4) + "_" + (z >> 4));
                             // Do first (bottom)
                             edgebits[BlockStep.Y_MINUS.ordinal()] = true;
                             edgebits[BlockStep.Y_PLUS.ordinal()] = false;
@@ -253,12 +271,17 @@ public class OBJExport {
                         }
                     }
                     // Output faces by texture
+                    String grp = "";
                     for (String material : facesByTexture.keySet()) {
-                        List<String> faces = facesByTexture.get(material);
+                        List<Face> faces = facesByTexture.get(material);
                         matIDs.add(material);   // Record material use
                         addStringToExportedFile(String.format("usemtl %s\n", material)); 
-                        for (String face : faces) {
-                            addStringToExportedFile(face);
+                        for (Face face : faces) {
+                            if ((face.groupLine != null) && (!face.groupLine.equals(grp))) {
+                                grp = face.groupLine;
+                                addStringToExportedFile(grp);
+                            }
+                            addStringToExportedFile(face.faceLine);
                         }
                     }
                     // Clear face table
@@ -367,6 +390,10 @@ public class OBJExport {
                 }
             }
         }
+        // Set block ID and ID+meta groups
+        updateGroup(GROUP_BLOCKID, "blk" + blkid);
+        updateGroup(GROUP_BLOCKIDMETA, "blk" + blkid + "_" + data);
+
         // Get materials for patches
         String[] mats = shader.getCurrentBlockMaterials(blkid, data, renderdata, map, txtidx, steps);
         
@@ -469,9 +496,9 @@ public class OBJExport {
         addPatchToFile(v, uv, pd.sidevis, material, rot);
     }
     private void addPatchToFile(int[] v, int[] uv, SideVisible sv, String material, int rot) throws IOException {
-        List<String> faces = facesByTexture.get(material);
+        List<Face> faces = facesByTexture.get(material);
         if (faces == null) {
-            faces = new ArrayList<String>();
+            faces = new ArrayList<Face>();
             facesByTexture.put(material, faces);
         }
         // If needed, rotate the UV sequence
@@ -489,22 +516,25 @@ public class OBJExport {
             }
             uv = newuv;
         }
+        Face f = new Face();
+        f.groupLine = updateGroup(GROUP_TEXTURE, material);
         switch (sv) {
             case TOP:
-                faces.add(String.format("f %d/%d %d/%d %d/%d %d/%d\n", v[0], uv[0], v[1], uv[1], v[2], uv[2], v[3], uv[3])); 
+                f.faceLine = String.format("f %d/%d %d/%d %d/%d %d/%d\n", v[0], uv[0], v[1], uv[1], v[2], uv[2], v[3], uv[3]); 
                 break;
             case BOTTOM:
-                faces.add(String.format("f %d/%d %d/%d %d/%d %d/%d\n", v[3], uv[3], v[2], uv[2], v[1], uv[1], v[0], uv[0])); 
+                f.faceLine = String.format("f %d/%d %d/%d %d/%d %d/%d\n", v[3], uv[3], v[2], uv[2], v[1], uv[1], v[0], uv[0]); 
                 break;
             case BOTH:
-                faces.add(String.format("f %d/%d %d/%d %d/%d %d/%d\n", v[0], uv[0], v[1], uv[1], v[2], uv[2], v[3], uv[3])); 
-                faces.add(String.format("f %d/%d %d/%d %d/%d %d/%d\n", v[3], uv[3], v[2], uv[2], v[1], uv[1], v[0], uv[0])); 
+                f.faceLine = String.format("f %d/%d %d/%d %d/%d %d/%d\n", v[0], uv[0], v[1], uv[1], v[2], uv[2], v[3], uv[3]); 
+                f.faceLine += String.format("f %d/%d %d/%d %d/%d %d/%d\n", v[3], uv[3], v[2], uv[2], v[1], uv[1], v[0], uv[0]); 
                 break;
             case FLIP:
-                faces.add(String.format("f %d/%d %d/%d %d/%d %d/%d\n", v[0], uv[0], v[1], uv[1], v[2], uv[2], v[3], uv[3])); 
-                faces.add(String.format("f %d/%d %d/%d %d/%d %d/%d\n", v[3], uv[2], v[2], uv[3], v[1], uv[0], v[0], uv[1])); 
+                f.faceLine = String.format("f %d/%d %d/%d %d/%d %d/%d\n", v[0], uv[0], v[1], uv[1], v[2], uv[2], v[3], uv[3]); 
+                f.faceLine += String.format("f %d/%d %d/%d %d/%d %d/%d\n", v[3], uv[2], v[2], uv[3], v[1], uv[0], v[0], uv[1]); 
                 break;
         }
+        faces.add(f);
     }
     
     public Set<String> getMaterialIDs() {
@@ -578,5 +608,36 @@ public class OBJExport {
             pd[i] = (PatchDefinition) list.get(i);
         }
         return pd;
+    }
+    
+    private String updateGroup(int grpIndex, String newgroup) {
+        if (enabledGroups[grpIndex]) {
+            if (!newgroup.equals(group[grpIndex])) {
+                group[grpIndex] = newgroup;
+                String newline = "g";
+                for (int i = 0; i < GROUP_COUNT; i++) {
+                    if (enabledGroups[i]) {
+                        newline += " " + group[i];
+                    }
+                }
+                newline += "\n";
+                groupline = newline;
+            }
+        }
+        return groupline;
+    }
+    
+    public boolean getGroupEnabled(int grpIndex) {
+        if (grpIndex < enabledGroups.length) {
+            return enabledGroups[grpIndex];
+        }
+        else {
+            return false;
+        }
+    }
+    public void setGroupEnabled(int grpIndex, boolean set) {
+        if (grpIndex < enabledGroups.length) {
+            enabledGroups[grpIndex] = set;
+        }
     }
 }

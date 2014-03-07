@@ -26,6 +26,10 @@ public class DynmapExpCommands {
         public int ymax = Integer.MIN_VALUE;
         public int zmax = Integer.MIN_VALUE;
         public String world;
+        public boolean groupByChunk;
+        public boolean groupByBlockID;
+        public boolean groupByBlockIDData;
+        public boolean groupByTexture;
     }
 
     private String getContextID(DynmapCommandSender sender) {
@@ -80,10 +84,20 @@ public class DynmapExpCommands {
         else if(cmd.equalsIgnoreCase("purge")) {
             rslt = handlePurgeExport(sender, args, ctx, core);
         }
+        else if(cmd.equalsIgnoreCase("info")) {
+            rslt = handleInfo(sender, args, ctx, core);
+        }
 
         return rslt;
     }
 
+    private boolean handleInfo(DynmapCommandSender sender, String[] args, ExportContext ctx, DynmapCore core) {
+        sender.sendMessage(String.format("Bounds: <%s,%s,%s> - <%s,%s,%s> on world '%s'", val(ctx.xmin), val(ctx.ymin), val(ctx.zmin),
+                val(ctx.xmax), val(ctx.ymax), val(ctx.zmax), ctx.world));
+        sender.sendMessage(String.format("groups: byChunk: %b, byBlockID: %b, byBlockIDData: %b, byTexture: %b", ctx.groupByChunk, ctx.groupByBlockID, ctx.groupByBlockIDData, ctx.groupByTexture));
+        return true;
+    }
+    
     private boolean handleSetExport(DynmapCommandSender sender, String[] args, ExportContext ctx, DynmapCore core) {
         if (args.length < 3) {
             sender.sendMessage(String.format("Bounds: <%s,%s,%s> - <%s,%s,%s> on world '%s'", val(ctx.xmin), val(ctx.ymin), val(ctx.zmin),
@@ -128,6 +142,18 @@ public class DynmapExpCommands {
                     }
                     ctx.shader = args[i+1];
                 }
+                else if (args[i].equals("byChunk")) {
+                    ctx.groupByChunk = args[i+1].equalsIgnoreCase("true");
+                }
+                else if (args[i].equals("byBlockID")) {
+                    ctx.groupByBlockID = args[i+1].equalsIgnoreCase("true");
+                }
+                else if (args[i].equals("byBlockIDData")) {
+                    ctx.groupByBlockIDData = args[i+1].equalsIgnoreCase("true");
+                }
+                else if (args[i].equals("byTexture")) {
+                    ctx.groupByTexture = args[i+1].equalsIgnoreCase("true");
+                }
                 else {  // Unknown setting
                     sender.sendMessage("Unknown setting '" + args[i] + "'");
                     return true;
@@ -137,9 +163,7 @@ public class DynmapExpCommands {
                 return true;
             }
         }
-        sender.sendMessage(String.format("Bounds: <%s,%s,%s> - <%s,%s,%s> on world '%s'", val(ctx.xmin), val(ctx.ymin), val(ctx.zmin),
-                val(ctx.xmax), val(ctx.ymax), val(ctx.zmax), ctx.world));
-        return true;
+        return handleInfo(sender, args, ctx, core);
     }
 
     private boolean handleRadius(DynmapCommandSender sender, String[] args, ExportContext ctx, DynmapCore core) {
@@ -177,9 +201,7 @@ public class DynmapExpCommands {
         ctx.ymin = 0;
         ctx.ymax = world.worldheight - 1;
         ctx.world = world.getName();
-        sender.sendMessage(String.format("Bounds: <%s,%s,%s> - <%s,%s,%s> on world '%s'", val(ctx.xmin), val(ctx.ymin), val(ctx.zmin),
-                val(ctx.xmax), val(ctx.ymax), val(ctx.zmax), ctx.world));
-        return true;
+        return handleInfo(sender, args, ctx, core);
     }
 
     private boolean handlePosN(DynmapCommandSender sender, String[] args, ExportContext ctx, DynmapCore core, int n) {
@@ -208,9 +230,8 @@ public class DynmapExpCommands {
             ctx.zmax = (int)Math.floor(loc.z);
         }
         ctx.world = world.getName();
-        sender.sendMessage(String.format("Bounds: <%s,%s,%s> - <%s,%s,%s> on world '%s'", val(ctx.xmin), val(ctx.ymin), val(ctx.zmin),
-                val(ctx.xmax), val(ctx.ymax), val(ctx.zmax), ctx.world));
-        return true;
+        
+        return handleInfo(sender, args, ctx, core);
     }
     
     private boolean handleDoExport(DynmapCommandSender sender, String[] args, ExportContext ctx, DynmapCore core) {
@@ -247,6 +268,10 @@ public class DynmapExpCommands {
         
         OBJExport exp = new OBJExport(f, s, w, core);
         exp.setRenderBounds(ctx.xmin, ctx.ymin, ctx.zmin, ctx.xmax, ctx.ymax, ctx.zmax);
+        exp.setGroupEnabled(OBJExport.GROUP_CHUNK, ctx.groupByChunk);
+        exp.setGroupEnabled(OBJExport.GROUP_TEXTURE, ctx.groupByTexture);
+        exp.setGroupEnabled(OBJExport.GROUP_BLOCKID, ctx.groupByBlockID);
+        exp.setGroupEnabled(OBJExport.GROUP_BLOCKIDMETA, ctx.groupByBlockIDData);
         MapManager.mapman.startOBJExport(exp, sender);
         
         return true;
