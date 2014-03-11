@@ -1862,9 +1862,9 @@ public class DynmapCore implements DynmapCommonAPI {
         if(playerdisplay == null) playerdisplay = playerid;
         if((mapManager != null) && (playerList != null) && (playerList.isVisiblePlayer(playerid))) {
             if(isjoin)
-                mapManager.pushUpdate(new Client.PlayerJoinMessage(playerid, playerdisplay));
+                mapManager.pushUpdate(new Client.PlayerJoinMessage(playerdisplay, playerid));
             else
-                mapManager.pushUpdate(new Client.PlayerQuitMessage(playerid, playerdisplay));
+                mapManager.pushUpdate(new Client.PlayerQuitMessage(playerdisplay, playerid));
         }
     }
 
