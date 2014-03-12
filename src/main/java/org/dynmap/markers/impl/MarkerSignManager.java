@@ -18,6 +18,7 @@ public class MarkerSignManager {
 
     private static MarkerSignManager mgr = null;
     private static DynmapCore plugin = null;
+    private static String defSignSet = null;
     
     private static final int SIGNPOST_ID = 63;
     private static final int WALLSIGN_ID = 68;
@@ -39,7 +40,7 @@ public class MarkerSignManager {
             /* If allowed to do marker signs */
             if((p == null) || ((plugin != null) && (plugin.checkPlayerPermission(p, "marker.sign")))) {
                 String id = getSignMarkerID(wname, x, y, z);  /* Get marker ID */
-                String set = MarkerSet.DEFAULT;
+                String set = defSignSet;
                 String icon = MarkerIcon.SIGN;
                 String label = "";
                 lines[0] = ""; /* Blank out [dynmap] */
@@ -168,8 +169,9 @@ public class MarkerSignManager {
         return v;
     }
     
-    public static MarkerSignManager initializeSignManager(DynmapCore plugin) {
+    public static MarkerSignManager initializeSignManager(DynmapCore plugin, String defsignset) {
         mgr = new MarkerSignManager();
+        defSignSet = defsignset;
         if(sl == null) {
             sl = new SignListener();
             plugin.listenerManager.addListener(EventType.SIGN_CHANGE, sl);

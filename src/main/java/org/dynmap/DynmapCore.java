@@ -2356,5 +2356,12 @@ public class DynmapCore implements DynmapCommonAPI {
             }
         }
     }
+
+    @Override
+    public void processSignChange(int blkid, String world, int x, int y, int z,
+            String[] lines, String playerid) {
+        DynmapPlayer dp = server.getPlayer(playerid);
+        listenerManager.processSignChangeEvent(EventType.SIGN_CHANGE, blkid, world, x, y, z, lines, dp);
+    }
 }
 

@@ -40,7 +40,7 @@ public class MarkersComponent extends ClientComponent {
         
         /* If configuration has enabled sign support, prime it too */
         if(configuration.getBoolean("enablesigns", false)) {
-            signmgr = MarkerSignManager.initializeSignManager(core);
+            signmgr = MarkerSignManager.initializeSignManager(core, configuration.getString("default-sign-set", MarkerSet.DEFAULT));
         }
         /* If we're posting spawn point markers, initialize and add world listener */
         if(configuration.getBoolean("showspawn", false)) {
