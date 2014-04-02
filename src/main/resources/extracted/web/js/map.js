@@ -629,7 +629,7 @@ DynMap.prototype = {
 					me.lasttimestamp = update.timestamp;
 				}
 				if(me.options.confighash != update.confighash) {
-					window.location.reload(true);
+				    window.location = me.getLink();
 					return;
 				}
 				me.playerfield.text(me.options['msg-players'] + " [" + update.currentcount + "/" + me.options.maxcount + "]");
