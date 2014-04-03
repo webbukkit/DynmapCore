@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import org.dynmap.DynmapCore;
 import org.dynmap.Log;
 import org.dynmap.common.BiomeMap;
+import org.dynmap.debug.Debug;
 import org.dynmap.hdmap.TexturePack.TileFileFormat;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.DynLongHashMap;
@@ -399,7 +400,7 @@ public class CTMTexturePack {
                         }
                     }
                     if(s != null) {
-                        Log.info("CTM Biome not matched: " + s);
+                        Debug.debug("CTM Biome not matched: " + s);
                     }
                 }
                 this.biomes = new int[ids.size()];
@@ -481,7 +482,7 @@ public class CTMTexturePack {
                 for (int i = 0; i < out.length; i++) {
                     String vv = lst.get(i);
                     // If not absolute path
-                    if (vv.startsWith("/") == false) {
+                    if ((vv.startsWith("/") == false) && (vv.startsWith("assets/") == false)) {
                         vv = this.basePath + "/" + vv;    // Build path
                     }
                     if (vv.endsWith(".png")) {   // If needed, strip of png
@@ -590,10 +591,10 @@ public class CTMTexturePack {
                 Log.info("Bad connect: " + fname);
                 return false;
             }
-            if (this.renderPass > 0) {
-                Log.info("Unsupported render pass: " + fname);
-                return false;
-            }
+//            if (this.renderPass > 0) {
+//                Log.info("Unsupported render pass: " + fname);
+//                return false;
+//            }
             if ((this.faces & FACE_UNKNOWN) > 0) {
                 Log.info("Invalid face: " + fname);
                 return false;
@@ -769,7 +770,7 @@ public class CTMTexturePack {
             for (int i = 0; i < tilenames.length; i++) {
                 String tn = tilenames[i];
                 String ftn = tn;
-                if (ftn.indexOf('/') < 0) { // no path (base tile)
+                if ((ftn.indexOf('/') < 0) && (ftn.startsWith("assets/") == false)) { // no path (base tile)
                     ftn = deftxtpath + tn;
                 }
                 if (!ftn.endsWith(".png")) {
