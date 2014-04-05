@@ -95,7 +95,16 @@ public class SendMessageServlet extends HttpServlet {
                     if (this.proxyaddress.contains(rmtaddr)) {
                         /* If proxied client address, get original IP */
                         if (request.getHeader("X-Forwarded-For") != null) {
-                            message.name = request.getHeader("X-Forwarded-For");
+                            /* If trusted proxies were chained, we get next client address till non-trusted proxy met */
+                            String[] proxyAddrs = request.getHeader("X-Forwarded-For").split(", ");
+                            for(int i = proxyAddrs.length - 1; i >= 0; i--){
+                                if (!this.proxyaddress.contains(proxyAddrs[i])) {
+                                    /* use remaining addresses as name (maybe we can use the last or the first non-trusted one?) */
+                                    message.name = proxyAddrs[0]; // 0 .. i
+                                    for(int j = 1; j <= i; j++) message.name += ", " + proxyAddrs[j];
+                                    break;
+                                }
+                            }
                         } else {
                             message.name = String.valueOf(o.get("name"));
                         }
