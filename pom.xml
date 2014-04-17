@@ -1,11 +1,12 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>us.dynmap</groupId>
 	<artifactId>DynmapCore</artifactId>
 	<name>DynmapCore</name>
 	<properties>
-	   	<timestamp>${maven.build.timestamp}</timestamp>
-   		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>	
+		<timestamp>${maven.build.timestamp}</timestamp>
+		<maven.build.timestamp.format>yyyyMMddHHmm</maven.build.timestamp.format>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<BUILD_NUMBER>Dev${timestamp}</BUILD_NUMBER>
 		<nbtVersion>1.0.5-SNAPSHOT</nbtVersion>
@@ -49,20 +50,20 @@
 				</configuration>
 			</plugin>
 
-		    <plugin>
-        		<artifactId>maven-jar-plugin</artifactId>
-        		<version>2.3.2</version>
-        		<executions>
-          			<execution>
-            			<id>default-jar</id>
-            			<phase>package</phase>
-            			<goals>
-              				<goal>jar</goal>
-            			</goals>
-          			</execution>
-        		</executions>
-      		</plugin>
-      		
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.2</version>
+				<executions>
+					<execution>
+						<id>default-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
@@ -83,48 +84,73 @@
 									<include>org.yaml:snakeyaml:*</include>
 								</includes>
 							</artifactSet>
-           					<relocations>
-               					<relocation>
-               						<pattern>org.spout.nbt</pattern>
-               						<shadedPattern>org.dynmap.nbt</shadedPattern>
-               					</relocation>
-               					<relocation>
-               						<pattern>org.json.simple</pattern>
-               						<shadedPattern>org.dynmap.json.simple</shadedPattern>
-               					</relocation>
-               					<relocation>
-               						<pattern>org.yaml.snakeyaml</pattern>
-               						<shadedPattern>org.dynmap.snakeyaml</shadedPattern>
-               					</relocation>
-            					<relocation>
+							<relocations>
+								<relocation>
+									<pattern>org.spout.nbt</pattern>
+									<shadedPattern>org.dynmap.nbt</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>org.json.simple</pattern>
+									<shadedPattern>org.dynmap.json.simple</shadedPattern>
+								</relocation>
+								<relocation>
+									<pattern>org.yaml.snakeyaml</pattern>
+									<shadedPattern>org.dynmap.snakeyaml</shadedPattern>
+								</relocation>
+								<relocation>
 									<pattern>org.eclipse.jetty</pattern>
 									<shadedPattern>org.dynmap.jetty</shadedPattern>
 								</relocation>
-           					</relocations>							
+							</relocations>
 							<filters>
-<filter>
-<artifact>*</artifact>
-<excludes>
-<exclude>META-INF/*.SF</exclude>
-<exclude>META-INF/*.RSA</exclude>
-<exclude>META-INF/*.INF</exclude>
-</excludes>
-</filter>
-</filters>
-							
+								<filter>
+									<artifact>*</artifact>
+									<excludes>
+										<exclude>META-INF/*.SF</exclude>
+										<exclude>META-INF/*.RSA</exclude>
+										<exclude>META-INF/*.INF</exclude>
+									</excludes>
+								</filter>
+							</filters>
+
 						</configuration>
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
 	<repositories>
-                <repository>
-                        <id>sonatype-nexus-releases</id>
-                        <url>https://oss.sonatype.org/content/repositories/releases</url>
-              </repository>
-  	</repositories>
-	
+		<repository>
+			<id>sonatype-nexus-releases</id>
+			<url>https://oss.sonatype.org/content/repositories/releases</url>
+		</repository>
+	</repositories>
+
 	<dependencies>
 		<dependency>
 			<groupId>us.dynmap</groupId>
