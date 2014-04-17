@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -1363,11 +1362,31 @@ public class HDBlockModels {
             pdf.setPatchNameMape(null);
         }
     }
-    private static int vscale[] = { 1000000, 10000, 100, 1 };
+    private static long vscale[] = { 10000000000L, 100000000, 1000000, 10000, 100, 1 };
+
+    private static String normalizeVersion(String v) {
+        StringBuilder v2 = new StringBuilder();
+        boolean skip = false;
+        for (int i = 0; i < v.length(); i++) {
+            char c = v.charAt(i);
+            if ((c == '.') || ((c >= '0') && (c <= '9'))) {
+                v2.append(c);
+                skip = false;
+            }
+            else {
+                if (!skip) {
+                    skip = true;
+                    v2.append('.');
+                }
+            }
+        }
+        return v2.toString();
+    }
     
-    private static int parseVersion(String v, boolean up) {
+    private static long parseVersion(String v, boolean up) {
+        v = normalizeVersion(v);
         String[] vv = v.split("\\.");
-        int ver = 0;
+        long ver = 0;
         for (int i = 0; i < vscale.length; i++) {
             if (i < vv.length){ 
                 try {
@@ -1389,7 +1408,7 @@ public class HDBlockModels {
         String low;
         String high;
         
-        int v = parseVersion(ver, false);
+        long v = parseVersion(ver, false);
         if (v == 0) return false;
         
         if (rng.length == 1) {
