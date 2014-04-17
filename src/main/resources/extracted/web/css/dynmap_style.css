@@ -798,6 +798,7 @@
 	-moz-border-radius: 5px;
 	border-radius: 5px;
 	cursor: pointer;
+	margin: 0;
 }
 
 .messagelist {
@@ -1016,5 +1017,5 @@ div.statusmessage {
 }
 
 .pinnedloginbutton {
-	margin-right: 200px;
+	margin-right: 201px;
 }

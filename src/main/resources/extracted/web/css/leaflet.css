@@ -231,8 +231,8 @@
 /* zoom control */
 
 .leaflet-container .leaflet-control-zoom {
-	margin-left: 13px;
-	margin-top: 12px;
+	margin-left: 10px;
+	margin-top: 10px;
 	}
 .leaflet-control-zoom a {
 	width: 22px;
