@@ -2085,8 +2085,6 @@ public class DynmapCore implements DynmapCommonAPI {
         Runnable c = new Runnable() {
             @Override
             public void run() {
-                mapManager.pushUpdate(new Client.ChatMessage("web", null, name, message, null));
-
                 ChatEvent event = new ChatEvent("web", name, message);
                 events.trigger("webchat", event);
             }

@@ -27,6 +27,9 @@ public class SimpleWebChatComponent extends Component {
                         msg = unescapeString(plugin.configuration.getString("webprefix", "\u00A72[WEB] ")) + t.name + ": " + unescapeString(plugin.configuration.getString("websuffix", "\u00A7f")) + t.message;
                     }
                     plugin.getServer().broadcastMessage(msg);
+                    if (core.mapManager != null) {
+                        core.mapManager.pushUpdate(new Client.ChatMessage("web", null, t.name, t.message, null));
+                    }
                 }
             }
         });
