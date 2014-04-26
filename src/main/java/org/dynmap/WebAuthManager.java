@@ -16,8 +16,6 @@ import java.util.Set;
 
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.common.DynmapPlayer;
-import org.dynmap.kzedmap.KzedMap;
-import org.dynmap.kzedmap.MapTileRenderer;
 import org.dynmap.servlet.LoginServlet;
 
 public class WebAuthManager {
@@ -256,15 +254,7 @@ public class WebAuthManager {
                 sb.append("\',\n");
             }
             for(MapType mt : w.maps) {
-                if(mt instanceof KzedMap) {
-                    KzedMap kmt = (KzedMap)mt;
-                    for(MapTileRenderer tr : kmt.renderers) {
-                        if(tr.isProtected()) {
-                            mid.add(w.getName() + "." + tr.getPrefix());
-                        }
-                    }
-                }
-                else if(mt.isProtected()) {
+                if(mt.isProtected()) {
                     mid.add(w.getName() + "." + mt.getPrefix());
                 }
             }

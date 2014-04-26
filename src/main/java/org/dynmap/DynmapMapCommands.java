@@ -13,8 +13,6 @@ import org.dynmap.hdmap.HDLighting;
 import org.dynmap.hdmap.HDMap;
 import org.dynmap.hdmap.HDPerspective;
 import org.dynmap.hdmap.HDShader;
-import org.dynmap.kzedmap.KzedMap;
-import org.dynmap.kzedmap.MapTileRenderer;
 
 /**
  * Handler for world and map edit commands (via /dmap)
@@ -331,30 +329,7 @@ public class DynmapMapCommands {
             boolean done = false;
             for(int idx = 0; (!done) && (idx < maps.size()); idx++) {
                 MapType mt = maps.get(idx);
-                if(mt instanceof KzedMap) {
-                    KzedMap km = (KzedMap)mt;
-                    MapTileRenderer[] rnd = km.renderers;
-                    for(int ridx = 0; (!done) && (ridx < rnd.length); ridx++) {
-                        if(rnd[ridx].getName().equals(mname)) {
-                            /* If last one, delete whole map */
-                            if(rnd.length == 1) {
-                                w.maps.remove(mt);
-                            }
-                            else {  /* Remove from list */
-                                MapTileRenderer[] newrnd = new MapTileRenderer[rnd.length-1];
-                                for(int k = 0; k < ridx; k++) {
-                                    newrnd[k] = rnd[k];
-                                }
-                                for(int k = ridx; k < newrnd.length - 1; k++) {
-                                    newrnd[k] = rnd[k+1];
-                                }
-                                km.renderers = newrnd;
-                            }
-                            done = true;
-                        }
-                    }
-                }
-                else if(mt.getName().equals(mname)) {
+                if(mt.getName().equals(mname)) {
                     w.maps.remove(mt);
                     done = true;
                 }
