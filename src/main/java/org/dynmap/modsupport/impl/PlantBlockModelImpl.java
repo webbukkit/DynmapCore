@@ -1,6 +1,5 @@
 package org.dynmap.modsupport.impl;
 
-import org.dynmap.modsupport.BoxBlockModel;
 import org.dynmap.modsupport.PlantBlockModel;
 import org.dynmap.renderer.RenderPatchFactory.SideVisible;
 

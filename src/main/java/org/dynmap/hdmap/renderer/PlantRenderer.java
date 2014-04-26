@@ -2,8 +2,6 @@ package org.dynmap.hdmap.renderer;
 
 import java.util.Map;
 
-import org.dynmap.hdmap.TexturePack.BlockTransparency;
-import org.dynmap.hdmap.TexturePack.HDTextureMap;
 import org.dynmap.renderer.CustomRenderer;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;

@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.dynmap.Log;
-
 public class ForgeConfigFile {
     private File cfg;
     private HashMap<String, String> settings = new HashMap<String, String>();

@@ -328,7 +328,7 @@ public class DynmapCore implements DynmapCommonAPI {
         /* First, prime the templates directory with default standard templates, if needed */
         for(String stdtemplate : stdtemplates) {
             File f = new File(templatedir, stdtemplate);
-            createDefaultFileFromResource("/templates/" + stdtemplate, f);
+            updateVersionUsingDefaultResource("/templates/" + stdtemplate, f);
         }
         /* Now process files */
         String[] templates = templatedir.list();
@@ -557,7 +557,7 @@ public class DynmapCore implements DynmapCommonAPI {
         return true;
     }
     
-    private void dumpColorMap() {
+    void dumpColorMap() {
         int[] sides = new int[] { BlockStep.Y_MINUS.ordinal(), BlockStep.X_PLUS.ordinal(), BlockStep.Z_PLUS.ordinal(), 
                 BlockStep.Y_PLUS.ordinal(), BlockStep.X_MINUS.ordinal(), BlockStep.Z_MINUS.ordinal() };
         FileWriter fw = null;
@@ -1671,6 +1671,29 @@ public class DynmapCore implements DynmapCommonAPI {
         }
     }
 
+    /*
+     * Update if new version
+     */
+    public boolean updateVersionUsingDefaultResource(String resourcename, File deffile) {
+        InputStream in = getClass().getResourceAsStream(resourcename);
+        if(in == null) {
+            Log.severe("Unable to find resource - " + resourcename);
+            return false;
+        }
+        if(deffile.canRead() == false) {    /* Doesn't exist? */
+            return createDefaultFileFromResource(resourcename, deffile);
+        }
+        /* Load default from resource */
+        ConfigurationNode def_fc = new ConfigurationNode(in);
+        /* Load existing from file */
+        ConfigurationNode fc = new ConfigurationNode(deffile);
+        fc.load();
+        if (fc.getString("version", "").equals(def_fc.getString("version", ""))) {
+            return true;
+        }
+        deffile.delete();
+        return createDefaultFileFromResource(resourcename, deffile);
+    }
     /*
      * Add in any missing sections to existing file, using resource
      */

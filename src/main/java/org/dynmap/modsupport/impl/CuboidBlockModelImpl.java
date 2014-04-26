@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.dynmap.modsupport.CuboidBlockModel;
-import org.dynmap.modsupport.PatchBlockModel;
-import org.dynmap.renderer.RenderPatchFactory.SideVisible;
 
 public class CuboidBlockModelImpl extends BlockModelImpl implements CuboidBlockModel {
     private static class Cuboid {

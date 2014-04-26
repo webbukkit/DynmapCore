@@ -1,9 +1,6 @@
 package org.dynmap.modsupport.impl;
 
-import java.util.ArrayList;
-
 import org.dynmap.modsupport.VolumetricBlockModel;
-import org.dynmap.renderer.RenderPatchFactory.SideVisible;
 
 public class VolumetricBlockModelImpl extends BlockModelImpl implements VolumetricBlockModel {
     private boolean[][][] grid;

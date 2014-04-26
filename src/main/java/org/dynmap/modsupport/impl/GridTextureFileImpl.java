@@ -1,8 +1,5 @@
 package org.dynmap.modsupport.impl;
 
-import java.io.IOException;
-import java.io.Writer;
-
 import org.dynmap.modsupport.GridTextureFile;
 import org.dynmap.modsupport.TextureFileType;
 

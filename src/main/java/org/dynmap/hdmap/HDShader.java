@@ -1,6 +1,5 @@
 package org.dynmap.hdmap;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.dynmap.common.DynmapCommandSender;

@@ -7,7 +7,6 @@ import org.dynmap.renderer.CustomRenderer;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
-import org.dynmap.renderer.RenderPatchFactory.SideVisible;
 
 public class CTMVertTextureRenderer extends CustomRenderer {
     private static final int TEXTURE_BOTTOM = 0;

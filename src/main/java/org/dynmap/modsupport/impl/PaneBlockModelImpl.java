@@ -1,7 +1,6 @@
 package org.dynmap.modsupport.impl;
 
 import org.dynmap.modsupport.PaneBlockModel;
-import org.dynmap.renderer.RenderPatchFactory.SideVisible;
 
 public class PaneBlockModelImpl extends BlockModelImpl implements PaneBlockModel {
     
