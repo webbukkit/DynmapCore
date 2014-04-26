@@ -17,9 +17,7 @@ public abstract class MapTile {
         return world;
     }
 
-    public abstract String getFilename();
-
-    public abstract String getDayFilename();
+    public abstract String getFilename(String prefix, MapType.ImageFormat format, MapType.ImageVariant var);
 
     public MapTile(DynmapWorld world) {
         this.world = world;
@@ -27,7 +25,7 @@ public abstract class MapTile {
 
     @Override
     public int hashCode() {
-        return getFilename().hashCode() ^ world.hashCode();
+        return getFilename("", MapType.ImageFormat.FORMAT_PNG, MapType.ImageVariant.STANDARD).hashCode() ^ world.hashCode();
     }
 
     @Override

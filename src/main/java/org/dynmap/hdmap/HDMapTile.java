@@ -43,21 +43,8 @@ public class HDMapTile extends MapTile {
     }
 
     @Override
-    public String getFilename() {
-        return getFilename("hdmap", MapType.ImageFormat.FORMAT_PNG);
-    }
-
-    public String getFilename(String prefix, MapType.ImageFormat format) {
-        return prefix + "/"  + (tx >> 5) + '_' + (ty >> 5) + '/' + tx + "_" + ty + "." + format.getFileExt();
-    }
-
-    @Override
-    public String getDayFilename() {
-        return getDayFilename("hdmap", MapType.ImageFormat.FORMAT_PNG);
-    }
-
-    public String getDayFilename(String prefix, MapType.ImageFormat format) {
-        return prefix + "_day/"  + (tx >> 5) + '_' + (ty >> 5) + '/' + tx + "_" + ty + "." + format.getFileExt();
+    public String getFilename(String prefix, MapType.ImageFormat format, MapType.ImageVariant var) {
+        return prefix + var.variantSuffix + "/"  + (tx >> 5) + '_' + (ty >> 5) + '/' + tx + "_" + ty + "." + format.getFileExt();
     }
     
     @Override
@@ -83,7 +70,7 @@ public class HDMapTile extends MapTile {
 
     @Override
     public String toString() {
-        return world.getName() + ":" + getFilename();
+        return world.getName() + ":" + getFilename("", MapType.ImageFormat.FORMAT_PNG, MapType.ImageVariant.STANDARD);
     }
     
     @Override

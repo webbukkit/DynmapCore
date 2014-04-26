@@ -377,10 +377,10 @@ public class HDMap extends MapType {
                 Debug.debug("clean up " + f.getPath());
                 /* Otherwise, delete tile */
                 f.delete();
+                MapType.ImageVariant var = (day ? MapType.ImageVariant.DAY : MapType.ImageVariant.STANDARD);
                 /* Push updates, clear hash code, and signal zoom tile update */
-                MapManager.mapman.pushUpdate(world, 
-                                             new Client.Tile(day?tile.getDayFilename(prefix, getImageFormat()):tile.getFilename(prefix, getImageFormat())));
-                MapManager.mapman.hashman.updateHashCode(tile.getKey(prefix), day?"day":null, tile.tx, tile.ty, -1);
+                MapManager.mapman.pushUpdate(world, new Client.Tile(tile.getFilename(prefix, getImageFormat(), var)));
+                MapManager.mapman.hashman.updateHashCode(tile.getKey(prefix), var.variantID, tile.tx, tile.ty, -1);
                 world.enqueueZoomOutUpdate(f);
             }
                 

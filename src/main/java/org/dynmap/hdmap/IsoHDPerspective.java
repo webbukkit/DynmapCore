@@ -968,7 +968,7 @@ public class IsoHDPerspective implements HDPerspective {
         }
         /* Now, add the tiles for the ranges - not perfect, but it works (some extra tiles on corners possible) */
         for(int i = mintilex; i <= maxtilex; i++) {
-            for(int j = mintiley-1; j <= maxtiley; j++) {   /* Extra 1 - TODO: figure out why needed... */ 
+            for(int j = mintiley-1; j <= maxtiley; j++) {
                 tiles.add(new TileFlags.TileCoord(i, j));
             }
         }
@@ -1057,18 +1057,12 @@ public class IsoHDPerspective implements HDPerspective {
         /* Now, need to walk through the min/max range to see which chunks are actually needed */
         ArrayList<DynmapChunk> chunks = new ArrayList<DynmapChunk>();
         
-        //Log.info("============================");
-        int cnt1 = 0, cnt2 = 0;
         for(int x = min_chunk_x; x <= max_chunk_x; x++) {
-            //String xs = "";
             for(int z = min_chunk_z; z <= max_chunk_z; z++) {
                 boolean hit = false;
-                //char c = '-';
                 for (int sidenum = 0; (!hit) && (sidenum < side.length); sidenum++) {
                     if (side[sidenum].clip(16.0*x, 16.0*z, 16.0*(x+1), 16.0*(z+1)) != null) {
                         hit = true;
-                        //c = (char)('0' + sidenum);
-                        cnt1++;
                     }
                 }
                 //xs += c;
@@ -1076,11 +1070,8 @@ public class IsoHDPerspective implements HDPerspective {
                     DynmapChunk chunk = new DynmapChunk(x, z);
                     chunks.add(chunk);
                 }
-                cnt2++;
             }
-            //Log.info(xs);
         }
-        //Log.info("============================");
         return chunks;
     }
 
@@ -1207,7 +1198,7 @@ public class IsoHDPerspective implements HDPerspective {
             String prefix = shaderstate[i].getMap().getPrefix();
 
             MapType.ImageFormat fmt = shaderstate[i].getMap().getImageFormat();
-            String fname = tile.getFilename(prefix, fmt);
+            String fname = tile.getFilename(prefix, fmt, MapType.ImageVariant.STANDARD);
             File f = new File(tile.getDynmapWorld().worldtilepath, fname);
             FileLockManager.getWriteLock(f);
             try {
@@ -1249,7 +1240,7 @@ public class IsoHDPerspective implements HDPerspective {
             MapManager.mapman.updateStatistics(tile, prefix, true, tile_update, !rendered[i]);
             /* Handle day image, if needed */
             if(dayim[i] != null) {
-                fname = tile.getDayFilename(prefix, fmt);
+                fname = tile.getFilename(prefix, fmt, MapType.ImageVariant.DAY);
                 f = new File(tile.getDynmapWorld().worldtilepath, fname);
                 FileLockManager.getWriteLock(f);
                 tile_update = false;

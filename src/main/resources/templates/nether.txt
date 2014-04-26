@@ -1,39 +1,39 @@
-version: 0.20
+version: 1.9
 #
-# Default template for "Nether" environment worlds (deftemplatesuffix="")
+# Default template for "Nether" environment worlds
 #
 #   This file MAY need to be replaced during an upgrade - rename file to 'custom-nether.txt' if you wish to customize it
 #
 templates:
-  # Nether world template (classic render)
+  # Nether world template
   nether:
     enabled: true
-  #  # If bigworld set to true, use alternate directory layout better suited to large worlds
-  #  bigworld: true
-  #  # Number of extra zoom-out levels for world (each level is twice as big as the previous one)
-  #  extrazoomout: 3
+    # Number of extra zoom-out levels for world (each level is twice as big as the previous one)
+    extrazoomout: 2
     #center:
     #  x: 0
     #  y: 64
     #  z: 0
     maps:
-      - class: org.dynmap.flat.FlatMap
+      - class: org.dynmap.hdmap.HDMap
         name: flat
         title: "Flat"
         prefix: flat
-        colorscheme: default
+        perspective: iso_S_90_vlowres
+        shader: defaultscheme
+        lighting: default
         # Map background color (day or night)
         background: "#300806"
-        # The textured setting makes the flat render toning much more consistent with the other maps: set to 'none' for the original flat texture, 'smooth' for blended tile top colors, 'dither' for dither pattern
-        textured: smooth
-      - class: org.dynmap.kzedmap.KzedMap
-        renderers:
-          - class: org.dynmap.kzedmap.DefaultTileRenderer
-            name: nether
-            title: "Surface"
-            prefix: nt
-            maximumheight: 127
-            colorscheme: default
-            shadowstrength: 0.5
-            # Map background color (day or night)
-            background: "#300806"
+        # Adjust extra zoom in levels - default is 2
+        mapzoomin: 2
+      - class: org.dynmap.hdmap.HDMap
+        name: nether
+        title: "Surface"
+        prefix: nt
+        perspective: iso_SE_60_vlowres
+        shader: defaultscheme
+        lighting: default
+        # Map background color (day or night)
+        background: "#300806"
+        # Adjust extra zoom in levels - default is 2
+        mapzoomin: 2

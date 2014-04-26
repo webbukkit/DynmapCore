@@ -1386,12 +1386,12 @@ public class MapManager {
         did_start = false;
     }
 
-    public File getTileFile(MapTile tile) {
+    public File getTileFile(MapTile tile, String prefix, MapType.ImageFormat fmt, MapType.ImageVariant var) {
         File worldTileDirectory = tile.getDynmapWorld().worldtilepath;
         if (!worldTileDirectory.isDirectory() && !worldTileDirectory.mkdirs()) {
             Log.warning("Could not create directory for tiles ('" + worldTileDirectory + "').");
         }
-        return new File(worldTileDirectory, tile.getFilename());
+        return new File(worldTileDirectory, tile.getFilename(prefix, fmt, var));
     }
 
     public void pushUpdate(Client.Update update) {

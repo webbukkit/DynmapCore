@@ -12,6 +12,23 @@ public abstract class MapType {
     private boolean is_protected;
     protected int tileupdatedelay;
     
+    public enum ImageVariant {
+        STANDARD(""),   // Typical image
+        DAY("day");     // Day (no shadow) image
+        public final String variantSuffix;
+        public final String variantID;
+        
+        ImageVariant(String varid) {
+            if (varid.length() > 0) {
+                variantSuffix = "_" + varid;
+            }
+            else {
+                variantSuffix = "";
+            }
+            variantID = varid;
+        }
+    }
+    
     public enum ImageFormat {
         FORMAT_PNG("png", "png", 0.0f),
         FORMAT_JPG75("jpg-q75", "jpg", 0.75f),
