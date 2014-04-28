@@ -4,7 +4,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.dynmap.DynmapCore;
 import org.dynmap.DynmapWorld;
@@ -15,6 +19,7 @@ import org.dynmap.MapType.ImageVariant;
 import org.dynmap.debug.Debug;
 import org.dynmap.storage.MapStorage;
 import org.dynmap.storage.MapStorageTile;
+import org.dynmap.storage.MapStorageTileEnumCB;
 import org.dynmap.utils.BufferInputStream;
 import org.dynmap.utils.BufferOutputStream;
 
@@ -267,6 +272,11 @@ public class FileTreeMapStorage extends MapStorage {
         public String getURI(MapType.ImageFormat fmt) {
             return baseFilename + "." + fmt.getFileExt();
         }
+        
+        @Override
+        public void enqueueZoomOutUpdate(MapType.ImageFormat fmt) {
+            world.enqueueZoomOutUpdate(getTileFile(fmt));
+        }
     }
     
     public FileTreeMapStorage() {
@@ -287,5 +297,137 @@ public class FileTreeMapStorage extends MapStorage {
     public MapStorageTile getTile(DynmapWorld world, MapType map, int x, int y,
             int zoom, ImageVariant var) {
         return new StorageTile(world, map, x, y, zoom, var);
+    }
+
+    private void processEnumMapTiles(DynmapWorld world, MapType map, File base, ImageVariant var, MapStorageTileEnumCB cb) {
+        File bdir = new File(base, map.getPrefix() + var.variantSuffix);
+        if (bdir.isDirectory() == false) return;
+
+        LinkedList<File> dirs = new LinkedList<File>(); // List to traverse
+        dirs.add(bdir);   // Directory for map
+        // While more paths to handle
+        while (dirs.isEmpty() == false) {
+            File dir = dirs.pop();
+            String[] dirlst = dir.list();
+            if (dirlst == null) continue;
+            for(String fn : dirlst) {
+                if (fn.equals(".") || fn.equals(".."))
+                    continue;
+                File f = new File(dir, fn);
+                if (f.isDirectory()) {   /* If directory, add to list to process */
+                    dirs.add(f);
+                }
+                else {  /* Else, file - see if tile */
+                    ImageFormat fmt = null;
+                    String ext = null;
+                    int extoff = fn.lastIndexOf('.');
+                    if (extoff >= 0) {
+                        ext = fn.substring(extoff+1);
+                        fn = fn.substring(0, extoff);
+                    }
+                    if (ImageFormat.FORMAT_PNG.getFileExt().equalsIgnoreCase(ext)) {
+                        fmt = ImageFormat.FORMAT_PNG;
+                    }
+                    else if (ImageFormat.FORMAT_JPG.getFileExt().equalsIgnoreCase(ext)) {
+                        fmt = ImageFormat.FORMAT_JPG;
+                    }
+                    else {
+                        continue;
+                    }
+                    // See if zoom tile
+                    int zoom = 0;
+                    if (fn.startsWith("z")) {
+                        while (fn.startsWith("z")) {
+                            fn = fn.substring(1);
+                            zoom++;
+                        }
+                        if (fn.startsWith("_")) {
+                            fn = fn.substring(1);
+                        }
+                    }
+                    // Split remainder to get coords
+                    String[] coord = fn.split("_");
+                    if (coord.length == 2) {    // Must be 2 to be a tile
+                        try {
+                            int x = Integer.parseInt(coord[0]);
+                            int y = Integer.parseInt(coord[1]);
+                            // Invoke callback
+                            MapStorageTile t = new StorageTile(world, map, x, y, zoom, var);
+                            cb.tileFound(t, fmt);
+                            t.cleanup();
+                        } catch (NumberFormatException nfx) {
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    public void enumMapTiles(DynmapWorld world, MapType map, MapStorageTileEnumCB cb) {
+        File base = new File(baseTileDir, world.getName()); // Get base directory for world
+        List<MapType> mtlist;
+
+        if (map != null) {
+            mtlist = Collections.singletonList(map);
+        }
+        else {  // Else, add all directories under world directory (for maps)
+            mtlist = new ArrayList<MapType>(world.maps);
+        }
+        for (MapType mt : mtlist) {
+            for (ImageVariant var : ImageVariant.values()) {
+                processEnumMapTiles(world, mt, base, var, cb);
+            }
+        }
+    }
+
+    private void processPurgeMapTiles(DynmapWorld world, MapType map, File base, ImageVariant var) {
+        File bdir = new File(base, map.getPrefix() + var.variantSuffix);
+        if (bdir.isDirectory() == false) return;
+
+        LinkedList<File> dirs = new LinkedList<File>(); // List to traverse
+        LinkedList<File> dirsdone = new LinkedList<File>(); // List to traverse
+        dirs.add(bdir);   // Directory for map
+        // While more paths to handle
+        while (dirs.isEmpty() == false) {
+            File dir = dirs.pop();
+            dirsdone.add(dir);
+            String[] dirlst = dir.list();
+            if (dirlst == null) continue;
+            for(String fn : dirlst) {
+                if (fn.equals(".") || fn.equals(".."))
+                    continue;
+                File f = new File(dir, fn);
+                if (f.isDirectory()) {   /* If directory, add to list to process */
+                    dirs.add(f);
+                }
+                else {  /* Else, file - cleanup */
+                    f.delete();
+                }
+            }
+        }
+        // Clean up directories, in reverse order of traverse
+        int cnt = dirsdone.size();
+        for (int i = cnt-1; i >= 0; i--) {
+            dirsdone.get(i).delete();
+        }
+    }
+
+    @Override
+    public void purgeMapTiles(DynmapWorld world, MapType map) {
+        File base = new File(baseTileDir, world.getName()); // Get base directory for world
+        List<MapType> mtlist;
+
+        if (map != null) {
+            mtlist = Collections.singletonList(map);
+        }
+        else {  // Else, add all directories under world directory (for maps)
+            mtlist = new ArrayList<MapType>(world.maps);
+        }
+        for (MapType mt : mtlist) {
+            for (ImageVariant var : ImageVariant.values()) {
+                processPurgeMapTiles(world, mt, base, var);
+            }
+        }
     }
 }

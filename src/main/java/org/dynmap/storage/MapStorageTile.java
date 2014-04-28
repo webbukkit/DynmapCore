@@ -101,5 +101,9 @@ public abstract class MapStorageTile {
      * Get URI for tile (for web interface)
      */
     public abstract String getURI(MapType.ImageFormat fmt);
-
+    /**
+     * Enqueue zoom out update for tile
+     * @param fmt - image format
+     */
+    public abstract void enqueueZoomOutUpdate(MapType.ImageFormat fmt);
 }

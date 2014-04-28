@@ -871,20 +871,9 @@ public abstract class DynmapWorld {
         }
         return null;
     }
-    private void deleteTree(File base) {
-        String[] fl = base.list();
-        if (fl != null) {
-            for (String f : fl) {
-                File fn = new File(base, f);
-                if (fn.isDirectory()) {
-                    deleteTree(fn);
-                }
-                fn.delete();
-            }
-        }
-    }
+    
     public void purgeTree() {
-        deleteTree(worldtilepath);
+        storage.purgeMapTiles(this, null);
     }
     
     public MapStorage getMapStorage() {

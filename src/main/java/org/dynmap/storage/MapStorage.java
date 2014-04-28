@@ -46,6 +46,21 @@ public abstract class MapStorage {
     public abstract MapStorageTile getTile(DynmapWorld world, MapType map, int x, int y, int zoom, MapType.ImageVariant var);
 
     /**
+     * Enumerate existing map tiles, matching given constraints
+     * @param world - specific world
+     * @param map - specific map (if non-null)
+     * @param cb - callback to receive matching tiles
+     */
+    public abstract void enumMapTiles(DynmapWorld world, MapType map, MapStorageTileEnumCB cb);
+
+    /**
+     * Purge existing map tiles, matching given constraints
+     * @param world - specific world
+     * @param map - specific map (if non-null)
+     */
+    public abstract void purgeMapTiles(DynmapWorld world, MapType map);
+
+    /**
      * Calculate hashcode for raw image buffer
      * @param buf - ARGB array
      * @param off - offset of start in array
