@@ -51,6 +51,8 @@ import org.dynmap.modsupport.ModSupportImpl;
 import org.dynmap.servlet.FileLockResourceHandler;
 import org.dynmap.servlet.JettyNullLogger;
 import org.dynmap.servlet.LoginServlet;
+import org.dynmap.storage.MapStorage;
+import org.dynmap.storage.filetree.FileTreeMapStorage;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.FileLockManager;
 import org.dynmap.web.BanIPFilter;
@@ -149,6 +151,7 @@ public class DynmapCore implements DynmapCommonAPI {
     private File tilesDirectory;
     private File exportDirectory;
     private String plugin_ver;
+    private MapStorage defaultStorage;
     
     private String[] deftriggers = { };
 
@@ -392,6 +395,9 @@ public class DynmapCore implements DynmapCommonAPI {
         if (!exportDirectory.isDirectory() && !exportDirectory.mkdirs()) {
             Log.warning("Could not create directory for exports ('" + exportDirectory + "').");
         }
+        // Create default storage handler
+        defaultStorage = new FileTreeMapStorage();
+        defaultStorage.init(this);
         
         /* Register API with plugin, if needed */
         if(!markerAPIInitialized()) {
@@ -2383,6 +2389,10 @@ public class DynmapCore implements DynmapCommonAPI {
             String[] lines, String playerid) {
         DynmapPlayer dp = server.getPlayer(playerid);
         listenerManager.processSignChangeEvent(EventType.SIGN_CHANGE, blkid, world, x, y, z, lines, dp);
+    }
+    
+    public MapStorage getDefaultMapStorage() {
+        return defaultStorage;
     }
 }
 

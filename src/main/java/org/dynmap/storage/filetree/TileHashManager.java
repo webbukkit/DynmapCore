@@ -1,12 +1,11 @@
-package org.dynmap;
+package org.dynmap.storage.filetree;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.io.IOException;
-import java.util.zip.CRC32;
 
+import org.dynmap.Log;
 import org.dynmap.utils.LRULinkedHashMap;
 
 /**
@@ -125,8 +124,6 @@ public class TileHashManager {
     private static final int MAX_CACHED_TILEHASHFILES = 25;
     private Object lock = new Object();
     private LRULinkedHashMap<TileHashFile, byte[]> tilehash = new LRULinkedHashMap<TileHashFile, byte[]>(MAX_CACHED_TILEHASHFILES);
-    private LinkedList<byte[]> crcworkbufs = new LinkedList<byte[]>();
-    private LinkedList<CRC32> crcs = new LinkedList<CRC32>();
     
     public TileHashManager(File tileroot, boolean enabled) {
         tiledir = tileroot;
@@ -150,47 +147,7 @@ public class TileHashManager {
             return thf.getCRC(tx & 0x1F, ty & 0x1F, crcbuf);
         }
     }
-    /* Calculate hash code for given buffer */
-    public long calculateTileHash(int[] newbuf) {
-        if(!enabled) {
-            return 0;   /* Return value that doesn't match */
-        }
-        CRC32 crc32;
-        byte[] crcworkbuf;
-        synchronized(lock) {
-            if(crcworkbufs.isEmpty()) {
-                crcworkbuf = new byte[4*newbuf.length];
-            }
-            else {
-                crcworkbuf = crcworkbufs.removeFirst();
-            }
-            if(crcs.isEmpty()) {
-                crc32 = new CRC32();
-            }    
-            else {
-                crc32 = crcs.removeFirst();
-                crc32.reset();
-            }
-        }
-        if(crcworkbuf.length < (4*newbuf.length)){
-            crcworkbuf = new byte[4*newbuf.length];
-        }
-        for(int i = 0, off = 0; i < newbuf.length; i++) {
-            int v = newbuf[i];
-            crcworkbuf[off++] = (byte)v;
-            crcworkbuf[off++] = (byte)(v>>8);
-            crcworkbuf[off++] = (byte)(v>>16);
-            crcworkbuf[off++] = (byte)(v>>24);
-        }
-        /* Calculate CRC-32 for buffer */
-        crc32.update(crcworkbuf, 0, 4*newbuf.length);
-        long v = crc32.getValue();
-        synchronized(lock) {
-            crcworkbufs.addFirst(crcworkbuf);
-            crcs.addFirst(crc32);
-        }
-        return v;
-    }
+
     /* Update hashcode for given tile */
     public void updateHashCode(String key, String subtype, int tx, int ty, long newcrc) {
         if(!enabled)

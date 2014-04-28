@@ -24,9 +24,7 @@ public abstract class MapTile {
     }
 
     @Override
-    public int hashCode() {
-        return getFilename("", MapType.ImageFormat.FORMAT_PNG, MapType.ImageVariant.STANDARD).hashCode() ^ world.hashCode();
-    }
+    public abstract int hashCode();
 
     @Override
     public abstract boolean equals(Object obj);

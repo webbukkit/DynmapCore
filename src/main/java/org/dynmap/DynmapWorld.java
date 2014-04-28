@@ -8,6 +8,8 @@ import java.util.Map;
 
 import org.dynmap.debug.Debug;
 import org.dynmap.hdmap.TexturePack;
+import org.dynmap.storage.MapStorage;
+import org.dynmap.storage.filetree.TileHashManager;
 import org.dynmap.utils.DynmapBufferedImage;
 import org.dynmap.utils.FileLockManager;
 import org.dynmap.utils.MapChunkCache;
@@ -55,6 +57,8 @@ public abstract class DynmapWorld {
     private boolean is_enabled;
     boolean is_protected;   /* If true, user needs 'dynmap.world.<worldid>' privilege to see world */
     protected int[] brightnessTable = new int[16];  // 0-256 scaled brightness table
+    
+    private MapStorage storage; // Storage handler for this world's maps
     
     /* World height data */
     public final int worldheight;
@@ -522,7 +526,7 @@ public abstract class DynmapWorld {
             if(mm == null)
                 return;
             TileHashManager hashman = mm.hashman;
-            long crc = hashman.calculateTileHash(kzIm.argb_buf); /* Get hash of tile */
+            long crc = MapStorage.calculateImageHashCode(kzIm.argb_buf, 0, kzIm.argb_buf.length); /* Get hash of tile */
             int tilex = ztx/step/2;
             int tiley = zty/step/2;
             String key = wname+".z"+pd.zoomprefix+pd.baseprefix;
@@ -651,6 +655,7 @@ public abstract class DynmapWorld {
         setExtraZoomOutLevels(worldconfig.getInteger("extrazoomout", 0));
         setTileUpdateDelay(worldconfig.getInteger("tileupdatedelay", -1));
         worldtilepath = new File(core.getTilesFolder(), wname);
+        storage = core.getDefaultMapStorage();
         if(loclist != null) {
             for(ConfigurationNode loc : loclist) {
                 DynmapLocation lx = new DynmapLocation(wname, loc.getDouble("x", 0), loc.getDouble("y", mid_y), loc.getDouble("z", 0));
@@ -880,5 +885,9 @@ public abstract class DynmapWorld {
     }
     public void purgeTree() {
         deleteTree(worldtilepath);
+    }
+    
+    public MapStorage getMapStorage() {
+        return storage;
     }
 }

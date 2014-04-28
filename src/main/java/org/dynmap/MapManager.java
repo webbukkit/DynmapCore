@@ -30,6 +30,7 @@ import org.dynmap.common.DynmapPlayer;
 import org.dynmap.debug.Debug;
 import org.dynmap.exporter.OBJExport;
 import org.dynmap.hdmap.HDMapManager;
+import org.dynmap.storage.filetree.TileHashManager;
 import org.dynmap.utils.MapChunkCache;
 import org.dynmap.utils.TileFlags;
 

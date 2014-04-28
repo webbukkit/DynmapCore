@@ -1,5 +1,4 @@
 package org.dynmap.utils;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.RandomAccessFile;
@@ -143,6 +142,56 @@ public class FileLockManager {
         }
         //Log.info("releaseReadLock(" + f + ")");
     }
+    
+    
+    public static BufferOutputStream imageIOEncode(BufferedImage img, ImageFormat fmt) {
+        BufferOutputStream bos = new BufferOutputStream();
+
+        try {
+            ImageIO.setUseCache(false); /* Don't use file cache - too small to be worth it */
+            if(fmt.getFileExt().equals("jpg")) {
+                WritableRaster raster = img.getRaster();
+                WritableRaster newRaster = raster.createWritableChild(0, 0, img.getWidth(),
+                        img.getHeight(), 0, 0, new int[] {0, 1, 2});
+                DirectColorModel cm = (DirectColorModel)img.getColorModel();
+                DirectColorModel newCM = new DirectColorModel(cm.getPixelSize(),
+                        cm.getRedMask(), cm.getGreenMask(), cm.getBlueMask());
+                // now create the new buffer that is used ot write the image:
+                BufferedImage rgbBuffer = new BufferedImage(newCM, newRaster, false, null);
+
+                // Find a jpeg writer
+                ImageWriter writer = null;
+                Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName("jpg");
+                if (iter.hasNext()) {
+                    writer = iter.next();
+                }
+                if(writer == null) {
+                    Log.severe("No JPEG ENCODER - Java VM does not support JPEG encoding");
+                    return null;
+                }
+                ImageWriteParam iwp = writer.getDefaultWriteParam();
+                iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+                iwp.setCompressionQuality(fmt.getQuality());
+
+                ImageOutputStream ios;
+                ios = ImageIO.createImageOutputStream(bos);
+                writer.setOutput(ios);
+
+                writer.write(null, new IIOImage(rgbBuffer, null, null), iwp);
+                writer.dispose();
+
+                rgbBuffer.flush();
+            }
+            else {
+                ImageIO.write(img, fmt.getFileExt(), bos); /* Write to byte array stream - prevent bogus I/O errors */
+            }
+        } catch (IOException iox) {
+            Log.info("Error encoding image - " + iox.getMessage());
+            return null;
+        }
+        return bos;
+    }
+    
     private static final int MAX_WRITE_RETRIES = 6;
     
     private static LinkedList<BufferOutputStream> baoslist = new LinkedList<BufferOutputStream>();
@@ -272,7 +321,7 @@ public class FileLockManager {
                     fis.read(b);
                     fis.close();
                     fis = null;
-                    ByteArrayInputStream bais = new ByteArrayInputStream(b);
+                    BufferInputStream bais = new BufferInputStream(b);
                     img = ImageIO.read(bais);
                     bais.close();
                     done = true;    /* Done if no I/O error - retries don't fix format errors */
