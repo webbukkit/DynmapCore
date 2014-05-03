@@ -33,13 +33,22 @@ public class FileTreeMapStorage extends MapStorage {
     
     public class StorageTile extends MapStorageTile {
         private final String baseFilename;
+        private final String uri;
         private File f; // cached file
         private ImageFormat f_fmt;
         
         StorageTile(DynmapWorld world, MapType map, int x, int y,
                 int zoom, ImageVariant var) {
             super(world, map, x, y, zoom, var);
-            baseFilename = world.getName() + "/" + map.getPrefix() + var.variantSuffix + "/"+ (x >> 5) + "_" + (y >> 5) + "/" + x + "_" + y;
+            String baseURI;
+            if (zoom > 0) {
+                baseURI = map.getPrefix() + var.variantSuffix + "/"+ (x >> 5) + "_" + (y >> 5) + "/" + "zzzzzzzzzzzzzzzz".substring(0, zoom) + "_" + x + "_" + y;
+            }
+            else {
+                baseURI = map.getPrefix() + var.variantSuffix + "/"+ (x >> 5) + "_" + (y >> 5) + "/" + x + "_" + y;
+            }
+            baseFilename = world.getName() + "/" + baseURI;
+            uri = baseURI + "." + map.getImageFormat().getFileExt();
         }
         private File getTileFile(ImageFormat fmt) {
             if ((f == null) || (fmt != f_fmt)) {
@@ -48,22 +57,47 @@ public class FileTreeMapStorage extends MapStorage {
             }
             return f;
         }
-        @Override
-        public boolean exists(ImageFormat fmt) {
+        private File getTileFile() {
+            ImageFormat fmt = map.getImageFormat();
             File ff = getTileFile(fmt);
+            if (ff.exists() == false) {
+                if (fmt == ImageFormat.FORMAT_PNG) {
+                    fmt = ImageFormat.FORMAT_JPG;
+                }
+                else {
+                    fmt = ImageFormat.FORMAT_PNG;
+                }
+                ff = getTileFile(fmt);
+            }
+            return ff;
+        }
+        private File getTileFileAltFormat() {
+            ImageFormat fmt = map.getImageFormat();
+            if (fmt == ImageFormat.FORMAT_PNG) {
+                fmt = ImageFormat.FORMAT_JPG;
+            }
+            else {
+                fmt = ImageFormat.FORMAT_PNG;
+            }
+            return getTileFile(fmt);
+        }
+        @Override
+        public boolean exists() {
+            File ff = getTileFile();
             return ff.isFile() && ff.canRead();
         }
 
         @Override
-        public boolean matchesHashCode(ImageFormat fmt, long hash) {
-            return exists(fmt) && (hash == hashmap.getImageHashCode(world.getName() + "." + map.getPrefix(), null, x, y));
+        public boolean matchesHashCode(long hash) {
+            File ff = getTileFile(map.getImageFormat());
+            return ff.isFile() && ff.canRead() && (hash == hashmap.getImageHashCode(world.getName() + "." + map.getPrefix(), null, x, y));
         }
 
         @Override
         public TileRead read() {
             ImageFormat fmt = map.getImageFormat();
             File ff = getTileFile(fmt);
-            if (ff.exists() == false) {
+            if (ff.exists() == false) { // Fallback and try to read other format
                 if (fmt == ImageFormat.FORMAT_PNG) {
                     fmt = ImageFormat.FORMAT_JPG;
                 }
@@ -99,15 +133,20 @@ public class FileTreeMapStorage extends MapStorage {
         private static final int MAX_WRITE_RETRIES = 6;
 
         @Override
-        public boolean write(ImageFormat fmt, long hash, BufferOutputStream encImage) {
-            File ff = getTileFile(fmt);
+        public boolean write(long hash, BufferOutputStream encImage) {
+            File ff = getTileFile(map.getImageFormat());
+            File ffalt = getTileFileAltFormat();
             File ffpar = ff.getParentFile();
+            // Always clean up old alternate file, if it exsits
+            if (ffalt.exists()) {
+                ffalt.delete();
+            }
             if (encImage == null) { // Delete?
-                ffpar.delete();
+                ff.delete();
                 hashmap.updateHashCode(world.getName() + "." + map.getPrefix(), null, x, y, -1);
                 // Signal update for zoom out
                 if (zoom == 0) {
-                    world.enqueueZoomOutUpdate(ff);
+                    world.enqueueZoomOutUpdate(this);
                 }
                 return true;
             }
@@ -164,7 +203,7 @@ public class FileTreeMapStorage extends MapStorage {
             hashmap.updateHashCode(world.getName() + "." + map.getPrefix(), null, x, y, hash);
             // Signal update for zoom out
             if (zoom == 0) {
-                world.enqueueZoomOutUpdate(ff);
+                world.enqueueZoomOutUpdate(this);
             }
             return true;
         }
@@ -269,13 +308,45 @@ public class FileTreeMapStorage extends MapStorage {
         }
         
         @Override
-        public String getURI(MapType.ImageFormat fmt) {
-            return baseFilename + "." + fmt.getFileExt();
+        public String getURI() {
+            return uri;
         }
         
         @Override
-        public void enqueueZoomOutUpdate(MapType.ImageFormat fmt) {
-            world.enqueueZoomOutUpdate(getTileFile(fmt));
+        public void enqueueZoomOutUpdate() {
+            world.enqueueZoomOutUpdate(this);
+        }
+        @Override
+        public MapStorageTile getZoomOutTile() {
+            int xx, yy;
+            int step = 1 << zoom;
+            if(x >= 0)
+                xx = x - (x % (2*step));
+            else
+                xx = x + (x % (2*step));
+            yy = -y;
+            if(yy >= 0)
+                yy = yy - (yy % (2*step));
+            else
+                yy = yy + (yy % (2*step));
+            yy = -yy;
+            return new StorageTile(world, map, xx, yy, zoom+1, var);
+        }
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof StorageTile) {
+                StorageTile st = (StorageTile) o;
+                return baseFilename.equals(st.baseFilename);
+            }
+            return false;
+        }
+        @Override
+        public int hashCode() {
+            return baseFilename.hashCode();
+        }
+        @Override
+        public String toString() {
+            return baseFilename;
         }
     }
     
@@ -318,20 +389,13 @@ public class FileTreeMapStorage extends MapStorage {
                     dirs.add(f);
                 }
                 else {  /* Else, file - see if tile */
-                    ImageFormat fmt = null;
                     String ext = null;
                     int extoff = fn.lastIndexOf('.');
                     if (extoff >= 0) {
                         ext = fn.substring(extoff+1);
                         fn = fn.substring(0, extoff);
                     }
-                    if (ImageFormat.FORMAT_PNG.getFileExt().equalsIgnoreCase(ext)) {
-                        fmt = ImageFormat.FORMAT_PNG;
-                    }
-                    else if (ImageFormat.FORMAT_JPG.getFileExt().equalsIgnoreCase(ext)) {
-                        fmt = ImageFormat.FORMAT_JPG;
-                    }
-                    else {
+                    if ((!ImageFormat.FORMAT_PNG.getFileExt().equalsIgnoreCase(ext)) && (!ImageFormat.FORMAT_JPG.getFileExt().equalsIgnoreCase(ext))) {
                         continue;
                     }
                     // See if zoom tile
@@ -353,7 +417,7 @@ public class FileTreeMapStorage extends MapStorage {
                             int y = Integer.parseInt(coord[1]);
                             // Invoke callback
                             MapStorageTile t = new StorageTile(world, map, x, y, zoom, var);
-                            cb.tileFound(t, fmt);
+                            cb.tileFound(t);
                             t.cleanup();
                         } catch (NumberFormatException nfx) {
                         }

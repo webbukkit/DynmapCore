@@ -1,9 +1,12 @@
 package org.dynmap.storage;
 
+import java.awt.image.BufferedImage;
+
 import org.dynmap.DynmapWorld;
 import org.dynmap.MapType;
 import org.dynmap.utils.BufferInputStream;
 import org.dynmap.utils.BufferOutputStream;
+import org.dynmap.utils.FileLockManager;
 
 /**
  * Abstract class for instance of a stored map tile
@@ -31,17 +34,15 @@ public abstract class MapStorageTile {
     }
     /**
      * Test if given tile exists in the tile storage
-     * @param fmt - tile format
      * @returns true if tile exists, false if not
      */
-    public abstract boolean exists(MapType.ImageFormat fmt);
+    public abstract boolean exists();
     /**
      * Test if tile exists and matches given hash code
-     * @param fmt - tile format
      * @param hash - hash code to test against tile's content
      * @returns true if tile exists and matches given hash code, false if not
      */
-    public abstract boolean matchesHashCode(MapType.ImageFormat fmt, long hash);
+    public abstract boolean matchesHashCode(long hash);
     /**
      * Read tile
      *
@@ -51,22 +52,34 @@ public abstract class MapStorageTile {
     /**
      * Write tile
      *
-     * @param fmt - tile format
      * @param hash - hash code of uncompressed image
      * @param encImage - output stream for encoded image
      * @return true if write succeeded
      */
-    public abstract boolean write(MapType.ImageFormat fmt, long hash, BufferOutputStream encImage);
+    public abstract boolean write(long hash, BufferOutputStream encImage);
+    /**
+     * Write tile from image
+     * 
+     * @param hash - hash code of uncompressed image
+     * @param image - image to be encoded
+     * @return true if write succeeded
+     */
+    public boolean write(long hash, BufferedImage image) {
+        BufferOutputStream bos = FileLockManager.imageIOEncode(image, map.getImageFormat());
+        if (bos != null) {
+            return write(hash, bos);
+        }
+        return false;
+    }
     /**
      * Delete tile
      *
-     * @param fmt - tile format
      * @param hash - hash code of uncompressed image
      * @param encImage - output stream for encoded image
      * @return true if write succeeded
      */
-    public boolean delete(MapType.ImageFormat fmt) {
-        return write(fmt, -1, null);
+    public boolean delete() {
+        return write(-1, (BufferOutputStream) null);
     }
     /**
      * Get write lock on tile
@@ -100,10 +113,23 @@ public abstract class MapStorageTile {
     /**
      * Get URI for tile (for web interface)
      */
-    public abstract String getURI(MapType.ImageFormat fmt);
+    public abstract String getURI();
     /**
      * Enqueue zoom out update for tile
-     * @param fmt - image format
      */
-    public abstract void enqueueZoomOutUpdate(MapType.ImageFormat fmt);
+    public abstract void enqueueZoomOutUpdate();
+    /**
+     * Get zoom out tile for this tile (next zoom leveL)
+     */
+    public abstract MapStorageTile getZoomOutTile();
+    /**
+     * Equals
+     */
+    @Override
+    public abstract boolean equals(Object o);
+    /**
+     * Hashcode
+     */
+    @Override
+    public abstract int hashCode();
 }

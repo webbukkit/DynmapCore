@@ -30,9 +30,7 @@ import org.dynmap.utils.BlockStep;
 import org.dynmap.hdmap.HDBlockModels.CustomBlockModel;
 import org.dynmap.hdmap.TexturePack.BlockTransparency;
 import org.dynmap.hdmap.TexturePack.HDTextureMap;
-import org.dynmap.utils.BufferOutputStream;
 import org.dynmap.utils.DynmapBufferedImage;
-import org.dynmap.utils.FileLockManager;
 import org.dynmap.utils.LightLevels;
 import org.dynmap.utils.DynLongHashMap;
 import org.dynmap.utils.MapChunkCache;
@@ -1197,29 +1195,25 @@ public class IsoHDPerspective implements HDPerspective {
             boolean tile_update = false;
             String prefix = shaderstate[i].getMap().getPrefix();
 
-            MapType.ImageFormat fmt = shaderstate[i].getMap().getImageFormat();
             MapStorageTile mtile = storage.getTile(world, shaderstate[i].getMap(), tile.tx, tile.ty, 0, MapType.ImageVariant.STANDARD);
 
             mtile.getWriteLock();
             try {
-                if(mtile.matchesHashCode(fmt, crc) == false) {
+                if(mtile.matchesHashCode(crc) == false) {
                     /* Wrap buffer as buffered image */
                     if(rendered[i]) {   
-                        BufferOutputStream bos = FileLockManager.imageIOEncode(im[i].buf_img, fmt);
-                        if (bos != null) {
-                            mtile.write(fmt, crc, bos);
-                        }
+                        mtile.write(crc, im[i].buf_img);
                     }
                     else {
-                        mtile.delete(fmt);
+                        mtile.delete();
                     }
-                    MapManager.mapman.pushUpdate(tile.getDynmapWorld(), new Client.Tile(mtile.getURI(fmt)));
+                    MapManager.mapman.pushUpdate(tile.getDynmapWorld(), new Client.Tile(mtile.getURI()));
                     tile_update = true;
                     renderone = true;
                 }
                 else {
                     if(!rendered[i]) {   
-                        mtile.delete(fmt);
+                        mtile.delete();
                     }
                 }
             } finally {
@@ -1234,24 +1228,21 @@ public class IsoHDPerspective implements HDPerspective {
                 mtile.getWriteLock();
                 tile_update = false;
                 try {
-                    if(mtile.matchesHashCode(fmt, crc) == false) {
+                    if(mtile.matchesHashCode(crc) == false) {
                         /* Wrap buffer as buffered image */
                         if(rendered[i]) {
-                            BufferOutputStream bos = FileLockManager.imageIOEncode(dayim[i].buf_img, fmt);
-                            if (bos != null) {
-                                mtile.write(fmt, crc, bos);
-                            }
+                            mtile.write(crc, dayim[i].buf_img);
                         }
                         else {
-                            mtile.delete(fmt);
+                            mtile.delete();
                         }
-                        MapManager.mapman.pushUpdate(tile.getDynmapWorld(), new Client.Tile(mtile.getURI(fmt)));
+                        MapManager.mapman.pushUpdate(tile.getDynmapWorld(), new Client.Tile(mtile.getURI()));
                         tile_update = true;
                         renderone = true;
                     }
                     else {
                         if(!rendered[i]) {   
-                            mtile.delete(fmt);
+                            mtile.delete();
                         }
                     }
                 } finally {

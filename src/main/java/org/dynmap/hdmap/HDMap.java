@@ -204,30 +204,6 @@ public class HDMap extends MapType {
         return perspective.getRequiredChunks(tile);
     }
 
-    @Override
-    public List<ZoomInfo> baseZoomFileInfo() {
-        ArrayList<ZoomInfo> s = new ArrayList<ZoomInfo>();
-        s.add(new ZoomInfo(prefix, getBackgroundARGBNight()));
-        if(lighting.isNightAndDayEnabled())
-            s.add(new ZoomInfo(prefix + "_day", getBackgroundARGBDay()));
-        return s;
-    }
-
-    public int baseZoomFileStepSize() { return 1; }
-
-    private static final int[] stepseq = { 3, 1, 2, 0 };
-    
-    public MapStep zoomFileMapStep() { return MapStep.X_PLUS_Y_MINUS; }
-
-    public int[] zoomFileStepSequence() { return stepseq; }
-
-    /* How many bits of coordinate are shifted off to make big world directory name */
-    public int getBigWorldShift() { return 5; }
-
-    /* Returns true if big world file structure is in effect for this map */
-    @Override
-    public boolean isBigWorldMap(DynmapWorld w) { return true; } /* We always use it on these maps */
-
     /* Return number of zoom levels needed by this map (before extra levels from extrazoomout) */
     public int getMapZoomOutLevels() {
         return mapzoomout;
@@ -341,24 +317,24 @@ public class HDMap extends MapType {
         final MapStorage ms = world.getMapStorage();
         ms.enumMapTiles(world, this, new MapStorageTileEnumCB() {
             @Override
-            public void tileFound(MapStorageTile tile, ImageFormat fmt) {
+            public void tileFound(MapStorageTile tile) {
                 if (tile.zoom == 1) {   // First tier zoom?  sensitive to newly rendered tiles
                     // If any were rendered, already triggered (and still needed
                     if (rendered.getFlag(tile.x, tile.y) || rendered.getFlag(tile.x+1, tile.y) ||
                         rendered.getFlag(tile.x, tile.y-1) || rendered.getFlag(tile.x+1, tile.y-1)) {
                         return;
                     }
-                    tile.enqueueZoomOutUpdate(fmt);
+                    tile.enqueueZoomOutUpdate();
                 }
                 else if (tile.zoom == 0) {
                     if (rendered.getFlag(tile.x, tile.y)) {  /* If we rendered this tile, its good */
                         return;
                     }
                     /* Otherwise, delete tile */
-                    tile.delete(fmt);
+                    tile.delete();
                     /* Push updates, clear hash code, and signal zoom tile update */
-                    MapManager.mapman.pushUpdate(world, new Client.Tile(tile.getURI(fmt)));
-                    tile.enqueueZoomOutUpdate(fmt);
+                    MapManager.mapman.pushUpdate(world, new Client.Tile(tile.getURI()));
+                    tile.enqueueZoomOutUpdate();
                 }
             }
         });
@@ -463,4 +439,14 @@ public class HDMap extends MapType {
     public void addMapTiles(List<MapTile> list, DynmapWorld w, int tx, int ty) {
         list.add(new HDMapTile(w, this.perspective, tx, ty, boostzoom));
     }
+    
+    private static final ImageVariant[] dayVariant = { ImageVariant.STANDARD, ImageVariant.DAY };
+    
+    @Override
+    public ImageVariant[] getVariants() {
+        if (lighting.isNightAndDayEnabled())
+            return dayVariant;
+        return super.getVariants();
+    }
+
 }
