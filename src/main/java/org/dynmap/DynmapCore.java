@@ -51,6 +51,7 @@ import org.dynmap.modsupport.ModSupportImpl;
 import org.dynmap.servlet.FileLockResourceHandler;
 import org.dynmap.servlet.JettyNullLogger;
 import org.dynmap.servlet.LoginServlet;
+import org.dynmap.servlet.MapStorageResourceHandler;
 import org.dynmap.storage.MapStorage;
 import org.dynmap.storage.filetree.FileTreeMapStorage;
 import org.dynmap.utils.BlockStep;
@@ -796,11 +797,20 @@ public class DynmapCore implements DynmapCommonAPI {
                 this.setDirectoriesListed(true);
                 this.setBaseResource(createFileResource(getFile(getWebPath()).getAbsolutePath()));
             }});
-            this.addHandler("/tiles/*", new FileLockResourceHandler() {{
+            this.addHandler("/tiles/*", new MapStorageResourceHandler() {{
+                this.setCore(DynmapCore.this);
+            }});
+            this.addHandler("/tiles/faces/*", new FileLockResourceHandler() {{
                 this.setAliases(allow_symlinks);
                 this.setWelcomeFiles(new String[] { });
                 this.setDirectoriesListed(true);
-                this.setBaseResource(createFileResource(tilesDirectory.getAbsolutePath()));
+                this.setBaseResource(createFileResource(tilesDirectory.getAbsolutePath() + "/faces"));
+            }});
+            this.addHandler("/tiles/_markers_/*", new FileLockResourceHandler() {{
+                this.setAliases(allow_symlinks);
+                this.setWelcomeFiles(new String[] { });
+                this.setDirectoriesListed(true);
+                this.setBaseResource(createFileResource(tilesDirectory.getAbsolutePath() + "/_markers_"));
             }});
         }};
 

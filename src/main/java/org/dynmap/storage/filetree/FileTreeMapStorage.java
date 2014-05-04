@@ -125,6 +125,7 @@ public class FileTreeMapStorage extends MapStorage {
                 tr.image = new BufferInputStream(buf);
                 tr.format = fmt;
                 tr.hashCode = hashmap.getImageHashCode(world.getName() + "." + map.getPrefix(), null, x, y);
+                tr.lastModified = ff.lastModified();
                 return tr;
             }
             return null;
@@ -369,6 +370,52 @@ public class FileTreeMapStorage extends MapStorage {
             int zoom, ImageVariant var) {
         return new StorageTile(world, map, x, y, zoom, var);
     }
+    
+    @Override
+    public MapStorageTile getTile(DynmapWorld world, String uri) {
+        String[] suri = uri.split("/");
+        if (suri.length < 2) return null;
+        String mname = suri[0]; // Map URI - might include variant
+        MapType mt = null;
+        ImageVariant imgvar = null;
+        // Find matching map type and image variant
+        for (int mti = 0; (mt == null) && (mti < world.maps.size()); mti++) {
+            MapType type = world.maps.get(mti);
+            ImageVariant[] var = type.getVariants();
+            for (int ivi = 0; (imgvar == null) && (ivi < var.length); ivi++) {
+                if (mname.equals(type.getPrefix() + var[ivi].variantSuffix)) {
+                    mt = type;
+                    imgvar = var[ivi];
+                }
+            }
+        }
+        if (mt == null) {   // Not found?
+            return null;
+        }
+        // Now, take the last section and parse out coordinates and zoom
+        String fname = suri[suri.length-1];
+        String[] coord = fname.split("[_\\.]");
+        if (coord.length < 3) { // 3 or 4
+            return null;
+        }
+        int zoom = 0;
+        int x, y;
+        try {
+            if (coord[0].charAt(0) == 'z') {
+                zoom = coord[0].length();
+                x = Integer.parseInt(coord[1]);
+                y = Integer.parseInt(coord[2]);
+            }
+            else {
+                x = Integer.parseInt(coord[0]);
+                y = Integer.parseInt(coord[1]);
+            }
+            return getTile(world, mt, x, y, zoom, imgvar);
+        } catch (NumberFormatException nfx) {
+            return null;
+        }
+    }
+
 
     private void processEnumMapTiles(DynmapWorld world, MapType map, File base, ImageVariant var, MapStorageTileEnumCB cb) {
         File bdir = new File(base, map.getPrefix() + var.variantSuffix);

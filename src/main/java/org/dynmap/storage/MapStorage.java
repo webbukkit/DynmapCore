@@ -46,6 +46,15 @@ public abstract class MapStorage {
     public abstract MapStorageTile getTile(DynmapWorld world, MapType map, int x, int y, int zoom, MapType.ImageVariant var);
 
     /**
+     * Get tile reference for given tile, by world and URI
+     *
+     * @param world - world
+     * @param uri - tile URI
+     * @returns MapStorageTile for given coordinate (whether or not tile exists)
+     */
+    public abstract MapStorageTile getTile(DynmapWorld world, String uri);
+
+    /**
      * Enumerate existing map tiles, matching given constraints
      * @param world - specific world
      * @param map - specific map (if non-null)

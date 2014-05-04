@@ -19,6 +19,9 @@ public class BufferInputStream extends InputStream {
         this.buf = b;
     }
 
+    public byte[] buffer() { return buf; }
+    public int length() { return len; }
+    
     @Override
     public int available() {
         return (len - off);

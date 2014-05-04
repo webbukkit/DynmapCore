@@ -22,6 +22,7 @@ public abstract class MapStorageTile {
         public BufferInputStream image;    // Image bytes
         public MapType.ImageFormat format; // Image format
         public long hashCode;              // Image hashcode (-1 = unknown)
+        public long lastModified;          // Last modified timestamp (-1 = unknown)
     }
 
     protected MapStorageTile(DynmapWorld world, MapType map, int x, int y, int zoom, MapType.ImageVariant var) {
