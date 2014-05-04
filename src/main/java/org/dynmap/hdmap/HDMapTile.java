@@ -43,11 +43,6 @@ public class HDMapTile extends MapTile {
     }
 
     @Override
-    public String getFilename(String prefix, MapType.ImageFormat format, MapType.ImageVariant var) {
-        return prefix + var.variantSuffix + "/"  + (tx >> 5) + '_' + (ty >> 5) + '/' + tx + "_" + ty + "." + format.getFileExt();
-    }
-    
-    @Override
     public int hashCode() {
         return tx ^ ty ^ perspective.hashCode() ^ world.hashCode() ^ boostzoom;
     }
@@ -64,13 +59,9 @@ public class HDMapTile extends MapTile {
         return o.tx == tx && o.ty == ty && (perspective == o.perspective) && (o.world == world) && (o.boostzoom == boostzoom);
     }
 
-    public String getKey(String prefix) {
-        return world.getName() + "." + prefix;
-    }
-
     @Override
     public String toString() {
-        return world.getName() + ":" + getFilename("", MapType.ImageFormat.FORMAT_PNG, MapType.ImageVariant.STANDARD);
+        return world.getName() + ":" + perspective.getName() + "," + tx + "," + ty + ":" + boostzoom;
     }
     
     @Override

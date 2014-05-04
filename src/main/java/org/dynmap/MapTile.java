@@ -17,8 +17,6 @@ public abstract class MapTile {
         return world;
     }
 
-    public abstract String getFilename(String prefix, MapType.ImageFormat format, MapType.ImageVariant var);
-
     public MapTile(DynmapWorld world) {
         this.world = world;
     }
@@ -28,8 +26,6 @@ public abstract class MapTile {
 
     @Override
     public abstract boolean equals(Object obj);
-    
-    public abstract String getKey(String prefix);
     
     public abstract boolean isBiomeDataNeeded();
     public abstract boolean isHightestBlockYDataNeeded();

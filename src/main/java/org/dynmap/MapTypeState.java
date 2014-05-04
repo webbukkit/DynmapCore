@@ -1,6 +1,7 @@
 package org.dynmap;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.dynmap.utils.TileFlags;
@@ -105,6 +106,52 @@ public class MapTypeState {
             invTiles.union(tf);
         }
     }
+    
+    public List<List<String>> saveZoomOut() {
+        ArrayList<List<String>> rslt = new ArrayList<List<String>>();
+        synchronized(invTileLock) {
+            boolean empty = true;
+            for (TileFlags tf : zoomOutInv) {
+                List<String> val;
+                if (tf == null) {
+                    val = Collections.emptyList();
+                }
+                else {
+                    val = tf.save();
+                    if (val == null) {
+                        val = Collections.emptyList();
+                    }
+                    else {
+                        empty = false;
+                    }
+                }
+                rslt.add(val);
+            }
+            if (empty) {
+                rslt = null;
+            }
+        }
+        return rslt;
+    }
+
+    public void restoreZoomOut(List<List<String>> dat) {
+        synchronized(invTileLock) {
+            int cnt = dat.size();
+            if (cnt > zoomOutInv.size()) {
+                cnt = zoomOutInv.size();
+            }
+            for (int i = 0; i < cnt; i++) {
+                List<String> lst = dat.get(i);
+                TileFlags tf = null;
+                if ((lst != null) && (lst.size() > 0)) {
+                    tf = new TileFlags();
+                    tf.load(lst);
+                }
+                zoomOutInv.set(i, tf);
+            }
+        }
+    }
+
     public int getInvCount() {
         synchronized(invTileLock) {
             return invTiles.countFlags();

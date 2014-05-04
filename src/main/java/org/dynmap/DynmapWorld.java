@@ -17,7 +17,6 @@ import org.dynmap.utils.TileFlags;
 import org.dynmap.utils.VisibilityLimit;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -37,9 +36,7 @@ public abstract class DynmapWorld {
     public int servertime;
     public boolean sendposition;
     public boolean sendhealth;
-    public boolean bigworld;    /* If true, deeper directory hierarchy */
     private int extrazoomoutlevels;  /* Number of additional zoom out levels to generate */
-    public File worldtilepath;
     private boolean cancelled;
     private final String wname;
     private final int hashcode;
@@ -309,11 +306,9 @@ public abstract class DynmapWorld {
         servertime = (int)(getTime() % 24000);
         sendposition = worldconfig.getBoolean("sendposition", true);
         sendhealth = worldconfig.getBoolean("sendhealth", true);
-        bigworld = worldconfig.getBoolean("bigworld", false);
         is_protected = worldconfig.getBoolean("protected", false);
         setExtraZoomOutLevels(worldconfig.getInteger("extrazoomout", 0));
         setTileUpdateDelay(worldconfig.getInteger("tileupdatedelay", -1));
-        worldtilepath = new File(core.getTilesFolder(), wname);
         storage = core.getDefaultMapStorage();
         if(loclist != null) {
             for(ConfigurationNode loc : loclist) {
@@ -431,7 +426,6 @@ public abstract class DynmapWorld {
         /* Add flags */
         node.put("sendposition", sendposition);
         node.put("sendhealth", sendhealth);
-        node.put("bigworld", bigworld);
         node.put("extrazoomout", extrazoomoutlevels);
         /* Save visibility limits, if defined */
         if(visibility_limits != null) {

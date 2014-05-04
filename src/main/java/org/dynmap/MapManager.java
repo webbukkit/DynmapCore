@@ -30,7 +30,6 @@ import org.dynmap.common.DynmapPlayer;
 import org.dynmap.debug.Debug;
 import org.dynmap.exporter.OBJExport;
 import org.dynmap.hdmap.HDMapManager;
-import org.dynmap.storage.filetree.TileHashManager;
 import org.dynmap.utils.MapChunkCache;
 import org.dynmap.utils.TileFlags;
 
@@ -77,8 +76,6 @@ public class MapManager {
     AtomicInteger chunks_read[];
     AtomicLong chunks_read_times[];
     
-    /* Tile hash manager */
-    public TileHashManager hashman;
     /* lock for our data structures */
     public static final Object lock = new Object();
 
@@ -961,8 +958,6 @@ public class MapManager {
         zoomout_period = configuration.getInteger("zoomoutperiod", DEFAULT_ZOOMOUT_PERIOD);
         if(zoomout_period < 5) zoomout_period = 5;
         
-        hashman = new TileHashManager(core.getTilesFolder(), configuration.getBoolean("enabletilehash", true));
-        
         tileQueue.start();
     }
 
@@ -1235,6 +1230,16 @@ public class MapManager {
             if(cnt > 0) {
                 Log.info("Loaded " + cnt + " pending tile renders for world '" + wname + "'");
             }
+            /* Get invalidated zoom out tiles pending */
+            invmap = cn.getNode("invZoomOut");
+            if (invmap != null) {
+                for(MapTypeState mts : w.mapstate) {
+                    List<List<String>> v = invmap.getList(mts.type.getPrefix());
+                    if (v != null) {
+                        mts.restoreZoomOut(v);
+                    }
+                }
+            }
             /* Get saved render job, if any */
             ConfigurationNode job = cn.getNode("job");
             if((job != null) && (active_renders.get(wname) == null)) {
@@ -1289,6 +1294,18 @@ public class MapManager {
                 Log.info("Saved " + cnt + " pending tile renders in world '" + w.getName() + "'");
             }
         }
+        /* Save invalidated zoom out tiles pending */
+        HashMap<String, List<List<String>>> invzooms = new HashMap<String,List<List<String>>>();
+        for(MapTypeState mts : w.mapstate) {
+            List<List<String>> szo = mts.saveZoomOut();
+            if (szo != null) {
+                invzooms.put(mts.type.getPrefix(), szo);
+            }
+        }
+        if (!invzooms.isEmpty()) {
+            saved.put("invZoomOut", invzooms);
+        }
+        
         FullWorldRenderState job = active_renders.get(w.getName());
         if(job != null) {
             saved.put("job", job.saveState());
@@ -1387,14 +1404,6 @@ public class MapManager {
         did_start = false;
     }
 
-    public File getTileFile(MapTile tile, String prefix, MapType.ImageFormat fmt, MapType.ImageVariant var) {
-        File worldTileDirectory = tile.getDynmapWorld().worldtilepath;
-        if (!worldTileDirectory.isDirectory() && !worldTileDirectory.mkdirs()) {
-            Log.warning("Could not create directory for tiles ('" + worldTileDirectory + "').");
-        }
-        return new File(worldTileDirectory, tile.getFilename(prefix, fmt, var));
-    }
-
     public void pushUpdate(Client.Update update) {
         int sz = worlds.size();
         for(int i = 0; i < sz; i++) {
@@ -1424,7 +1433,7 @@ public class MapManager {
      */
     public void updateStatistics(MapTile tile, String prefix, boolean rendered, boolean updated, boolean transparent) {
         synchronized(lock) {
-            String k = tile.getKey(prefix);
+            String k = tile.getDynmapWorld().getName() + "." + prefix;
             MapStats ms = mapstats.get(k);
             if(ms == null) {
                 ms = new MapStats();
