@@ -162,12 +162,12 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
-			<version>8.1.14.v20131031</version>
+			<version>8.1.15.v20140411</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-servlet</artifactId>
-			<version>8.1.14.v20131031</version>
+			<version>8.1.15.v20140411</version>
 		</dependency>
 
 		<dependency>
@@ -180,11 +180,6 @@
 			<artifactId>snakeyaml</artifactId>
 			<version>1.9</version>
 			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty.orbit</groupId>
-			<artifactId>javax.servlet</artifactId>
-			<version>3.0.0.v201112011016</version>
 		</dependency>
 	</dependencies>
 	<version>1.9.5-SNAPSHOT</version>
