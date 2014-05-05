@@ -540,7 +540,11 @@ public abstract class DynmapWorld {
     public void purgeTree() {
         storage.purgeMapTiles(this, null);
     }
-    
+
+    public void purgeMap(MapType mt) {
+        storage.purgeMapTiles(this, mt);
+    }
+
     public MapStorage getMapStorage() {
         return storage;
     }

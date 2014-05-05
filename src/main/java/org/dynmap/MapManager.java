@@ -1097,7 +1097,7 @@ public class MapManager {
         final MapType mtf = mt;
         Runnable purgejob = new Runnable() {
             public void run() {
-                mtf.purgeOldTiles(world, new TileFlags());
+                world.purgeMap(mtf);
                 sender.sendMessage("Purge of tiles for map '" + mapname + "' for world '" + worldname + "' completed");
             }
         };

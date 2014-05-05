@@ -21,16 +21,11 @@ public class TileHashManager {
      */
     private static class TileHashFile {
         final String key;
-        final String subtype;
         final int x;  /* minimum tile coordinate / 32 */
         final int y;  /* minimum tile coordinate / 32 */
         private File hf;
-        TileHashFile(String key, String subtype, int x, int y) {
+        TileHashFile(String key, int x, int y) {
             this.key = key;
-            if(subtype != null)
-                this.subtype = subtype;
-            else
-                this.subtype = "";
             this.x = x;
             this.y = y;
         }
@@ -39,11 +34,11 @@ public class TileHashManager {
             if(!(o instanceof TileHashFile))
                 return false;
             TileHashFile fo = (TileHashFile)o;
-            return (x == fo.x) && (y == fo.y) && key.equals(fo.key) && (subtype.equals(fo.subtype)); 
+            return (x == fo.x) && (y == fo.y) && key.equals(fo.key); 
         }
         @Override
         public int hashCode() {
-            return key.hashCode() ^ subtype.hashCode() ^ (x << 16) ^ y;
+            return key.hashCode() ^ (x << 16) ^ y;
         }
         
         public File getHashFile(File tiledir) {
@@ -54,7 +49,7 @@ public class TileHashManager {
                     k = key.substring(0, idx) + File.separatorChar + key.substring(idx+1);
                 else
                     k = key;
-                hf = new File(tiledir, k + (subtype.equals("")?"":("." + subtype)) + "_" + x + "_" + y + ".hash");
+                hf = new File(tiledir, k + "_" + x + "_" + y + ".hash");
             }
             return hf;
         }
@@ -131,11 +126,11 @@ public class TileHashManager {
     }
     
     /* Read cached hashcode for given tile */
-    public long getImageHashCode(String key, String subtype, int tx, int ty) {
+    public long getImageHashCode(String key, int tx, int ty) {
         if(!enabled) {
             return -1;  /* Return value that never matches */
         }
-        TileHashFile thf = new TileHashFile(key, subtype, tx >> 5, ty >> 5);
+        TileHashFile thf = new TileHashFile(key, tx >> 5, ty >> 5);
         synchronized(lock) {
             byte[] crcbuf = tilehash.get(thf);  /* See if we have it cached */
             if(crcbuf == null) {    /* If not in cache, load it */
@@ -149,12 +144,12 @@ public class TileHashManager {
     }
 
     /* Update hashcode for given tile */
-    public void updateHashCode(String key, String subtype, int tx, int ty, long newcrc) {
+    public void updateHashCode(String key, int tx, int ty, long newcrc) {
         if(!enabled)
             return;
         synchronized(lock) {
             /* Now, find and check existing value */
-            TileHashFile thf = new TileHashFile(key, subtype, tx >> 5, ty >> 5);
+            TileHashFile thf = new TileHashFile(key, tx >> 5, ty >> 5);
             byte[] crcbuf = tilehash.get(thf);  /* See if we have it cached */
             if(crcbuf == null) {    /* If not in cache, load it */
                 crcbuf = new byte[32*32*4]; /* Get our space */

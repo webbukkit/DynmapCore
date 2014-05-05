@@ -90,7 +90,7 @@ public class FileTreeMapStorage extends MapStorage {
         @Override
         public boolean matchesHashCode(long hash) {
             File ff = getTileFile(map.getImageFormat());
-            return ff.isFile() && ff.canRead() && (hash == hashmap.getImageHashCode(world.getName() + "." + map.getPrefix(), null, x, y));
+            return ff.isFile() && ff.canRead() && (hash == hashmap.getImageHashCode(world.getName() + "." + map.getPrefix(), x, y));
         }
 
         @Override
@@ -124,7 +124,7 @@ public class FileTreeMapStorage extends MapStorage {
                 }
                 tr.image = new BufferInputStream(buf);
                 tr.format = fmt;
-                tr.hashCode = hashmap.getImageHashCode(world.getName() + "." + map.getPrefix(), null, x, y);
+                tr.hashCode = hashmap.getImageHashCode(world.getName() + "." + map.getPrefix(), x, y);
                 tr.lastModified = ff.lastModified();
                 return tr;
             }
@@ -144,7 +144,7 @@ public class FileTreeMapStorage extends MapStorage {
             }
             if (encImage == null) { // Delete?
                 ff.delete();
-                hashmap.updateHashCode(world.getName() + "." + map.getPrefix(), null, x, y, -1);
+                hashmap.updateHashCode(world.getName() + "." + map.getPrefix(), x, y, -1);
                 // Signal update for zoom out
                 if (zoom == 0) {
                     world.enqueueZoomOutUpdate(this);
@@ -201,7 +201,7 @@ public class FileTreeMapStorage extends MapStorage {
                     }
                 }            
             }
-            hashmap.updateHashCode(world.getName() + "." + map.getPrefix(), null, x, y, hash);
+            hashmap.updateHashCode(world.getName() + "." + map.getPrefix(), x, y, hash);
             // Signal update for zoom out
             if (zoom == 0) {
                 world.enqueueZoomOutUpdate(this);
@@ -486,18 +486,30 @@ public class FileTreeMapStorage extends MapStorage {
             mtlist = new ArrayList<MapType>(world.maps);
         }
         for (MapType mt : mtlist) {
-            for (ImageVariant var : ImageVariant.values()) {
+            ImageVariant[] vars = mt.getVariants();
+            for (ImageVariant var : vars) {
                 processEnumMapTiles(world, mt, base, var, cb);
             }
         }
     }
 
     private void processPurgeMapTiles(DynmapWorld world, MapType map, File base, ImageVariant var) {
-        File bdir = new File(base, map.getPrefix() + var.variantSuffix);
+        String mname = map.getPrefix() + var.variantSuffix;
+        // Clean up hash files
+        String[] hlist = base.list();
+        if (hlist != null) {
+            for (String h : hlist) {
+                if (h.endsWith(".hash") == false) continue;
+                if (h.startsWith(mname + "_")) continue;
+                File f = new File(base, h);
+                f.delete();
+            }
+        }
+        File bdir = new File(base, mname);
         if (bdir.isDirectory() == false) return;
 
         LinkedList<File> dirs = new LinkedList<File>(); // List to traverse
-        LinkedList<File> dirsdone = new LinkedList<File>(); // List to traverse
+        LinkedList<File> dirsdone = new LinkedList<File>();
         dirs.add(bdir);   // Directory for map
         // While more paths to handle
         while (dirs.isEmpty() == false) {
@@ -520,7 +532,8 @@ public class FileTreeMapStorage extends MapStorage {
         // Clean up directories, in reverse order of traverse
         int cnt = dirsdone.size();
         for (int i = cnt-1; i >= 0; i--) {
-            dirsdone.get(i).delete();
+            File f = dirsdone.get(i);
+            f.delete();
         }
     }
 
@@ -536,7 +549,8 @@ public class FileTreeMapStorage extends MapStorage {
             mtlist = new ArrayList<MapType>(world.maps);
         }
         for (MapType mt : mtlist) {
-            for (ImageVariant var : ImageVariant.values()) {
+            ImageVariant[] vars = mt.getVariants();
+            for (ImageVariant var : vars) {
                 processPurgeMapTiles(world, mt, base, var);
             }
         }
