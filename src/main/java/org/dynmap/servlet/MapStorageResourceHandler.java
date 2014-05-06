@@ -4,9 +4,11 @@ import org.dynmap.DynmapCore;
 import org.dynmap.DynmapWorld;
 import org.dynmap.Log;
 import org.dynmap.MapType.ImageFormat;
+import org.dynmap.PlayerFaces;
 import org.dynmap.storage.MapStorage;
 import org.dynmap.storage.MapStorageTile;
 import org.dynmap.storage.MapStorageTile.TileRead;
+import org.dynmap.utils.BufferInputStream;
 import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
@@ -37,6 +39,12 @@ public class MapStorageResourceHandler extends AbstractHandler {
         }
         String world = path.substring(soff, eoff);
         String uri = path.substring(eoff+1);
+        // If faces directory, handle faces
+        if (world.equals("faces")) {
+            handleFace(response, uri);
+            return;
+        }
+        
         DynmapWorld w = null;
         if (core.mapManager != null) {
             w = core.mapManager.getWorld(world);
@@ -78,6 +86,35 @@ public class MapStorageResourceHandler extends AbstractHandler {
         out.flush();
 
     }
+    
+    private void handleFace(HttpServletResponse response, String uri) throws IOException, ServletException {
+        String[] suri = uri.split("[/\\.]");
+        if (suri.length < 3) {  // 3 parts : face ID, player name, png
+            response.sendError(HttpStatus.NOT_FOUND_404);
+            return;
+        }
+        // Find type
+        PlayerFaces.FaceType ft = PlayerFaces.FaceType.byID(suri[0]);
+        if (ft == null) {
+            response.sendError(HttpStatus.NOT_FOUND_404);
+            return;
+        }
+        BufferInputStream bis = null;
+        if (core.playerfacemgr != null) {
+            bis = core.playerfacemgr.storage.getPlayerFaceImage(suri[1], ft);
+        }
+        if (bis == null) {
+            response.sendError(HttpStatus.NOT_FOUND_404);
+            return;
+        }
+        // Got image, package up for response
+        response.setIntHeader("Content-Length", bis.length());
+        response.setContentType("image/png");
+        ServletOutputStream out = response.getOutputStream();
+        out.write(bis.buffer(), 0, bis.length());
+        out.flush();
+    }
+
     
     public void setCore(DynmapCore core) {
         this.core = core;

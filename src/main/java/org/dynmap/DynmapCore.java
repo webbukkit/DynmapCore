@@ -800,12 +800,6 @@ public class DynmapCore implements DynmapCommonAPI {
             this.addHandler("/tiles/*", new MapStorageResourceHandler() {{
                 this.setCore(DynmapCore.this);
             }});
-            this.addHandler("/tiles/faces/*", new FileLockResourceHandler() {{
-                this.setAliases(allow_symlinks);
-                this.setWelcomeFiles(new String[] { });
-                this.setDirectoriesListed(true);
-                this.setBaseResource(createFileResource(tilesDirectory.getAbsolutePath() + "/faces"));
-            }});
             this.addHandler("/tiles/_markers_/*", new FileLockResourceHandler() {{
                 this.setAliases(allow_symlinks);
                 this.setWelcomeFiles(new String[] { });

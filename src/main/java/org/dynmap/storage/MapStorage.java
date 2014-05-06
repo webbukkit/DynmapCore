@@ -5,6 +5,9 @@ import java.util.zip.CRC32;
 import org.dynmap.DynmapCore;
 import org.dynmap.DynmapWorld;
 import org.dynmap.MapType;
+import org.dynmap.PlayerFaces;
+import org.dynmap.utils.BufferInputStream;
+import org.dynmap.utils.BufferOutputStream;
 
 /**
  * Generic interface for map data storage (image tiles, and associated hash codes)
@@ -68,6 +71,31 @@ public abstract class MapStorage {
      * @param map - specific map (if non-null)
      */
     public abstract void purgeMapTiles(DynmapWorld world, MapType map);
+
+    /**
+     * Set player face image
+     * @param playername - player name
+     * @param facetype - face type
+     * @param encImage - encoded image (PNG)
+     * @return true if successful
+     */
+    public abstract boolean setPlayerFaceImage(String playername, PlayerFaces.FaceType facetype, BufferOutputStream encImage);
+    
+    /**
+     * Get player face image
+     * @param playername - player name
+     * @param facetype - face type
+     * @return encoded image (PNG)
+     */
+    public abstract BufferInputStream getPlayerFaceImage(String playername, PlayerFaces.FaceType facetype);
+
+    /**
+     * Test if player face image available
+     * @param playername - player name
+     * @param facetype - face type
+     * @return true if found, false if not
+     */
+    public abstract boolean hasPlayerFaceImage(String playername, PlayerFaces.FaceType facetype);
 
     /**
      * Calculate hashcode for raw image buffer

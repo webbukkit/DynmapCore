@@ -16,6 +16,7 @@ import org.dynmap.Log;
 import org.dynmap.MapType;
 import org.dynmap.MapType.ImageFormat;
 import org.dynmap.MapType.ImageVariant;
+import org.dynmap.PlayerFaces.FaceType;
 import org.dynmap.debug.Debug;
 import org.dynmap.storage.MapStorage;
 import org.dynmap.storage.MapStorageTile;
@@ -211,97 +212,22 @@ public class FileTreeMapStorage extends MapStorage {
 
         @Override
         public boolean getWriteLock() {
-            synchronized(lock) {
-                boolean got_lock = false;
-                while(!got_lock) {
-                    Integer lockcnt = filelocks.get(baseFilename);    /* Get lock count */
-                    if(lockcnt != null) {   /* If any locks, can't get write lock */
-                        try {
-                            lock.wait(); 
-                        } catch (InterruptedException ix) {
-                            Log.severe("getWriteLock(" + baseFilename + ") interrupted");
-                            return false;
-                        }
-                    }
-                    else {
-                        filelocks.put(baseFilename, WRITELOCK);
-                        got_lock = true;
-                    }
-                }
-            }
-            return true;
+            return FileTreeMapStorage.this.getWriteLock(baseFilename);
         }
 
         @Override
         public void releaseWriteLock() {
-            synchronized(lock) {
-                Integer lockcnt = filelocks.get(baseFilename);    /* Get lock count */
-                if(lockcnt == null)
-                    Log.severe("releaseWriteLock(" + baseFilename + ") on unlocked file");
-                else if(lockcnt.equals(WRITELOCK)) {
-                    filelocks.remove(baseFilename);   /* Remove lock */
-                    lock.notifyAll();   /* Wake up folks waiting for locks */
-                }
-                else
-                    Log.severe("releaseWriteLock(" + baseFilename + ") on read-locked file");
-            }
+            FileTreeMapStorage.this.releaseWriteLock(baseFilename);
         }
 
         @Override
         public boolean getReadLock(long timeout) {
-            synchronized(lock) {
-                boolean got_lock = false;
-                long starttime = 0;
-                if(timeout > 0)
-                    starttime = System.currentTimeMillis();
-                while(!got_lock) {
-                    Integer lockcnt = filelocks.get(baseFilename);    /* Get lock count */
-                    if(lockcnt == null) {
-                        filelocks.put(baseFilename, Integer.valueOf(1));  /* First lock */
-                        got_lock = true;
-                    }
-                    else if(!lockcnt.equals(WRITELOCK)) {   /* Other read locks */
-                        filelocks.put(baseFilename, Integer.valueOf(lockcnt+1));
-                        got_lock = true;
-                    }
-                    else {  /* Write lock in place */
-                        try {
-                            if(timeout < 0) {
-                                lock.wait();
-                            }
-                            else {
-                                long now = System.currentTimeMillis();
-                                long elapsed = now-starttime; 
-                                if(elapsed > timeout)   /* Give up on timeout */
-                                    return false;
-                                lock.wait(timeout-elapsed);
-                            }
-                        } catch (InterruptedException ix) {
-                            Log.severe("getReadLock(" + baseFilename + ") interrupted");
-                            return false;
-                        }
-                    }
-                }
-            }
-            return true;
+            return FileTreeMapStorage.this.getReadLock(baseFilename, timeout);
         }
 
         @Override
         public void releaseReadLock() {
-            synchronized(lock) {
-                Integer lockcnt = filelocks.get(baseFilename);    /* Get lock count */
-                if(lockcnt == null)
-                    Log.severe("releaseReadLock(" + baseFilename + ") on unlocked file");
-                else if(lockcnt.equals(WRITELOCK))
-                    Log.severe("releaseReadLock(" + baseFilename + ") on write-locked file");
-                else if(lockcnt > 1) {
-                    filelocks.put(baseFilename, Integer.valueOf(lockcnt-1));
-                }
-                else {
-                    filelocks.remove(baseFilename);   /* Remove lock */
-                    lock.notifyAll();   /* Wake up folks waiting for locks */
-                }
-            }
+            FileTreeMapStorage.this.releaseReadLock(baseFilename);
         }
 
         @Override
@@ -555,4 +481,161 @@ public class FileTreeMapStorage extends MapStorage {
             }
         }
     }
+
+    @Override
+    public boolean setPlayerFaceImage(String playername, FaceType facetype,
+            BufferOutputStream encImage) {
+        String baseFilename = "faces/" + facetype.id + "/" + playername + ".png";
+        File ff = new File(baseTileDir, baseFilename);
+        File ffpar = ff.getParentFile();
+        if (encImage == null) { // Delete?
+            ff.delete();
+            return true;
+        }
+        if (ffpar.exists() == false) {
+            ffpar.mkdirs();
+        }
+        getWriteLock(baseFilename);
+        RandomAccessFile f = null;
+        boolean done = false;
+        try {
+            f = new RandomAccessFile(ff, "rw");
+            f.write(encImage.buf, 0, encImage.len);
+            done = true;
+        } catch (IOException fnfx) {
+        } finally {
+            if(f != null) {
+                try { f.close(); } catch (IOException iox) { done = false; }
+            }
+            releaseWriteLock(baseFilename);
+        }
+        return done;
+    }
+
+    @Override
+    public BufferInputStream getPlayerFaceImage(String playername,
+            FaceType facetype) {
+        String baseFilename = "faces/" + facetype.id + "/" + playername + ".png";
+        File ff = new File(baseTileDir, baseFilename);
+        if (ff.exists()) {
+            if (getReadLock(baseFilename, 5000)) {
+                byte[] buf = new byte[(int) ff.length()];
+                FileInputStream fis = null;
+                try {
+                    fis = new FileInputStream(ff);
+                    fis.read(buf, 0, buf.length);   // Read whole thing
+                } catch (IOException iox) {
+                    Log.info("read (" + ff.getPath() + ") failed = " + iox.getMessage());
+                    return null;
+                } finally {
+                    if (fis != null) {
+                        try { fis.close(); } catch (IOException iox) {}
+                        fis = null;
+                    }
+                    releaseReadLock(baseFilename);
+                }
+                return new BufferInputStream(buf);
+            }
+        }
+        return null;
+    }
+    
+    private void releaseWriteLock(String baseFilename) {
+        synchronized(lock) {
+            Integer lockcnt = filelocks.get(baseFilename);    /* Get lock count */
+            if(lockcnt == null)
+                Log.severe("releaseWriteLock(" + baseFilename + ") on unlocked file");
+            else if(lockcnt.equals(WRITELOCK)) {
+                filelocks.remove(baseFilename);   /* Remove lock */
+                lock.notifyAll();   /* Wake up folks waiting for locks */
+            }
+            else
+                Log.severe("releaseWriteLock(" + baseFilename + ") on read-locked file");
+        }
+    }
+
+    private boolean getWriteLock(String baseFilename) {
+        synchronized(lock) {
+            boolean got_lock = false;
+            while(!got_lock) {
+                Integer lockcnt = filelocks.get(baseFilename);    /* Get lock count */
+                if(lockcnt != null) {   /* If any locks, can't get write lock */
+                    try {
+                        lock.wait(); 
+                    } catch (InterruptedException ix) {
+                        Log.severe("getWriteLock(" + baseFilename + ") interrupted");
+                        return false;
+                    }
+                }
+                else {
+                    filelocks.put(baseFilename, WRITELOCK);
+                    got_lock = true;
+                }
+            }
+        }
+        return true;
+    }
+    
+    private boolean getReadLock(String baseFilename, long timeout) {
+        synchronized(lock) {
+            boolean got_lock = false;
+            long starttime = 0;
+            if(timeout > 0)
+                starttime = System.currentTimeMillis();
+            while(!got_lock) {
+                Integer lockcnt = filelocks.get(baseFilename);    /* Get lock count */
+                if(lockcnt == null) {
+                    filelocks.put(baseFilename, Integer.valueOf(1));  /* First lock */
+                    got_lock = true;
+                }
+                else if(!lockcnt.equals(WRITELOCK)) {   /* Other read locks */
+                    filelocks.put(baseFilename, Integer.valueOf(lockcnt+1));
+                    got_lock = true;
+                }
+                else {  /* Write lock in place */
+                    try {
+                        if(timeout < 0) {
+                            lock.wait();
+                        }
+                        else {
+                            long now = System.currentTimeMillis();
+                            long elapsed = now-starttime; 
+                            if(elapsed > timeout)   /* Give up on timeout */
+                                return false;
+                            lock.wait(timeout-elapsed);
+                        }
+                    } catch (InterruptedException ix) {
+                        Log.severe("getReadLock(" + baseFilename + ") interrupted");
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    private void releaseReadLock(String baseFilename) {
+        synchronized(lock) {
+            Integer lockcnt = filelocks.get(baseFilename);    /* Get lock count */
+            if(lockcnt == null)
+                Log.severe("releaseReadLock(" + baseFilename + ") on unlocked file");
+            else if(lockcnt.equals(WRITELOCK))
+                Log.severe("releaseReadLock(" + baseFilename + ") on write-locked file");
+            else if(lockcnt > 1) {
+                filelocks.put(baseFilename, Integer.valueOf(lockcnt-1));
+            }
+            else {
+                filelocks.remove(baseFilename);   /* Remove lock */
+                lock.notifyAll();   /* Wake up folks waiting for locks */
+            }
+        }
+    }
+
+    @Override
+    public boolean hasPlayerFaceImage(String playername, FaceType facetype) {
+        String baseFilename = "faces/" + facetype.id + "/" + playername + ".png";
+        File ff = new File(baseTileDir, baseFilename);
+        return ff.exists();
+    }
+
 }
