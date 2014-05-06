@@ -98,6 +98,36 @@ public abstract class MapStorage {
     public abstract boolean hasPlayerFaceImage(String playername, PlayerFaces.FaceType facetype);
 
     /**
+     * Set marker image
+     * @param markerid - marker ID
+     * @param encImage - encoded image (PNG)
+     * @return true if successful
+     */
+    public abstract boolean setMarkerImage(String markerid, BufferOutputStream encImage);
+    
+    /**
+     * Get marker image
+     * @param markerid - marker ID
+     * @return encoded image (PNG)
+     */
+    public abstract BufferInputStream getMarkerImage(String markerid);
+
+    /**
+     * Set marker file for world
+     * @param world - world ID
+     * @param content - JSON content for marker file
+     * @return true if successful
+     */
+    public abstract boolean setMarkerFile(String world, String content);
+    
+    /**
+     * Get marker file for world
+     * @param world - world ID
+     * @return JSON content for marker file
+     */
+    public abstract String getMarkerFile(String world);
+
+    /**
      * Calculate hashcode for raw image buffer
      * @param buf - ARGB array
      * @param off - offset of start in array

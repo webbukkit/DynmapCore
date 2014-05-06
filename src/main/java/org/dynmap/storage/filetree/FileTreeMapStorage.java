@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -636,6 +637,123 @@ public class FileTreeMapStorage extends MapStorage {
         String baseFilename = "faces/" + facetype.id + "/" + playername + ".png";
         File ff = new File(baseTileDir, baseFilename);
         return ff.exists();
+    }
+
+    @Override
+    public boolean setMarkerImage(String markerid, BufferOutputStream encImage) {
+        String baseFilename = "_markers_/" + markerid + ".png";
+        File ff = new File(baseTileDir, baseFilename);
+        File ffpar = ff.getParentFile();
+        if (encImage == null) { // Delete?
+            ff.delete();
+            return true;
+        }
+        if (ffpar.exists() == false) {
+            ffpar.mkdirs();
+        }
+        getWriteLock(baseFilename);
+        RandomAccessFile f = null;
+        boolean done = false;
+        try {
+            f = new RandomAccessFile(ff, "rw");
+            f.write(encImage.buf, 0, encImage.len);
+            done = true;
+        } catch (IOException fnfx) {
+        } finally {
+            if(f != null) {
+                try { f.close(); } catch (IOException iox) { done = false; }
+            }
+            releaseWriteLock(baseFilename);
+        }
+        return done;
+    }
+
+    @Override
+    public BufferInputStream getMarkerImage(String markerid) {
+        String baseFilename = "_markers_/" + markerid + ".png";
+        File ff = new File(baseTileDir, baseFilename);
+        if (ff.exists()) {
+            if (getReadLock(baseFilename, 5000)) {
+                byte[] buf = new byte[(int) ff.length()];
+                FileInputStream fis = null;
+                try {
+                    fis = new FileInputStream(ff);
+                    fis.read(buf, 0, buf.length);   // Read whole thing
+                } catch (IOException iox) {
+                    Log.info("read (" + ff.getPath() + ") failed = " + iox.getMessage());
+                    return null;
+                } finally {
+                    if (fis != null) {
+                        try { fis.close(); } catch (IOException iox) {}
+                        fis = null;
+                    }
+                    releaseReadLock(baseFilename);
+                }
+                return new BufferInputStream(buf);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean setMarkerFile(String world, String content) {
+        String baseFilename = "_markers_/marker_" + world + ".json";
+        File ff = new File(baseTileDir, baseFilename);
+        File ffpar = ff.getParentFile();
+        if (content == null) { // Delete?
+            ff.delete();
+            return true;
+        }
+        if (ffpar.exists() == false) {
+            ffpar.mkdirs();
+        }
+        getWriteLock(baseFilename);
+        RandomAccessFile f = null;
+        boolean done = false;
+        try {
+            byte[] buf = content.getBytes("UTF-8");
+            f = new RandomAccessFile(ff, "rw");
+            f.write(buf, 0, buf.length);
+            done = true;
+        } catch (IOException fnfx) {
+        } finally {
+            if(f != null) {
+                try { f.close(); } catch (IOException iox) { done = false; }
+            }
+            releaseWriteLock(baseFilename);
+        }
+        return done;
+    }
+
+    @Override
+    public String getMarkerFile(String world) {
+        String baseFilename = "_markers_/marker_" + world + ".json";
+        File ff = new File(baseTileDir, baseFilename);
+        if (ff.exists()) {
+            if (getReadLock(baseFilename, 5000)) {
+                byte[] buf = new byte[(int) ff.length()];
+                FileInputStream fis = null;
+                try {
+                    fis = new FileInputStream(ff);
+                    fis.read(buf, 0, buf.length);   // Read whole thing
+                } catch (IOException iox) {
+                    Log.info("read (" + ff.getPath() + ") failed = " + iox.getMessage());
+                    return null;
+                } finally {
+                    if (fis != null) {
+                        try { fis.close(); } catch (IOException iox) {}
+                        fis = null;
+                    }
+                    releaseReadLock(baseFilename);
+                }
+                try {
+                    return new String(buf, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    return null;
+                }
+            }
+        }
+        return null;
     }
 
 }

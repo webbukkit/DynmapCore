@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 
 public class MapStorageResourceHandler extends AbstractHandler {
     
@@ -42,6 +43,11 @@ public class MapStorageResourceHandler extends AbstractHandler {
         // If faces directory, handle faces
         if (world.equals("faces")) {
             handleFace(response, uri);
+            return;
+        }
+        // If markers directory, handle markers
+        if (world.equals("_markers_")) {
+            handleMarkers(response, uri);
             return;
         }
         
@@ -115,6 +121,30 @@ public class MapStorageResourceHandler extends AbstractHandler {
         out.flush();
     }
 
+    private void handleMarkers(HttpServletResponse response, String uri) throws IOException, ServletException {
+        String[] suri = uri.split("/");
+        // If json file in last part
+        if ((suri.length == 1) && suri[0].startsWith("marker_") && suri[0].endsWith(".json")) {
+            String content = core.getDefaultMapStorage().getMarkerFile(suri[0].substring(7, suri[0].length() - 5));
+            response.setContentType("application/json");
+            PrintWriter pw = response.getWriter();
+            pw.print(content);
+            pw.flush();
+            return;
+        }
+        // If png, make marker ID
+        if (suri[suri.length-1].endsWith(".png")) {
+            BufferInputStream bis = core.getDefaultMapStorage().getMarkerImage(uri.substring(0, uri.length()-4));
+            // Got image, package up for response
+            response.setIntHeader("Content-Length", bis.length());
+            response.setContentType("image/png");
+            ServletOutputStream out = response.getOutputStream();
+            out.write(bis.buffer(), 0, bis.length());
+            out.flush();
+            return;
+        }
+        response.sendError(HttpStatus.NOT_FOUND_404);
+    }
     
     public void setCore(DynmapCore core) {
         this.core = core;

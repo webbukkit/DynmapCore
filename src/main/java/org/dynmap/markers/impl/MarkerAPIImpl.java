@@ -44,6 +44,7 @@ import org.dynmap.markers.MarkerIcon.MarkerSize;
 import org.dynmap.markers.MarkerSet;
 import org.dynmap.markers.PlayerSet;
 import org.dynmap.markers.PolyLineMarker;
+import org.dynmap.utils.BufferOutputStream;
 import org.dynmap.web.Json;
 
 /**
@@ -53,7 +54,6 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     private File markerpersist;
     private File markerpersist_old;
     private File markerdir; /* Local store for markers (internal) */
-    private File markertiledir; /* Marker directory for web server (under tiles) */
     private HashMap<String, MarkerIconImpl> markericons = new HashMap<String, MarkerIconImpl>();
     private ConcurrentHashMap<String, MarkerSetImpl> markersets = new ConcurrentHashMap<String, MarkerSetImpl>();
     private HashMap<String, List<DynmapLocation>> pointaccum = new HashMap<String, List<DynmapLocation>>();
@@ -382,12 +382,6 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 Log.severe("Error creating markers directory - " + api.markerdir.getPath());
             }
         }
-        api.markertiledir = new File(core.getTilesFolder(), "_markers_");
-        if(api.markertiledir.isDirectory() == false) {
-            if(api.markertiledir.mkdirs() == false) {   /* Create directory if needed */
-                Log.severe("Error creating markers directory - " + api.markertiledir.getPath());
-            }
-        }
         /* Now publish marker files to the tiles directory */
         for(MarkerIcon ico : api.getMarkerIcons()) {
             api.publishMarkerIcon(ico);
@@ -437,16 +431,8 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         byte[] buf = new byte[512];
         InputStream in = null;
         File infile = new File(markerdir, ico.getMarkerIconID() + ".png");  /* Get source file name */
-        File outfile = new File(markertiledir, ico.getMarkerIconID() + ".png"); /* Destination */
         BufferedImage im = null;
-        OutputStream out = null;
                 
-        try {
-            out = new FileOutputStream(outfile);
-        } catch (IOException iox) {
-            Log.severe("Cannot write marker to tilespath - " + outfile.getPath());
-            return;
-        }
         if(ico.isBuiltIn()) {
             in = getClass().getResourceAsStream("/markers/" + ico.getMarkerIconID() + ".png");
         }
@@ -480,21 +466,21 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         if(in == null) {    /* Not found, use default marker */
             in = getClass().getResourceAsStream("/markers/marker.png");
             if(in == null) {
-                try { out.close(); } catch (IOException iox) {}
                 return;
             }
         }
         /* Copy to destination */
         try {
+            BufferOutputStream bos = new BufferOutputStream();
             int len;
             while((len = in.read(buf)) > 0) {
-               out.write(buf, 0, len); 
+               bos.write(buf, 0, len); 
             }
+            core.getDefaultMapStorage().setMarkerImage(ico.getMarkerIconID(), bos);
         } catch (IOException iox) {
-            Log.severe("Error writing marker to tilespath - " + outfile.getPath());
+            Log.severe("Error writing marker to tilespath");
         } finally {
             if(in != null) try { in.close(); } catch (IOException x){}
-            if(out != null) try { out.close(); } catch (IOException x){}
         }
     }
     
@@ -2938,9 +2924,6 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
      */
     private void writeMarkersFile(String wname) {
         Map<String, Object> markerdata = new HashMap<String, Object>();
-
-        File f = new File(markertiledir, "marker_" + wname + ".json");
-        File fnew = new File(markertiledir, "marker_" + wname + ".json.new");
                 
         Map<String, Object> worlddata = new HashMap<String, Object>();
         worlddata.put("timestamp", Long.valueOf(System.currentTimeMillis()));   /* Add timestamp */
@@ -3092,19 +3075,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         }
         worlddata.put("sets", markerdata);
 
-        FileOutputStream fos = null;
-        try {
-            fos = new FileOutputStream(fnew);
-            fos.write(Json.stringifyJson(worlddata).getBytes());
-        } catch (FileNotFoundException ex) {
-            Log.severe("Exception while writing JSON-file.", ex);
-        } catch (IOException ioe) {
-            Log.severe("Exception while writing JSON-file.", ioe);
-        } finally {
-            if(fos != null) try { fos.close(); } catch (IOException x) {}
-            if(f.exists()) f.delete();
-            fnew.renameTo(f);
-        }
+        core.getDefaultMapStorage().setMarkerFile(wname, Json.stringifyJson(worlddata));
     }
 
     @Override
@@ -3131,8 +3102,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         /* Remove files */
         File f = new File(api.markerdir, ico.getMarkerIconID() + ".png");
         f.delete();
-        f = new File(api.markertiledir, ico.getMarkerIconID() + ".png");
-        f.delete();
+        api.core.getDefaultMapStorage().setMarkerImage(ico.getMarkerIconID(), null);
         
         /* Remove from marker icons */
         api.markericons.remove(ico.getMarkerIconID());
