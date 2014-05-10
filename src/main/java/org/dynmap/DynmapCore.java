@@ -54,6 +54,7 @@ import org.dynmap.servlet.LoginServlet;
 import org.dynmap.servlet.MapStorageResourceHandler;
 import org.dynmap.storage.MapStorage;
 import org.dynmap.storage.filetree.FileTreeMapStorage;
+import org.dynmap.storage.sqllte.SQLiteMapStorage;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.FileLockManager;
 import org.dynmap.web.BanIPFilter;
@@ -397,8 +398,21 @@ public class DynmapCore implements DynmapCommonAPI {
             Log.warning("Could not create directory for exports ('" + exportDirectory + "').");
         }
         // Create default storage handler
-        defaultStorage = new FileTreeMapStorage();
-        defaultStorage.init(this);
+        String storetype = configuration.getString("storage/type", "filetree");
+        if (storetype.equals("filetree")) {
+            defaultStorage = new FileTreeMapStorage();
+        }
+        else if (storetype.equals("sqlite")) {
+            defaultStorage = new SQLiteMapStorage();
+        }
+        else {
+            Log.severe("Invalid storage type for map data: " + storetype);
+            return false;
+        }
+        if (!defaultStorage.init(this)) {
+            Log.severe("Map storage initialization failure");
+            return false;
+        }
         
         /* Register API with plugin, if needed */
         if(!markerAPIInitialized()) {

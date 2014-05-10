@@ -27,18 +27,29 @@ public class PlayerFaces {
     public MapStorage storage;
     
     public enum FaceType {
-        FACE_8X8("8x8"),
-        FACE_16X16("16x16"),
-        FACE_32X32("32x32"),
-        BODY_32X32("body");
+        FACE_8X8("8x8", 0),
+        FACE_16X16("16x16", 1),
+        FACE_32X32("32x32", 2),
+        BODY_32X32("body", 3);
         
         public final String id;
-        FaceType(String id) {
+        public final int typeID;
+        
+        FaceType(String id, int typeid) {
             this.id = id;
+            this.typeID = typeid;
         }
         public static FaceType byID(String i_d) {
             for (FaceType ft : values()) {
                 if (ft.id.equals(i_d)) {
+                    return ft;
+                }
+            }
+            return null;
+        }
+        public static FaceType byTypeID(int tid) {
+            for (FaceType ft : values()) {
+                if (ft.typeID == tid) {
                     return ft;
                 }
             }
