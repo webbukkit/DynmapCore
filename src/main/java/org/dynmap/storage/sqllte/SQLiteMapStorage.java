@@ -172,6 +172,10 @@ public class SQLiteMapStorage extends MapStorage {
                 }
                 stmt.executeUpdate();
                 stmt.close();
+                // Signal update for zoom out
+                if (zoom == 0) {
+                    world.enqueueZoomOutUpdate(this);
+                }
             } catch (SQLException x) {
                 Log.severe("Tile write error - " + x.getMessage());
                 err = true;

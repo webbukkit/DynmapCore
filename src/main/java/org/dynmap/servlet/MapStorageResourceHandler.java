@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
 
 public class MapStorageResourceHandler extends AbstractHandler {
@@ -57,14 +58,14 @@ public class MapStorageResourceHandler extends AbstractHandler {
         }
         // If world not found quit
         if (w == null) {
-            response.sendError(HttpStatus.NOT_FOUND_404);
+            response.sendRedirect("/images/blank.png");
             return;
         }
         MapStorage store = w.getMapStorage();    // Get storage handler
         // Get tile reference, based on URI and world
         MapStorageTile tile = store.getTile(w, uri);
         if (tile == null) {
-            response.sendError(HttpStatus.NOT_FOUND_404);
+            response.sendRedirect("/images/blank.png");
             return;
         }
         // Read tile
@@ -74,7 +75,7 @@ public class MapStorageResourceHandler extends AbstractHandler {
             tile.releaseReadLock();
         }
         if (tr == null) {
-            response.sendError(HttpStatus.NOT_FOUND_404);
+            response.sendRedirect("/images/blank.png");
             return;
         }
         // Got tile, package up for response
