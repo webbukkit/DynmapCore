@@ -221,7 +221,7 @@ public class WebAuthManager {
         return sb.toString();
     }
     
-    private static String esc(String s) {
+    public static String esc(String s) {
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
@@ -301,38 +301,19 @@ public class WebAuthManager {
         }
         sb.append(");\n");
 
-        addPaths(sb, core);
+        core.getDefaultMapStorage().addPaths(sb, core);
 
         sb.append("?>\n");
         
         return sb.toString();
     }
     
-    private static void addPaths(StringBuilder sb, DynmapCore core) {
-        String p = core.getTilesFolder().getAbsolutePath();
-        if(!p.endsWith("/"))
-            p += "/";
-        sb.append("$tilespath = \'");
-        sb.append(esc(p));
-        sb.append("\';\n");
-        sb.append("$markerspath = \'");
-        sb.append(esc(p));
-        sb.append("\';\n");
-
-        File wpath = core.getFile(core.getWebPath());
-        p = wpath.getAbsolutePath();
-        if(!p.endsWith("/"))
-            p += "/";
-        sb.append("$webpath = \'");
-        sb.append(esc(p));
-        sb.append("\';\n");
-    }
     
     static String getDisabledAccessPHP(DynmapCore core) {
         StringBuilder sb = new StringBuilder();
         sb.append("<?php\n");
 
-        addPaths(sb, core);
+        core.getDefaultMapStorage().addPaths(sb, core);
         
         sb.append("?>\n");
         

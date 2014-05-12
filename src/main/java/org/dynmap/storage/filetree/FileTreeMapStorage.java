@@ -18,6 +18,7 @@ import org.dynmap.MapType;
 import org.dynmap.MapType.ImageFormat;
 import org.dynmap.MapType.ImageVariant;
 import org.dynmap.PlayerFaces.FaceType;
+import org.dynmap.WebAuthManager;
 import org.dynmap.debug.Debug;
 import org.dynmap.storage.MapStorage;
 import org.dynmap.storage.MapStorageTile;
@@ -755,5 +756,32 @@ public class FileTreeMapStorage extends MapStorage {
         }
         return null;
     }
+    
+    @Override
+    public String getMarkersURI(boolean login_enabled) {
+        return login_enabled?"standalone/markers.php?marker=":"tiles/";
+    }
+
+    @Override
+    public String getTilesURI(boolean login_enabled) {
+        return login_enabled?"standalone/tiles.php?tile=":"tiles/";
+    }
+    
+    @Override
+    public void addPaths(StringBuilder sb, DynmapCore core) {
+        String p = core.getTilesFolder().getAbsolutePath();
+        if(!p.endsWith("/"))
+            p += "/";
+        sb.append("$tilespath = \'");
+        sb.append(WebAuthManager.esc(p));
+        sb.append("\';\n");
+        sb.append("$markerspath = \'");
+        sb.append(WebAuthManager.esc(p));
+        sb.append("\';\n");
+        
+        // Need to call base to add webpath
+        super.addPaths(sb, core);
+    }
+
 
 }

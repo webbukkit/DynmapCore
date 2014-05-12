@@ -1,11 +1,13 @@
 package org.dynmap.storage;
 
+import java.io.File;
 import java.util.zip.CRC32;
 
 import org.dynmap.DynmapCore;
 import org.dynmap.DynmapWorld;
 import org.dynmap.MapType;
 import org.dynmap.PlayerFaces;
+import org.dynmap.WebAuthManager;
 import org.dynmap.utils.BufferInputStream;
 import org.dynmap.utils.BufferOutputStream;
 
@@ -155,5 +157,32 @@ public abstract class MapStorage {
             accum = 0;
         }
         return crc32.getValue();
+    }
+    
+    /**
+     * URI to use for loading marker data (for external web server)
+     * 
+     * @param login_enabled - selects based on login security enabled
+     * @return
+     */
+    public abstract String getMarkersURI(boolean login_enabled);
+    /**
+     * URI to use for loading tiles (for external web server)
+     * 
+     * @param login_enabled - selects based on login security enabled
+     * @return
+     */
+    public abstract String getTilesURI(boolean login_enabled);
+    /**
+     * Add settings to dynmap_access.php needed for external server scripts
+     */
+    public void addPaths(StringBuilder sb, DynmapCore core) {
+        File wpath = core.getFile(core.getWebPath());
+        String p = wpath.getAbsolutePath();
+        if(!p.endsWith("/"))
+            p += "/";
+        sb.append("$webpath = \'");
+        sb.append(WebAuthManager.esc(p));
+        sb.append("\';\n");
     }
 }

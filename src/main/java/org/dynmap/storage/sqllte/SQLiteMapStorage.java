@@ -17,6 +17,7 @@ import org.dynmap.DynmapCore;
 import org.dynmap.DynmapWorld;
 import org.dynmap.Log;
 import org.dynmap.MapType;
+import org.dynmap.WebAuthManager;
 import org.dynmap.MapType.ImageFormat;
 import org.dynmap.MapType.ImageVariant;
 import org.dynmap.PlayerFaces.FaceType;
@@ -28,6 +29,7 @@ import org.dynmap.utils.BufferOutputStream;
 
 public class SQLiteMapStorage extends MapStorage {
     private String connectionString;
+    private String databaseFile;
     private static final int POOLSIZE = 5;
     private Connection[] cpool = new Connection[POOLSIZE];
     private int cpoolCount = 0;
@@ -258,7 +260,8 @@ public class SQLiteMapStorage extends MapStorage {
             return false;
         }
         File dbfile = core.getFile(core.configuration.getString("storage/dbfile", "dynmap.db"));
-        connectionString = "jdbc:sqlite:" + dbfile.getAbsolutePath();
+        databaseFile = dbfile.getAbsolutePath();
+        connectionString = "jdbc:sqlite:" + databaseFile;
         try {
             Class.forName("org.sqlite.JDBC");
             // Initialize/update tables, if needed
@@ -327,7 +330,7 @@ public class SQLiteMapStorage extends MapStorage {
     }
     
     private Integer getMapKey(DynmapWorld w, MapType mt, ImageVariant var) {
-        String id = w.getName() + ":" + mt.getName() + ":" + var.toString();
+        String id = w.getName() + ":" + mt.getPrefix() + ":" + var.toString();
         synchronized(mapKey) {
             Integer k = mapKey.get(id);
             if (k == null) {    // No hit: new value so we need to add it to table
@@ -338,14 +341,14 @@ public class SQLiteMapStorage extends MapStorage {
                     // Insert row
                     PreparedStatement stmt = c.prepareStatement("INSERT INTO Maps (WorldID,MapID,Variant) VALUES (?, ?, ?);");
                     stmt.setString(1, w.getName());
-                    stmt.setString(2, mt.getName());
+                    stmt.setString(2, mt.getPrefix());
                     stmt.setString(3, var.toString());
                     stmt.executeUpdate();
                     stmt.close();
                     //  Query key assigned
                     stmt = c.prepareStatement("SELECT ID FROM Maps WHERE WorldID = ? AND MapID = ? AND Variant = ?;");
                     stmt.setString(1, w.getName());
-                    stmt.setString(2, mt.getName());
+                    stmt.setString(2, mt.getPrefix());
                     stmt.setString(3, var.toString());
                     ResultSet rs = stmt.executeQuery();
                     if (rs.next()) {
@@ -806,4 +809,25 @@ public class SQLiteMapStorage extends MapStorage {
         }
         return content;
     }
+
+    @Override
+    public String getMarkersURI(boolean login_enabled) {
+        return "standalone/SQLite_markers.php?marker=";
+   }
+
+    @Override
+    public String getTilesURI(boolean login_enabled) {
+        return "standalone/SQLite_tiles.php?tile=";
+    }
+    
+    @Override
+    public void addPaths(StringBuilder sb, DynmapCore core) {
+        sb.append("$dbfile = \'");
+        sb.append(WebAuthManager.esc(databaseFile));
+        sb.append("\';\n");
+        
+        // Need to call base to add webpath
+        super.addPaths(sb, core);
+    }
+
 }

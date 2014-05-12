@@ -17,11 +17,13 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.dynmap.storage.MapStorage;
 import org.dynmap.web.Json;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
 import static org.dynmap.JSONUtils.*;
 
 import java.nio.charset.Charset;
@@ -262,6 +264,8 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
         // tiles : 'standalone/tiles.php?tile=',
         // markers : 'standalone/markers.php?marker='
         
+        MapStorage store = core.getDefaultMapStorage();
+        
         Charset cs_utf8 = Charset.forName("UTF-8");
         StringBuilder sb = new StringBuilder();
         sb.append("var config = {\n");
@@ -288,11 +292,11 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
         sb.append("',\n");
         /* Get tiles URL */
         sb.append("  tiles: '");
-        sb.append(core.configuration.getString("url/tiles", login_enabled?"standalone/tiles.php?tile=":"tiles/"));
+        sb.append(core.configuration.getString("url/tiles", store.getTilesURI(login_enabled)));
         sb.append("',\n");
         /* Get markers URL */
         sb.append("  markers: '");
-        sb.append(core.configuration.getString("url/markers", login_enabled?"standalone/markers.php?marker=":"tiles/"));
+        sb.append(core.configuration.getString("url/markers", store.getMarkersURI(login_enabled)));
         sb.append("'\n }\n};\n");
         
         byte[] outputBytes = sb.toString().getBytes(cs_utf8);
