@@ -35,7 +35,6 @@ if(($parts[0] != "faces") && ($parts[0] != "_markers_")) {
 }
 
 $db = new SQLite3($dbfile, SQLITE3_OPEN_READONLY);
-$db->exec('PRAGMA journal_mode = VAL;');
 
 if ($parts[0] == "faces") {
 	if (count($parts) != 3) {
