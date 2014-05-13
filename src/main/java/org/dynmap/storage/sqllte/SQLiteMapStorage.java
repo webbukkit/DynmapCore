@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
 
 import org.dynmap.DynmapCore;
 import org.dynmap.DynmapWorld;
@@ -262,6 +263,7 @@ public class SQLiteMapStorage extends MapStorage {
         File dbfile = core.getFile(core.configuration.getString("storage/dbfile", "dynmap.db"));
         databaseFile = dbfile.getAbsolutePath();
         connectionString = "jdbc:sqlite:" + databaseFile;
+        Log.info("Opening SQLite file " + databaseFile + " as map store");
         try {
             Class.forName("org.sqlite.JDBC");
             // Initialize/update tables, if needed
@@ -412,6 +414,7 @@ public class SQLiteMapStorage extends MapStorage {
                 if (c == null) {
                     if (cpoolCount < POOLSIZE) {  // Still more we can have
                         c = DriverManager.getConnection(connectionString);
+                        configureConnection(c);
                         cpoolCount++;
                     }
                     else {
@@ -425,6 +428,13 @@ public class SQLiteMapStorage extends MapStorage {
             }
         }
         return c;
+    }
+    
+    private static Connection configureConnection(Connection conn) throws SQLException {
+        final Statement statement = conn.createStatement();
+        statement.execute("PRAGMA journal_mode = WAL;");
+        statement.close();
+        return conn;
     }
     
     private void releaseConnection(Connection c, boolean err) {

@@ -77,7 +77,7 @@ else {
 }
 
 $db = new SQLite3($dbfile, SQLITE3_OPEN_READONLY);
-
+$db->exec('PRAGMA journal_mode = VAL;');
 $stmt = $db->prepare('SELECT Tiles.Image,Tiles.Format,Tiles.HashCode,Tiles.LastUpdate FROM Maps JOIN Tiles WHERE Maps.WorldID=:wid AND Maps.MapID=:mapid AND Maps.Variant=:var AND Maps.ID=Tiles.MapID AND Tiles.x=:x AND Tiles.y=:y and Tiles.zoom=:zoom');
 $stmt->bindValue(':wid', $world, SQLITE3_TEXT);
 $stmt->bindValue(':mapid', $prefix, SQLITE3_TEXT);
