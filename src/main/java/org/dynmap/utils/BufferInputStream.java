@@ -58,12 +58,12 @@ public class BufferInputStream extends InputStream {
     }
     
     @Override
-    public int read(byte[] b, int off, int len) {
+    public int read(byte[] b, int off, int len) throws IOException {
         if (b == null) {
-            throw new NullPointerException();
+            throw new IOException("No data");
         }
         else if ((off < 0) || (len < 0) || ((len + this.off) > this.len)) {
-            throw new IndexOutOfBoundsException();
+            throw new IOException ("Offset out of bounds");
         }
         if (this.off >= this.len) {
             return -1;
