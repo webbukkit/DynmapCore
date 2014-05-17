@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.dynmap.DynmapCore;
 import org.dynmap.DynmapWorld;
+import org.dynmap.Log;
 
 /**
  * Simple handler for managing event listeners and dispatch in a neutral fashion
@@ -48,13 +49,15 @@ public class DynmapListenerManager {
     private Map<EventType, ArrayList<EventListener>> listeners = new EnumMap<EventType, ArrayList<EventListener>>(EventType.class);
     
     public void addListener(EventType type, EventListener listener) {
-        ArrayList<EventListener> lst = listeners.get(type);
-        if(lst == null) {
-            lst = new ArrayList<EventListener>();
-            listeners.put(type, lst);
-            core.getServer().requestEventNotification(type);
+        synchronized(listeners) {
+            ArrayList<EventListener> lst = listeners.get(type);
+            if(lst == null) {
+                lst = new ArrayList<EventListener>();
+                listeners.put(type, lst);
+                core.getServer().requestEventNotification(type);
+            }
+            lst.add(listener);
         }
-        lst.add(listener);
     }
     
     public void processWorldEvent(EventType type, DynmapWorld w) {
@@ -64,7 +67,11 @@ public class DynmapListenerManager {
         for(int i = 0; i < sz; i++) {
             EventListener el = lst.get(i);
             if(el instanceof WorldEventListener) {
-                ((WorldEventListener)el).worldEvent(w);
+                try {
+                    ((WorldEventListener)el).worldEvent(w);
+                } catch (Throwable t) {
+                    Log.warning("processWorldEvent(" + type + "," + w + ") - exception", t);
+                }
             }
         }
     }
@@ -75,7 +82,11 @@ public class DynmapListenerManager {
         for(int i = 0; i < sz; i++) {
             EventListener el = lst.get(i);
             if(el instanceof PlayerEventListener) {
-                ((PlayerEventListener)el).playerEvent(p);
+                try {
+                    ((PlayerEventListener)el).playerEvent(p);
+                } catch (Throwable t) {
+                    Log.warning("processPlayerEvent(" + type + "," + p + ") - exception", t);
+                }
             }
         }
     }
@@ -86,7 +97,11 @@ public class DynmapListenerManager {
         for(int i = 0; i < sz; i++) {
             EventListener el = lst.get(i);
             if(el instanceof ChatEventListener) {
-                ((ChatEventListener)el).chatEvent(p, msg);
+                try {
+                    ((ChatEventListener)el).chatEvent(p, msg);
+                } catch (Throwable t) {
+                    Log.warning("processChatEvent(" + type + "," + msg + ") - exception", t);
+                }
             }
         }
     }
@@ -98,7 +113,11 @@ public class DynmapListenerManager {
         for(int i = 0; i < sz; i++) {
             EventListener el = lst.get(i);
             if(el instanceof BlockEventListener) {
-                ((BlockEventListener)el).blockEvent(blkid, world, x, y, z);
+                try {
+                    ((BlockEventListener)el).blockEvent(blkid, world, x, y, z);
+                } catch (Throwable t) {
+                    Log.warning("processBlockEvent(" + type + "," + blkid + "," + world + "," + x + "," + y + "," + z + ") - exception", t);
+                }
             }
         }
     }
@@ -110,7 +129,11 @@ public class DynmapListenerManager {
         for(int i = 0; i < sz; i++) {
             EventListener el = lst.get(i);
             if(el instanceof SignChangeEventListener) {
-                ((SignChangeEventListener)el).signChangeEvent(blkid, world, x, y, z, lines, p);
+                try {
+                    ((SignChangeEventListener)el).signChangeEvent(blkid, world, x, y, z, lines, p);
+                } catch (Throwable t) {
+                    Log.warning("processSignChangeEvent(" + type + "," + blkid + "," + world + "," + x + "," + y + "," + z + ") - exception", t);
+                }
             }
         }
     }

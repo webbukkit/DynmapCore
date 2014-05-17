@@ -16,7 +16,6 @@ public class SimpleWebChatComponent extends Component {
             @Override
             public void triggered(ChatEvent t) {
                 if(plugin.getServer().sendWebChatEvent(t.source, t.name, t.message)) {
-                    if(core.disable_chat_to_web) return;
                     String msg;
                     String msgfmt = plugin.configuration.getString("webmsgformat", null);
                     if(msgfmt != null) {
