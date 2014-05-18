@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -33,7 +33,9 @@ public class FileTreeMapStorage extends MapStorage {
     
     private File baseTileDir;
     private TileHashManager hashmap;
-    
+    private static final int MAX_WRITE_RETRIES = 6;
+    private static final Charset UTF8 = Charset.forName("UTF-8");
+
     public class StorageTile extends MapStorageTile {
         private final String baseFilename;
         private final String uri;
@@ -134,8 +136,6 @@ public class FileTreeMapStorage extends MapStorage {
             return null;
         }
 
-        private static final int MAX_WRITE_RETRIES = 6;
-
         @Override
         public boolean write(long hash, BufferOutputStream encImage) {
             File ff = getTileFile(map.getImageFormat());
@@ -157,52 +157,8 @@ public class FileTreeMapStorage extends MapStorage {
             if (ffpar.exists() == false) {
                 ffpar.mkdirs();
             }
-            File fnew = new File(ff.getPath() + ".new");
-            File fold = new File(ff.getPath() + ".old");
-            boolean done = false;
-            int retrycnt = 0;
-            while(!done) {
-                RandomAccessFile f = null;
-                try {
-                    f = new RandomAccessFile(fnew, "rw");
-                    f.write(encImage.buf, 0, encImage.len);
-                    done = true;
-                } catch (IOException fnfx) {
-                    if(retrycnt < MAX_WRITE_RETRIES) {
-                        Debug.debug("Image file " + ff.getPath() + " - unable to write - retry #" + retrycnt);
-                        try { Thread.sleep(50 << retrycnt); } catch (InterruptedException ix) { return false; }
-                        retrycnt++;
-                    }
-                    else {
-                        Log.info("Image file " + ff.getPath() + " - unable to write - failed");
-                        return false;
-                    }
-                } finally {
-                    if(f != null) {
-                        try { f.close(); } catch (IOException iox) { done = false; }
-                    }
-                    if(done) {
-/*TODO:                        if (preUpdateCommand != null && !preUpdateCommand.isEmpty()) {
-                            try {
-                                new ProcessBuilder(preUpdateCommand, fnew.getAbsolutePath()).start().waitFor();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        */
-                        ff.renameTo(fold);
-                        fnew.renameTo(ff);
-                        fold.delete();
-/*TODO                        if (postUpdateCommand != null && !postUpdateCommand.isEmpty()) {
-                            try {
-                                new ProcessBuilder(postUpdateCommand, fname.getAbsolutePath()).start().waitFor();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-*/                            
-                    }
-                }            
+            if (replaceFile(ff, encImage.buf, encImage.len) == false) {
+                return false;
             }
             hashmap.updateHashCode(world.getName() + "." + map.getPrefix(), x, y, hash);
             // Signal update for zoom out
@@ -498,19 +454,8 @@ public class FileTreeMapStorage extends MapStorage {
             ffpar.mkdirs();
         }
         getWriteLock(baseFilename);
-        RandomAccessFile f = null;
-        boolean done = false;
-        try {
-            f = new RandomAccessFile(ff, "rw");
-            f.write(encImage.buf, 0, encImage.len);
-            done = true;
-        } catch (IOException fnfx) {
-        } finally {
-            if(f != null) {
-                try { f.close(); } catch (IOException iox) { done = false; }
-            }
-            releaseWriteLock(baseFilename);
-        }
+        boolean done = replaceFile(ff, encImage.buf, encImage.len);
+        releaseWriteLock(baseFilename);
         return done;
     }
 
@@ -653,19 +598,8 @@ public class FileTreeMapStorage extends MapStorage {
             ffpar.mkdirs();
         }
         getWriteLock(baseFilename);
-        RandomAccessFile f = null;
-        boolean done = false;
-        try {
-            f = new RandomAccessFile(ff, "rw");
-            f.write(encImage.buf, 0, encImage.len);
-            done = true;
-        } catch (IOException fnfx) {
-        } finally {
-            if(f != null) {
-                try { f.close(); } catch (IOException iox) { done = false; }
-            }
-            releaseWriteLock(baseFilename);
-        }
+        boolean done = replaceFile(ff, encImage.buf, encImage.len);
+        releaseWriteLock(baseFilename);
         return done;
     }
 
@@ -709,20 +643,9 @@ public class FileTreeMapStorage extends MapStorage {
             ffpar.mkdirs();
         }
         getWriteLock(baseFilename);
-        RandomAccessFile f = null;
-        boolean done = false;
-        try {
-            byte[] buf = content.getBytes("UTF-8");
-            f = new RandomAccessFile(ff, "rw");
-            f.write(buf, 0, buf.length);
-            done = true;
-        } catch (IOException fnfx) {
-        } finally {
-            if(f != null) {
-                try { f.close(); } catch (IOException iox) { done = false; }
-            }
-            releaseWriteLock(baseFilename);
-        }
+        byte[] buf = content.getBytes(UTF8);
+        boolean done = replaceFile(ff, buf, buf.length);
+        releaseWriteLock(baseFilename);
         return done;
     }
 
@@ -747,11 +670,7 @@ public class FileTreeMapStorage extends MapStorage {
                     }
                     releaseReadLock(baseFilename);
                 }
-                try {
-                    return new String(buf, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    return null;
-                }
+                return new String(buf, UTF8);
             }
         }
         return null;
@@ -765,6 +684,43 @@ public class FileTreeMapStorage extends MapStorage {
     @Override
     public String getTilesURI(boolean login_enabled) {
         return login_enabled?"standalone/tiles.php?tile=":"tiles/";
+    }
+    
+    private boolean replaceFile(File f, byte[] b, int len) {
+        boolean done = false;
+        File fold = new File(f.getPath() + ".old");
+        File fnew = new File(f.getPath() + ".new");
+        int retrycnt = 0;
+        while (!done) {
+            RandomAccessFile raf = null;
+            try {
+                raf = new RandomAccessFile(fnew, "rw");
+                raf.write(b, 0, len);
+                raf.close();
+                raf = null;
+                // Now swap names
+                if (f.exists()) {
+                    f.renameTo(fold);
+                    fnew.renameTo(f);
+                    fold.delete();
+                }
+                else {
+                    fnew.renameTo(f);
+                }
+                done = true;
+            } catch (IOException iox) {
+                if(retrycnt < MAX_WRITE_RETRIES) {
+                    Debug.debug("Image file " + f.getPath() + " - unable to write - retry #" + retrycnt);
+                    try { Thread.sleep(50 << retrycnt); } catch (InterruptedException ix) { return false; }
+                    retrycnt++;
+                }
+                else {
+                    Log.info("Image file " + f.getPath() + " - unable to write - failed");
+                    return false;
+                }
+            }
+        }
+        return true;
     }
     
     @Override
