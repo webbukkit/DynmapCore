@@ -709,6 +709,7 @@ public class FileTreeMapStorage extends MapStorage {
                 }
                 done = true;
             } catch (IOException iox) {
+                if (raf != null) { try { raf.close(); } catch (IOException x) {} }
                 if(retrycnt < MAX_WRITE_RETRIES) {
                     Debug.debug("Image file " + f.getPath() + " - unable to write - retry #" + retrycnt);
                     try { Thread.sleep(50 << retrycnt); } catch (InterruptedException ix) { return false; }
