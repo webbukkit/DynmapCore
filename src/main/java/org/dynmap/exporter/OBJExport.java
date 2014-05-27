@@ -199,7 +199,7 @@ public class OBJExport {
     /**
      * Process export
      * 
-     * @param sennder - command sender: use for feedback messages
+     * @param sender - command sender: use for feedback messages
      * @return true if successful, false if not
      */
     public boolean processExport(DynmapCommandSender sender) {

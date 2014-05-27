@@ -12,7 +12,7 @@ import org.dynmap.Log;
  * 
  * Represents a flag for each tile, with 2D coordinates based on 0,0 origin.  Flags are grouped
  * 64 x 64, represented by an array of 64 longs.  Each set is stored in a hashmap, keyed by a long
- * computed by ((x/64)<<32)+(y/64).
+ * computed by ((x/64)&lt;&lt;32)+(y/64).
  * 
  */
 public class TileFlags {
