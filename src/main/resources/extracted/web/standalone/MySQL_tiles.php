@@ -76,7 +76,7 @@ else {
    exit;
 }
 
-$db = mysqli_connect($dbhost, $dbuserid, $dbpassword, $dbname, $dbport);
+$db = mysqli_connect('p:' . $dbhost, $dbuserid, $dbpassword, $dbname, $dbport);
 if (mysqli_connect_errno()) {
    $db->close();
    header('Location: ../images/blank.png');

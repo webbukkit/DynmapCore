@@ -34,7 +34,7 @@ if(($parts[0] != "faces") && ($parts[0] != "_markers_")) {
     exit();
 }
 
-$db = mysqli_connect($dbhost, $dbuserid, $dbpassword, $dbname, $dbport);
+$db = mysqli_connect('p:' . $dbhost, $dbuserid, $dbpassword, $dbname, $dbport);
 if (mysqli_connect_errno()) {
     header('HTTP/1.0 500 Error');
     echo "<h1>500 Error</h1>";
