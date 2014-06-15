@@ -140,6 +140,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         public String desc;
         public int minzoom;
         public int maxzoom;
+        public boolean markup;
         
         public AreaMarkerUpdated(AreaMarker m, boolean deleted) {
             this.id = m.getMarkerID();
@@ -161,6 +162,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
             desc = m.getDescription();
             this.minzoom = m.getMinZoom();
             this.maxzoom = m.getMaxZoom();
+            this.markup = m.isLabelMarkup();
 
             this.set = m.getMarkerSet().getMarkerSetID();
             if(deleted) 
