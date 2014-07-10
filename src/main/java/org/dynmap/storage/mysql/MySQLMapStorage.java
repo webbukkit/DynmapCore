@@ -1,6 +1,5 @@
 package org.dynmap.storage.mysql;
 
-import java.io.File;
 import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
 
 import org.dynmap.DynmapCore;
 import org.dynmap.DynmapWorld;
