@@ -220,8 +220,10 @@ public abstract class MapStorage {
                 if (fnew.exists()) {
                     fnew.delete();
                 }
-                fos = new RandomAccessFile(fnew, "rw");
-                fos.write(content.buf, 0, content.len);
+                if (content != null) {
+                    fos = new RandomAccessFile(fnew, "rw");
+                    fos.write(content.buf, 0, content.len);
+                }
                 good = true;
                 done = true;
             } catch (IOException ioe) {
@@ -243,7 +245,9 @@ public abstract class MapStorage {
                 }
                 if(good) {
                     f.renameTo(fold);
-                    fnew.renameTo(f);
+                    if (content != null) {
+                        fnew.renameTo(f);
+                    }
                     fold.delete();
                 }
             }
@@ -265,6 +269,8 @@ public abstract class MapStorage {
         File f = new File(baseStandaloneDir, fileid);
         if (getReadLock(fileid, 5000)) {
             int retrycnt = 0;
+            if (f.exists() == false) 
+                done = true;
             while (!done) {
                 byte[] b = new byte[(int) f.length()];
                 try {
@@ -278,7 +284,7 @@ public abstract class MapStorage {
                         retrycnt++;
                     }
                     else {
-                        Log.severe("Exception while reading stabdalone - " + f.getPath(), ioe);
+                        Log.severe("Exception while reading standalone - " + f.getPath(), ioe);
                         done = true;
                     }
                 } finally {

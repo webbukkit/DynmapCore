@@ -62,7 +62,7 @@ public class BufferInputStream extends InputStream {
         if (b == null) {
             throw new IOException("No data");
         }
-        else if ((off < 0) || (len < 0) || ((len + this.off) > this.len)) {
+        else if ((off < 0) || (len < 0)) {
             throw new IOException ("Offset out of bounds");
         }
         if (this.off >= this.len) {
