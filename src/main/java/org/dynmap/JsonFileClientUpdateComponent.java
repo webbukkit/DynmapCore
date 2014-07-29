@@ -237,15 +237,15 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
         sb.append(" url : {\n");
         /* Get configuration URL */
         sb.append("  configuration: '");
-        sb.append(core.configuration.getString("url/configuration", login_enabled?"standalone/configuration.php":"standalone/dynmap_config.json?_={timestamp}"));
+        sb.append(core.configuration.getString("url/configuration", store.getConfigurationJSONURI(login_enabled)));
         sb.append("',\n");
         /* Get update URL */
         sb.append("  update: '");
-        sb.append(core.configuration.getString("url/update", login_enabled?"standalone/update.php?world={world}&ts={timestamp}":"standalone/dynmap_{world}.json?_={timestamp}"));
+        sb.append(core.configuration.getString("url/update", store.getUpdateJSONURI(login_enabled)));
         sb.append("',\n");
         /* Get sendmessage URL */
         sb.append("  sendmessage: '");
-        sb.append(core.configuration.getString("url/sendmessage", "standalone/sendmessage.php"));
+        sb.append(core.configuration.getString("url/sendmessage", store.getSendMessageURI()));
         sb.append("',\n");
         /* Get login URL */
         sb.append("  login: '");
@@ -290,14 +290,15 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
         byte[] content = clientConfiguration.toJSONString().getBytes(cs_utf8);
 
         String outputFile;
-        if(core.isLoginSupportEnabled()) {
+        boolean dowrap = storage.wrapStandaloneJSON(core.isLoginSupportEnabled());
+        if(dowrap) {
             outputFile = "dynmap_config.php";
         }
         else {
             outputFile = "dynmap_config.json";
         }
         
-        enqueueFileWrite(outputFile, content, core.isLoginSupportEnabled());
+        enqueueFileWrite(outputFile, content, dowrap);
     }
     
     @SuppressWarnings("unchecked")
@@ -314,8 +315,8 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
             core.events.trigger("buildclientupdate", clientUpdate);
 
             String outputFile;
-
-            if(core.isLoginSupportEnabled()) {
+            boolean dowrap = storage.wrapStandaloneJSON(core.isLoginSupportEnabled());
+            if(dowrap) {
                 outputFile = "updates_" + dynmapWorld.getName() + ".php";
             }
             else {
@@ -323,7 +324,7 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
             }
             byte[] content = Json.stringifyJson(update).getBytes(cs_utf8);
 
-            enqueueFileWrite(outputFile, content, core.isLoginSupportEnabled());
+            enqueueFileWrite(outputFile, content, dowrap);
         }
     }
     

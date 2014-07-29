@@ -22,7 +22,7 @@ public abstract class MapStorage {
     private static Object lock = new Object();
     private static HashMap<String, Integer> filelocks = new HashMap<String, Integer>();
     private static final Integer WRITELOCK = new Integer(-1);
-    private File baseStandaloneDir;
+    protected File baseStandaloneDir;
 
     protected long serverID;
     
@@ -186,6 +186,34 @@ public abstract class MapStorage {
      * @return
      */
     public abstract String getTilesURI(boolean login_enabled);
+    /**
+     * Test if standalone JSON files should be PHP wrapped
+     */
+    public boolean wrapStandaloneJSON(boolean login_enabled) {
+        return login_enabled;
+    }
+    /**
+     * Get sendmessage URI
+     */
+    public String getSendMessageURI() {
+        return "standalone/sendmessage.php";
+    }
+    /**
+     * URI to use for loading configuration JSON files (for external web server)
+     * @param login_enabled - selects based on login security enabled
+     * @return
+     */
+    public String getConfigurationJSONURI(boolean login_enabled) {
+        return login_enabled?"standalone/configuration.php":"standalone/dynmap_config.json?_={timestamp}";
+    }
+    /**
+     * URI to use for loading update JSON files (for external web server)
+     * @param login_enabled - selects based on login security enabled
+     * @return
+     */
+    public String getUpdateJSONURI(boolean login_enabled) {
+        return login_enabled?"standalone/update.php?world={world}&ts={timestamp}":"standalone/dynmap_{world}.json?_={timestamp}";
+    }
     /**
      * Add settings to dynmap_access.php needed for external server scripts
      */

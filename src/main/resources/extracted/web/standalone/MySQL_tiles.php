@@ -1,6 +1,10 @@
 <?php
 ob_start();
-include('dynmap_access.php');
+include('MySQL_config.php');
+ob_end_clean();
+
+ob_start();
+include('MySQL_access.php');
 ob_end_clean();
 
 session_start();

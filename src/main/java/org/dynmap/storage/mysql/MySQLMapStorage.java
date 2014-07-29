@@ -1,5 +1,8 @@
 package org.dynmap.storage.mysql;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -158,7 +161,7 @@ public class MySQLMapStorage extends MapStorage {
                     stmt.setLong(1, hash);
                     stmt.setLong(2, System.currentTimeMillis());
                     stmt.setInt(3, (map.getImageFormat() == ImageFormat.FORMAT_PNG) ? FMTIDX_PNG : FMTIDX_JPG);
-                    stmt.setBytes(4, encImage.buf);
+                    stmt.setBinaryStream(4, new BufferInputStream(encImage.buf, encImage.len), encImage.len);
                     stmt.setInt(5, mapkey);
                     stmt.setInt(6, x);
                     stmt.setInt(7, y);
@@ -173,8 +176,8 @@ public class MySQLMapStorage extends MapStorage {
                     stmt.setLong(5, hash);
                     stmt.setLong(6, System.currentTimeMillis());
                     stmt.setInt(7, (map.getImageFormat() == ImageFormat.FORMAT_PNG) ? FMTIDX_PNG : FMTIDX_JPG);
-                    stmt.setBytes(8, encImage.buf);
-                }
+                    stmt.setBinaryStream(8, new BufferInputStream(encImage.buf, encImage.len), encImage.len);
+               }
                 stmt.executeUpdate();
                 stmt.close();
                 // Signal update for zoom out
@@ -273,11 +276,43 @@ public class MySQLMapStorage extends MapStorage {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             // Initialize/update tables, if needed
-            return initializeTables();
+            if(!initializeTables()) {
+                return false;
+            }
         } catch (ClassNotFoundException cnfx) {
             Log.severe("MySQL-JDBC classes not found - MySQL data source not usable");
             return false; 
         }
+        FileWriter fw = null;
+        try {
+            fw = new FileWriter(new File(baseStandaloneDir, "MySQL_config.php"));
+            fw.write("<?php\n$dbname = \'");
+            fw.write(WebAuthManager.esc(database));
+            fw.write("\';\n");
+            fw.write("$dbhost = \'");
+            fw.write(WebAuthManager.esc(hostname));
+            fw.write("\';\n");
+            fw.write("$dbport = ");
+            fw.write(Integer.toString(port));
+            fw.write(";\n");
+            fw.write("$dbuserid = \'");
+            fw.write(WebAuthManager.esc(userid));
+            fw.write("\';\n");
+            fw.write("$dbpassword = \'");
+            fw.write(WebAuthManager.esc(password));
+            fw.write("\';\n");
+            fw.write("$loginenabled = ");
+            fw.write(core.isLoginSupportEnabled()?"true;\n":"false;\n");
+            fw.write("?>\n");
+        } catch (IOException iox) {
+            Log.severe("Error writing MySQL_config.php", iox);
+            return false; 
+        } finally {
+            if (fw != null) {
+                try { fw.close(); } catch (IOException x) {}
+            }
+        }
+        return true;
     }
 
     private int getSchemaVersion() {
@@ -324,7 +359,10 @@ public class MySQLMapStorage extends MapStorage {
                 String worldID = rs.getString("WorldID");
                 String mapID = rs.getString("MapID");
                 String variant = rs.getString("Variant");
-                mapKey.put(worldID + ":" + mapID + ":" + variant, key);
+                long serverid = rs.getLong("ServerID");
+                if (serverid == serverID) { // One of ours
+                    mapKey.put(worldID + ":" + mapID + ":" + variant, key);
+                }
             }
             rs.close();
             stmt.close();
@@ -347,17 +385,19 @@ public class MySQLMapStorage extends MapStorage {
                 try {
                     c = getConnection();
                     // Insert row
-                    PreparedStatement stmt = c.prepareStatement("INSERT INTO Maps (WorldID,MapID,Variant) VALUES (?, ?, ?);");
+                    PreparedStatement stmt = c.prepareStatement("INSERT INTO Maps (WorldID,MapID,Variant,ServerID) VALUES (?, ?, ?, ?);");
                     stmt.setString(1, w.getName());
                     stmt.setString(2, mt.getPrefix());
                     stmt.setString(3, var.toString());
+                    stmt.setLong(4, serverID);
                     stmt.executeUpdate();
                     stmt.close();
                     //  Query key assigned
-                    stmt = c.prepareStatement("SELECT ID FROM Maps WHERE WorldID = ? AND MapID = ? AND Variant = ?;");
+                    stmt = c.prepareStatement("SELECT ID FROM Maps WHERE WorldID = ? AND MapID = ? AND Variant = ? AND ServerID = ?;");
                     stmt.setString(1, w.getName());
                     stmt.setString(2, mt.getPrefix());
                     stmt.setString(3, var.toString());
+                    stmt.setLong(4, serverID);
                     ResultSet rs = stmt.executeQuery();
                     if (rs.next()) {
                         k = rs.getInt("ID");
@@ -385,13 +425,29 @@ public class MySQLMapStorage extends MapStorage {
         if (version == 0) {
             try {
                 c = getConnection();
-                doUpdate(c, "CREATE TABLE Maps (ID INTEGER PRIMARY KEY AUTO_INCREMENT, WorldID VARCHAR(64) NOT NULL, MapID VARCHAR(64) NOT NULL, Variant VARCHAR(16) NOT NULL)");
+                doUpdate(c, "CREATE TABLE Maps (ID INTEGER PRIMARY KEY AUTO_INCREMENT, WorldID VARCHAR(64) NOT NULL, MapID VARCHAR(64) NOT NULL, Variant VARCHAR(16) NOT NULL, ServerID BIGINT NOT NULL DEFAULT 0)");
                 doUpdate(c, "CREATE TABLE Tiles (MapID INT NOT NULL, x INT NOT NULL, y INT NOT NULL, zoom INT NOT NULL, HashCode BIGINT NOT NULL, LastUpdate BIGINT NOT NULL, Format INT NOT NULL, Image BLOB, PRIMARY KEY(MapID, x, y, zoom))");
                 doUpdate(c, "CREATE TABLE Faces (PlayerName VARCHAR(64) NOT NULL, TypeID INT NOT NULL, Image BLOB, PRIMARY KEY(PlayerName, TypeID))");
                 doUpdate(c, "CREATE TABLE MarkerIcons (IconName VARCHAR(128) PRIMARY KEY NOT NULL, Image BLOB)");
                 doUpdate(c, "CREATE TABLE MarkerFiles (FileName VARCHAR(128) PRIMARY KEY NOT NULL, Content MEDIUMTEXT)");
+                doUpdate(c, "CREATE TABLE StandaloneFiles (FileName VARCHAR(128) NOT NULL, ServerID BIGINT NOT NULL DEFAULT 0, Content BLOB, PRIMARY KEY (FileName, ServerID))");
                 doUpdate(c, "CREATE TABLE SchemaVersion (level INT PRIMARY KEY NOT NULL)");
-                doUpdate(c, "INSERT INTO SchemaVersion (level) VALUES (1)");
+                doUpdate(c, "INSERT INTO SchemaVersion (level) VALUES (2)");
+            } catch (SQLException x) {
+                Log.severe("Error creating tables - " + x.getMessage());
+                err = true;
+                return false;
+            } finally {
+                releaseConnection(c, err);
+                c = null;
+            }
+        }
+        else if (version == 1) {
+            try {
+                c = getConnection();
+                doUpdate(c, "CREATE TABLE StandaloneFiles (FileName VARCHAR(128) NOT NULL, ServerID BIGINT NOT NULL DEFAULT 0, Content BLOB, PRIMARY KEY (FileName, ServerID))");
+                doUpdate(c, "ALTER TABLE Maps ADD COLUMN ServerID BIGINT NOT NULL DEFAULT 0 AFTER Variant");
+                doUpdate(c, "UPDATE SchemaVersion SET level=2 WHERE level = 1;");
             } catch (SQLException x) {
                 Log.severe("Error creating tables - " + x.getMessage());
                 err = true;
@@ -610,7 +666,7 @@ public class MySQLMapStorage extends MapStorage {
             }
             else if (exists) {
                 stmt = c.prepareStatement("UPDATE Faces SET Image=? WHERE PlayerName=? AND TypeID=?;");
-                stmt.setBytes(1, encImage.buf);
+                stmt.setBinaryStream(1, new BufferInputStream(encImage.buf, encImage.len), encImage.len);
                 stmt.setString(2, playername);
                 stmt.setInt(3, facetype.typeID);
             }
@@ -618,7 +674,7 @@ public class MySQLMapStorage extends MapStorage {
                 stmt = c.prepareStatement("INSERT INTO Faces (PlayerName,TypeID,Image) VALUES (?,?,?);");
                 stmt.setString(1, playername);
                 stmt.setInt(2, facetype.typeID);
-                stmt.setBytes(3, encImage.buf);
+                stmt.setBinaryStream(3, new BufferInputStream(encImage.buf, encImage.len), encImage.len);
             }
             stmt.executeUpdate();
             stmt.close();
@@ -709,13 +765,13 @@ public class MySQLMapStorage extends MapStorage {
             }
             else if (exists) {
                 stmt = c.prepareStatement("UPDATE MarkerIcons SET Image=? WHERE IconName=?;");
-                stmt.setBytes(1, encImage.buf);
+                stmt.setBinaryStream(1, new BufferInputStream(encImage.buf, encImage.len), encImage.len);
                 stmt.setString(2, markerid);
             }
             else {
                 stmt = c.prepareStatement("INSERT INTO MarkerIcons (IconName,Image) VALUES (?,?);");
                 stmt.setString(1, markerid);
-                stmt.setBytes(2, encImage.buf);
+                stmt.setBinaryStream(2, new BufferInputStream(encImage.buf, encImage.len), encImage.len);
             }
             stmt.executeUpdate();
             stmt.close();
@@ -832,27 +888,98 @@ public class MySQLMapStorage extends MapStorage {
     public String getTilesURI(boolean login_enabled) {
         return "standalone/MySQL_tiles.php?tile=";
     }
+
+    @Override
+    public String getConfigurationJSONURI(boolean login_enabled) {
+        return "standalone/MySQL_configuration.php?serverid={serverid}";
+    }
     
     @Override
-    public void addPaths(StringBuilder sb, DynmapCore core) {
-        sb.append("$dbname = \'");
-        sb.append(WebAuthManager.esc(database));
-        sb.append("\';\n");
-        sb.append("$dbhost = \'");
-        sb.append(WebAuthManager.esc(hostname));
-        sb.append("\';\n");
-        sb.append("$dbport = ");
-        sb.append(port);
-        sb.append(";\n");
-        sb.append("$dbuserid = \'");
-        sb.append(WebAuthManager.esc(userid));
-        sb.append("\';\n");
-        sb.append("$dbpassword = \'");
-        sb.append(WebAuthManager.esc(password));
-        sb.append("\';\n");
-        
-        // Need to call base to add webpath
-        super.addPaths(sb, core);
+    public String getUpdateJSONURI(boolean login_enabled) {
+        return "standalone/MySQL_update.php?world={world}&ts={timestamp}&serverid={serverid}";
     }
 
+    @Override
+    public String getSendMessageURI() {
+        return "standalone/MySQL_sendmessage.php";
+    }
+
+    @Override
+    public BufferInputStream getStandaloneFile(String fileid) {
+        Connection c = null;
+        boolean err = false;
+        BufferInputStream content = null;
+        try {
+            c = getConnection();
+            PreparedStatement stmt = c.prepareStatement("SELECT Content FROM StandaloneFiles WHERE FileName=? AND ServerID=?;");
+            stmt.setString(1, fileid);
+            stmt.setLong(2, serverID);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                byte[] img = rs.getBytes("Content");
+                content = new BufferInputStream(img);
+            }
+            rs.close();
+            stmt.close();
+        } catch (SQLException x) {
+            Log.severe("Standalone file read error - " + x.getMessage());
+            err = true;
+        } finally {
+            releaseConnection(c, err);
+        }
+        return content;
+    }
+
+    @Override
+    public boolean setStandaloneFile(String fileid, BufferOutputStream content) {
+        Connection c = null;
+        boolean err = false;
+        
+        try {
+            c = getConnection();
+            boolean exists = false;
+            PreparedStatement stmt;
+            stmt = c.prepareStatement("SELECT FileName FROM StandaloneFiles WHERE FileName=? AND ServerID=?;");
+            stmt.setString(1, fileid);
+            stmt.setLong(2, serverID);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                exists = true;
+            }
+            rs.close();
+            stmt.close();
+            if (content == null) { // If delete
+                // If delete, and doesn't exist, quit
+                if (!exists) return true;
+                stmt = c.prepareStatement("DELETE FROM StandaloneFiles WHERE FileName=? AND ServerID=?;");
+                stmt.setString(1, fileid);
+                stmt.setLong(2, serverID);
+                stmt.executeUpdate();
+            }
+            else if (exists) {
+                stmt = c.prepareStatement("UPDATE StandaloneFiles SET Content=? WHERE FileName=? AND ServerID=?;");
+                stmt.setBinaryStream(1, new BufferInputStream(content.buf, content.len), content.len);
+                stmt.setString(2, fileid);
+                stmt.setLong(3, serverID);
+            }
+            else {
+                stmt = c.prepareStatement("INSERT INTO StandaloneFiles (FileName,ServerID,Content) VALUES (?,?,?);");
+                stmt.setString(1, fileid);
+                stmt.setLong(2, serverID);
+                stmt.setBinaryStream(3, new BufferInputStream(content.buf, content.len), content.len);
+            }
+            stmt.executeUpdate();
+            stmt.close();
+        } catch (SQLException x) {
+            Log.severe("Standalone file write error - " + x.getMessage());
+            err = true;
+        } finally {
+            releaseConnection(c, err);
+        }
+        return !err;
+    }
+    @Override
+    public boolean wrapStandaloneJSON(boolean login_enabled) {
+        return false;
+    }
 }
