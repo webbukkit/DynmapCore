@@ -213,11 +213,11 @@ public class PatchDefinition implements RenderPatch {
             Log.severe("Invalid zv=" + zv);
             good = false;
         }
-        if((umin < 0.0) || (umin >= umax)) {
+        if((umin < 0.0) || (umin > umax)) {
             Log.severe("Invalid umin=" + umin);
             good = false;
         }
-        if((vmin < 0.0) || (vmin >= vmax)) {
+        if((vmin < 0.0) || (vmin > vmax)) {
             Log.severe("Invalid vmin=" + vmin);
             good = false;
         }
@@ -228,9 +228,6 @@ public class PatchDefinition implements RenderPatch {
         if(vmax > 1.0) {
             Log.severe("Invalid vmax=" + vmax);
             good = false;
-        }
-        if (!good) {
-            Log.severe(new Exception("Trace Stack"));
         }
         
         return good;

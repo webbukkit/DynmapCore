@@ -1,10 +1,14 @@
 package org.dynmap.storage;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.HashMap;
 import java.util.zip.CRC32;
 
 import org.dynmap.DynmapCore;
 import org.dynmap.DynmapWorld;
+import org.dynmap.Log;
 import org.dynmap.MapType;
 import org.dynmap.PlayerFaces;
 import org.dynmap.WebAuthManager;
@@ -15,6 +19,11 @@ import org.dynmap.utils.BufferOutputStream;
  * Generic interface for map data storage (image tiles, and associated hash codes)
  */
 public abstract class MapStorage {
+    private static Object lock = new Object();
+    private static HashMap<String, Integer> filelocks = new HashMap<String, Integer>();
+    private static final Integer WRITELOCK = new Integer(-1);
+    protected File baseStandaloneDir;
+
     protected long serverID;
     
     protected MapStorage() {
@@ -26,6 +35,10 @@ public abstract class MapStorage {
      * @param core - core instance
      */
     public boolean init(DynmapCore core) {
+        baseStandaloneDir = new File(core.configuration.getString("webpath", "web"), "standalone");
+        if (!baseStandaloneDir.isAbsolute()) {
+            baseStandaloneDir = new File(core.getDataFolder(), baseStandaloneDir.toString());
+        }
         return true;
     }
     
@@ -174,6 +187,34 @@ public abstract class MapStorage {
      */
     public abstract String getTilesURI(boolean login_enabled);
     /**
+     * Test if standalone JSON files should be PHP wrapped
+     */
+    public boolean wrapStandaloneJSON(boolean login_enabled) {
+        return login_enabled;
+    }
+    /**
+     * Get sendmessage URI
+     */
+    public String getSendMessageURI() {
+        return "standalone/sendmessage.php";
+    }
+    /**
+     * URI to use for loading configuration JSON files (for external web server)
+     * @param login_enabled - selects based on login security enabled
+     * @return
+     */
+    public String getConfigurationJSONURI(boolean login_enabled) {
+        return login_enabled?"standalone/configuration.php":"standalone/dynmap_config.json?_={timestamp}";
+    }
+    /**
+     * URI to use for loading update JSON files (for external web server)
+     * @param login_enabled - selects based on login security enabled
+     * @return
+     */
+    public String getUpdateJSONURI(boolean login_enabled) {
+        return login_enabled?"standalone/update.php?world={world}&ts={timestamp}":"standalone/dynmap_{world}.json?_={timestamp}";
+    }
+    /**
      * Add settings to dynmap_access.php needed for external server scripts
      */
     public void addPaths(StringBuilder sb, DynmapCore core) {
@@ -185,4 +226,200 @@ public abstract class MapStorage {
         sb.append(WebAuthManager.esc(p));
         sb.append("\';\n");
     }
+
+    private static final int RETRY_LIMIT = 4;
+    /**
+     * Set standalone file content
+     * @param fileid - standalone file ID
+     * @param content - content for file
+     * @return true if successful
+     */
+    public boolean setStandaloneFile(String fileid, BufferOutputStream content) {
+        RandomAccessFile fos = null;
+        boolean good = false;
+        boolean done = false;
+        File f = new File(baseStandaloneDir, fileid);
+        File fnew = new File(baseStandaloneDir, fileid + ".new");
+        File fold = new File(baseStandaloneDir, fileid + ".old");
+        int retrycnt = 0;
+        getWriteLock(fileid);
+        while (!done) {
+            try {
+                if (fnew.exists()) {
+                    fnew.delete();
+                }
+                if (content != null) {
+                    fos = new RandomAccessFile(fnew, "rw");
+                    fos.write(content.buf, 0, content.len);
+                }
+                good = true;
+                done = true;
+            } catch (IOException ioe) {
+                if(retrycnt < RETRY_LIMIT) {
+                    try { Thread.sleep(20 * (1 << retrycnt)); } catch (InterruptedException ix) {}
+                    retrycnt++;
+                }
+                else {
+                    Log.severe("Exception while writing JSON-file - " + fnew.getPath(), ioe);
+                    done = true;
+                }
+            } finally {
+                if(fos != null) {
+                    try {
+                        fos.close();
+                    } catch (IOException iox) {
+                    }
+                    fos = null;
+                }
+                if(good) {
+                    f.renameTo(fold);
+                    if (content != null) {
+                        fnew.renameTo(f);
+                    }
+                    fold.delete();
+                }
+            }
+        }
+        releaseWriteLock(fileid);
+
+        return good;
+    }
+    
+    /**
+     * Get standalone file content
+     * @param fileid - standalone file ID
+     * @return content for file
+     */
+    public BufferInputStream getStandaloneFile(String fileid) {
+        RandomAccessFile fos = null;
+        BufferInputStream bis = null;
+        boolean done = false;
+        File f = new File(baseStandaloneDir, fileid);
+        if (getReadLock(fileid, 5000)) {
+            int retrycnt = 0;
+            if (f.exists() == false) 
+                done = true;
+            while (!done) {
+                byte[] b = new byte[(int) f.length()];
+                try {
+                    fos = new RandomAccessFile(f, "r");
+                    fos.read(b, 0, b.length);
+                    done = true;
+                    bis = new BufferInputStream(b);
+                } catch (IOException ioe) {
+                    if(retrycnt < RETRY_LIMIT) {
+                        try { Thread.sleep(20 * (1 << retrycnt)); } catch (InterruptedException ix) {}
+                        retrycnt++;
+                    }
+                    else {
+                        Log.severe("Exception while reading standalone - " + f.getPath(), ioe);
+                        done = true;
+                    }
+                } finally {
+                    if(fos != null) {
+                        try {
+                            fos.close();
+                        } catch (IOException iox) {
+                        }
+                        fos = null;
+                    }
+                }
+            }
+            releaseReadLock(fileid);
+        }
+        return bis;
+    }
+
+    
+    protected void releaseWriteLock(String baseFilename) {
+        synchronized(lock) {
+            Integer lockcnt = filelocks.get(baseFilename);    /* Get lock count */
+            if(lockcnt == null)
+                Log.severe("releaseWriteLock(" + baseFilename + ") on unlocked file");
+            else if(lockcnt.equals(WRITELOCK)) {
+                filelocks.remove(baseFilename);   /* Remove lock */
+                lock.notifyAll();   /* Wake up folks waiting for locks */
+            }
+            else
+                Log.severe("releaseWriteLock(" + baseFilename + ") on read-locked file");
+        }
+    }
+
+    protected boolean getWriteLock(String baseFilename) {
+        synchronized(lock) {
+            boolean got_lock = false;
+            while(!got_lock) {
+                Integer lockcnt = filelocks.get(baseFilename);    /* Get lock count */
+                if(lockcnt != null) {   /* If any locks, can't get write lock */
+                    try {
+                        lock.wait(); 
+                    } catch (InterruptedException ix) {
+                        Log.severe("getWriteLock(" + baseFilename + ") interrupted");
+                        return false;
+                    }
+                }
+                else {
+                    filelocks.put(baseFilename, WRITELOCK);
+                    got_lock = true;
+                }
+            }
+        }
+        return true;
+    }
+    
+    protected boolean getReadLock(String baseFilename, long timeout) {
+        synchronized(lock) {
+            boolean got_lock = false;
+            long starttime = 0;
+            if(timeout > 0)
+                starttime = System.currentTimeMillis();
+            while(!got_lock) {
+                Integer lockcnt = filelocks.get(baseFilename);    /* Get lock count */
+                if(lockcnt == null) {
+                    filelocks.put(baseFilename, Integer.valueOf(1));  /* First lock */
+                    got_lock = true;
+                }
+                else if(!lockcnt.equals(WRITELOCK)) {   /* Other read locks */
+                    filelocks.put(baseFilename, Integer.valueOf(lockcnt+1));
+                    got_lock = true;
+                }
+                else {  /* Write lock in place */
+                    try {
+                        if(timeout < 0) {
+                            lock.wait();
+                        }
+                        else {
+                            long now = System.currentTimeMillis();
+                            long elapsed = now-starttime; 
+                            if(elapsed > timeout)   /* Give up on timeout */
+                                return false;
+                            lock.wait(timeout-elapsed);
+                        }
+                    } catch (InterruptedException ix) {
+                        Log.severe("getReadLock(" + baseFilename + ") interrupted");
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    protected void releaseReadLock(String baseFilename) {
+        synchronized(lock) {
+            Integer lockcnt = filelocks.get(baseFilename);    /* Get lock count */
+            if(lockcnt == null)
+                Log.severe("releaseReadLock(" + baseFilename + ") on unlocked file");
+            else if(lockcnt.equals(WRITELOCK))
+                Log.severe("releaseReadLock(" + baseFilename + ") on write-locked file");
+            else if(lockcnt > 1) {
+                filelocks.put(baseFilename, Integer.valueOf(lockcnt-1));
+            }
+            else {
+                filelocks.remove(baseFilename);   /* Remove lock */
+                lock.notifyAll();   /* Wake up folks waiting for locks */
+            }
+        }
+    }
+
 }

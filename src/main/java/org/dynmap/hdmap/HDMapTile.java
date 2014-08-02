@@ -3,7 +3,6 @@ package org.dynmap.hdmap;
 import org.dynmap.DynmapChunk;
 import org.dynmap.DynmapWorld;
 import org.dynmap.MapManager;
-import org.dynmap.MapType;
 
 import java.util.List;
 import org.dynmap.MapTile;
