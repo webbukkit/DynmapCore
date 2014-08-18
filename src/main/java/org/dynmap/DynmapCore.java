@@ -433,8 +433,10 @@ public class DynmapCore implements DynmapCommonAPI {
         /* Update extracted files, if needed */
         updateExtractedFiles();
         /* Initialize authorization manager */
-        if(configuration.getBoolean("login-enabled", false))
+        if(configuration.getBoolean("login-enabled", false)) {
             authmgr = new WebAuthManager(this);
+            defaultStorage.setLoginEnabled(this);
+        }
 
         /* Add options to avoid 0.29 re-render (fixes very inconsistent with previous maps) */
         HDMapManager.waterlightingfix = configuration.getBoolean("correct-water-lighting", false);
@@ -2162,18 +2164,18 @@ public class DynmapCore implements DynmapCommonAPI {
         return false;
     }
     
-    String getLoginPHP() {
+    String getLoginPHP(boolean wrap) {
         if(authmgr != null)
-            return authmgr.getLoginPHP();
+            return authmgr.getLoginPHP(wrap);
         else
             return null;
     }
     
-    String getAccessPHP() {
+    String getAccessPHP(boolean wrap) {
         if(authmgr != null)
-            return authmgr.getAccessPHP();
+            return authmgr.getAccessPHP(wrap);
         else
-            return WebAuthManager.getDisabledAccessPHP(this);
+            return WebAuthManager.getDisabledAccessPHP(this, wrap);
     }
     
     boolean pendingRegisters() {

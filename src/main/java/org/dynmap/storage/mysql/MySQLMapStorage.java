@@ -283,6 +283,10 @@ public class MySQLMapStorage extends MapStorage {
             Log.severe("MySQL-JDBC classes not found - MySQL data source not usable");
             return false; 
         }
+        return writeConfigPHP(core);
+    }
+
+    private boolean writeConfigPHP(DynmapCore core) {
         FileWriter fw = null;
         try {
             fw = new FileWriter(new File(baseStandaloneDir, "MySQL_config.php"));
@@ -314,7 +318,6 @@ public class MySQLMapStorage extends MapStorage {
         }
         return true;
     }
-
     private int getSchemaVersion() {
         int ver = 0;
         boolean err = false;
@@ -430,9 +433,9 @@ public class MySQLMapStorage extends MapStorage {
                 doUpdate(c, "CREATE TABLE Faces (PlayerName VARCHAR(64) NOT NULL, TypeID INT NOT NULL, Image BLOB, PRIMARY KEY(PlayerName, TypeID))");
                 doUpdate(c, "CREATE TABLE MarkerIcons (IconName VARCHAR(128) PRIMARY KEY NOT NULL, Image BLOB)");
                 doUpdate(c, "CREATE TABLE MarkerFiles (FileName VARCHAR(128) PRIMARY KEY NOT NULL, Content MEDIUMTEXT)");
-                doUpdate(c, "CREATE TABLE StandaloneFiles (FileName VARCHAR(128) NOT NULL, ServerID BIGINT NOT NULL DEFAULT 0, Content BLOB, PRIMARY KEY (FileName, ServerID))");
+                doUpdate(c, "CREATE TABLE StandaloneFiles (FileName VARCHAR(128) NOT NULL, ServerID BIGINT NOT NULL DEFAULT 0, Content MEDIUMTEXT, PRIMARY KEY (FileName, ServerID))");
                 doUpdate(c, "CREATE TABLE SchemaVersion (level INT PRIMARY KEY NOT NULL)");
-                doUpdate(c, "INSERT INTO SchemaVersion (level) VALUES (2)");
+                doUpdate(c, "INSERT INTO SchemaVersion (level) VALUES (3)");
             } catch (SQLException x) {
                 Log.severe("Error creating tables - " + x.getMessage());
                 err = true;
@@ -445,9 +448,25 @@ public class MySQLMapStorage extends MapStorage {
         else if (version == 1) {
             try {
                 c = getConnection();
-                doUpdate(c, "CREATE TABLE StandaloneFiles (FileName VARCHAR(128) NOT NULL, ServerID BIGINT NOT NULL DEFAULT 0, Content BLOB, PRIMARY KEY (FileName, ServerID))");
+                doUpdate(c, "CREATE TABLE StandaloneFiles (FileName VARCHAR(128) NOT NULL, ServerID BIGINT NOT NULL DEFAULT 0, Content MEDIUMTEXT, PRIMARY KEY (FileName, ServerID))");
                 doUpdate(c, "ALTER TABLE Maps ADD COLUMN ServerID BIGINT NOT NULL DEFAULT 0 AFTER Variant");
-                doUpdate(c, "UPDATE SchemaVersion SET level=2 WHERE level = 1;");
+                doUpdate(c, "UPDATE SchemaVersion SET level=3 WHERE level = 1;");
+            } catch (SQLException x) {
+                Log.severe("Error creating tables - " + x.getMessage());
+                err = true;
+                return false;
+            } finally {
+                releaseConnection(c, err);
+                c = null;
+            }
+        }
+        else if (version == 2) {
+            try {
+                c = getConnection();
+                doUpdate(c, "DELETE FROM StandaloneFiles;");
+                doUpdate(c, "ALTER TABLE StandaloneFiles DROP COLUMN Content;");
+                doUpdate(c, "ALTER TABLE StandaloneFiles ADD COLUMN Content MEDIUMTEXT;");
+                doUpdate(c, "UPDATE SchemaVersion SET level=3 WHERE level = 2;");
             } catch (SQLException x) {
                 Log.severe("Error creating tables - " + x.getMessage());
                 err = true;
@@ -891,12 +910,12 @@ public class MySQLMapStorage extends MapStorage {
 
     @Override
     public String getConfigurationJSONURI(boolean login_enabled) {
-        return "standalone/MySQL_configuration.php?serverid={serverid}";
+        return "standalone/MySQL_configuration.php"; // ?serverid={serverid}";
     }
     
     @Override
     public String getUpdateJSONURI(boolean login_enabled) {
-        return "standalone/MySQL_update.php?world={world}&ts={timestamp}&serverid={serverid}";
+        return "standalone/MySQL_update.php?world={world}&ts={timestamp}"; // &serverid={serverid}";
     }
 
     @Override
@@ -982,4 +1001,21 @@ public class MySQLMapStorage extends MapStorage {
     public boolean wrapStandaloneJSON(boolean login_enabled) {
         return false;
     }
+    @Override
+    public boolean wrapStandalonePHP() {
+        return false;
+    }
+    @Override
+    public String getStandaloneLoginURI() {
+        return "standalone/MySQL_login.php";
+    }
+    @Override
+    public String getStandaloneRegisterURI() {
+        return "standalone/MySQL_register.php";
+    }
+    @Override
+    public void setLoginEnabled(DynmapCore core) {
+        writeConfigPHP(core);
+    }
+
 }

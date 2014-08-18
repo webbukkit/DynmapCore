@@ -1,9 +1,7 @@
 <?php
 ob_start();
+require_once('MySQL_funcs.php');
 include('MySQL_config.php');
-ob_end_clean();
-
-ob_start();
 include('MySQL_access.php');
 ob_end_clean();
 
@@ -38,20 +36,14 @@ if(($parts[0] != "faces") && ($parts[0] != "_markers_")) {
     exit();
 }
 
-$db = mysqli_connect('p:' . $dbhost, $dbuserid, $dbpassword, $dbname, $dbport);
-if (mysqli_connect_errno()) {
-    header('HTTP/1.0 500 Error');
-    echo "<h1>500 Error</h1>";
-    echo "Error opening database";
-	$db->close();
-    exit;
-}
+initDbIfNeeded();
 
 if ($parts[0] == "faces") {
 	if (count($parts) != 3) {
 	    header('HTTP/1.0 500 Error');
     	echo "<h1>500 Error</h1>";
     	echo "Bad face: " . $path;
+    	cleanupDb();
     	exit();
 	}
 	$ft = 0;
@@ -78,7 +70,6 @@ if ($parts[0] == "faces") {
 	}
 	else {
 		header('Location: ../images/blank.png');
-		exit;
 	}
 }
 else { // _markers_
@@ -108,14 +99,13 @@ else { // _markers_
 		}
 		else {
 			header('Location: ../images/blank.png');
-			exit;
 		}
 	}
 }
 
 $stmt->close();
-$db->close();
 
+cleanupDb();
 
 exit;
 ?>

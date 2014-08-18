@@ -1,9 +1,7 @@
 <?php
 ob_start();
+require_once('MySQL_funcs.php');
 include('MySQL_config.php');
-ob_end_clean();
-
-ob_start();
 include('MySQL_access.php');
 ob_end_clean();
 
@@ -21,32 +19,7 @@ if(strcmp($userid, '-guest-')) {
   $loggedin = true;
 }
 
-$serverid = 0;
-if(isset($_REQUEST['serverid'])) {
-  $serverid = $_REQUEST['serverid'];
-}
-
-$db = mysqli_connect('p:' . $dbhost, $dbuserid, $dbpassword, $dbname, $dbport);
-if (mysqli_connect_errno()) {
-    header('HTTP/1.0 500 Error');
-    echo "<h1>500 Error</h1>";
-    echo "Error opening database";
-	$db->close();
-    exit;
-}
-
-$fname = 'dynmap_config.json';
-$stmt = $db->prepare('SELECT Content from StandaloneFiles WHERE FileName=? AND ServerID=?');
-$stmt->bind_param('si', $fname, $serverid);
-$res = $stmt->execute();
-$stmt->bind_result($content);
-if (!$stmt->fetch()) {
-    header('HTTP/1.0 500 Error');
-    echo "<h1>500 Error</h1>";
-    echo 'Error reading database - ' . $fname . ' #' . $serverid;
-	$db->close();
-    exit;
-}
+$content = getStandaloneFile('dynmap_config.json');
 
 header('Content-type: text/plain; charset=utf-8');
 
@@ -57,10 +30,11 @@ else if($json->loginrequired && !$loggedin) {
     echo "{ \"error\": \"login-required\" }";
 }
 else {
-	$json = json_decode(implode($content));
+	$json = json_decode($content);
 	$uid = '[' . strtolower($userid) . ']';
 	$json->loggedin = $loggedin;
 	$wcnt = count($json->worlds);
+	$newworlds = array();
 	for($i = 0; $i < $wcnt; $i++) {
 		$w = $json->worlds[$i];
 		if($w->protected) {
@@ -97,8 +71,7 @@ else {
 	
 	echo json_encode($json);
 }
-$stmt->close();
-$db->close();
+cleanupDb();
  
 ?>
 

@@ -200,9 +200,11 @@ public class WebAuthManager {
         
         return true;
     }
-    String getLoginPHP() {
+    String getLoginPHP(boolean wrap) {
         StringBuilder sb = new StringBuilder();
-        sb.append("<?php\n");
+        if (wrap) {
+            sb.append("<?php\n");
+        }
         sb.append("$pwdsalt = '").append(hashsalt).append("';\n");
         /* Create password hash */
         sb.append("$pwdhash = array(\n");
@@ -216,8 +218,9 @@ public class WebAuthManager {
             sb.append("  \'").append(esc(uid)).append("\' => \'").append(esc(pending_registrations.get(uid))).append("\',\n");
         }
         sb.append(");\n");
-        sb.append("?>\n");
-        
+        if (wrap) {
+            sb.append("?>\n");
+        }
         return sb.toString();
     }
     
@@ -235,10 +238,11 @@ public class WebAuthManager {
         return sb.toString();
     }
     
-    String getAccessPHP() {
+    String getAccessPHP(boolean wrap) {
         StringBuilder sb = new StringBuilder();
-        sb.append("<?php\n");
-        
+        if (wrap) {
+            sb.append("<?php\n");
+        }
         ArrayList<String> mid = new ArrayList<String>();
         /* Create world access list */
         sb.append("$worldaccess = array(\n");
@@ -303,19 +307,25 @@ public class WebAuthManager {
 
         core.getDefaultMapStorage().addPaths(sb, core);
 
-        sb.append("?>\n");
+        if (wrap) {
+            sb.append("?>\n");
+        }
         
         return sb.toString();
     }
     
     
-    static String getDisabledAccessPHP(DynmapCore core) {
+    static String getDisabledAccessPHP(DynmapCore core, boolean wrap) {
         StringBuilder sb = new StringBuilder();
-        sb.append("<?php\n");
-
+        if (wrap) {
+            sb.append("<?php\n");
+        }
+        
         core.getDefaultMapStorage().addPaths(sb, core);
         
-        sb.append("?>\n");
+        if (wrap) {
+            sb.append("?>\n");
+        }
         
         return sb.toString();
     }

@@ -1,9 +1,7 @@
 <?php
 ob_start();
+require_once('MySQL_funcs.php');
 include('MySQL_config.php');
-ob_end_clean();
-
-ob_start();
 include('MySQL_access.php');
 ob_end_clean();
 
@@ -51,25 +49,12 @@ if(isset($_REQUEST['serverid'])) {
   $serverid = $_REQUEST['serverid'];
 }
 
-$db = mysqli_connect('p:' . $dbhost, $dbuserid, $dbpassword, $dbname, $dbport);
-if (mysqli_connect_errno()) {
-    header('HTTP/1.0 500 Error');
-    echo "<h1>500 Error</h1>";
-    echo "Error opening database";
-	$db->close();
-    exit;
-}
-
-$fname = 'dynmap_' . $world . '.json';
-$stmt = $db->prepare('SELECT Content from StandaloneFiles WHERE FileName=? AND ServerID=?');
-$stmt->bind_param('si', $fname, $serverid);
-$res = $stmt->execute();
-$stmt->bind_result($content);
-if (!$stmt->fetch()) {
+$content = getStandaloneFile('dynmap_' . $world . '.json');
+if (!isset($content)) {
     header('HTTP/1.0 500 Error');
     echo "<h1>500 Error</h1>";
     echo 'Error reading database - ' . $fname . ' #' . $serverid;
-	$db->close();
+	cleanupDb();
     exit;
 }
 
@@ -81,7 +66,7 @@ else if(isset($json->loginrequired) && $json->loginrequired && !$loggedin) {
     echo "{ \"error\": \"login-required\" }";
 }
 else {
-	$json = json_decode(implode($content));
+	$json = json_decode($content);
 	$json->loggedin = $loggedin;
 	if (isset($json->protected) && $json->protected) {
 	    $ss = stristr($seeallmarkers, $uid);
@@ -115,7 +100,7 @@ else {
 	}
 	echo json_encode($json);
 }
-
+cleanupDb();
 
  
 ?>

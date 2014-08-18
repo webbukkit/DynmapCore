@@ -1,9 +1,7 @@
 <?php
 ob_start();
+require_once('MySQL_funcs.php');
 include('MySQL_config.php');
-ob_end_clean();
-
-ob_start();
 include('MySQL_access.php');
 ob_end_clean();
 
@@ -33,6 +31,7 @@ $parts = explode("/", $path);
 
 if (count($parts) != 4) {
    header('Location: ../images/blank.png');
+   cleanupDb();
    exit;
 }
  
@@ -44,6 +43,7 @@ if(isset($worldaccess[$world])) {
     $ss = stristr($worldaccess[$world], $uid);
 	if($ss === false) {
            header('Location: ../images/blank.png');
+           cleanupDb();
            exit;
 	}
 }
@@ -60,6 +60,7 @@ $variant='STANDARD';
     $ss = stristr($mapaccess[$mapid], $uid);
 	if($ss === false) {
            header('Location: ../images/blank.png');
+           cleanupDb();
            exit;
 	}
   }
@@ -77,15 +78,10 @@ else if (count($fparts) == 2) { // x_y
 }
 else {
    header('Location: ../images/blank.png');
+   cleanupDb();
    exit;
 }
-
-$db = mysqli_connect('p:' . $dbhost, $dbuserid, $dbpassword, $dbname, $dbport);
-if (mysqli_connect_errno()) {
-   $db->close();
-   header('Location: ../images/blank.png');
-   exit;
-}
+initDbIfNeeded();
 
 $stmt = $db->prepare('SELECT Tiles.Image,Tiles.Format,Tiles.HashCode,Tiles.LastUpdate FROM Maps JOIN Tiles WHERE Maps.WorldID=? AND Maps.MapID=? AND Maps.Variant=? AND Maps.ID=Tiles.MapID AND Tiles.x=? AND Tiles.y=? and Tiles.zoom=?');
 $stmt->bind_param('sssiii', $world, $prefix, $variant, $x, $y, $zoom);
@@ -107,7 +103,7 @@ else {
 }
 
 $stmt->close();
-$db->close();
+cleanupDb();
 
 exit;
 ?>

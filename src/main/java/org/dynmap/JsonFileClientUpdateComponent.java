@@ -249,11 +249,11 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
         sb.append("',\n");
         /* Get login URL */
         sb.append("  login: '");
-        sb.append(core.configuration.getString("url/login", "standalone/login.php"));
+        sb.append(core.configuration.getString("url/login", store.getStandaloneLoginURI()));
         sb.append("',\n");
         /* Get register URL */
         sb.append("  register: '");
-        sb.append(core.configuration.getString("url/register", "standalone/register.php"));
+        sb.append(core.configuration.getString("url/register", store.getStandaloneRegisterURI()));
         sb.append("',\n");
         /* Get tiles URL */
         sb.append("  tiles: '");
@@ -334,7 +334,7 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
         String loginFile = "dynmap_login.php";
 
         if(core.isLoginSupportEnabled()) {
-            String s = core.getLoginPHP();
+            String s = core.getLoginPHP(storage.wrapStandalonePHP());
             if(s != null) {
                 byte[] bytes = s.getBytes(cs_utf8);
                 md.reset();
@@ -356,7 +356,7 @@ public class JsonFileClientUpdateComponent extends ClientUpdateComponent {
     protected void writeAccess() {
         String accessFile = "dynmap_access.php";
 
-        String s = core.getAccessPHP();
+        String s = core.getAccessPHP(storage.wrapStandalonePHP());
         if(s != null) {
             byte[] bytes = s.getBytes(cs_utf8);
             md.reset();

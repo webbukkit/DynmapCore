@@ -1,37 +1,19 @@
 <?php
 ob_start();
+require_once('MySQL_funcs.php');
 include('MySQL_config.php');
 ob_end_clean();
 
 session_start();
 
-$db = mysqli_connect('p:' . $dbhost, $dbuserid, $dbpassword, $dbname, $dbport);
-if (mysqli_connect_errno()) {
-    header('HTTP/1.0 500 Error');
-    echo "<h1>500 Error</h1>";
-    echo "Error opening database";
-	$db->close();
-    exit;
-}
-
-$serverid = 0;
-if(isset($_REQUEST['serverid'])) {
-  $serverid = $_REQUEST['serverid'];
-}
-
-$fname = 'dynmap_config.json';
-$stmt = $db->prepare('SELECT Content from StandaloneFiles WHERE FileName=? AND ServerID=?');
-$stmt->bind_param('si', $fname, $serverid);
-$res = $stmt->execute();
-$stmt->bind_result($content);
-if ($stmt->fetch()) {
+$content = getStandaloneFile('dynmap_config.json');
+if (isset($content)) {
    $config = json_decode($content, true);
    $msginterval = $config['webchat-interval'];
 }
 else {
    $msginterval = 2000;
 }
-$stmt->close();
 
 if(isset($_SESSION['lastchat']))
     $lastchat = $_SESSION['lastchat'];
@@ -54,17 +36,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && $lastchat < time())
 	}
 	if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
 		$data->ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-	$fname = 'dynmap_webchat.json';
-	$stmt = $db->prepare('SELECT Content from StandaloneFiles WHERE FileName=? AND ServerID=?');
-	$stmt->bind_param('si', $fname, $serverid);
-	$res = $stmt->execute();
-	$stmt->bind_result($content);
+	$content = getStandaloneFile('dynmap_webchat.json');
 	$gotold = false;
-	if ($stmt->fetch()) {
+	if (isset($content)) {
 		$old_messages = json_decode($content, true);
 		$gotold = true;
 	}
-	$stmt->close();
 	
 	if(!empty($old_messages))
 	{
@@ -76,16 +53,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST' && $lastchat < time())
 	}
 	$new_messages[] = $data;
 
-	$fname = 'dynmap_webchat.json';
 	if ($gotold) {
-		$stmt = $db->prepare('UPDATE StandaloneFiles SET Content=? WHERE FileName=? AND ServerID=?');
+	    updateStandaloneFile('dynmap_webchat.json', json_encode($new_messages));
 	}
 	else {
-		$stmt = $db->prepare('INSERT INTO StandaloneFiles (Content,FileName,ServerID) VALUES (?,?,?);');
+	    insertStandaloneFile('dynmap_webchat.json', json_encode($new_messages));
 	}
-	$stmt->bind_param('ssi', json_encode($new_messages), $fname, $serverid);
-	$res = $stmt->execute();
-	$stmt->close();
 	
 	$_SESSION['lastchat'] = time()+$msginterval;
 	echo "{ \"error\" : \"none\" }";
@@ -97,6 +70,6 @@ elseif($_SERVER['REQUEST_METHOD'] == 'POST' && $lastchat > time())
 else {
 	echo "{ \"error\" : \"none\" }";
 }
-$db->close();
+cleanupDb();
 
 ?>

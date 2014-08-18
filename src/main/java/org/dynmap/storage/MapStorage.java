@@ -421,5 +421,16 @@ public abstract class MapStorage {
             }
         }
     }
-
+    public boolean wrapStandalonePHP() {
+        return true;
+    }
+    public String getStandaloneLoginURI() {
+        return "standalone/login.php";
+    }
+    public String getStandaloneRegisterURI() {
+        return "standalone/register.php";
+    }
+    public void setLoginEnabled(DynmapCore core) {
+        
+    }
 }
