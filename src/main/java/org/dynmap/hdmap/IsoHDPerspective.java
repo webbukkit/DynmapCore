@@ -1223,6 +1223,8 @@ public class IsoHDPerspective implements HDPerspective {
             MapManager.mapman.updateStatistics(tile, prefix, true, tile_update, !rendered[i]);
             /* Handle day image, if needed */
             if(dayim[i] != null) {
+                crc = MapStorage.calculateImageHashCode(day_argb_buf[i], 0, day_argb_buf[i].length);
+
                 mtile = storage.getTile(world, shaderstate[i].getMap(), tile.tx, tile.ty, 0, MapType.ImageVariant.DAY);
 
                 mtile.getWriteLock();
