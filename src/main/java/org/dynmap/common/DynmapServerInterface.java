@@ -27,7 +27,7 @@ public abstract class DynmapServerInterface {
     public abstract void scheduleServerTask(Runnable run, long delay);
     /**
      * Call method on server-safe thread
-     * @param call - Callable method
+     * @param task - Callable method
      * @return future for completion of call
      */
     public abstract <T> Future<T> callSyncMethod(Callable<T> task);
@@ -49,7 +49,7 @@ public abstract class DynmapServerInterface {
     /**
      * Get offline player
      * @param name - player name
-     * @reurn player (offline or not)
+     * @return player (offline or not)
      */
     public abstract DynmapPlayer getOfflinePlayer(String name);
     
@@ -146,12 +146,12 @@ public abstract class DynmapServerInterface {
      * @param x - X coordinate
      * @param y - Y coordinate
      * @param z - Z coordinate
-     * @return block ID, or -1 if chunk at given coordainte isnt loaded
+     * @return block ID, or -1 if chunk at given coordinate isn't loaded
      */
     public abstract int getBlockIDAt(String wname, int x, int y, int z);
     /**
      * Get current TPS for server (20.0 is nominal)
-     * @returns ticks per second
+     * @return ticks per second
      */
     public abstract double getServerTPS();
     /**
@@ -184,7 +184,7 @@ public abstract class DynmapServerInterface {
      * Open resource (check all mods)
      * @param modid - mod id
      * @param rname - resource namep
-     * @returns stream, or null
+     * @return stream, or null
      */
     public InputStream openResource(String modid, String rname) {
         return null;

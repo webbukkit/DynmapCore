@@ -30,7 +30,6 @@ public class FileLockManager {
     public static String postUpdateCommand = null;
     /**
      * Get write lock on file - exclusive lock, no other writers or readers
-     * @throws InterruptedException
      */
     public static boolean getWriteLock(File f) {
         String fn = f.getPath();

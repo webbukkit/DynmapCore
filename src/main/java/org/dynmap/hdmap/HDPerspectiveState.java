@@ -76,7 +76,7 @@ public interface HDPerspectiveState {
     double getPatchV();
     /**
      * Light level cache
-     * @param index of light level (0-3)
+     * @param idx - index of light level (0-3)
      */
     LightLevels getCachedLightLevels(int idx);
 }

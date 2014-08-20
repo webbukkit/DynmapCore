@@ -1789,7 +1789,7 @@ public class DynmapCore implements DynmapCommonAPI {
     }
     /**
      * Send generic message to all web users
-     * @param sender - label for sender of message ("[<sender>] nessage") - if null, no from notice
+     * @param sender - label for sender of message ("[&lt;sender&gt;] message") - if null, no from notice
      * @param msg - message to be sent
      */
     public boolean sendBroadcastToWeb(String sender, String msg) {
