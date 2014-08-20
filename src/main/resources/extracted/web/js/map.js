@@ -952,8 +952,12 @@ DynMap.prototype = {
 		var me = this;
 		var url = window.location.pathname;
 		var center = me.maptype.getProjection().fromLatLngToLocation(me.map.getCenter(), 64);
-		url = url + "?worldname=" + me.world.name + "&mapname=" + me.maptype.options.name + "&zoom=" + me.map.getZoom() + "&x=" + center.x + "&y=" +
-			center.y + "&z=" + center.z;
+		if(me.options['round-coordinates'])
+			url = url + "?worldname=" + me.world.name + "&mapname=" + me.maptype.options.name + "&zoom=" + me.map.getZoom() + "&x=" + center.x + "&y=" +
+				center.y + "&z=" + center.z;
+		else
+			url = url + "?worldname=" + me.world.name + "&mapname=" + me.maptype.options.name + "&zoom=" + me.map.getZoom() + "&x=" +
+				Math.round(center.x) + "&y=" + Math.round(center.y) + "&z=" + Math.round(center.z);
 		return url;
 	},
 	initLogin: function() {
