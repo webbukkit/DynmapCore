@@ -14,7 +14,7 @@ import org.dynmap.DynmapCore;
 import org.dynmap.DynmapWorld;
 import org.dynmap.Log;
 import org.dynmap.MapType;
-import org.dynmap.MapType.ImageFormat;
+import org.dynmap.MapType.ImageEncoding;
 import org.dynmap.MapType.ImageVariant;
 import org.dynmap.PlayerFaces.FaceType;
 import org.dynmap.WebAuthManager;
@@ -35,7 +35,7 @@ public class FileTreeMapStorage extends MapStorage {
         private final String baseFilename;
         private final String uri;
         private File f; // cached file
-        private ImageFormat f_fmt;
+        private ImageEncoding f_fmt;
         
         StorageTile(DynmapWorld world, MapType map, int x, int y,
                 int zoom, ImageVariant var) {
@@ -50,7 +50,7 @@ public class FileTreeMapStorage extends MapStorage {
             baseFilename = world.getName() + "/" + baseURI;
             uri = baseURI + "." + map.getImageFormat().getFileExt();
         }
-        private File getTileFile(ImageFormat fmt) {
+        private File getTileFile(ImageEncoding fmt) {
             if ((f == null) || (fmt != f_fmt)) {
                 f = new File(baseTileDir, baseFilename + "." + fmt.getFileExt());
                 f_fmt = fmt;
@@ -58,26 +58,26 @@ public class FileTreeMapStorage extends MapStorage {
             return f;
         }
         private File getTileFile() {
-            ImageFormat fmt = map.getImageFormat();
+            ImageEncoding fmt = map.getImageFormat().getEncoding();
             File ff = getTileFile(fmt);
             if (ff.exists() == false) {
-                if (fmt == ImageFormat.FORMAT_PNG) {
-                    fmt = ImageFormat.FORMAT_JPG;
+                if (fmt == ImageEncoding.PNG) {
+                    fmt = ImageEncoding.JPG;
                 }
                 else {
-                    fmt = ImageFormat.FORMAT_PNG;
+                    fmt = ImageEncoding.PNG;
                 }
                 ff = getTileFile(fmt);
             }
             return ff;
         }
         private File getTileFileAltFormat() {
-            ImageFormat fmt = map.getImageFormat();
-            if (fmt == ImageFormat.FORMAT_PNG) {
-                fmt = ImageFormat.FORMAT_JPG;
+            ImageEncoding fmt = map.getImageFormat().getEncoding();
+            if (fmt == ImageEncoding.PNG) {
+                fmt = ImageEncoding.JPG;
             }
             else {
-                fmt = ImageFormat.FORMAT_PNG;
+                fmt = ImageEncoding.PNG;
             }
             return getTileFile(fmt);
         }
@@ -89,20 +89,20 @@ public class FileTreeMapStorage extends MapStorage {
 
         @Override
         public boolean matchesHashCode(long hash) {
-            File ff = getTileFile(map.getImageFormat());
+            File ff = getTileFile(map.getImageFormat().getEncoding());
             return ff.isFile() && ff.canRead() && (hash == hashmap.getImageHashCode(world.getName() + "." + map.getPrefix(), x, y));
         }
 
         @Override
         public TileRead read() {
-            ImageFormat fmt = map.getImageFormat();
+            ImageEncoding fmt = map.getImageFormat().getEncoding();
             File ff = getTileFile(fmt);
             if (ff.exists() == false) { // Fallback and try to read other format
-                if (fmt == ImageFormat.FORMAT_PNG) {
-                    fmt = ImageFormat.FORMAT_JPG;
+                if (fmt == ImageEncoding.PNG) {
+                    fmt = ImageEncoding.JPG;
                 }
                 else {
-                    fmt = ImageFormat.FORMAT_PNG;
+                    fmt = ImageEncoding.PNG;
                 }
                 ff = getTileFile(fmt);
             }
@@ -133,7 +133,7 @@ public class FileTreeMapStorage extends MapStorage {
 
         @Override
         public boolean write(long hash, BufferOutputStream encImage) {
-            File ff = getTileFile(map.getImageFormat());
+            File ff = getTileFile(map.getImageFormat().getEncoding());
             File ffalt = getTileFileAltFormat();
             File ffpar = ff.getParentFile();
             // Always clean up old alternate file, if it exsits
@@ -320,7 +320,8 @@ public class FileTreeMapStorage extends MapStorage {
                         ext = fn.substring(extoff+1);
                         fn = fn.substring(0, extoff);
                     }
-                    if ((!ImageFormat.FORMAT_PNG.getFileExt().equalsIgnoreCase(ext)) && (!ImageFormat.FORMAT_JPG.getFileExt().equalsIgnoreCase(ext))) {
+                    ImageEncoding fmt = ImageEncoding.fromExt(ext);
+                    if (fmt == null) {
                         continue;
                     }
                     // See if zoom tile
@@ -342,7 +343,7 @@ public class FileTreeMapStorage extends MapStorage {
                             int y = Integer.parseInt(coord[1]);
                             // Invoke callback
                             MapStorageTile t = new StorageTile(world, map, x, y, zoom, var);
-                            cb.tileFound(t);
+                            cb.tileFound(t, fmt);
                             t.cleanup();
                         } catch (NumberFormatException nfx) {
                         }

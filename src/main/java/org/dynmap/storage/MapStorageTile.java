@@ -20,7 +20,7 @@ public abstract class MapStorageTile {
     
     public static class TileRead {
         public BufferInputStream image;    // Image bytes
-        public MapType.ImageFormat format; // Image format
+        public MapType.ImageEncoding format; // Image format
         public long hashCode;              // Image hashcode (-1 = unknown)
         public long lastModified;          // Last modified timestamp (-1 = unknown)
     }

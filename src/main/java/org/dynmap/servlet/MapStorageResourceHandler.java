@@ -2,8 +2,7 @@ package org.dynmap.servlet;
 
 import org.dynmap.DynmapCore;
 import org.dynmap.DynmapWorld;
-import org.dynmap.Log;
-import org.dynmap.MapType.ImageFormat;
+import org.dynmap.MapType.ImageEncoding;
 import org.dynmap.PlayerFaces;
 import org.dynmap.storage.MapStorage;
 import org.dynmap.storage.MapStorageTile;
@@ -19,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 
 public class MapStorageResourceHandler extends AbstractHandler {
@@ -82,7 +80,7 @@ public class MapStorageResourceHandler extends AbstractHandler {
         response.setDateHeader("Last-Modified", tr.lastModified);
         response.setIntHeader("Content-Length", tr.image.length());
         response.setHeader("ETag", "\"" + tr.hashCode + "\"");
-        if (tr.format == ImageFormat.FORMAT_PNG) {
+        if (tr.format == ImageEncoding.PNG) {
             response.setContentType("image/png");
         }
         else {

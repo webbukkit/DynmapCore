@@ -317,8 +317,12 @@ public class HDMap extends MapType {
         final MapStorage ms = world.getMapStorage();
         ms.enumMapTiles(world, this, new MapStorageTileEnumCB() {
             @Override
-            public void tileFound(MapStorageTile tile) {
-                if (tile.zoom == 1) {   // First tier zoom?  sensitive to newly rendered tiles
+            public void tileFound(MapStorageTile tile, ImageEncoding fmt) {
+                if (fmt != getImageFormat().getEncoding()) { // Wrong format?  toss it
+                    /* Otherwise, delete tile */
+                    tile.delete();
+                }
+                else if (tile.zoom == 1) {   // First tier zoom?  sensitive to newly rendered tiles
                     // If any were rendered, already triggered (and still needed
                     if (rendered.getFlag(tile.x, tile.y) || rendered.getFlag(tile.x+1, tile.y) ||
                         rendered.getFlag(tile.x, tile.y-1) || rendered.getFlag(tile.x+1, tile.y-1)) {

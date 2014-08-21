@@ -12,14 +12,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
 
 import org.dynmap.DynmapCore;
 import org.dynmap.DynmapWorld;
 import org.dynmap.Log;
 import org.dynmap.MapType;
 import org.dynmap.WebAuthManager;
-import org.dynmap.MapType.ImageFormat;
 import org.dynmap.MapType.ImageVariant;
 import org.dynmap.PlayerFaces.FaceType;
 import org.dynmap.storage.MapStorage;
@@ -35,10 +33,7 @@ public class SQLiteMapStorage extends MapStorage {
     private Connection[] cpool = new Connection[POOLSIZE];
     private int cpoolCount = 0;
     private static final Charset UTF8 = Charset.forName("UTF-8");
-    
-    private static final int FMTIDX_PNG = 0;
-    private static final int FMTIDX_JPG = 1;
-    
+        
     public class StorageTile extends MapStorageTile {
         private Integer mapkey;
         private String uri;
@@ -117,7 +112,7 @@ public class SQLiteMapStorage extends MapStorage {
                     rslt = new TileRead();
                     rslt.hashCode = rs.getLong("HashCode");
                     rslt.lastModified = rs.getLong("LastUpdate");
-                    rslt.format = (rs.getInt("Format") == FMTIDX_PNG) ? ImageFormat.FORMAT_PNG : ImageFormat.FORMAT_JPG;
+                    rslt.format = MapType.ImageEncoding.fromOrd(rs.getInt("Format"));
                     byte[] img = rs.getBytes("Image");
                     rslt.image = new BufferInputStream(img);
                 }
@@ -155,7 +150,7 @@ public class SQLiteMapStorage extends MapStorage {
                     stmt = c.prepareStatement("UPDATE Tiles SET HashCode=?, LastUpdate=?, Format=?, Image=? WHERE MapID=? AND x=? and y=? AND zoom=?;");
                     stmt.setLong(1, hash);
                     stmt.setLong(2, System.currentTimeMillis());
-                    stmt.setInt(3, (map.getImageFormat() == ImageFormat.FORMAT_PNG) ? FMTIDX_PNG : FMTIDX_JPG);
+                    stmt.setInt(3, map.getImageFormat().getEncoding().ordinal());
                     stmt.setBytes(4, encImage.buf);
                     stmt.setInt(5, mapkey);
                     stmt.setInt(6, x);
@@ -170,7 +165,7 @@ public class SQLiteMapStorage extends MapStorage {
                     stmt.setInt(4, zoom);
                     stmt.setLong(5, hash);
                     stmt.setLong(6, System.currentTimeMillis());
-                    stmt.setInt(7, (map.getImageFormat() == ImageFormat.FORMAT_PNG) ? FMTIDX_PNG : FMTIDX_JPG);
+                    stmt.setInt(7, map.getImageFormat().getEncoding().ordinal());
                     stmt.setBytes(8, encImage.buf);
                 }
                 stmt.executeUpdate();
@@ -536,10 +531,10 @@ public class SQLiteMapStorage extends MapStorage {
             c = getConnection();
             // Query tiles for given mapkey
             Statement stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT x,y,zoom FROM Tiles WHERE MapID=" + mapkey + ";");
+            ResultSet rs = stmt.executeQuery("SELECT x,y,zoom,Format FROM Tiles WHERE MapID=" + mapkey + ";");
             while (rs.next()) {
                 StorageTile st = new StorageTile(world, map, rs.getInt("x"), rs.getInt("y"), rs.getInt("zoom"), var);
-                cb.tileFound(st);
+                cb.tileFound(st, MapType.ImageEncoding.fromOrd(rs.getInt("Format")));
                 st.cleanup();
             }
             rs.close();

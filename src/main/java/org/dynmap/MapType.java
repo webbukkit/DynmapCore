@@ -29,27 +29,54 @@ public abstract class MapType {
         }
     }
     
-    public enum ImageFormat {
-        FORMAT_PNG("png", "png", 0.0f),
-        FORMAT_JPG75("jpg-q75", "jpg", 0.75f),
-        FORMAT_JPG80("jpg-q80", "jpg", 0.80f),
-        FORMAT_JPG85("jpg-q85", "jpg", 0.85f),
-        FORMAT_JPG("jpg", "jpg", 0.85f),
-        FORMAT_JPG90("jpg-q90", "jpg", 0.90f),
-        FORMAT_JPG95("jpg-q95", "jpg", 0.95f),
-        FORMAT_JPG100("jpg-q100", "jpg", 1.00f);
-        String id;
-        String ext;
-        float qual;
+    public enum ImageEncoding {
+        PNG("png"), JPG("jpg");
+        public final String ext;
         
-        ImageFormat(String id, String ext, float quality) {
-            this.id = id;
+        ImageEncoding(String ext) {
             this.ext = ext;
+        }
+        public String getFileExt() { return ext; }
+        
+        public static ImageEncoding fromOrd(int ix) {
+            ImageEncoding[] v = values();
+            if ((ix >= 0) && (ix < v.length))
+                return v[ix];
+            return null;
+        }
+        public static ImageEncoding fromExt(String x) {
+            ImageEncoding[] v = values();
+            for (int i = 0; i < v.length; i++) {
+                if (v[i].ext.equalsIgnoreCase(x)) {
+                    return v[i];
+                }
+            }
+            return null;
+        }
+    }
+    
+    public enum ImageFormat {
+        FORMAT_PNG("png", 0.0f, ImageEncoding.PNG),
+        FORMAT_JPG75("jpg-q75", 0.75f, ImageEncoding.JPG),
+        FORMAT_JPG80("jpg-q80", 0.80f, ImageEncoding.JPG),
+        FORMAT_JPG85("jpg-q85", 0.85f, ImageEncoding.JPG),
+        FORMAT_JPG("jpg", 0.85f, ImageEncoding.JPG),
+        FORMAT_JPG90("jpg-q90", 0.90f, ImageEncoding.JPG),
+        FORMAT_JPG95("jpg-q95", 0.95f, ImageEncoding.JPG),
+        FORMAT_JPG100("jpg-q100", 1.00f, ImageEncoding.JPG);
+        String id;
+        float qual;
+        ImageEncoding enc;
+        
+        ImageFormat(String id, float quality, ImageEncoding enc) {
+            this.id = id;
             this.qual = quality;
+            this.enc = enc;
         }
         public String getID() { return id; }
-        public String getFileExt() { return ext; }
+        public String getFileExt() { return enc.getFileExt(); }
         public float getQuality() { return qual; }
+        public ImageEncoding getEncoding() { return enc; }
 
         public static ImageFormat fromID(String imgfmt) {
             for(ImageFormat i_f : MapType.ImageFormat.values()) {
