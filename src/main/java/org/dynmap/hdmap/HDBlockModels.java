@@ -440,7 +440,7 @@ public class HDBlockModels {
             this.patches = patches;
             int max = 0;
             for(int i = 0; i < patches.length; i++) {
-                if(patches[i].textureindex > max)
+                if((patches[i] != null) && (patches[i].textureindex > max))
                     max = patches[i].textureindex;
             }
             this.max_texture = max + 1;
