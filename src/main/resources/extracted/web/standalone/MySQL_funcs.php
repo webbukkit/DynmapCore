@@ -27,10 +27,10 @@ function initDbIfNeeded() {
 }
 
 function getStandaloneFileByServerId($fname, $sid) {
-   global $db;
+   global $db, $dbprefix;
    
    initDbIfNeeded();
-   $stmt = $db->prepare('SELECT Content from StandaloneFiles WHERE FileName=? AND ServerID=?');
+   $stmt = $db->prepare('SELECT Content from ' . $dbprefix . 'StandaloneFiles WHERE FileName=? AND ServerID=?');
    $stmt->bind_param('si', $fname, $sid);
    $res = $stmt->execute();
    $stmt->store_result();
@@ -58,10 +58,10 @@ function getStandaloneFile($fname) {
 }
 
 function updateStandaloneFileByServerId($fname, $sid, $content) {
-   global $db;
+   global $db, $dbprefix;
    
    initDbIfNeeded();
-   $stmt = $db->prepare('UPDATE StandaloneFiles SET Content=? WHERE FileName=? AND ServerID=?');
+   $stmt = $db->prepare('UPDATE ' . $dbprefix . 'StandaloneFiles SET Content=? WHERE FileName=? AND ServerID=?');
    $stmt->bind_param('ssi', $content, $fname, $sid);
    $res = $stmt->execute();
    $stmt->close();
@@ -84,10 +84,10 @@ function updateStandaloneFile($fname, $content) {
 }
 
 function insertStandaloneFileByServerId($fname, $sid, $content) {
-   global $db;
+   global $db, $dbprefix;
    
    initDbIfNeeded();
-   $stmt = $db->prepare('INSERT INTO StandaloneFiles (Content,FileName,ServerID) VALUES (?,?,?);');
+   $stmt = $db->prepare('INSERT INTO ' . $dbprefix . 'StandaloneFiles (Content,FileName,ServerID) VALUES (?,?,?);');
    $stmt->bind_param('ssi', $content, $fname, $sid);
    $res = $stmt->execute();
    $stmt->close();

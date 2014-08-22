@@ -83,7 +83,7 @@ else {
 }
 initDbIfNeeded();
 
-$stmt = $db->prepare('SELECT Tiles.Image,Tiles.Format,Tiles.HashCode,Tiles.LastUpdate FROM Maps JOIN Tiles WHERE Maps.WorldID=? AND Maps.MapID=? AND Maps.Variant=? AND Maps.ID=Tiles.MapID AND Tiles.x=? AND Tiles.y=? and Tiles.zoom=?');
+$stmt = $db->prepare('SELECT t.Image,t.Format,t.HashCode,t.LastUpdate FROM ' . $dbprefix . 'Maps m JOIN ' . $dbprefix . 'Tiles t WHERE m.WorldID=? AND m.MapID=? AND m.Variant=? AND m.ID=t.MapID AND t.x=? AND t.y=? and t.zoom=?');
 $stmt->bind_param('sssiii', $world, $prefix, $variant, $x, $y, $zoom);
 $res = $stmt->execute();
 $stmt->bind_result($timage, $format, $thash, $tlast);
