@@ -25,6 +25,11 @@ shaders:
     name: sk89q
     colorscheme: sk89q
    
+  - class: org.dynmap.hdmap.DefaultHDShader
+    name: amidst
+    biomecolored: biome
+    colorscheme: amidst
+
   # Biome based shaders
   - class: org.dynmap.hdmap.DefaultHDShader
     name: biome

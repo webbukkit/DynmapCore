@@ -28,8 +28,46 @@ public class BiomeMap {
     public static final BiomeMap SMALL_MOUNTAINS = new BiomeMap(20, "SMALL_MOUNTAINS", 0.2, 0.8);
     public static final BiomeMap JUNGLE = new BiomeMap(21, "JUNGLE", 1.2, 0.9);
     public static final BiomeMap JUNGLE_HILLS = new BiomeMap(22, "JUNGLE_HILLS", 1.2, 0.9);
-    
-    public static final int LAST_WELL_KNOWN = 22;
+    public static final BiomeMap JUNGLE_EDGE = new BiomeMap(23, "JUNGLE_EDGE");
+    public static final BiomeMap DEEP_OCEAN = new BiomeMap(24, "DEEP_OCEAN");
+    public static final BiomeMap STONE_BEACH = new BiomeMap(25, "STONE_BEACH");
+    public static final BiomeMap COLD_BEACH = new BiomeMap(26, "COLD_BEACH");
+    public static final BiomeMap BIRCH_FOREST = new BiomeMap(27, "BIRCH_FOREST");
+    public static final BiomeMap BIRCH_FOREST_HILLS = new BiomeMap(28, "BIRCH_FOREST_HILLS");
+    public static final BiomeMap ROOFED_FOREST = new BiomeMap(29, "ROOFED_FOREST");
+    public static final BiomeMap COLD_TAIGA = new BiomeMap(30, "COLD_TAIGA");
+    public static final BiomeMap COLD_TAIGA_HILLS = new BiomeMap(31, "COLD_TAIGA_HILLS");
+    public static final BiomeMap MEGA_TAIGA = new BiomeMap(32, "MEGA_TAIGA");
+    public static final BiomeMap MEGA_TAIGA_HILLS = new BiomeMap(33, "MEGA_TAIGA_HILLS");
+    public static final BiomeMap EXTREME_HILLS_PLUS = new BiomeMap(34, "EXTREME_HILLS_PLUS");
+    public static final BiomeMap SAVANNA = new BiomeMap(35, "SAVANNA");
+    public static final BiomeMap SAVANNA_PLATEAU = new BiomeMap(36, "SAVANNA_PLATEAU");
+    public static final BiomeMap MESA = new BiomeMap(37, "MESA");
+    public static final BiomeMap MESA_PLATEAU_FOREST = new BiomeMap(38, "MESA_PLATEAU_FOREST");
+    public static final BiomeMap MESA_PLATEAU = new BiomeMap(39, "MESA_PLATEAU");
+    public static final BiomeMap SUNFLOWER_PLAINS = new BiomeMap(129, "SUNFLOWER_PLAINS");
+    public static final BiomeMap DESERT_MOUNTAINS = new BiomeMap(130, "DESERT_MOUNTAINS");
+    public static final BiomeMap EXTREME_HILLS_MOUNTAINS = new BiomeMap(131, "EXTREME_HILLS_MOUNTAINS");
+    public static final BiomeMap FLOWER_FOREST = new BiomeMap(132, "FLOWER_FOREST");
+    public static final BiomeMap TAIGA_MOUNTAINS = new BiomeMap(133, "TAIGA_MOUNTAINS");
+    public static final BiomeMap SWAMPLAND_MOUNTAINS = new BiomeMap(134, "SWAMPLAND_MOUNTAINS");
+    public static final BiomeMap ICE_PLAINS_SPIKES = new BiomeMap(140, "ICE_PLAINS_SPIKES");
+    public static final BiomeMap JUNGLE_MOUNTAINS = new BiomeMap(149, "JUNGLE_MOUNTAINS");
+    public static final BiomeMap JUNGLE_EDGE_MOUNTAINS = new BiomeMap(151, "JUNGLE_EDGE_MOUNTAINS");
+    public static final BiomeMap BIRCH_FOREST_MOUNTAINS = new BiomeMap(155, "BIRCH_FOREST_MOUNTAINS");
+    public static final BiomeMap BIRCH_FOREST_HILLS_MOUNTAINS = new BiomeMap(156, "BIRCH_FOREST_HILLS_MOUNTAINS");
+    public static final BiomeMap ROOFED_FOREST_MOUNTAINS = new BiomeMap(157, "ROOFED_FOREST_MOUNTAINS");
+    public static final BiomeMap COLD_TAIGA_MOUNTAINS = new BiomeMap(158, "COLD_TAIGA_MOUNTAINS");
+    public static final BiomeMap MEGA_SPRUCE_TAIGA = new BiomeMap(160, "MEGA_SPRUCE_TAIGA");
+    public static final BiomeMap MEGA_SPRUCE_TAIGA_HILLS = new BiomeMap(161, "MEGA_SPRUCE_TAIGA_HILLS");
+    public static final BiomeMap EXTREME_HILLS_PLUS_MOUNTAINS = new BiomeMap(162, "EXTREME_HILLS_PLUS_MOUNTAINS");
+    public static final BiomeMap SAVANNA_MOUNTAINS = new BiomeMap(163, "SAVANNA_MOUNTAINS");
+    public static final BiomeMap SAVANNA_PLATEAU_MOUNTAINS = new BiomeMap(164, "SAVANNA_PLATEAU_MOUNTAINS");
+    public static final BiomeMap MESA_BRYCE = new BiomeMap(165, "MESA_BRYCE");
+    public static final BiomeMap MESA_PLATEAU_FOREST_MOUNTAINS = new BiomeMap(166, "MESA_PLATEAU_FOREST_MOUNTAINS");
+    public static final BiomeMap MESA_PLATEAU_MOUNTAINS = new BiomeMap(167, "MESA_PLATEAU_MOUNTAINS");
+
+    public static final int LAST_WELL_KNOWN = 167;
     
     private double tmp;
     private double rain;
