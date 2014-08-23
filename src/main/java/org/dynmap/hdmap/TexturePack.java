@@ -16,6 +16,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -3286,16 +3287,16 @@ public class TexturePack {
         for (String id : ids) {
             ExportedTexture et = etp.txtids.get(id);
             String lines = "newmtl " + id + "\n";
-            lines += String.format("Ka %.3f %.3f %.3f\n", (double)et.diffuseColor.getRed() / 256.0, (double)et.diffuseColor.getGreen() / 256.0, (double) et.diffuseColor.getBlue() / 256.0);
-            lines += String.format("Kd %.3f %.3f %.3f\n", (double)et.diffuseColor.getRed() / 256.0, (double)et.diffuseColor.getGreen() / 256.0, (double) et.diffuseColor.getBlue() / 256.0);
+            lines += String.format(Locale.US, "Ka %.3f %.3f %.3f\n", (double)et.diffuseColor.getRed() / 256.0, (double)et.diffuseColor.getGreen() / 256.0, (double) et.diffuseColor.getBlue() / 256.0);
+            lines += String.format(Locale.US, "Kd %.3f %.3f %.3f\n", (double)et.diffuseColor.getRed() / 256.0, (double)et.diffuseColor.getGreen() / 256.0, (double) et.diffuseColor.getBlue() / 256.0);
             lines += "map_Kd " + et.filename + "\n";
             lines += "map_Ka " + et.filename + "\n";
             if (et.filename_a != null) {
                 lines += "map_d " + et.filename_a + "\n";
             }
             if (et.material != null) {
-                lines += String.format("Ni %.3f\n", et.material.Ni);
-                lines += String.format("Ns %.3f\n", et.material.Ns);
+                lines += String.format(Locale.US, "Ni %.3f\n", et.material.Ni);
+                lines += String.format(Locale.US, "Ns %.3f\n", et.material.Ns);
                 lines += "Ks 0.500 0.500 0.500\n";
                 lines += String.format("illum %d\n", et.material.illum);
             }

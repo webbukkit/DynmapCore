@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -114,7 +115,7 @@ public class OBJExport {
             public void elementAdded(IndexedVector3DList list, IndexedVector3D newElement) {
                 try {
                     /* Minecraft XYZ maps to OBJ YZX */
-                    addStringToExportedFile(String.format("v %.4f %.4f %.4f\n", 
+                    addStringToExportedFile(String.format(Locale.US, "v %.4f %.4f %.4f\n", 
                             (newElement.x - originX) * scale,
                             (newElement.y - originY) * scale,
                             (newElement.z - originZ) * scale
@@ -127,7 +128,7 @@ public class OBJExport {
             @Override
             public void elementAdded(IndexedVector3DList list, IndexedVector3D newElement) {
                 try {
-                    addStringToExportedFile(String.format("vt %.4f %.4f\n", newElement.x, newElement.y));
+                    addStringToExportedFile(String.format(Locale.US, "vt %.4f %.4f\n", newElement.x, newElement.y));
                 } catch (IOException iox) {
                 }
             }

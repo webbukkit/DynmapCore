@@ -1,5 +1,7 @@
 package org.dynmap.modsupport.impl;
 
+import java.util.Locale;
+
 import org.dynmap.modsupport.BoxBlockModel;
 
 public class BoxBlockModelImpl extends BlockModelImpl implements BoxBlockModel {
@@ -36,7 +38,7 @@ public class BoxBlockModelImpl extends BlockModelImpl implements BoxBlockModel {
     public String getLine() {
         String ids = this.getIDsAndMeta();
         if (ids == null) return null;
-        return String.format("boxblock:%s,xmin=%f,xmax=%f,ymin=%f,ymax=%f,zmin=%f,zmax=%f",
+        return String.format(Locale.US, "boxblock:%s,xmin=%f,xmax=%f,ymin=%f,ymax=%f,zmin=%f,zmax=%f",
                 ids, xmin, xmax, ymin, ymax, zmin, zmax);
     }
 

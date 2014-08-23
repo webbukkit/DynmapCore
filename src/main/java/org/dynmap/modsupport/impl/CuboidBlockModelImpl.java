@@ -2,6 +2,7 @@ package org.dynmap.modsupport.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Locale;
 
 import org.dynmap.modsupport.CuboidBlockModel;
 
@@ -60,15 +61,15 @@ public class CuboidBlockModelImpl extends BlockModelImpl implements CuboidBlockM
     public String getLine() {
         String ids = this.getIDsAndMeta();
         if (ids == null) return null;
-        String line = String.format("customblock:%s,class=org.dynmap.hdmap.renderer.CuboidRenderer", ids);
+        String line = String.format(Locale.US, "customblock:%s,class=org.dynmap.hdmap.renderer.CuboidRenderer", ids);
         for (int i = 0; i < cuboids.size(); i++) {
             Cuboid c = cuboids.get(i);
-            line += String.format(",cuboid%d=%f:%f:%f/%f:%f:%f/%d:%d:%d:%d:%d:%d", i, c.xmin, c.ymin, c.zmin, c.xmax, c.ymax, c.zmax,
+            line += String.format(Locale.US, ",cuboid%d=%f:%f:%f/%f:%f:%f/%d:%d:%d:%d:%d:%d", i, c.xmin, c.ymin, c.zmin, c.xmax, c.ymax, c.zmax,
                     c.textureidx[0], c.textureidx[1], c.textureidx[2], c.textureidx[3], c.textureidx[4], c.textureidx[5]);
         }
         for (int i = 0; i < crosseds.size(); i++) {
             Crossed c = crosseds.get(i);
-            line += String.format(",cross%d=%f:%f:%f/%f:%f:%f/%d", i, c.xmin, c.ymin, c.zmin, c.xmax, c.ymax, c.zmax,
+            line += String.format(Locale.US, ",cross%d=%f:%f:%f/%f:%f:%f/%d", i, c.xmin, c.ymin, c.zmin, c.xmax, c.ymax, c.zmax,
                     c.textureidx);
         }
         return line;

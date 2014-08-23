@@ -5,6 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 import org.dynmap.hdmap.HDBlockModels;
 import org.dynmap.modsupport.BoxBlockModel;
@@ -174,7 +175,7 @@ public class ModModelDefinitionImpl implements ModModelDefinition {
             // Loop through patch definitions
             for (int i = 0; i < blkPatch.size(); i++) {
                 PatchDefinition pd = blkPatch.get(i);
-                String line = String.format("patch:id=patch%d,Ox=%f,Oy=%f,Oz=%f,Ux=%f,Uy=%f,Uz=%f,Vx=%f,Vy=%f,Vz=%f,Umin=%f,Umax=%f,Vmin=%f,Vmax=%f,UplusVmax=%f",
+                String line = String.format(Locale.US, "patch:id=patch%d,Ox=%f,Oy=%f,Oz=%f,Ux=%f,Uy=%f,Uz=%f,Vx=%f,Vy=%f,Vz=%f,Umin=%f,Umax=%f,Vmin=%f,Vmax=%f,UplusVmax=%f",
                         i, pd.x0, pd.y0, pd.z0, pd.xu, pd.yu, pd.zu, pd.xv, pd.yv, pd.zv, pd.umin, pd.umax, pd.vmin, pd.vmax, pd.uplusvmax);
                 switch (pd.sidevis) {
                     case BOTTOM:
