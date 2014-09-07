@@ -5,12 +5,14 @@ import org.dynmap.Log;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Set;
 
 public class BanIPFilter implements Filter {
     private DynmapCore core;
-    private HashSet<String> banned_ips = new HashSet<String>();
+    private Set<String> banned_ips = null;
     private HashSet<String> banned_ips_notified = new HashSet<String>();
     private long last_loaded = 0;
     private static final long BANNED_RELOAD_INTERVAL = 15000;	/* Every 15 seconds */
@@ -35,9 +37,8 @@ public class BanIPFilter implements Filter {
     }
 
     private void loadBannedIPs() {
-        banned_ips.clear();
         banned_ips_notified.clear();
-        banned_ips.addAll(core.getIPBans());
+        banned_ips = core.getIPBans();
     }
 
     /* Return true if address is banned */
