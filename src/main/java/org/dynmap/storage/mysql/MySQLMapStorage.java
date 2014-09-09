@@ -25,6 +25,7 @@ import org.dynmap.PlayerFaces.FaceType;
 import org.dynmap.storage.MapStorage;
 import org.dynmap.storage.MapStorageTile;
 import org.dynmap.storage.MapStorageTileEnumCB;
+import org.dynmap.storage.filetree.FileTreeMapStorage;
 import org.dynmap.utils.BufferInputStream;
 import org.dynmap.utils.BufferOutputStream;
 
@@ -200,20 +201,22 @@ public class MySQLMapStorage extends MapStorage {
 
         @Override
         public boolean getWriteLock() {
-            return true;
+            return MySQLMapStorage.this.getWriteLock(uri);
         }
 
         @Override
         public void releaseWriteLock() {
+            MySQLMapStorage.this.releaseWriteLock(uri);
         }
 
         @Override
         public boolean getReadLock(long timeout) {
-            return true;
+            return MySQLMapStorage.this.getReadLock(uri, timeout);
         }
 
         @Override
         public void releaseReadLock() {
+            MySQLMapStorage.this.releaseReadLock(uri);
         }
 
         @Override

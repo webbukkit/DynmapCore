@@ -145,8 +145,8 @@ public abstract class DynmapWorld {
             int ty1 = ty + step * (stepseq[i] >> 1);
             MapStorageTile tile1 = storage.getTile(this, tile.map, tx1, ty1, tile.zoom, tile.var);
             if (tile1 == null) continue;
-            mts.clearZoomOutInv(tile1.x, tile1.y, tile1.zoom);  // We're handling this one - unset it
             tile1.getReadLock();
+            mts.clearZoomOutInv(tile1.x, tile1.y, tile1.zoom);  // We're handling this one - unset it
             try {
                 MapStorageTile.TileRead tr = tile1.read();
                 if (tr != null) {
