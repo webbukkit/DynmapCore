@@ -17,6 +17,7 @@
 
 .dynmap .map .tile img, img {
     image-rendering: -moz-crisp-edges;
+    image-rendering: pixelated;
     -ms-interpolation-mode: nearest-neighbor;
 }
 
