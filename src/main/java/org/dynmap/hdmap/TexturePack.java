@@ -464,13 +464,17 @@ public class TexturePack {
             this.blockset = blockset;
             this.stdrotate = stdrot;
         }
- 
+
         public HDTextureMap(List<Integer> blockids, int databits, HDTextureMap map) {
+            this(blockids, databits, map, null);
+        }
+
+        public HDTextureMap(List<Integer> blockids, int databits, HDTextureMap map, BlockTransparency mode) {
             this.faces = map.faces;
             this.layers = map.layers;
             this.blockids = blockids;
             this.databits = databits;
-            this.bt = map.bt;
+            this.bt = (mode != null) ? mode : map.bt;
             this.colorMult = map.colorMult;
             this.custColorMult = map.custColorMult;
             this.userender = map.userender;
@@ -2075,6 +2079,7 @@ public class TexturePack {
                     String[] args = line.split(",");
                     int srcid = -1;
                     int srcmeta = 0;
+                    BlockTransparency trans = null;
                     for(String a : args) {
                         String[] av = a.split("=");
                         if(av.length < 2) continue;
@@ -2097,6 +2102,24 @@ public class TexturePack {
                         else if(av[0].equals("srcmeta")) {
                             srcmeta = getIntValue(varvals,av[1]);
                         }
+                        else if(av[0].equals("transparency")) {
+                            trans = BlockTransparency.valueOf(av[1]);
+                            if(trans == null) {
+                                trans = BlockTransparency.OPAQUE;
+                                Log.severe("Texture mapping has invalid transparency setting - " + av[1] + " - line " + rdr.getLineNumber() + " of " + txtname);
+                            }
+                            /* For leaves, base on leaf transparency setting */
+                            if(trans == BlockTransparency.LEAVES) {
+                                if(core.getLeafTransparency())
+                                    trans = BlockTransparency.TRANSPARENT;
+                                else
+                                    trans = BlockTransparency.OPAQUE;
+                            }
+                            /* If no water lighting fix */
+                            if((blkids.contains(8) || blkids.contains(9)) && (HDMapManager.waterlightingfix == false)) {
+                                trans = BlockTransparency.TRANSPARENT;  /* Treat water as transparent if no fix */
+                            }
+                        }
                     }
                     /* If no data bits, assume all */
                     if(databits < 0) databits = 0xFFFF;
@@ -2107,7 +2130,7 @@ public class TexturePack {
                             Log.severe("Copy of texture mapping failed = line " + rdr.getLineNumber() + " of " + txtname);
                         }
                         else {
-                            HDTextureMap nmap = new HDTextureMap(blkids, databits, map);
+                            HDTextureMap nmap = new HDTextureMap(blkids, databits, map, trans);
                             nmap.addToTable();
                             cnt++;
                         }

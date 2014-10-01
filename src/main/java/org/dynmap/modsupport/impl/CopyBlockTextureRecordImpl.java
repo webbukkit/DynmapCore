@@ -3,12 +3,14 @@ package org.dynmap.modsupport.impl;
 import java.util.Arrays;
 
 import org.dynmap.modsupport.CopyBlockTextureRecord;
+import org.dynmap.modsupport.TransparencyMode;
 
 public class CopyBlockTextureRecordImpl implements CopyBlockTextureRecord {
     private int[] ids = new int[0];
     private int metaMask = -1;
     private final int srcid;
     private final int srcmeta;
+    private TransparencyMode mode = null;
 
     public CopyBlockTextureRecordImpl(int blkid, int srcid, int srcmeta) {
         addBlockID(blkid);
@@ -94,6 +96,16 @@ public class CopyBlockTextureRecordImpl implements CopyBlockTextureRecord {
             }
         }
         s += ",srcid=" + srcid + ",srcmeta=" + srcmeta;
+        switch (this.mode) {
+            case TRANSPARENT:
+                s += ",transparency=TRANSPARENT";
+                break;
+            case SEMITRANSPARENT:
+                s += ",transparency=SEMITRANSPARENT";
+                break;
+            default:
+                break;
+        }
         return s;
     }
 
@@ -105,5 +117,15 @@ public class CopyBlockTextureRecordImpl implements CopyBlockTextureRecord {
     @Override
     public int getSourceMeta() {
         return srcmeta;
+    }
+
+    @Override
+    public void setTransparencyMode(TransparencyMode mode) {
+        this.mode = mode;
+    }
+
+    @Override
+    public TransparencyMode getTransparencyMode() {
+        return mode;
     }
 }
