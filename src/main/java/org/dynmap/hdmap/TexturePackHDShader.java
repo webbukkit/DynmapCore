@@ -315,7 +315,7 @@ public class TexturePackHDShader implements HDShader {
             getTexturePack();   // Make sure its loaded
         }
         if (tp != null) {
-            tp.exportAsOBJMaterialLibrary(out, name);
+            tp.exportAsOBJMaterialLibrary(out, out.getBaseName());
             return;
         }
         throw new IOException("Export unsupported - invalid texture pack");

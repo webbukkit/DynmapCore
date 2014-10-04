@@ -41,6 +41,7 @@ public class OBJExport {
     private final HDShader shader;      // Shader to be used for textures
     private final DynmapWorld world;    // World to be rendered
     private final DynmapCore core;
+    private final String basename;
     private int minX, minY, minZ;       // Minimum world coordinates to be rendered
     private int maxX, maxY, maxZ;       // Maximum world coordinates to be rendered
     private static Charset UTF8 = Charset.forName("UTF-8");
@@ -97,12 +98,14 @@ public class OBJExport {
      * @param dest - destination file (ZIP)
      * @param shader - shader to be used for coloring/texturing
      * @param world - world to be rendered
+     * @param basename - base file name
      */
-    public OBJExport(File dest, HDShader shader, DynmapWorld world, DynmapCore core) {
+    public OBJExport(File dest, HDShader shader, DynmapWorld world, DynmapCore core, String basename) {
         destZipFile = dest;
         this.shader = shader;
         this.world = world;
         this.core = core;
+        this.basename = basename;
         this.defaultPathces = new PatchDefinition[6];
         PatchDefinitionFactory fact = HDBlockModels.getPatchDefinitionFactory();
         for (BlockStep s : BlockStep.values()) {
@@ -147,11 +150,6 @@ public class OBJExport {
      * @param maxz - maximum Z coord
      */
     public void setRenderBounds(int minx, int miny, int minz, int maxx, int maxy, int maxz) {
-        // Force X and Z constraints to chunk boundaries
-        minx = minx & 0xFFFFFFF0;
-        minz = minz & 0xFFFFFFF0;
-        maxx = maxx | 0x0000000F;
-        maxz = maxz | 0x0000000F;
         if (minx < maxx) {
             minX = minx; maxX = maxx;
         }
@@ -216,9 +214,9 @@ public class OBJExport {
             int maxcz = (maxZ + 15) >> 4;
             boolean[] edgebits = new boolean[6];
 
-            startExportedFile("minecraft.obj");
+            startExportedFile(basename + ".obj");
             // Add material library
-            addStringToExportedFile("mtllib " + shader.getName() + ".mtl\n");
+            addStringToExportedFile("mtllib " + basename + ".mtl\n");
 
             // Loop through - do 8x8 chunks at a time (plus 1 border each way)
             for (int cx = mincx; cx <= maxcx; cx += 4) {
@@ -239,11 +237,13 @@ public class OBJExport {
                     }
                     MapIterator iter = cache.getIterator(minX, minY, minZ);
                     for (int x = cx * 16; (x < (cx * 16 + 64)) && (x <= maxX); x++) {
-                        edgebits[BlockStep.X_MINUS.ordinal()] = (x == minX);
-                        edgebits[BlockStep.X_PLUS.ordinal()] = (x == maxX);
+                        if (x < minX) x = minX;
+                        edgebits[BlockStep.X_PLUS.ordinal()] = (x == minX);
+                        edgebits[BlockStep.X_MINUS.ordinal()] = (x == maxX);
                         for (int z = cz * 16; (z < (cz * 16 + 64)) && (z <= maxZ); z++) {
-                            edgebits[BlockStep.Z_MINUS.ordinal()] = (z == minZ);
-                            edgebits[BlockStep.Z_PLUS.ordinal()] = (z == maxZ);
+                            if (z < minZ) z = minZ;
+                            edgebits[BlockStep.Z_PLUS.ordinal()] = (z == minZ);
+                            edgebits[BlockStep.Z_MINUS.ordinal()] = (z == maxZ);
                             iter.initialize(x, minY, z);
                             updateGroup(GROUP_CHUNK, "chunk" + (x >> 4) + "_" + (z >> 4));
                             // Do first (bottom)
@@ -640,5 +640,8 @@ public class OBJExport {
         if (grpIndex < enabledGroups.length) {
             enabledGroups[grpIndex] = set;
         }
+    }
+    public String getBaseName() {
+        return basename;
     }
 }

@@ -195,9 +195,9 @@ public class DynmapExpCommands {
             }
         }
         ctx.xmin = (int)Math.floor(loc.x) - radius;
-        ctx.xmax = (int)Math.floor(loc.x) + radius;
+        ctx.xmax = (int)Math.ceil(loc.x) + radius;
         ctx.zmin = (int)Math.floor(loc.z) - radius;
-        ctx.zmax = (int)Math.floor(loc.z) + radius;
+        ctx.zmax = (int)Math.ceil(loc.z) + radius;
         ctx.ymin = 0;
         ctx.ymax = world.worldheight - 1;
         ctx.world = world.getName();
@@ -260,13 +260,15 @@ public class DynmapExpCommands {
         basename = basename.replace('\\', '_');
         File f = new File(core.getExportFolder(), basename + ".zip");
         int idx = 0;
+        String finalBasename = basename;
         while (f.exists()) {
             idx++;
-            f = new File(core.getExportFolder(), basename + "_" + idx + ".zip");
+            finalBasename = basename + "_" + idx;
+            f = new File(core.getExportFolder(), finalBasename + ".zip");
         }
         sender.sendMessage("Exporting to " + f.getPath());
         
-        OBJExport exp = new OBJExport(f, s, w, core);
+        OBJExport exp = new OBJExport(f, s, w, core, finalBasename);
         exp.setRenderBounds(ctx.xmin, ctx.ymin, ctx.zmin, ctx.xmax, ctx.ymax, ctx.zmax);
         exp.setGroupEnabled(OBJExport.GROUP_CHUNK, ctx.groupByChunk);
         exp.setGroupEnabled(OBJExport.GROUP_TEXTURE, ctx.groupByTexture);
