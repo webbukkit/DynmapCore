@@ -6,7 +6,7 @@ import org.dynmap.DynmapWorld;
 import org.dynmap.MapType;
 import org.dynmap.utils.BufferInputStream;
 import org.dynmap.utils.BufferOutputStream;
-import org.dynmap.utils.FileLockManager;
+import org.dynmap.utils.ImageIOManager;
 
 /**
  * Abstract class for instance of a stored map tile
@@ -66,7 +66,7 @@ public abstract class MapStorageTile {
      * @return true if write succeeded
      */
     public boolean write(long hash, BufferedImage image) {
-        BufferOutputStream bos = FileLockManager.imageIOEncode(image, map.getImageFormat());
+        BufferOutputStream bos = ImageIOManager.imageIOEncode(image, map.getImageFormat());
         if (bos != null) {
             return write(hash, bos);
         }

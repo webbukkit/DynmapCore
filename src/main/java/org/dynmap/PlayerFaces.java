@@ -15,7 +15,7 @@ import org.dynmap.debug.Debug;
 import org.dynmap.storage.MapStorage;
 import org.dynmap.utils.BufferOutputStream;
 import org.dynmap.utils.DynmapBufferedImage;
-import org.dynmap.utils.FileLockManager;
+import org.dynmap.utils.ImageIOManager;
 
 /**
  * Listen for player logins, and process player faces by fetching skins *
@@ -121,7 +121,7 @@ public class PlayerFaces {
             }
             /* Write 8x8 file */
             if(refreshskins || (!has_8x8)) {
-                BufferOutputStream bos = FileLockManager.imageIOEncode(face8x8.buf_img, ImageFormat.FORMAT_PNG);
+                BufferOutputStream bos = ImageIOManager.imageIOEncode(face8x8.buf_img, ImageFormat.FORMAT_PNG);
                 if (bos != null) {
                     storage.setPlayerFaceImage(playername, FaceType.FACE_8X8, bos);
                 }
@@ -135,7 +135,7 @@ public class PlayerFaces {
                         face16x16.argb_buf[i*16+j] = face8x8.argb_buf[(i/2)*8 + (j/2)];
                     }
                 }
-                BufferOutputStream bos = FileLockManager.imageIOEncode(face16x16.buf_img, ImageFormat.FORMAT_PNG);
+                BufferOutputStream bos = ImageIOManager.imageIOEncode(face16x16.buf_img, ImageFormat.FORMAT_PNG);
                 if (bos != null) {
                     storage.setPlayerFaceImage(playername, FaceType.FACE_16X16, bos);
                 }
@@ -151,7 +151,7 @@ public class PlayerFaces {
                         face32x32.argb_buf[i*32+j] = face8x8.argb_buf[(i/4)*8 + (j/4)];
                     }
                 }
-                BufferOutputStream bos = FileLockManager.imageIOEncode(face32x32.buf_img, ImageFormat.FORMAT_PNG);
+                BufferOutputStream bos = ImageIOManager.imageIOEncode(face32x32.buf_img, ImageFormat.FORMAT_PNG);
                 if (bos != null) {
                     storage.setPlayerFaceImage(playername, FaceType.FACE_32X32, bos);
                 }
@@ -177,7 +177,7 @@ public class PlayerFaces {
                 img.getRGB(44, 20, 4, 12, body32x32.argb_buf, 8*32+8, 32); /* Read right leg from image */
                 img.getRGB(44, 20, 4, 12, body32x32.argb_buf, 8*32+20, 32); /* Read left leg from image */
                 
-                BufferOutputStream bos = FileLockManager.imageIOEncode(body32x32.buf_img, ImageFormat.FORMAT_PNG);
+                BufferOutputStream bos = ImageIOManager.imageIOEncode(body32x32.buf_img, ImageFormat.FORMAT_PNG);
                 if (bos != null) {
                     storage.setPlayerFaceImage(playername, FaceType.BODY_32X32, bos);
                 }

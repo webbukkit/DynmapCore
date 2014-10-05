@@ -391,8 +391,9 @@ public abstract class MapStorage {
                         else {
                             long now = System.currentTimeMillis();
                             long elapsed = now-starttime; 
-                            if(elapsed > timeout)   /* Give up on timeout */
+                            if(elapsed > timeout) {   /* Give up on timeout */
                                 return false;
+                            }
                             lock.wait(timeout-elapsed);
                         }
                     } catch (InterruptedException ix) {

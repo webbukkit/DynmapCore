@@ -48,7 +48,7 @@ import org.dynmap.hdmap.TexturePack.HDTextureMap;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.impl.MarkerAPIImpl;
 import org.dynmap.modsupport.ModSupportImpl;
-import org.dynmap.servlet.FileLockResourceHandler;
+import org.dynmap.servlet.FileResourceHandler;
 import org.dynmap.servlet.JettyNullLogger;
 import org.dynmap.servlet.LoginServlet;
 import org.dynmap.servlet.MapStorageResourceHandler;
@@ -57,7 +57,7 @@ import org.dynmap.storage.filetree.FileTreeMapStorage;
 import org.dynmap.storage.mysql.MySQLMapStorage;
 import org.dynmap.storage.sqllte.SQLiteMapStorage;
 import org.dynmap.utils.BlockStep;
-import org.dynmap.utils.FileLockManager;
+import org.dynmap.utils.ImageIOManager;
 import org.dynmap.web.BanIPFilter;
 import org.dynmap.web.CustomHeaderFilter;
 import org.dynmap.web.FilterHandler;
@@ -485,8 +485,8 @@ public class DynmapCore implements DynmapCommonAPI {
         dumpMissing = configuration.getBoolean("dump-missing-blocks", false);
         
         /* Load preupdate/postupdate commands */
-        FileLockManager.preUpdateCommand = configuration.getString("custom-commands/image-updates/preupdatecommand", "");
-        FileLockManager.postUpdateCommand = configuration.getString("custom-commands/image-updates/postupdatecommand", "");
+        ImageIOManager.preUpdateCommand = configuration.getString("custom-commands/image-updates/preupdatecommand", "");
+        ImageIOManager.postUpdateCommand = configuration.getString("custom-commands/image-updates/postupdatecommand", "");
 
         /* Get block and item maps */
         blockmap = server.getBlockUniqueIDMap();
@@ -811,7 +811,7 @@ public class DynmapCore implements DynmapCommonAPI {
         
         final boolean allow_symlinks = configuration.getBoolean("allow-symlinks", false);
         router = new HandlerRouter() {{
-            this.addHandler("/", new FileLockResourceHandler() {{
+            this.addHandler("/", new FileResourceHandler() {{
                 this.setAliases(allow_symlinks);
                 this.setWelcomeFiles(new String[] { "index.html" });
                 this.setDirectoriesListed(true);

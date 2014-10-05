@@ -1113,6 +1113,11 @@ public class MapManager {
             sender.sendMessage("Could not purge world: world '" + worldname + "' not defined in configuration.");
             return;
         }
+        // Cancel any pending render
+        cancelRender(worldname, sender);
+        // And purge update queue for world
+        purgeQueue(sender, worldname);
+        
         Runnable purgejob = new Runnable() {
             public void run() {
                 world.purgeTree();

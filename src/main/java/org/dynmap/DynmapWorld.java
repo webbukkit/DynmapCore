@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.dynmap.MapType.ImageEncoding;
 import org.dynmap.hdmap.TexturePack;
 import org.dynmap.storage.MapStorage;
 import org.dynmap.storage.MapStorageTile;
@@ -107,7 +108,7 @@ public abstract class DynmapWorld {
                 if(cancelled) return;
                 for (int varIdx = 0; varIdx < var.length; varIdx++) {
                     MapStorageTile tile = storage.getTile(this, mt, c.x, c.y, c.zoomlevel, var[varIdx]);
-                    processZoomFile(mts, tile);
+                    processZoomFile(mts, tile, varIdx == 0);
                 }
             }
         }
@@ -123,7 +124,7 @@ public abstract class DynmapWorld {
 
     private static final int[] stepseq = { 3, 1, 2, 0 };
 
-    private void processZoomFile(MapTypeState mts, MapStorageTile tile) {
+    private void processZoomFile(MapTypeState mts, MapStorageTile tile, boolean firstVariant) {
         int step = 1 << tile.zoom;
         MapStorageTile ztile = tile.getZoomOutTile();
         int width = 128, height = 128;
@@ -146,7 +147,9 @@ public abstract class DynmapWorld {
             MapStorageTile tile1 = storage.getTile(this, tile.map, tx1, ty1, tile.zoom, tile.var);
             if (tile1 == null) continue;
             tile1.getReadLock();
-            mts.clearZoomOutInv(tile1.x, tile1.y, tile1.zoom);  // We're handling this one - unset it
+            if (firstVariant) { // We're handling this one - but only clear on first variant (so that we don't miss updates later)
+                mts.clearZoomOutInv(tile1.x, tile1.y, tile1.zoom);
+            }
             try {
                 MapStorageTile.TileRead tr = tile1.read();
                 if (tr != null) {
@@ -194,19 +197,30 @@ public abstract class DynmapWorld {
                         blank = false;
                     }
                     else {
-                        Arrays.fill(argb, tile1.map.getBackgroundARGB(tile1.var));
+                        if (tile1.map.getImageFormat().getEncoding() == ImageEncoding.JPG) {
+                            Arrays.fill(argb, tile1.map.getBackgroundARGB(tile1.var));
+                        }
+                        else {
+                            Arrays.fill(argb, 0);
+                        }
                         tile1.delete();    // Delete unusable tile
                     }
                 }
                 else {
-                    Arrays.fill(argb, tile1.map.getBackgroundARGB(tile1.var));
+                    if (tile1.map.getImageFormat().getEncoding() == ImageEncoding.JPG) {
+                        Arrays.fill(argb, tile1.map.getBackgroundARGB(tile1.var));
+                    }
+                    else {
+                        Arrays.fill(argb, 0);
+                    }
                 }
             } finally {
                 tile1.releaseReadLock();
             }
             /* blit scaled rendered tile onto zoom-out tile */
-            if(doblit)
+            if(doblit) {
                 zIm.setRGB(((i>>1) != 0)?0:width/2, (i & 1) * height/2, width/2, height/2, argb, 0, width);
+            }
         }
         ztile.getWriteLock();
         try {
