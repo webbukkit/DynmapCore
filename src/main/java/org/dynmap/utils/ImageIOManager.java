@@ -1,6 +1,7 @@
 package org.dynmap.utils;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.RandomAccessFile;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -232,5 +233,12 @@ public class ImageIOManager {
             }
         }
         return img;
+    }
+    
+    public static BufferedImage imageIODecode(InputStream str) throws IOException {
+        synchronized(imageioLock) {
+            ImageIO.setUseCache(false); /* Don't use file cache - too small to be worth it */
+            return ImageIO.read(str);
+        }
     }
 }

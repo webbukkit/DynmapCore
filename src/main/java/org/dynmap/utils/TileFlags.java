@@ -203,6 +203,9 @@ public class TileFlags {
 	        this.nextIndex = 0;
 	        this.lastKeyIndex = -1;
 	    }
+	    public TileFlags iterSource() {
+	        return TileFlags.this;
+	    }
 	    public boolean hasNext() {
 	        return !chunkmap.isEmpty();
 	    }
@@ -214,10 +217,11 @@ public class TileFlags {
 	            if(lastKeyIndex < 0) {
 	                Set<Long> ks = chunkmap.keySet();
                     nextIndex = 0;
-	                if(ks.size() == 0) {
+                    int kscnt = ks.size();
+	                if (kscnt == 0) {
 	                    return false;
 	                }
-	                keySet = ks.toArray(keySet);
+	                keySet = ks.toArray(new Long[kscnt]);
                     lastKeyIndex = 0;
 	            }
 	            for(; lastKeyIndex < keySet.length; lastKeyIndex++) {
@@ -228,7 +232,7 @@ public class TileFlags {
 	                    for( ; nextIndex < (64*64); nextIndex++) {
 	                        int hidx = (nextIndex >> 6) & 0x3F;
 	                        int vidx = (nextIndex & 0x3F);
-                            if((flgs[vidx] & (1L << hidx)) != 0) {
+                            if (((flgs[vidx] >> hidx) & 0x1L) != 0L) {
                                 coord.x = (int)(((k >> 32) & 0xFFFFFFFFL) << 6) | hidx;
                                 coord.y = (int)((k & 0xFFFFFFFFL) << 6) | vidx;
                                 nextIndex++;

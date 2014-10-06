@@ -30,6 +30,11 @@ public abstract class MapStorage {
         this.serverID = 0;
     }
     
+    // Proper modulo - versus the bogus Java behavior of negative modulo for negative numerators
+    protected static final int modulo(int x, int y) {
+        return ((x % y) + y) % y;
+    }
+
     /**
      * Initialize with core
      * @param core - core instance

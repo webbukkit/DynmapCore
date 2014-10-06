@@ -17,6 +17,7 @@ public class MapTypeState {
     private TileFlags.Iterator invTilesIter = invTiles.getIterator();
     private long nextInvTS;
     private long invTSPeriod;
+    private ArrayList<TileFlags> zoomOutInvAccum = new ArrayList<TileFlags>();
     private ArrayList<TileFlags> zoomOutInv = new ArrayList<TileFlags>();
     private TileFlags.Iterator zoomOutInvIter = null;
     private int zoomOutInvIterLevel = -1;
@@ -29,6 +30,7 @@ public class MapTypeState {
         zoomOutLevels = world.getExtraZoomOutLevels() + mt.getMapZoomOutLevels();
         for (int i = 0; i < zoomOutLevels; i++) {
             zoomOutInv.add(null);
+            zoomOutInvAccum.add(null);
         }
     }
     public void setInvalidatePeriod(long inv_per_in_secs) {
@@ -127,6 +129,22 @@ public class MapTypeState {
                 }
                 rslt.add(val);
             }
+            for (TileFlags tf : zoomOutInvAccum) {
+                List<String> val;
+                if (tf == null) {
+                    val = Collections.emptyList();
+                }
+                else {
+                    val = tf.save();
+                    if (val == null) {
+                        val = Collections.emptyList();
+                    }
+                    else {
+                        empty = false;
+                    }
+                }
+                rslt.add(val);
+            }
             if (empty) {
                 rslt = null;
             }
@@ -137,7 +155,11 @@ public class MapTypeState {
     public void restoreZoomOut(List<List<String>> dat) {
         synchronized(invTileLock) {
             int cnt = dat.size();
+            int cntaccum = 0;
             if (cnt > zoomOutInv.size()) {
+                if (cnt == (2*zoomOutInv.size())) {
+                    cntaccum = cnt / 2;
+                }
                 cnt = zoomOutInv.size();
             }
             for (int i = 0; i < cnt; i++) {
@@ -148,6 +170,15 @@ public class MapTypeState {
                     tf.load(lst);
                 }
                 zoomOutInv.set(i, tf);
+            }
+            for (int i = 0; i < cntaccum; i++) {
+                List<String> lst = dat.get(i + cnt);
+                TileFlags tf = null;
+                if ((lst != null) && (lst.size() > 0)) {
+                    tf = new TileFlags();
+                    tf.load(lst);
+                }
+                zoomOutInvAccum.set(i, tf);
             }
         }
     }
@@ -162,32 +193,25 @@ public class MapTypeState {
             invTiles.clear();
         }
     }
+    // Set to zoom out accum
     public void setZoomOutInv(int x, int y, int zoomlevel) {
         if (zoomlevel >= zoomOutLevels) {
             return;
         }
         synchronized(invTileLock) {
-            TileFlags tf = zoomOutInv.get(zoomlevel);
+            TileFlags tf = zoomOutInvAccum.get(zoomlevel);
             if (tf == null) {
                 tf = new TileFlags();
-                zoomOutInv.set(zoomlevel, tf);
+                zoomOutInvAccum.set(zoomlevel, tf);
+            }
+            if ((((x >> zoomlevel) << zoomlevel) != x) ||
+                    (((y >> zoomlevel) << zoomlevel) != y)) {
+                Log.info("setZoomOutInv(" + x + "," + y + "," + zoomlevel + ")");
             }
             tf.setFlag(x >> zoomlevel, y >> zoomlevel, true);
         }
     }
-    public boolean getZoomOutInv(int x, int y, int zoomlevel) {
-        if (zoomlevel >= zoomOutLevels) {
-            return false;
-        }
-        synchronized(invTileLock) {
-            zoomOutInv.ensureCapacity(zoomlevel+1);
-            TileFlags tf = zoomOutInv.get(zoomlevel);
-            if (tf == null) {
-                return false;
-            }
-            return tf.getFlag(x >> zoomlevel, y >> zoomlevel);
-        }
-    }
+    // Clear flag in active zoom out flags
     public boolean clearZoomOutInv(int x, int y, int zoomlevel) {
         if (zoomlevel >= zoomOutLevels) {
             return false;
@@ -197,15 +221,24 @@ public class MapTypeState {
             if (tf == null) {
                 return false;
             }
-            boolean prev = tf.setFlag(x >> zoomlevel, y >> zoomlevel, false);
-            if (tf.countFlags() == 0) { // Empty?
-                zoomOutInv.set(zoomlevel, null);
-            }
-            return prev;
+            return tf.setFlag(x >> zoomlevel, y >> zoomlevel, false);
         }
     }
     public static class ZoomOutCoord extends TileFlags.TileCoord {
         public int zoomlevel;
+    }
+    // Start zoom out iteration (stash and reset accumulator)
+    public void startZoomOutIter() {
+        synchronized(invTileLock) {
+            ArrayList<TileFlags> tmplist = zoomOutInv;
+            zoomOutInv = zoomOutInvAccum;
+            for (int i = 0; i < tmplist.size(); i++) {
+                tmplist.set(i, null);
+            }
+            zoomOutInvAccum = tmplist;
+            zoomOutInvIter = null;
+            zoomOutInvIterLevel = 0;
+        }
     }
     public boolean nextZoomOutInv(ZoomOutCoord coord) {
         synchronized(invTileLock) {
@@ -220,9 +253,7 @@ public class MapTypeState {
                 }
                 zoomOutInvIter = null;
             }
-            for (int i = 0; i < zoomOutLevels; i++) {
-                // Advance to next
-                zoomOutInvIterLevel = (zoomOutInvIterLevel + 1) % zoomOutLevels;
+            for (; zoomOutInvIterLevel < zoomOutInv.size(); zoomOutInvIterLevel++) {
                 TileFlags tf = zoomOutInv.get(zoomOutInvIterLevel);
                 if (tf != null) {
                     zoomOutInvIter = tf.getIterator();

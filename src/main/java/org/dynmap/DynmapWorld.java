@@ -11,6 +11,7 @@ import org.dynmap.hdmap.TexturePack;
 import org.dynmap.storage.MapStorage;
 import org.dynmap.storage.MapStorageTile;
 import org.dynmap.utils.DynmapBufferedImage;
+import org.dynmap.utils.ImageIOManager;
 import org.dynmap.utils.MapChunkCache;
 import org.dynmap.utils.RectangleVisibilityLimit;
 import org.dynmap.utils.RoundVisibilityLimit;
@@ -19,8 +20,6 @@ import org.dynmap.utils.VisibilityLimit;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 public abstract class DynmapWorld {
     public List<MapType> maps = new ArrayList<MapType>();
@@ -104,6 +103,7 @@ public abstract class DynmapWorld {
             if (cancelled) return;
             MapType mt = mts.type;
             MapType.ImageVariant var[] = mt.getVariants();
+            mts.startZoomOutIter(); // Start iterator
             while (mts.nextZoomOutInv(c)) {
                 if(cancelled) return;
                 for (int varIdx = 0; varIdx < var.length; varIdx++) {
@@ -139,7 +139,6 @@ public abstract class DynmapWorld {
         /* create image buffer */
         kzIm = DynmapBufferedImage.allocateBufferedImage(width, height);
         zIm = kzIm.buf_img;
-
         for(int i = 0; i < 4; i++) {
             boolean doblit = true;
             int tx1 = tx + step * (1 & stepseq[i]);
@@ -155,7 +154,7 @@ public abstract class DynmapWorld {
                 if (tr != null) {
                     BufferedImage im = null;
                     try {
-                        im = ImageIO.read(tr.image);
+                        im = ImageIOManager.imageIODecode(tr.image);
                     } catch (IOException iox) {
                         // Broken file - zap it
                         tile1.delete();
