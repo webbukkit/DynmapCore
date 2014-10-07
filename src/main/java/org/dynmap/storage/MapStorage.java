@@ -3,8 +3,6 @@ package org.dynmap.storage;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.zip.CRC32;
 
@@ -157,35 +155,26 @@ public abstract class MapStorage {
      * @return hashcode (>= 0)
      */
     public static long calculateImageHashCode(int[] buf, int off, int len) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            final int perCall = 256;
-            int accum = 0;
-            byte[] crcworkbuf = new byte[4 * perCall];
-            for (int i = 0; i < len; i++) {
-                int v = buf[i + off];
-                crcworkbuf[accum++] = (byte)v;
-                crcworkbuf[accum++] = (byte)(v>>8);
-                crcworkbuf[accum++] = (byte)(v>>16);
-                crcworkbuf[accum++] = (byte)(v>>24);
-                if (accum == crcworkbuf.length) {
-                    md.update(crcworkbuf, 0, accum);
-                    accum = 0;
-                }
-            }
-            if (accum > 0) {    // Remainder?
-                md.update(crcworkbuf, 0, accum);
+        CRC32 crc32 = new CRC32();
+        final int perCall = 256;
+        int accum = 0;
+        byte[] crcworkbuf = new byte[4 * perCall];
+        for (int i = 0; i < len; i++) {
+            int v = buf[i + off];
+            crcworkbuf[accum++] = (byte)v;
+            crcworkbuf[accum++] = (byte)(v>>8);
+            crcworkbuf[accum++] = (byte)(v>>16);
+            crcworkbuf[accum++] = (byte)(v>>24);
+            if (accum == crcworkbuf.length) {
+                crc32.update(crcworkbuf, 0, accum);
                 accum = 0;
             }
-            byte[] rslt = md.digest();
-            long val = 0;
-            for (int i = 0; i < rslt.length; i++) {
-                val ^= (((long)rslt[i]) & 0xFF) << (8 * (i & 3));
-            }
-            return val;
-        } catch (NoSuchAlgorithmException e) {
-            return 0;
         }
+        if (accum > 0) {    // Remainder?
+            crc32.update(crcworkbuf, 0, accum);
+            accum = 0;
+        }
+        return crc32.getValue();
     }
     
     /**
