@@ -234,7 +234,7 @@ public abstract class DynmapWorld {
                     enqueueZoomOutUpdate(ztile);
                 }
             }
-            else if (!ztile.matchesHashCode(crc)) {
+            else /* if (!ztile.matchesHashCode(crc)) */ {
                 ztile.write(crc, zIm);
                 MapManager.mapman.pushUpdate(this, new Client.Tile(ztile.getURI()));
                 enqueueZoomOutUpdate(ztile);
