@@ -2074,10 +2074,11 @@ public class TexturePack {
                             // If color index, add it to base
                             if (blockColorIdx >= 0) {
                                 for (int i = 0; i < blkids.size(); i++) {
+                                    int bid = blkids.get(i);
                                     for (int j = 0; j < 16; j++) {
                                         if ((databits & (1 << j)) != 0) {
-                                            baseBlockColoring.put((i << 4) | j, blockColorIdx);
-                                            hasBaseBlockColoring.set((i << 4) | j);
+                                            baseBlockColoring.put((bid << 4) | j, blockColorIdx);
+                                            hasBaseBlockColoring.set((bid << 4) | j);
                                         }
                                     }
                                 }
@@ -2153,10 +2154,11 @@ public class TexturePack {
                             if (hasBaseBlockColoring.get((srcid << 4) | srcmeta)) {
                                 int blockColorIdx = (Integer) baseBlockColoring.get((srcid << 4) | srcmeta);
                                 for (int i = 0; i < blkids.size(); i++) {
+                                    int bid = blkids.get(i);
                                     for (int j = 0; j < 16; j++) {
                                         if ((databits & (1 << j)) != 0) {
-                                            baseBlockColoring.put((i << 4) | j, blockColorIdx);
-                                            hasBaseBlockColoring.set((i << 4) | j);
+                                            baseBlockColoring.put((bid << 4) | j, blockColorIdx);
+                                            hasBaseBlockColoring.set((bid << 4) | j);
                                         }
                                     }
                                 }
