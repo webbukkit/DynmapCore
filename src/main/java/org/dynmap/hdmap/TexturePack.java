@@ -374,8 +374,10 @@ public class TexturePack {
     private int[] blank;
     private int native_scale;
     private CTMTexturePack ctm;
-    private BitSet hasBlockColoring = new BitSet(); // Quick lookup - (blockID << 4) + blockMeta - set if custom colorizer
-    private DynIntHashMap blockColoring = new DynIntHashMap();  // Map - index by (blockID << 4) + blockMeta - Index of image for color map
+    private static BitSet hasBaseBlockColoring = new BitSet(); // Quick lookup - (blockID << 4) + blockMeta - set if custom colorizer
+    private static DynIntHashMap baseBlockColoring = new DynIntHashMap();   // Base block coloring (RP independent)
+    private BitSet hasBlockColoring = (BitSet) hasBaseBlockColoring.clone(); // Quick lookup - (blockID << 4) + blockMeta - set if custom colorizer
+    private DynIntHashMap blockColoring = new DynIntHashMap(baseBlockColoring);  // Map - index by (blockID << 4) + blockMeta - Index of image for color map
 
     private int colorMultBirch = 0x80a755;  /* From ColorizerFoliage.java in MCP */
     private int colorMultPine = 0x619961;   /* From ColorizerFoliage.java in MCP */
@@ -1878,6 +1880,7 @@ public class TexturePack {
                     line = line.substring(6);
                     BlockTransparency trans = BlockTransparency.OPAQUE;
                     int colorMult = 0;
+                    int blockColorIdx = -1;
                     boolean stdrot = false; // Legacy top/bottom rotation
                     CustomColorMultiplier custColorMult = null;
                     String[] args = line.split(",");
@@ -1973,6 +1976,9 @@ public class TexturePack {
                                 faces[BlockStep.Y_MINUS.ordinal()] = 
                                         faces[BlockStep.Y_PLUS.ordinal()] = parseTextureIndex(filetoidx, srctxtid, av[1]);
                             }
+                            else if(av[0].equals("blockcolor")) {
+                                blockColorIdx = parseTextureIndex(filetoidx, srctxtid, av[1]);
+                            }
                             else if(av[0].startsWith("patch")) {
                                 int patchid0, patchid1;
                                 String idrange = av[0].substring(5);
@@ -2065,6 +2071,17 @@ public class TexturePack {
                         if(blkids.size() > 0) {
                             HDTextureMap map = new HDTextureMap(blkids, databits, faces, layers, trans, userenderdata, colorMult, custColorMult, blockset, stdrot);
                             map.addToTable();
+                            // If color index, add it to base
+                            if (blockColorIdx >= 0) {
+                                for (int i = 0; i < blkids.size(); i++) {
+                                    for (int j = 0; j < 16; j++) {
+                                        if ((databits & (1 << j)) != 0) {
+                                            baseBlockColoring.put((i << 4) | j, blockColorIdx);
+                                            hasBaseBlockColoring.set((i << 4) | j);
+                                        }
+                                    }
+                                }
+                            }
                             cnt++;
                         }
                         else {
@@ -2132,6 +2149,18 @@ public class TexturePack {
                         else {
                             HDTextureMap nmap = new HDTextureMap(blkids, databits, map, trans);
                             nmap.addToTable();
+                            // If color index, add it to base
+                            if (hasBaseBlockColoring.get((srcid << 4) | srcmeta)) {
+                                int blockColorIdx = (Integer) baseBlockColoring.get((srcid << 4) | srcmeta);
+                                for (int i = 0; i < blkids.size(); i++) {
+                                    for (int j = 0; j < 16; j++) {
+                                        if ((databits & (1 << j)) != 0) {
+                                            baseBlockColoring.put((i << 4) | j, blockColorIdx);
+                                            hasBaseBlockColoring.set((i << 4) | j);
+                                        }
+                                    }
+                                }
+                            }
                             cnt++;
                         }
                     }

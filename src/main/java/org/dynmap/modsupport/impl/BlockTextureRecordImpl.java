@@ -22,6 +22,7 @@ public class BlockTextureRecordImpl implements BlockTextureRecord {
     }
     
     private ArrayList<TexturePatch> txtPatches = new ArrayList<TexturePatch>();
+    private TexturePatch blockColor = null;
     
     private static final int[] patchBySideOrdinal = {
         1<<1,     // FACE_0
@@ -425,6 +426,27 @@ public class BlockTextureRecordImpl implements BlockTextureRecord {
         return 0;
     }
     
+    /**
+     * Set block color map
+     * @param txtFileID - texture file ID
+     */
+    @Override
+    public void setBlockColorMapTexture(String txtFileID) {
+        TexturePatch tp = new TexturePatch();
+        tp.txtFileID = txtFileID;
+        tp.txtIndex = 0;
+        tp.txtMod = TextureModifier.NONE;
+        blockColor = tp;
+    }
+    /**
+     * Set block color map
+     * @param txtFile - texture file
+     */
+    @Override
+    public void setBlockColorMapTexture(TextureFile txtFile) {
+        setBlockColorMapTexture(txtFile.getTextureID());
+    }
+
     public String getLine() {
         if (ids.length == 0) {
             return null;
@@ -455,6 +477,9 @@ public class BlockTextureRecordImpl implements BlockTextureRecord {
             if (tp == null) continue;
             int idx = (modValueByModifierOrd[tp.txtMod.ordinal()] * 1000) + tp.txtIndex;
             s += ",patch" + i + "=" + idx + ":" + tp.txtFileID;
+        }
+        if (blockColor != null) {
+            s += ",blockcolor=0:" + blockColor.txtFileID;
         }
         switch (this.transmode) {
             case TRANSPARENT:

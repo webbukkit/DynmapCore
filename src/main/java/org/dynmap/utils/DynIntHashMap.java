@@ -190,6 +190,21 @@ public class DynIntHashMap
         this(11, 0.75f);
     }
 
+    public DynIntHashMap(DynIntHashMap map) {
+        loadFactor = map.loadFactor;
+        table = new Entry[map.table.length];
+        threshold = map.threshold;
+        size = 0;
+        for (int i = 0; i < table.length; i++) {
+            Entry e = map.table[i];
+            while (e != null) {
+                table[i] = new Entry(e.key, e.value, table[i]);
+                size++;
+                e = e.next;
+            }
+        }
+    }
+    
     /**
      * Returns the number of key-value mappings in this map.
      *
