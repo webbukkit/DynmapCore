@@ -72,12 +72,7 @@ public abstract class TextureFileImpl implements TextureFile {
 
     public String getLine() {
         String s = "texture:id=" + this.txtID + ",filename=" + this.txtFileName;
-        if (this.xCount > 1) {
-            s += ",xcount=" + this.xCount;
-        }
-        if (this.yCount > 1) {
-            s += ",ycount=" + this.yCount;
-        }
+        s += ",xcount=" + this.xCount + ",ycount=" + this.yCount;
         return s;
     }
 }

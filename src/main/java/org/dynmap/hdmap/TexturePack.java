@@ -728,8 +728,9 @@ public class TexturePack {
                 }
                 is = tpl.openModTPResource(dtf.filename, dtf.modname);
                 try {
-                    if(dtf.format == TileFileFormat.BIOME)
-                        loadBiomeShadingImage(is, i+IMG_CNT); /* Load image file */
+                    if(dtf.format == TileFileFormat.BIOME) {
+                      loadBiomeShadingImage(is, i+IMG_CNT); /* Load image file */
+                    }
                     else
                         loadImage(is, i+IMG_CNT); /* Load image file */
                 } finally {
@@ -1977,7 +1978,10 @@ public class TexturePack {
                                         faces[BlockStep.Y_PLUS.ordinal()] = parseTextureIndex(filetoidx, srctxtid, av[1]);
                             }
                             else if(av[0].equals("blockcolor")) {
-                                blockColorIdx = parseTextureIndex(filetoidx, srctxtid, av[1]);
+                                if(filetoidx.containsKey(av[1]))
+                                    blockColorIdx = filetoidx.get(av[1]);
+                                else
+                                    Log.severe("Format error - line " + rdr.getLineNumber() + " of " + txtname + ": bad texture " + av[1]);
                             }
                             else if(av[0].startsWith("patch")) {
                                 int patchid0, patchid1;
@@ -2077,7 +2081,7 @@ public class TexturePack {
                                     int bid = blkids.get(i);
                                     for (int j = 0; j < 16; j++) {
                                         if ((databits & (1 << j)) != 0) {
-                                            baseBlockColoring.put((bid << 4) | j, blockColorIdx);
+                                            baseBlockColoring.put((bid << 4) | j, blockColorIdx + IMG_CNT);
                                             hasBaseBlockColoring.set((bid << 4) | j);
                                         }
                                     }
@@ -3045,6 +3049,9 @@ public class TexturePack {
                 break;
             case TILESET:
                 f.tile_to_dyntile = new int[xdim*ydim];
+                break;
+            case BIOME:
+                f.tile_to_dyntile = new int[1];
                 break;
             default:
                 f.tile_to_dyntile = new int[xdim*ydim];

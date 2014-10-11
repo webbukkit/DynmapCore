@@ -479,7 +479,7 @@ public class BlockTextureRecordImpl implements BlockTextureRecord {
             s += ",patch" + i + "=" + idx + ":" + tp.txtFileID;
         }
         if (blockColor != null) {
-            s += ",blockcolor=0:" + blockColor.txtFileID;
+            s += ",blockcolor=" + blockColor.txtFileID;
         }
         switch (this.transmode) {
             case TRANSPARENT:

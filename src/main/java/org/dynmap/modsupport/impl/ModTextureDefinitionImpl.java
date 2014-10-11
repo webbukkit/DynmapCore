@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.dynmap.modsupport.BigChestTextureFile;
+import org.dynmap.modsupport.BiomeTextureFile;
 import org.dynmap.modsupport.BlockTextureRecord;
 import org.dynmap.modsupport.ChestTextureFile;
 import org.dynmap.modsupport.CopyBlockTextureRecord;
@@ -203,6 +204,10 @@ public class ModTextureDefinitionImpl implements ModTextureDefinition {
     @Override
     public CustomTextureFile registerCustomTextureFile(String id, String filename, int xcount, int ycount) {
         return (CustomTextureFile) registerTextureFile(new CustomTextureFileImpl(id, filename, xcount, ycount));
+    }
+    @Override
+    public BiomeTextureFile registerBiomeTextureFile(String id, String filename) {
+        return (BiomeTextureFile) registerTextureFile(new BiomeTextureFileImpl(id, filename));
     }
 
     /**
