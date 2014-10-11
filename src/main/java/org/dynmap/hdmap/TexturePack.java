@@ -3107,7 +3107,6 @@ public class TexturePack {
     private static final String PALETTE_BLOCK_KEY = "palette.block.";
 
     private void processCustomColorMap(String fname, String ids) {
-        Log.info("processCustomColorMap(" + fname + ", " + ids + ")");
         // Register file name
         int idx = findOrAddDynamicTileFile(fname, null, 1, 1, TileFileFormat.BIOME, new String[0]);
         if(idx < 0) {
@@ -3146,14 +3145,12 @@ public class TexturePack {
                     int idm = indexByIDMeta(blkid, meta);
                     this.hasBlockColoring.set(idm);
                     this.blockColoring.put(idm, index);
-                    Log.info("blockColoring: " + blkid + ":" + meta + "=" + index);
                 }
                 else if (meta == -1) {  /* All meta IDs */
                     for (meta = 0; meta < 16; meta++) {
                         int idm = indexByIDMeta(blkid, meta);
                         this.hasBlockColoring.set(idm);
                         this.blockColoring.put(idm, index);
-                        Log.info("blockColoring: " + blkid + ":" + meta + "=" + index);
                     }
                 }
             }
