@@ -3377,6 +3377,19 @@ public class TexturePack {
         if (txtidx == null) txtidx = deftxtidx;
         String[] rslt = new String[txtidx.length];   // One for each face
         boolean handlestdrot = (steps != null) && (!map.stdrotate);
+        boolean hasblockcoloring = hasBlockColoring.get(blkindex);
+        int custclrmult = -1;
+        // If block has custom coloring
+        if (hasblockcoloring) {
+            Integer idx = (Integer) this.blockColoring.get(blkindex);
+            LoadedImage img = imgs[idx];
+            if (img.argb != null) {
+                custclrmult = mapiter.getSmoothWaterColorMultiplier(img.argb);
+            }
+            else {
+                hasblockcoloring = false;
+            }
+        }
         for (int patchidx = 0; patchidx < txtidx.length; patchidx++) {
             int faceindex = txtidx[patchidx];
             int textid = map.faces[faceindex];
@@ -3406,6 +3419,8 @@ public class TexturePack {
                 rslt[patchidx] = getMatIDForTileID(textid);   // Default texture
                 int mult = 0xFFFFFF;
                 BiomeMap bio;
+                if (!hasblockcoloring) {
+
                 switch (mod) {
                     case COLORMOD_GRASSTONED:
                     case COLORMOD_GRASSTONED270:
@@ -3447,6 +3462,10 @@ public class TexturePack {
                     default:
                         mult = getBiomeTonedColor(null, -1, mapiter.getBiome(), blkindex);
                         break;
+                }
+                }
+                else {
+                    mult = custclrmult;
                 }
                 if ((mult & 0xFFFFFF) != 0xFFFFFF) {
                     rslt[patchidx] += String.format("__%06X", mult & 0xFFFFFF);
