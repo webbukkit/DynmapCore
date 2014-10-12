@@ -51,10 +51,10 @@ if(isset($_REQUEST['serverid'])) {
 
 $content = getStandaloneFile('dynmap_' . $world . '.json');
 if (!isset($content)) {
-    header('HTTP/1.0 500 Error');
-    echo "<h1>500 Error</h1>";
+    header('HTTP/1.0 503 Database Unavailable');
+    echo "<h1>503 Database Unavailable</h1>";
     echo 'Error reading database - ' . $fname . ' #' . $serverid;
-	cleanupDb();
+    cleanupDb();
     exit;
 }
 
