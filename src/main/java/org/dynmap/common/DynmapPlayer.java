@@ -44,7 +44,7 @@ public interface DynmapPlayer extends DynmapCommandSender {
     /**
      * Get health
      */
-    public int getHealth();
+    public double getHealth();
     /**
      * Get armor points
      */
