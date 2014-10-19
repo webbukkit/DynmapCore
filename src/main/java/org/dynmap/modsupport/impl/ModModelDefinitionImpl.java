@@ -10,6 +10,7 @@ import java.util.Locale;
 import org.dynmap.hdmap.HDBlockModels;
 import org.dynmap.modsupport.BoxBlockModel;
 import org.dynmap.modsupport.CuboidBlockModel;
+import org.dynmap.modsupport.DoorBlockModel;
 import org.dynmap.modsupport.ModModelDefinition;
 import org.dynmap.modsupport.ModTextureDefinition;
 import org.dynmap.modsupport.PaneBlockModel;
@@ -102,6 +103,13 @@ public class ModModelDefinitionImpl implements ModModelDefinition {
     @Override
     public BoxBlockModel addBoxModel(int blockid) {
         BoxBlockModelImpl mod = new BoxBlockModelImpl(blockid, this);
+        blkModel.add(mod);
+        return mod;
+    }
+
+    @Override
+    public DoorBlockModel addDoorModel(int blockid) {
+        DoorBlockModelImpl mod = new DoorBlockModelImpl(blockid, this);
         blkModel.add(mod);
         return mod;
     }
