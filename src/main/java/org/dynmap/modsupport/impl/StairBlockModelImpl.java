@@ -7,6 +7,9 @@ public class StairBlockModelImpl extends BlockModelImpl implements StairBlockMod
     public StairBlockModelImpl(int blkid, ModModelDefinitionImpl mdf) {
         super(blkid, mdf);
     }
+    public StairBlockModelImpl(String blkname, ModModelDefinitionImpl mdf) {
+        super(blkname, mdf);
+    }
 
     @Override
     public String getLine() {

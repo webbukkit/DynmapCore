@@ -11,9 +11,22 @@ public class PatchBlockModelImpl extends BlockModelImpl implements PatchBlockMod
     public PatchBlockModelImpl(int blkid, ModModelDefinitionImpl mdf) {
         super(blkid, mdf);
     }
+    public PatchBlockModelImpl(String blkname, ModModelDefinitionImpl mdf) {
+        super(blkname, mdf);
+    }
 
     public PatchBlockModelImpl(int blkid, ModModelDefinitionImpl mdf, PatchBlockModel mod, int xrot, int yrot, int zrot) {
         super(blkid, mdf);
+        PatchBlockModelImpl m = (PatchBlockModelImpl) mod;
+        for (String pid : m.patches) {
+            String rotpid = mdf.getRotatedPatchID(pid, xrot, yrot, zrot);
+            if (rotpid != null) {
+                patches.add(rotpid);
+            }
+        }
+    }
+    public PatchBlockModelImpl(String blkname, ModModelDefinitionImpl mdf, PatchBlockModel mod, int xrot, int yrot, int zrot) {
+        super(blkname, mdf);
         PatchBlockModelImpl m = (PatchBlockModelImpl) mod;
         for (String pid : m.patches) {
             String rotpid = mdf.getRotatedPatchID(pid, xrot, yrot, zrot);

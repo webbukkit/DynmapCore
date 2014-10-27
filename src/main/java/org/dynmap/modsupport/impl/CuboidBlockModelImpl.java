@@ -23,6 +23,9 @@ public class CuboidBlockModelImpl extends BlockModelImpl implements CuboidBlockM
     public CuboidBlockModelImpl(int blkid, ModModelDefinitionImpl mdf) {
         super(blkid, mdf);
     }
+    public CuboidBlockModelImpl(String blkname, ModModelDefinitionImpl mdf) {
+        super(blkname, mdf);
+    }
 
     @Override
     public void addCuboid(double xmin, double ymin, double zmin, double xmax,

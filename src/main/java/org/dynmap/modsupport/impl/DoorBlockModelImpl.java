@@ -7,6 +7,9 @@ public class DoorBlockModelImpl extends BlockModelImpl implements DoorBlockModel
     public DoorBlockModelImpl(int blkid, ModModelDefinitionImpl mdf) {
         super(blkid, mdf);
     }
+    public DoorBlockModelImpl(String blkname, ModModelDefinitionImpl mdf) {
+        super(blkname, mdf);
+    }
 
     @Override
     public String getLine() {

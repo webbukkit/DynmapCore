@@ -64,6 +64,12 @@ public class ModModelDefinitionImpl implements ModModelDefinition {
         blkModel.add(mod);
         return null;
     }
+    @Override
+    public VolumetricBlockModel addVolumetricModel(String blockname, int scale) {
+        VolumetricBlockModelImpl mod = new VolumetricBlockModelImpl(blockname, this, scale);
+        blkModel.add(mod);
+        return null;
+    }
 
     @Override
     public StairBlockModel addStairModel(int blockid) {
@@ -71,10 +77,22 @@ public class ModModelDefinitionImpl implements ModModelDefinition {
         blkModel.add(mod);
         return mod;
     }
+    @Override
+    public StairBlockModel addStairModel(String blockname) {
+        StairBlockModelImpl mod = new StairBlockModelImpl(blockname, this);
+        blkModel.add(mod);
+        return mod;
+    }
 
     @Override
     public WallFenceBlockModel addWallFenceModel(int blockid, FenceType type) {
         WallFenceBlockModelImpl mod = new WallFenceBlockModelImpl(blockid, this, type);
+        blkModel.add(mod);
+        return mod;
+    }
+    @Override
+    public WallFenceBlockModel addWallFenceModel(String blockname, FenceType type) {
+        WallFenceBlockModelImpl mod = new WallFenceBlockModelImpl(blockname, this, type);
         blkModel.add(mod);
         return mod;
     }
@@ -87,8 +105,21 @@ public class ModModelDefinitionImpl implements ModModelDefinition {
     }
 
     @Override
+    public CuboidBlockModel addCuboidModel(String blockname) {
+        CuboidBlockModelImpl mod = new CuboidBlockModelImpl(blockname, this);
+        blkModel.add(mod);
+        return mod;
+    }
+
+    @Override
     public PaneBlockModel addPaneModel(int blockid) {
         PaneBlockModelImpl mod = new PaneBlockModelImpl(blockid, this);
+        blkModel.add(mod);
+        return mod;
+    }
+    @Override
+    public PaneBlockModel addPaneModel(String blockname) {
+        PaneBlockModelImpl mod = new PaneBlockModelImpl(blockname, this);
         blkModel.add(mod);
         return mod;
     }
@@ -99,10 +130,22 @@ public class ModModelDefinitionImpl implements ModModelDefinition {
         blkModel.add(mod);
         return mod;
     }
+    @Override
+    public PlantBlockModel addPlantModel(String blockname) {
+        PlantBlockModelImpl mod = new PlantBlockModelImpl(blockname, this);
+        blkModel.add(mod);
+        return mod;
+    }
 
     @Override
     public BoxBlockModel addBoxModel(int blockid) {
         BoxBlockModelImpl mod = new BoxBlockModelImpl(blockid, this);
+        blkModel.add(mod);
+        return mod;
+    }
+    @Override
+    public BoxBlockModel addBoxModel(String blockname) {
+        BoxBlockModelImpl mod = new BoxBlockModelImpl(blockname, this);
         blkModel.add(mod);
         return mod;
     }
@@ -113,10 +156,22 @@ public class ModModelDefinitionImpl implements ModModelDefinition {
         blkModel.add(mod);
         return mod;
     }
+    @Override
+    public DoorBlockModel addDoorModel(String blockname) {
+        DoorBlockModelImpl mod = new DoorBlockModelImpl(blockname, this);
+        blkModel.add(mod);
+        return mod;
+    }
     
     @Override
     public PatchBlockModel addPatchModel(int blockid) {
         PatchBlockModelImpl mod = new PatchBlockModelImpl(blockid, this);
+        blkModel.add(mod);
+        return mod;
+    }
+    @Override
+    public PatchBlockModel addPatchModel(String blockname) {
+        PatchBlockModelImpl mod = new PatchBlockModelImpl(blockname, this);
         blkModel.add(mod);
         return mod;
     }
@@ -125,6 +180,13 @@ public class ModModelDefinitionImpl implements ModModelDefinition {
     public PatchBlockModel addRotatedPatchModel(int blockid,
         PatchBlockModel model, int xrot, int yrot, int zrot) {
         PatchBlockModelImpl mod = new PatchBlockModelImpl(blockid, this, model, xrot, yrot, zrot);
+        blkModel.add(mod);
+        return mod;
+    }
+    @Override
+    public PatchBlockModel addRotatedPatchModel(String blockname,
+        PatchBlockModel model, int xrot, int yrot, int zrot) {
+        PatchBlockModelImpl mod = new PatchBlockModelImpl(blockname, this, model, xrot, yrot, zrot);
         blkModel.add(mod);
         return mod;
     }

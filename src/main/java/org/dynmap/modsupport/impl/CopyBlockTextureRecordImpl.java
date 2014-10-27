@@ -7,17 +7,27 @@ import org.dynmap.modsupport.TransparencyMode;
 
 public class CopyBlockTextureRecordImpl implements CopyBlockTextureRecord {
     private int[] ids = new int[0];
+    private String[] names = new String[0];
     private int metaMask = -1;
     private final int srcid;
+    private final String srcname;
     private final int srcmeta;
     private TransparencyMode mode = null;
 
     public CopyBlockTextureRecordImpl(int blkid, int srcid, int srcmeta) {
         addBlockID(blkid);
         this.srcid = srcid;
+        this.srcname = null;
         this.srcmeta = srcmeta;
     }
-    
+
+    public CopyBlockTextureRecordImpl(String blkname, String srcname, int srcmeta) {
+        addBlockName(blkname);
+        this.srcname = srcname;
+        this.srcid = 0;
+        this.srcmeta = srcmeta;
+    }
+
     /**
      * Add block ID to mapping (in case multiple block IDs use same texture mapping)
      * @param blockID - block ID
@@ -36,12 +46,36 @@ public class CopyBlockTextureRecordImpl implements CopyBlockTextureRecord {
     }
 
     /**
+     * Add block name to mapping (in case multiple block names use same texture mapping)
+     * @param blockname - block name
+     */
+    @Override
+    public void addBlockName(String blockname) {
+        for (int i = 0; i < names.length; i++) {
+            if (names[i].equals(blockname)) {
+                return;
+            }
+        }
+        names = Arrays.copyOf(names, names.length+1);
+        names[names.length-1] = blockname;
+    }
+
+    /**
      * Get block IDs
      * @return configured IDs
      */
     @Override
     public int[] getBlockIDs() {
         return ids;
+    }
+
+    /**
+     * Get block names
+     * @return configured names
+     */
+    @Override
+    public String[] getBlockNames() {
+        return names;
     }
 
     /**
@@ -75,6 +109,7 @@ public class CopyBlockTextureRecordImpl implements CopyBlockTextureRecord {
             return null;
         }
         String s = "copyblock:";
+        int idcnt = 0;
         // Add ids
         for (int i = 0; i < ids.length; i++) {
             if (i == 0) {
@@ -83,6 +118,14 @@ public class CopyBlockTextureRecordImpl implements CopyBlockTextureRecord {
             else {
                 s += ",id=" + ids[i];
             }
+            idcnt++;
+        }
+        for (int i = 0; i < names.length; i++) {
+            if (idcnt > 0) {
+                s += ",";
+            }
+            s += "id=%" + names[i];
+            idcnt++;
         }
         // Add meta
         if (this.metaMask == METAMASK_ALL) {
@@ -95,7 +138,12 @@ public class CopyBlockTextureRecordImpl implements CopyBlockTextureRecord {
                 }
             }
         }
-        s += ",srcid=" + srcid + ",srcmeta=" + srcmeta;
+        if (srcname != null) {
+            s += ",srcid=%" + srcname + ",srcmeta=" + srcmeta;
+        }
+        else {
+            s += ",srcid=" + srcid + ",srcmeta=" + srcmeta;
+        }
         switch (this.mode) {
             case TRANSPARENT:
                 s += ",transparency=TRANSPARENT";

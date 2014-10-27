@@ -12,6 +12,7 @@ import org.dynmap.modsupport.TransparencyMode;
 
 public class BlockTextureRecordImpl implements BlockTextureRecord {
     private int[] ids = new int[0];
+    private String[] names = new String[0];
     private int metaMask = -1;
     private TransparencyMode transmode = TransparencyMode.OPAQUE;
     
@@ -101,7 +102,14 @@ public class BlockTextureRecordImpl implements BlockTextureRecord {
             txtPatches.add(null);
         }
     }
-    
+
+    public BlockTextureRecordImpl(String blkname) {
+        addBlockName(blkname);
+        for (int i = 0; i < 6; i++) {
+            txtPatches.add(null);
+        }
+    }
+
     /**
      * Add block ID to mapping (in case multiple block IDs use same texture mapping)
      * @param blockID - block ID
@@ -120,12 +128,36 @@ public class BlockTextureRecordImpl implements BlockTextureRecord {
     }
 
     /**
+     * Add block name to mapping (in case multiple block names use same texture mapping)
+     * @param blockname - block name
+     */
+    @Override
+    public void addBlockName(String blockname) {
+        for (int i = 0; i < names.length; i++) {
+            if (names[i].equals(blockname)) {
+                return;
+            }
+        }
+        names = Arrays.copyOf(names, names.length+1);
+        names[names.length-1] = blockname;
+    }
+
+    /**
      * Get block IDs
      * @return configured IDs
      */
     @Override
     public int[] getBlockIDs() {
         return ids;
+    }
+
+    /**
+     * Get block names
+     * @return configured names
+     */
+    @Override
+    public String[] getBlockNames() {
+        return names;
     }
 
     /**
@@ -452,6 +484,7 @@ public class BlockTextureRecordImpl implements BlockTextureRecord {
             return null;
         }
         String s = "block:";
+        int idcnt = 0;
         // Add ids
         for (int i = 0; i < ids.length; i++) {
             if (i == 0) {
@@ -460,6 +493,15 @@ public class BlockTextureRecordImpl implements BlockTextureRecord {
             else {
                 s += ",id=" + ids[i];
             }
+            idcnt++;
+        }
+        // Add names
+        for (int i = 0; i < names.length; i++) {
+            if (idcnt > 0) {
+                s += ",";
+            }
+            s += "id=%" + names[i];
+            idcnt++;
         }
         // Add meta
         if (this.metaMask == METAMASK_ALL) {

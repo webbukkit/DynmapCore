@@ -12,6 +12,10 @@ public class WallFenceBlockModelImpl extends BlockModelImpl implements WallFence
         super(blkid, mdf);
         this.type = type;
     }
+    public WallFenceBlockModelImpl(String blkname, ModModelDefinitionImpl mdf, FenceType type) {
+        super(blkname, mdf);
+        this.type = type;
+    }
 
     @Override
     public FenceType getFenceType() {
