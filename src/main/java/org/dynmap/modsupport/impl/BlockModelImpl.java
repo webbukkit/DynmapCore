@@ -98,7 +98,7 @@ public abstract class BlockModelImpl implements BlockModel {
     public abstract String getLine();
     
     protected String getIDsAndMeta() {
-        if (ids.length == 0) {
+        if ((ids.length == 0) && (names.length == 0)) {
             return null;
         }
         String s = "";

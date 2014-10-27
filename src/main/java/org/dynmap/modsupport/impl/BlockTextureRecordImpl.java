@@ -480,7 +480,7 @@ public class BlockTextureRecordImpl implements BlockTextureRecord {
     }
 
     public String getLine() {
-        if (ids.length == 0) {
+        if ((ids.length == 0) && (names.length == 0)) {
             return null;
         }
         String s = "block:";
