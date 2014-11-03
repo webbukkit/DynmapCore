@@ -14,6 +14,14 @@ public class CopyBlockTextureRecordImpl implements CopyBlockTextureRecord {
     private final int srcmeta;
     private TransparencyMode mode = null;
 
+    private int isNumber(String v) {
+        for (int i = 0; i < v.length(); i++) {
+            char c = v.charAt(i);
+            if ((c < '0') || (c > '9'))
+                return -1;            
+        }
+        return Integer.parseInt(v);
+    }
     public CopyBlockTextureRecordImpl(int blkid, int srcid, int srcmeta) {
         addBlockID(blkid);
         this.srcid = srcid;
@@ -23,8 +31,15 @@ public class CopyBlockTextureRecordImpl implements CopyBlockTextureRecord {
 
     public CopyBlockTextureRecordImpl(String blkname, String srcname, int srcmeta) {
         addBlockName(blkname);
-        this.srcname = srcname;
-        this.srcid = 0;
+        int id = isNumber(srcname);
+        if (id < 0) {
+            this.srcname = srcname;
+            this.srcid = 0;
+        }
+        else {
+            this.srcname = null;
+            this.srcid = id;
+        }
         this.srcmeta = srcmeta;
     }
 
