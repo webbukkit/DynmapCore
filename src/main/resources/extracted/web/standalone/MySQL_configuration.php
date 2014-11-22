@@ -21,7 +21,7 @@ if(strcmp($userid, '-guest-')) {
 
 $content = getStandaloneFile('dynmap_config.json');
 
-header('Content-type: text/plain; charset=utf-8');
+header('Content-type: application/json; charset=utf-8');
 
 if (!$loginenabled) {
 	echo $content;
