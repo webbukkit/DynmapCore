@@ -21,7 +21,7 @@ if(strcmp($userid, '-guest-')) {
   $loggedin = true;
 }
 
-header('Content-type: text/plain; charset=utf-8');
+header('Content-type: application/json; charset=utf-8');
 
 if(strpos($world, '/') || strpos($world, '\\')) {
     echo "{ \"error\": \"invalid-world\" }";
