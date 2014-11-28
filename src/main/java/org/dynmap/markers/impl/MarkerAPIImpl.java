@@ -220,9 +220,9 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
 
             this.set = m.getMarkerSet().getMarkerSetID();
             if(deleted) 
-                msg = "polydeleted";
+                msg = "linedeleted";
             else
-                msg = "polyupdated";
+                msg = "lineupdated";
         }
         @Override
         public boolean equals(Object o) {

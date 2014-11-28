@@ -433,7 +433,7 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 			deleteMarker(set, set.areas[msg.id]);
 			delete set.areas[msg.id];
 		}
-		else if(msg.msg == 'polyupdated') {
+		else if(msg.msg == 'lineupdated') {
 			var set = dynmapmarkersets[msg.set];
 			deleteMarker(set, set.lines[msg.id]);
 			
