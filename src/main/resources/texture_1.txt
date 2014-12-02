@@ -1336,11 +1336,11 @@ block:id=173,data=*,stdrot=true,allfaces=0:coal_block
 [1.8.0-]block:id=180,data=*,patch0=0:red_sandstone_normal,patch1=0:red_sandstone_top,patch2=0:red_sandstone_bottom,transparency=SEMITRANSPARENT
 
 # Red Sandstone Slab (Double)
-[1.8.0-]block:id=181,data=1,bottom=0:red_sandstone_bottom,top=0:red_sandstone_top,allsides=0:red_sandstone_normal,stdrot=true
-[1.8.0-]block:id=181,data=9,allfaces=0:red_sandstone_top,stdrot=true
+[1.8.0-]block:id=181,data=0,bottom=0:red_sandstone_bottom,top=0:red_sandstone_top,allsides=0:red_sandstone_normal,stdrot=true
+[1.8.0-]block:id=181,data=8,allfaces=0:red_sandstone_top,stdrot=true
 
 # Red Sandstone Slab
-[1.8.0-]block:id=182,data=1,data=9,bottom=0:red_sandstone_bottom,top=0:red_sandstone_top,allsides=0:red_sandstone_normal,stdrot=true,transparency=SEMITRANSPARENT
+[1.8.0-]block:id=182,data=0,data=8,bottom=0:red_sandstone_bottom,top=0:red_sandstone_top,allsides=0:red_sandstone_normal,stdrot=true,transparency=SEMITRANSPARENT
 
 # Fence Gate (Spruce)
 [1.8.0-]block:id=183,patch0-2=0:planks_spruce,stdrot=true,transparency=TRANSPARENT

@@ -1311,8 +1311,8 @@ boxblock:id=171,data=*,ymax=0.0625
 [1.8.0-]customblock:id=180,data=*,class=org.dynmap.hdmap.renderer.StairBlockRenderer
 
 # Red Sandstone Slab
-[1.8.0-]boxblock:id=182,data=0,data=1,data=2,data=3,data=4,data=5,data=6,data=7,ymax=0.5
-[1.8.0-]boxblock:id=182,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,ymin=0.5
+[1.8.0-]boxblock:id=182,data=0,ymax=0.5
+[1.8.0-]boxblock:id=182,data=8,ymin=0.5
 
 # Fence Gate (Spruce)
 [1.8.0-]customblock:id=183,data=*,class=org.dynmap.hdmap.renderer.FenceGateBlockRenderer

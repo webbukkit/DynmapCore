@@ -729,6 +729,8 @@ public class HDBlockModels {
         boolean need_mod_cfg = false;
         boolean mod_cfg_loaded = false;
         String modname = null;
+        String modversion = null;
+        final String mcver = core.getDynmapPluginPlatformVersion();
         try {
             String line;
             ArrayList<HDBlockVolumetricModel> modlist = new ArrayList<HDBlockVolumetricModel>();
@@ -749,22 +751,13 @@ public class HDBlockModels {
                         return;
                     }
                     String vertst = line.substring(1, end);
-                    String mcver = core.getDynmapPluginPlatformVersion();
-                    int dash = vertst.indexOf('-');
-                    if(dash < 0) {
-                        if(!mcver.equals(vertst.trim())) { // If not match
-                            skip = true;
-                        }
+                    String tver = mcver;
+                    if (vertst.startsWith("mod:")) {    // If mod version ranged
+                        tver = modversion;
+                        vertst = vertst.substring(4);
                     }
-                    else {
-                        String s1 = vertst.substring(0, dash).trim();
-                        String s2 = vertst.substring(dash+1).trim();
-                        if( (s1.equals("") || (s1.compareTo(mcver) <= 0)) &&
-                                (s2.equals("") || (s2.compareTo(mcver) >= 0))) {
-                        }
-                        else {
-                            skip = true;
-                        }
+                    if (!HDBlockModels.checkVersionRange(tver, vertst)) {
+                        skip = true;
                     }
                     line = line.substring(end+1);
                 }
@@ -1304,6 +1297,7 @@ public class HDBlockModels {
                             found = true;
                             Log.info(n + "[" + modver + "] models enabled");
                             modname = n;
+                            modversion = modver;
                             loadedmods.add(n);  // Add to loaded mods
                             // Prime values from block and item unique IDs
                             core.addModBlockItemIDs(modname, varvals);
@@ -1316,7 +1310,6 @@ public class HDBlockModels {
                 }
                 else if(line.startsWith("version:")) {
                     line = line.substring(line.indexOf(':')+1);
-                    String mcver = core.getDynmapPluginPlatformVersion();
                     if (!checkVersionRange(mcver, line)) {
                         return;
                     }
