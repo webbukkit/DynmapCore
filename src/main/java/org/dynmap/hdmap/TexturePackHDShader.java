@@ -3,6 +3,8 @@ package org.dynmap.hdmap;
 import static org.dynmap.JSONUtils.s;
 
 import java.io.IOException;
+import java.util.BitSet;
+import java.util.List;
 
 import org.dynmap.Color;
 import org.dynmap.ConfigurationNode;
@@ -26,6 +28,7 @@ public class TexturePackHDShader implements HDShader {
     private final boolean bettergrass;
     private final int gridscale;
     private final DynmapCore core;
+    private final BitSet hiddenids;
     
     public TexturePackHDShader(DynmapCore core, ConfigurationNode configuration) {
         tpname = configuration.getString("texturepack", "minecraft");
@@ -34,6 +37,19 @@ public class TexturePackHDShader implements HDShader {
         biome_shaded = configuration.getBoolean("biomeshaded", true);
         bettergrass = configuration.getBoolean("better-grass", MapManager.mapman.getBetterGrass());
         gridscale = configuration.getInteger("grid-scale", 0);
+        List<Object> hidden = configuration.getList("hiddenids");
+        if(hidden != null) {
+            hiddenids = new BitSet();
+            for(Object o : hidden) {
+                if(o instanceof Integer) {
+                    int v = ((Integer)o);
+                    hiddenids.set(v);
+                }
+            }
+        }
+        else {
+            hiddenids = null;
+        }
     }
     
     private final TexturePack getTexturePack() {
@@ -160,6 +176,9 @@ public class TexturePackHDShader implements HDShader {
          */
         public boolean processBlock(HDPerspectiveState ps) {
             int blocktype = ps.getBlockTypeID();
+            if ((hiddenids != null) && hiddenids.get(blocktype)) {
+                blocktype = 0;
+            }
             int lastblocktype = lastblkid;
             lastblkid = blocktype;
             
