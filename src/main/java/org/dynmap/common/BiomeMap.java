@@ -199,6 +199,7 @@ public class BiomeMap {
         if(tmp < 0.0) tmp = 0.0;
         if(tmp > 1.0) tmp = 1.0;
         this.tmp = tmp;
+        this.biomeindex256 = this.biomeLookup(256);
     }
     public void setRainfall(double rain) {
         if(rain < 0.0) rain = 0.0;
