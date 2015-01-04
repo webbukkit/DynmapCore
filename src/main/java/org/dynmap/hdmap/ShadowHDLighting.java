@@ -3,6 +3,7 @@ package org.dynmap.hdmap;
 import org.dynmap.Color;
 import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapCore;
+import org.dynmap.DynmapWorld;
 import org.dynmap.MapManager;
 import org.dynmap.utils.LightLevels;
 import org.dynmap.utils.BlockStep;
@@ -13,10 +14,14 @@ public class ShadowHDLighting extends DefaultHDLighting {
     protected final int   lightscale[];   /* scale skylight level (light = lightscale[skylight] */
     protected final boolean night_and_day;    /* If true, render both day (prefix+'-day') and night (prefix) tiles */
     protected final boolean smooth;
+    protected final boolean useWorldBrightnessTable;
     
     public ShadowHDLighting(DynmapCore core, ConfigurationNode configuration) {
         super(core, configuration);
         double shadowweight = configuration.getDouble("shadowstrength", 0.0);
+        // See if we're using world's lighting table, or our own
+        useWorldBrightnessTable = configuration.getBoolean("use-brightness-table", MapManager.mapman.useBrightnessTable());
+
         defLightingTable = new int[16];
         defLightingTable[15] = 256;
         /* Normal brightness weight in MC is a 20% relative dropoff per step */
@@ -29,6 +34,7 @@ public class ShadowHDLighting extends DefaultHDLighting {
         int v = configuration.getInteger("ambientlight", -1);
         if(v < 0) v = 15;
         if(v > 15) v = 15;
+        if (useWorldBrightnessTable) v = 15;    // Ignore setting if using world's lighting table
         lightscale = new int[16];
         for(int i = 0; i < 16; i++) {
             if(i < (15-v))
@@ -276,4 +282,13 @@ public class ShadowHDLighting extends DefaultHDLighting {
     /* Test if emitted light level needed */
     public boolean isEmittedLightLevelNeeded() { return true; }    
 
+    @Override
+    public int[] getBrightnessTable(DynmapWorld world) {
+        if (useWorldBrightnessTable) {
+            return world.getBrightnessTable();
+        }
+        else {
+            return null;
+        }
+    }
 }
