@@ -201,4 +201,10 @@ public abstract class DynmapServerInterface {
     public Map<String, Integer> getItemUniqueIDMap() {
         return Collections.emptyMap();
     }
+    /**
+     * Test if current thread is server thread
+     */
+    public boolean isServerThread() {
+        return false;
+    }
 }
