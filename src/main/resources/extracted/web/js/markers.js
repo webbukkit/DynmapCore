@@ -140,11 +140,9 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 			var minzoom = (marker.minzoom >= 0) ? marker.minzoom : set.minzoom;
 			var maxzoom = (marker.maxzoom >= 0) ? marker.maxzoom : set.maxzoom;
 			if (maxzoom < 0) maxzoom = 100;
+			set.layergroup.removeLayer(marker.our_layer);
 			if ((mapzoom >= minzoom) && (mapzoom <= maxzoom)) {  
 				set.layergroup.addLayer(marker.our_layer);
-			}
-			else {
-				set.layergroup.removeLayer(marker.our_layer);
 			}
 		}
 	}
