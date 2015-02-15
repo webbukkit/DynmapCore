@@ -17,6 +17,7 @@ import org.dynmap.utils.RectangleVisibilityLimit;
 import org.dynmap.utils.RoundVisibilityLimit;
 import org.dynmap.utils.TileFlags;
 import org.dynmap.utils.VisibilityLimit;
+import org.dynmap.utils.Polygon;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -560,5 +561,9 @@ public abstract class DynmapWorld {
 
     public MapStorage getMapStorage() {
         return storage;
+    }
+    
+    public Polygon  getWorldBorder() {
+        return null;
     }
 }

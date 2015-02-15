@@ -9,11 +9,13 @@ import org.dynmap.common.DynmapListenerManager.EventType;
 import org.dynmap.common.DynmapListenerManager.WorldEventListener;
 import org.dynmap.common.DynmapListenerManager.PlayerEventListener;
 import org.dynmap.common.DynmapPlayer;
+import org.dynmap.markers.AreaMarker;
 import org.dynmap.markers.Marker;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.MarkerIcon;
 import org.dynmap.markers.MarkerSet;
 import org.dynmap.markers.impl.MarkerSignManager;
+import org.dynmap.utils.Polygon;
 
 /**
  * Markers component - ties in the component system, both on the server and client
@@ -29,6 +31,8 @@ public class MarkersComponent extends ClientComponent {
     private MarkerIcon spawnbedicon;
     private String spawnbedformat;
     private long maxofflineage;
+    private boolean showSpawn;
+    private boolean showBorder;
     private HashMap<String, Long> offline_times = new HashMap<String, Long>();
     private static final String OFFLINE_PLAYERS_SETID = "offline_players";
     private static final String PLAYER_SPAWN_BED_SETID = "spawn_beds";
@@ -42,14 +46,18 @@ public class MarkersComponent extends ClientComponent {
         if(configuration.getBoolean("enablesigns", false)) {
             signmgr = MarkerSignManager.initializeSignManager(core, configuration.getString("default-sign-set", MarkerSet.DEFAULT));
         }
+        showBorder = configuration.getBoolean("showworldborder", false);
+        showSpawn = configuration.getBoolean("showspawn", false);
         /* If we're posting spawn point markers, initialize and add world listener */
-        if(configuration.getBoolean("showspawn", false)) {
+        if(showSpawn) {
             String ico = configuration.getString("spawnicon", MarkerIcon.WORLD);
             spawnlbl = configuration.getString("spawnlabel", "Spawn");
             spawnicon = api.getMarkerIcon(ico); /* Load it */
             if(spawnicon == null) {
                 spawnicon = api.getMarkerIcon(MarkerIcon.WORLD);
             }
+        }
+        if (showSpawn || showBorder) {
             /* Add listener for world loads */
             WorldEventListener wel = new WorldEventListener() {
                 @Override
@@ -229,12 +237,60 @@ public class MarkersComponent extends ClientComponent {
         if(ms != null) {
             String spawnid = "_spawn_" + w.getName();
             Marker m = ms.findMarker(spawnid);    /* See if defined */
-            if(m == null) { /* Not defined yet, add it */
-                ms.createMarker(spawnid, spawnlbl, w.getName(), loc.x, loc.y, loc.z,
+            if (showSpawn) {
+                if(m == null) { /* Not defined yet, add it */
+                    ms.createMarker(spawnid, spawnlbl, w.getName(), loc.x, loc.y, loc.z,
                                 spawnicon, false);
+                }
+                else {
+                    m.setLocation(w.getName(), loc.x, loc.y, loc.z);
+                }
             }
             else {
-                m.setLocation(w.getName(), loc.x, loc.y, loc.z);
+                if (m != null) {
+                    m.deleteMarker();
+                }
+            }
+            String borderid = "_worldborder_" + w.getName();
+            AreaMarker am = ms.findAreaMarker(borderid);
+            Polygon p = null;
+            if (showBorder) {
+                p = w.getWorldBorder();
+            }
+            if ((p != null) && (p.size() > 1)) {
+                double[] x;
+                double[] z;
+                if (p.size() == 2) {
+                    x = new double[4];
+                    z = new double[4];
+                    Polygon.Point2D p0 = p.getVertex(0);
+                    Polygon.Point2D p1 = p.getVertex(1);
+                    x[0] = p0.x; z[0] = p0.y;
+                    x[1] = p0.x; z[1] = p1.y;
+                    x[2] = p1.x; z[2] = p1.y;
+                    x[3] = p1.x; z[3] = p0.y;
+                }
+                else {
+                    int sz = p.size();
+                    x = new double[sz];
+                    z = new double[sz];
+                    for (int i = 0; i < sz; i++) {
+                        Polygon.Point2D pi = p.getVertex(i);
+                        x[i] = pi.x; z[i] = pi.y;
+                    }
+                }
+                if (am == null) {
+                    am = ms.createAreaMarker(borderid, "Border", false, w.getName(), x, z, false);
+                }
+                else {
+                    am.setCornerLocations(x, z);
+                }
+                am.setFillStyle(0.0, 0);
+            }
+            else {
+                if (am != null) {
+                    am.deleteMarker();
+                }
             }
         }
     }
