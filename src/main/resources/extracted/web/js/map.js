@@ -59,6 +59,7 @@ DynMap.prototype = {
 	playerfield: null,
 	layercontrol: undefined,
 	nogui: false,
+	nocompass: false,
 	formatUrl: function(name, options) {
 		var url = this.options.url[name];
 		$.each(options, function(n,v) {
@@ -109,6 +110,10 @@ DynMap.prototype = {
 		urlarg = me.getParameterByName('nogui');
 		if(urlarg != "") {
 			me.nogui = (urlarg == 'true');
+		}
+		urlarg = me.getParameterByName('nocompass');
+		if(urlarg != "") {
+			me.nocompass = (urlarg == 'true');
 		}
 	},
 	initialize: function() {
@@ -384,7 +389,7 @@ DynMap.prototype = {
 			addClass('compass');
 		if(L.Browser.mobile)
 			compass.addClass('mobilecompass');
-		if (!me.nogui) {
+		if ((!me.nogui) && (!me.nocompass)) {
 			compass.appendTo(container);
 		}
 		
