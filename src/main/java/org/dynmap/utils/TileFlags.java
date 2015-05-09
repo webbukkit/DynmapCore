@@ -151,6 +151,8 @@ public class TileFlags {
                 count += Long.bitCount(f[i]);
             }
 	    }
+        last_row = null;
+        last_key = Long.MAX_VALUE;
 	}
 	
 	public void clear() {
