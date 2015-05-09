@@ -579,18 +579,23 @@ public class DynmapCore implements DynmapCommonAPI {
 
         events.<Object>trigger("initialized", null);
                 
-        //dumpColorMap();
+        //dumpColorMap("standard.txt", "standard");
+        //dumpColorMap("dokudark.txt", "dokudark.zip");
+        //dumpColorMap("dokulight.txt", "dokulight.zip");
+        //dumpColorMap("dokuhigh.txt", "dokuhigh.zip");
+        //dumpColorMap("misa.txt", "misa.zip");
+        //dumpColorMap("sphax.txt", "sphax.zip");
         
         return true;
     }
     
-    void dumpColorMap() {
+    void dumpColorMap(String id, String name) {
         int[] sides = new int[] { BlockStep.Y_MINUS.ordinal(), BlockStep.X_PLUS.ordinal(), BlockStep.Z_PLUS.ordinal(), 
                 BlockStep.Y_PLUS.ordinal(), BlockStep.X_MINUS.ordinal(), BlockStep.Z_MINUS.ordinal() };
         FileWriter fw = null;
         try {
-            fw = new FileWriter("colormap.txt");
-            TexturePack tp = TexturePack.getTexturePack(this, "standard");
+            fw = new FileWriter(id);
+            TexturePack tp = TexturePack.getTexturePack(this, name);
             if (tp == null) return;
             tp = tp.resampleTexturePack(1);
             if (tp == null) return;
