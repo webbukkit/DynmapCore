@@ -287,6 +287,24 @@ public class CTMTexturePack {
             }
             return out;
         }
+        private int parseRenderPass(Properties p, String fld, int def) {
+            String v = p.getProperty(fld);
+            if (v == null) return def;
+            if (v.equalsIgnoreCase("overlay"))
+                return 3;
+            else if (v.equalsIgnoreCase("translucent"))
+                return 1;
+            else if (v.equalsIgnoreCase("backface"))
+                return 2;
+            else if (v.equalsIgnoreCase("solid"))
+                return 0;
+            else if (v.equalsIgnoreCase("cutout_mipped"))
+                return 0;
+            else if (v.equalsIgnoreCase("cutout"))
+                return 0;
+            else
+                return parseInt(p, fld, def);
+        }
         
         private int[] getIDList(Properties properties, String key, String type, String[] mappings) {
             Set<Integer> list = new HashSet<Integer>();
@@ -548,7 +566,7 @@ public class CTMTexturePack {
             }
             this.minY = parseInt(p, "minHeight", -1);
             this.maxY = parseInt(p, "maxHeight", Integer.MAX_VALUE);
-            this.renderPass = parseInt(p, "renderPass", -1);
+            this.renderPass = parseRenderPass(p, "renderPass", -1);
             this.width = parseInt(p, "width", -1);
             this.height = parseInt(p, "height", -1);
             this.weights = parseInts(p, "weights");
