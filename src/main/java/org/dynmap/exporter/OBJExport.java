@@ -98,6 +98,7 @@ public class OBJExport {
      * @param dest - destination file (ZIP)
      * @param shader - shader to be used for coloring/texturing
      * @param world - world to be rendered
+     * @param core - core object
      * @param basename - base file name
      */
     public OBJExport(File dest, HDShader shader, DynmapWorld world, DynmapCore core, String basename) {

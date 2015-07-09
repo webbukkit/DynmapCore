@@ -577,7 +577,9 @@ public class CTMTexturePack {
             }
         }
         /**
-         * Finish initialize - return true if good
+         * Finish initialize
+         * @param fname - CTM filename
+         * @return true if good
          */
         public boolean isValid(String fname) {
             /* Must have name and base path */
@@ -840,6 +842,8 @@ public class CTMTexturePack {
      * Constructor for CTM support, using texture pack loader
      * @param tpl - texture pack loader
      * @param tp - texture pack
+     * @param core - core object
+     * @param is_rp - if true, resource pack; if false, texture pack
      */
     public CTMTexturePack(TexturePackLoader tpl, TexturePack tp, DynmapCore core, boolean is_rp) {
         ArrayList<String> files = new ArrayList<String>();
@@ -867,6 +871,7 @@ public class CTMTexturePack {
     }
     /**
      * Test if enabled properly
+     * @return true if valid
      */
     public boolean isValid() {
         return (ctpfiles.length > 0);

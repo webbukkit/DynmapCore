@@ -81,6 +81,7 @@ public abstract class DynmapWorld {
     }
     /**
      * Get world's brightness table
+     * @return table
      */
     public int[] getBrightnessTable() {
         return brightnessTable;
@@ -278,21 +279,26 @@ public abstract class DynmapWorld {
     public abstract int getSkyLightLevel(int x, int y, int z);
     /**
      * Get world environment ID (lower case - normal, the_end, nether)
+     * @return environment ID
      */
     public abstract String getEnvironment();
     /**
      * Get map chunk cache for world
+     * @param chunks - list of chunks to load
+     * @return cache
      */
     public abstract MapChunkCache getChunkCache(List<DynmapChunk> chunks);
 
     /**
      * Get title for world
+     * @return title
      */
     public String getTitle() {
         return title;
     }
     /**
      * Get center location
+     * @return center
      */
     public DynmapLocation getCenterLocation() {
         if(center != null)

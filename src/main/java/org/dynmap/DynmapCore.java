@@ -1796,6 +1796,7 @@ public class DynmapCore implements DynmapCommonAPI {
      * Send generic message to all web users
      * @param sender - label for sender of message ("[&lt;sender&gt;] message") - if null, no from notice
      * @param msg - message to be sent
+     * @return true if successful
      */
     public boolean sendBroadcastToWeb(String sender, String msg) {
         if(mapManager != null) {
@@ -1806,6 +1807,7 @@ public class DynmapCore implements DynmapCommonAPI {
     }
     /**
      * Register markers API - used by component to supply marker API to plugin
+     * @param api - marker API
      */
     public void registerMarkerAPI(MarkerAPIImpl api) {
         markerapi = api;
@@ -1819,6 +1821,7 @@ public class DynmapCore implements DynmapCommonAPI {
     }
     /*
      * Test if full renders are paused
+     * @return true if paused
      */
     public boolean getPauseFullRadiusRenders() {
         return mapManager.getPauseFullRadiusRenders();
@@ -1832,18 +1835,23 @@ public class DynmapCore implements DynmapCommonAPI {
     }
     /*
      * Test if update renders are paused
+     * @return true if paused
      */
     public boolean getPauseUpdateRenders() {
         return mapManager.getPauseUpdateRenders();
     }
     /**
      * Get list of IDs seen on give IP (most recent to least recent)
+     * @param addr - IP address
+     * @return list of IDs
      */
     public List<String> getIDsForIP(InetAddress addr) {
         return getIDsForIP(addr.getHostAddress());
     }
     /**
      * Get list of IDs seen on give IP (most recent to least recent)
+     * @param ip - IP to check
+     * @return list of IDs
      */
     public List<String> getIDsForIP(String ip) {
         LinkedList<String> ids = ids_by_ip.get(ip);

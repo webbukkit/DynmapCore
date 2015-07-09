@@ -1435,6 +1435,11 @@ public class MapManager {
 
     /**
      *  Update map tile statistics
+     * @param tile - map tile
+     * @param prefix - map prefix
+     * @param rendered - true if tile rendered
+     * @param updated - true if tile updated
+     * @param transparent - true if tile transparent
      */
     public void updateStatistics(MapTile tile, String prefix, boolean rendered, boolean updated, boolean transparent) {
         synchronized(lock) {
@@ -1455,6 +1460,8 @@ public class MapManager {
     }
     /**
      * Print statistics command
+     * @param sender - command sender
+     * @param prefix - map ID prefix for stats to print
      */
     public void printStats(DynmapCommandSender sender, String prefix) {
         sender.sendMessage("Tile Render Statistics:");
@@ -1497,6 +1504,7 @@ public class MapManager {
     }
     /**
      * Print trigger statistics command
+     * @param sender - command sender
      */
     public void printTriggerStats(DynmapCommandSender sender) {
         sender.sendMessage("Render Trigger Statistics:");
@@ -1510,6 +1518,8 @@ public class MapManager {
 
     /**
      * Reset statistics
+     * @param sender - command sender
+     * @param prefix - prefix of map IDs to be reset
      */
     public void resetStats(DynmapCommandSender sender, String prefix) {
         synchronized(lock) {

@@ -35,13 +35,13 @@ public abstract class MapStorageTile {
     }
     /**
      * Test if given tile exists in the tile storage
-     * @returns true if tile exists, false if not
+     * @return true if tile exists, false if not
      */
     public abstract boolean exists();
     /**
      * Test if tile exists and matches given hash code
      * @param hash - hash code to test against tile's content
-     * @returns true if tile exists and matches given hash code, false if not
+     * @return true if tile exists and matches given hash code, false if not
      */
     public abstract boolean matchesHashCode(long hash);
     /**
@@ -75,8 +75,6 @@ public abstract class MapStorageTile {
     /**
      * Delete tile
      *
-     * @param hash - hash code of uncompressed image
-     * @param encImage - output stream for encoded image
      * @return true if write succeeded
      */
     public boolean delete() {
@@ -84,6 +82,7 @@ public abstract class MapStorageTile {
     }
     /**
      * Get write lock on tile
+     * @return true if locked
      */
     public abstract boolean getWriteLock();
     /**
@@ -113,6 +112,7 @@ public abstract class MapStorageTile {
     public abstract void cleanup();
     /**
      * Get URI for tile (for web interface)
+     * @return URI for tile
      */
     public abstract String getURI();
     /**
@@ -121,6 +121,7 @@ public abstract class MapStorageTile {
     public abstract void enqueueZoomOutUpdate();
     /**
      * Get zoom out tile for this tile (next zoom leveL)
+     * @return zoom out tile
      */
     public abstract MapStorageTile getZoomOutTile();
     /**

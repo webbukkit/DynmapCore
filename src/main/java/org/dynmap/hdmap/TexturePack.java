@@ -559,6 +559,8 @@ public class TexturePack {
     
     /**
      * Set tile ARGB buffer at index
+     * @param idx - index of tile
+     * @param buf - buffer to be set
      */
     public final void setTileARGB(int idx, int[] buf) {
         if (idx >= tile_argb.length) {
@@ -575,6 +577,8 @@ public class TexturePack {
     }
     /**
      * Get tile ARGB buffer at index
+     * @param idx - tile index
+     * @return ARGB array for tile, or blank array if not found
      */
     public final int[] getTileARGB(int idx) {
         int[] rslt = blank;
@@ -629,6 +633,9 @@ public class TexturePack {
     }
     /**
      * Get index of texture in texture map
+     * @param id - texture pack id
+     * @param key - key for texture
+     * @return index of texture, or -1 if not found
      */
     public static int getTextureIndexFromTextureMap(String id, int key) {
         int idx = -1;
@@ -643,6 +650,8 @@ public class TexturePack {
     }
     /*
      * Get count of textures in given texture map
+     * @param id - texture pack ID
+     * @return length of texture list, or -1 if error
      */
     public static int getTextureMapLength(String id) {
         TextureMap map = textmap_by_id.get(id);
@@ -651,7 +660,12 @@ public class TexturePack {
         }
         return -1;
     }
-    /** Get or load texture pack */
+    /** 
+     * Get or load texture pack
+     * @param core - core object
+     * @param tpname - texture pack name
+     * @return loaded texture pack, or null if error
+     */
     public static TexturePack getTexturePack(DynmapCore core, String tpname) {
         synchronized(packlock) {
             TexturePack tp = packs.get(tpname);
@@ -1350,6 +1364,8 @@ public class TexturePack {
 
     /**
      * Resample terrain pack for given scale, and return copy using that scale
+     * @param scale - scale
+     * @return resampled texture pack
      */
     public TexturePack resampleTexturePack(int scale) {
         synchronized(scaledlock) {
@@ -1526,6 +1542,8 @@ public class TexturePack {
     }
     /**
      * Load texture pack mappings
+     * @param core - core object
+     * @param config - configuration for texture mapping
      */
     public static void loadTextureMapping(DynmapCore core, ConfigurationNode config) {
         File datadir = core.getDataFolder();
@@ -2533,6 +2551,12 @@ public class TexturePack {
     private static final int BLOCKID_SNOW = 78;
     /**
      * Read color for given subblock coordinate, with given block id and data and face
+     * @param ps - perspective state
+     * @param mapiter - map iterator
+     * @param rslt - color result (returned with value)
+     * @param blkid - block ID
+     * @param lastblocktype - last block ID
+     * @param ss - shader state
      */
     public final void readColor(final HDPerspectiveState ps, final MapIterator mapiter, final Color rslt, final int blkid, final int lastblocktype,
             final TexturePackHDShader.ShaderState ss) {
@@ -2964,11 +2988,12 @@ public class TexturePack {
     /**
      * Add new dynmaic file definition, or return existing
      * 
-     * @param fname
-     * @param xdim
-     * @param ydim
-     * @param fmt 
-     * @param args
+     * @param fname - filename
+     * @param modname - mod name
+     * @param xdim - x dimension
+     * @param ydim - y dimension
+     * @param fmt - tile file format
+     * @param args - args for file format
      * @return dynamic file index
      */
     public static int findOrAddDynamicTileFile(String fname, String modname, int xdim, int ydim, TileFileFormat fmt, String[] args) {

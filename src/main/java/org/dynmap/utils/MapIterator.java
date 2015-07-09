@@ -10,9 +10,9 @@ public interface MapIterator extends MapDataContext {
     /**
      * Initialize iterator at given coordinates
      * 
-     * @param x0
-     * @param y0
-     * @param z0
+     * @param x0 - X coord
+     * @param y0 - Y coord
+     * @param z0 - Z coord
      */
     void initialize(int x0, int y0, int z0);
     /**
@@ -27,69 +27,88 @@ public interface MapIterator extends MapDataContext {
     int getBlockEmittedLight();
     /**
      * Get biome at coordinates
+     * @return biome
      */
     public BiomeMap getBiome();
     /**
      * Get smoothed grass color multiplier
+     * @param colormap - color map
+     * @return smoothed multiplier
      */
     public int getSmoothGrassColorMultiplier(int[] colormap);
     /**
      * Get smoothed foliage color multiplier
+     * @param colormap - color map
+     * @return smoothed multiplier
      */
     public int getSmoothFoliageColorMultiplier(int[] colormap);
     /**
      * get smoothed water color multiplier
+     * @return smoothed multiplier
      */
     public int getSmoothWaterColorMultiplier();
     /**
      * get smoothed water color multiplier
+     * @param colormap - color map
+     * @return smoothed multiplier
      */
     public int getSmoothWaterColorMultiplier(int[] colormap);
     /**
      * Get smoothed color multiplier, given normal and swamp color map
+     * @param colormap - color map
+     * @param swampcolormap - swamp-specific color map
+     * @return smoothed multiplier
      */
     public int getSmoothColorMultiplier(int[] colormap, int[] swampcolormap);
     /**
      * Step current position in given direction
+     * @param step - direction to step
      */
     void stepPosition(BlockStep step);
     /**
      * Step current position in opposite of given direction
+     * @param step - direction to unstep
      */
     void unstepPosition(BlockStep step);
     /**
-     * Unstep current position to previous position : return step to take to return
+     * Unstep current position to previous position
+     * @return step to take to return
      */
     BlockStep unstepPosition();
     /**
      * Set Y coordinate of current position
-     * @param y
+     * @param y - y coord
      */
     void setY(int y);
     /**
      * Get block ID at 1 step in given direction
-     * 
+     * @param s - direction to step
      * @return block id
      */
     int getBlockTypeIDAt(BlockStep s);
     /**
      * Get last step taken
+     * @return last step
      */
     BlockStep getLastStep();
     /**
      * Get world height
+     * @return height
      */
     int getWorldHeight();
     /**
      * Get block key for current position (unique ID for block within cache being iterated)
+     * @return block key
      */
     long getBlockKey();
     /**
      * Test if current section (16 x 16 x 16) is empty (all air)
+     * @return true if empty
      */
     boolean isEmptySection();
     /**
      * Get inhabited ticks for current position
+     * @return ticks inhabited
      */
     long getInhabitedTicks();
 }

@@ -26,6 +26,7 @@ public class DynmapBufferedImage {
      * Allocate buffered image from pool, if possible
      * @param x - x dimension
      * @param y - y dimension
+     * @return buffer from pool
      */
     public static DynmapBufferedImage allocateBufferedImage(int x, int y) {
         DynmapBufferedImage img = null;
@@ -51,6 +52,7 @@ public class DynmapBufferedImage {
     
     /**
      * Return buffered image to pool
+     * @param img - image to return to pool
      */
     public static void freeBufferedImage(DynmapBufferedImage img) {
         img.buf_img.flush();
@@ -74,6 +76,10 @@ public class DynmapBufferedImage {
 
     /**
      * Build BufferedImage from provided ARGB array and dimensions
+     * @param argb_buf - ARGB buffer
+     * @param w - width
+     * @param h - height
+     * @return image
      */
     public static BufferedImage createBufferedImage(int[] argb_buf, int w, int h) {
         /* Create integer-base data buffer */

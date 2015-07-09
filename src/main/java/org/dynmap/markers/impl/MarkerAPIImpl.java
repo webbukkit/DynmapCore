@@ -354,6 +354,8 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
 
     /**
      * Singleton initializer
+     * @param core - core object
+     * @return API object
      */
     public static MarkerAPIImpl initializeMarkerAPI(DynmapCore core) {
         if(api != null) {
@@ -404,6 +406,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     
     /**
      * Cleanup
+     * @param plugin - core object
      */
     public void cleanup(DynmapCore plugin) {
         plugin.events.removeListener("worldactivated", api);
@@ -3145,6 +3148,8 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     }
     /**
      * Get set of player visible to given player
+     * @param player - player to check
+     * @return set of visible players
      */
     public Set<String> getPlayersVisibleToPlayer(String player) {
         player = player.toLowerCase();

@@ -57,12 +57,14 @@ public class Color {
     }
     /**
      * Scale each color component, based on the corresponding component
+     * @param c - color to blend
      */
     public final void blendColor(Color c) {
         blendColor(c.val);
     }
     /**
      * Scale each color component, based on the corresponding component
+     * @param argb - ARGB to blend
      */
     public final void blendColor(int argb) {
         int nval = (((((val >> 24) & 0xFF) * ((argb >> 24) & 0xFF)) / 255) << 24);
@@ -73,6 +75,9 @@ public class Color {
     }
     /**
      * Scale each color component, based on the corresponding component
+     * @param argb0 - first color
+     * @param argb1 second color
+     * @return blended color
      */
     public static final int blendColor(int argb0, int argb1) {
         int nval = (((((argb0 >> 24) & 0xFF) * ((argb1 >> 24) & 0xFF)) / 255) << 24);

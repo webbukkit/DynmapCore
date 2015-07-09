@@ -40,10 +40,12 @@ public abstract class MapChunkCache {
     public abstract int loadChunks(int maxToLoad);
     /**
      * Test if done loading
+     * @return true if load completed
      */
     public abstract boolean isDoneLoading();
     /**
      * Test if all empty blocks
+     * @return true if empty
      */
     public abstract boolean isEmpty();
     /**
@@ -52,36 +54,48 @@ public abstract class MapChunkCache {
     public abstract void unloadChunks();
     /**
      * Test if section (16 x 16 x 16) at given coord is empty (all air)
+     * @param sx - section X
+     * @param sy - section Y
+     * @param sz - section Z
+     * @return true if empty
      */
     public abstract boolean isEmptySection(int sx, int sy, int sz);
     /**
      * Get cache iterator
+     * @param x - x coord
+     * @param y - y coord
+     * @param z - z coord
+     * @return iterator
      */
     public abstract MapIterator getIterator(int x, int y, int z);
     /**
      * Set hidden chunk style (default is FILL_AIR)
+     * @param style - hide style
      */
     public abstract void setHiddenFillStyle(HiddenChunkStyle style);
     /**
      * Add visible area limit - can be called more than once 
      * Needs to be set before chunks are loaded
      * Coordinates are block coordinates
+     * @param limit - limits of visible area
      */
     public abstract void setVisibleRange(VisibilityLimit limit);
     /**
      * Add hidden area limit - can be called more than once 
      * Needs to be set before chunks are loaded
      * Coordinates are block coordinates
+     * @param limit - limits of hidden area
      */
     public abstract void setHiddenRange(VisibilityLimit limit);
     /**
      * Get world
+     * @return world
      */
     public abstract DynmapWorld getWorld();
     /**
      * Get number of chunks with given disposition
      * @param type - chunk load type
-     * @return
+     * @return total count
      */
     public int getChunksLoaded(ChunkStats type) {
         return cntTotal[type.ordinal()];
@@ -89,7 +103,7 @@ public abstract class MapChunkCache {
     /**
      * Get total run time processing chunks with given disposition
      * @param type - chunk load type
-     * @return
+     * @return total in nanoseconds
      */
     public long getTotalRuntimeNanos(ChunkStats type) {
         return timeTotal[type.ordinal()];

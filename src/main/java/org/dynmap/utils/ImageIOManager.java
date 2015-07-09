@@ -83,6 +83,10 @@ public class ImageIOManager {
     private static Object baos_lock = new Object();
     /**
      * Wrapper for IOImage.write - implements retries for busy files
+     * @param img - buffered image to write
+     * @param fmt - format to use for file
+     * @param fname - filename
+     * @throws IOException if error writing file
      */
     public static void imageIOWrite(BufferedImage img, ImageFormat fmt, File fname) throws IOException {
         int retrycnt = 0;
@@ -192,6 +196,9 @@ public class ImageIOManager {
     }
     /**
      * Wrapper for IOImage.read - implements retries for busy files
+     * @param fname - file to read
+     * @return buffered image with contents
+     * @throws IOException if error reading file
      */
     public static BufferedImage imageIORead(File fname) throws IOException {
         int retrycnt = 0;

@@ -273,12 +273,22 @@ public class HDBlockModels {
         }
         /**
          * Test if given native block is filled (for volumetric model)
+         * 
+         * @param x - X coordinate
+         * @param y - Y coordinate
+         * @param z - Z coordinate
+         * @return true if set, false if not
          */
         public final boolean isSubblockSet(int x, int y, int z) {
             return ((blockflags[nativeres*y+z] & (1 << x)) != 0);
         }
         /**
          * Set subblock value (for volumetric model)
+         * 
+         * @param x - X coordinate
+         * @param y - Y coordinate
+         * @param z - Z coordinate
+         * @param isset - true = set, false = clear
          */
         public final void setSubblock(int x, int y, int z, boolean isset) {
             if(isset)
@@ -447,6 +457,7 @@ public class HDBlockModels {
         }
         /**
          * Get patches for block model (if patch model)
+         * @return patches for model
          */
         public final PatchDefinition[] getPatches() {
             return patches;
@@ -492,8 +503,8 @@ public class HDBlockModels {
     }
     /**
      * Get scaled set of models for all modelled blocks 
-     * @param scale
-     * @return
+     * @param scale - scale
+     * @return scaled models
      */
     public static HDScaledBlockModels   getModelsForScale(int scale) {
         HDScaledBlockModels model = scaled_models_by_scale.get(Integer.valueOf(scale));
@@ -581,6 +592,8 @@ public class HDBlockModels {
     }
     /**
      * Load models 
+     * @param core - core object
+     * @param config - model configuration data
      */
     public static void loadModels(DynmapCore core, ConfigurationNode config) {
         File datadir = core.getDataFolder();
@@ -1422,6 +1435,9 @@ public class HDBlockModels {
     }
     /**
      * Get render data for block
+     * @param blocktypeid - block ID
+     * @param map - map iterator
+     * @return render data, or -1 if none
      */
     public static int getBlockRenderData(int blocktypeid, MapIterator map) {
         int blockrenderdata = -1;
