@@ -1671,6 +1671,7 @@ public class TexturePack {
                 for(i = tm.faces.length; i < cnt; i++) {
                     newfaces[i] = TILEINDEX_BLANK;
                 }
+                tm.faces = newfaces;
             }
         }
         // Check to see if any blocks exist without corresponding mappings
