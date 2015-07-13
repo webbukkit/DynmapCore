@@ -182,5 +182,5 @@
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
-	<version>2.2-SNAPSHOT</version>
+	<version>2.2</version>
 </project>
