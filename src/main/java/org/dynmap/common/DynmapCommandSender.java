@@ -19,10 +19,13 @@ public interface DynmapCommandSender {
     public boolean isConnected();
     /**
      * Is operator privilege
+     * @return true if operator
      */
     public boolean isOp();
     /**
      * Test for permission node (no dynmap. prefix assumed)
+     * @param node - permission ID
+     * @return true if allowed
      */
     public boolean hasPermissionNode(String node);
 }

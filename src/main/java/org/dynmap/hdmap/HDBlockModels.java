@@ -273,12 +273,22 @@ public class HDBlockModels {
         }
         /**
          * Test if given native block is filled (for volumetric model)
+         * 
+         * @param x - X coordinate
+         * @param y - Y coordinate
+         * @param z - Z coordinate
+         * @return true if set, false if not
          */
         public final boolean isSubblockSet(int x, int y, int z) {
             return ((blockflags[nativeres*y+z] & (1 << x)) != 0);
         }
         /**
          * Set subblock value (for volumetric model)
+         * 
+         * @param x - X coordinate
+         * @param y - Y coordinate
+         * @param z - Z coordinate
+         * @param isset - true = set, false = clear
          */
         public final void setSubblock(int x, int y, int z, boolean isset) {
             if(isset)
@@ -447,6 +457,7 @@ public class HDBlockModels {
         }
         /**
          * Get patches for block model (if patch model)
+         * @return patches for model
          */
         public final PatchDefinition[] getPatches() {
             return patches;
@@ -492,8 +503,8 @@ public class HDBlockModels {
     }
     /**
      * Get scaled set of models for all modelled blocks 
-     * @param scale
-     * @return
+     * @param scale - scale
+     * @return scaled models
      */
     public static HDScaledBlockModels   getModelsForScale(int scale) {
         HDScaledBlockModels model = scaled_models_by_scale.get(Integer.valueOf(scale));
@@ -581,6 +592,8 @@ public class HDBlockModels {
     }
     /**
      * Load models 
+     * @param core - core object
+     * @param config - model configuration data
      */
     public static void loadModels(DynmapCore core, ConfigurationNode config) {
         File datadir = core.getDataFolder();
@@ -729,6 +742,8 @@ public class HDBlockModels {
         boolean need_mod_cfg = false;
         boolean mod_cfg_loaded = false;
         String modname = null;
+        String modversion = null;
+        final String mcver = core.getDynmapPluginPlatformVersion();
         try {
             String line;
             ArrayList<HDBlockVolumetricModel> modlist = new ArrayList<HDBlockVolumetricModel>();
@@ -749,22 +764,13 @@ public class HDBlockModels {
                         return;
                     }
                     String vertst = line.substring(1, end);
-                    String mcver = core.getDynmapPluginPlatformVersion();
-                    int dash = vertst.indexOf('-');
-                    if(dash < 0) {
-                        if(!mcver.equals(vertst.trim())) { // If not match
-                            skip = true;
-                        }
+                    String tver = mcver;
+                    if (vertst.startsWith("mod:")) {    // If mod version ranged
+                        tver = modversion;
+                        vertst = vertst.substring(4);
                     }
-                    else {
-                        String s1 = vertst.substring(0, dash).trim();
-                        String s2 = vertst.substring(dash+1).trim();
-                        if( (s1.equals("") || (s1.compareTo(mcver) <= 0)) &&
-                                (s2.equals("") || (s2.compareTo(mcver) >= 0))) {
-                        }
-                        else {
-                            skip = true;
-                        }
+                    if (!HDBlockModels.checkVersionRange(tver, vertst)) {
+                        skip = true;
                     }
                     line = line.substring(end+1);
                 }
@@ -1304,6 +1310,7 @@ public class HDBlockModels {
                             found = true;
                             Log.info(n + "[" + modver + "] models enabled");
                             modname = n;
+                            modversion = modver;
                             loadedmods.add(n);  // Add to loaded mods
                             // Prime values from block and item unique IDs
                             core.addModBlockItemIDs(modname, varvals);
@@ -1316,7 +1323,6 @@ public class HDBlockModels {
                 }
                 else if(line.startsWith("version:")) {
                     line = line.substring(line.indexOf(':')+1);
-                    String mcver = core.getDynmapPluginPlatformVersion();
                     if (!checkVersionRange(mcver, line)) {
                         return;
                     }
@@ -1429,6 +1435,9 @@ public class HDBlockModels {
     }
     /**
      * Get render data for block
+     * @param blocktypeid - block ID
+     * @param map - map iterator
+     * @return render data, or -1 if none
      */
     public static int getBlockRenderData(int blocktypeid, MapIterator map) {
         int blockrenderdata = -1;

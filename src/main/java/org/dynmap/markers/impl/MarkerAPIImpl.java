@@ -220,9 +220,9 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
 
             this.set = m.getMarkerSet().getMarkerSetID();
             if(deleted) 
-                msg = "polydeleted";
+                msg = "linedeleted";
             else
-                msg = "polyupdated";
+                msg = "lineupdated";
         }
         @Override
         public boolean equals(Object o) {
@@ -354,6 +354,8 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
 
     /**
      * Singleton initializer
+     * @param core - core object
+     * @return API object
      */
     public static MarkerAPIImpl initializeMarkerAPI(DynmapCore core) {
         if(api != null) {
@@ -404,6 +406,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     
     /**
      * Cleanup
+     * @param plugin - core object
      */
     public void cleanup(DynmapCore plugin) {
         plugin.events.removeListener("worldactivated", api);
@@ -600,7 +603,7 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     
     private void doSaveMarkers() {
         if(api != null) {
-            ConfigurationNode conf = new ConfigurationNode(api.markerpersist);  /* Make configuration object */
+            final ConfigurationNode conf = new ConfigurationNode(api.markerpersist);  /* Make configuration object */
             /* First, save icon definitions */
             HashMap<String, Object> icons = new HashMap<String,Object>();
             for(String id : api.markericons.keySet()) {
@@ -635,12 +638,17 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
                 }
             }
             conf.put("playersets", psets);
-            /* And shift old file file out */
-            if(api.markerpersist_old.exists()) api.markerpersist_old.delete();
-            if(api.markerpersist.exists()) api.markerpersist.renameTo(api.markerpersist_old);
-            /* And write it out */
-            if(!conf.save())
-                Log.severe("Error writing markers - " + api.markerpersist.getPath());
+            
+            MapManager.scheduleDelayedJob(new Runnable() {
+                public void run() {
+                    /* And shift old file file out */
+                    if(api.markerpersist_old.exists()) api.markerpersist_old.delete();
+                    if(api.markerpersist.exists()) api.markerpersist.renameTo(api.markerpersist_old);
+                    /* And write it out */
+                    if(!conf.save())
+                        Log.severe("Error writing markers - " + api.markerpersist.getPath());
+                }
+            }, 0);
             /* Refresh JSON files */
             api.freshenMarkerFiles();
         }
@@ -2924,10 +2932,10 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     /**
      * Write markers file for given world
      */
-    private void writeMarkersFile(String wname) {
+    private void writeMarkersFile(final String wname) {
         Map<String, Object> markerdata = new HashMap<String, Object>();
                 
-        Map<String, Object> worlddata = new HashMap<String, Object>();
+        final Map<String, Object> worlddata = new HashMap<String, Object>();
         worlddata.put("timestamp", Long.valueOf(System.currentTimeMillis()));   /* Add timestamp */
 
         for(MarkerSet ms : markersets.values()) {
@@ -3077,7 +3085,11 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
         }
         worlddata.put("sets", markerdata);
 
-        core.getDefaultMapStorage().setMarkerFile(wname, Json.stringifyJson(worlddata));
+        MapManager.scheduleDelayedJob(new Runnable() {
+            public void run() {
+                core.getDefaultMapStorage().setMarkerFile(wname, Json.stringifyJson(worlddata));
+            }
+        }, 0);
     }
 
     @Override
@@ -3136,6 +3148,8 @@ public class MarkerAPIImpl implements MarkerAPI, Event.Listener<DynmapWorld> {
     }
     /**
      * Get set of player visible to given player
+     * @param player - player to check
+     * @return set of visible players
      */
     public Set<String> getPlayersVisibleToPlayer(String player) {
         player = player.toLowerCase();

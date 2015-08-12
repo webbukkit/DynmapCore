@@ -10,27 +10,33 @@ import org.dynmap.utils.DynLongHashMap;
 public interface HDShaderState {
     /**
      * Get our shader
+     * @return shader
      */
     HDShader getShader();
     /**
      * Get our lighting
+     * @return lighting
      */
     HDLighting getLighting();
     /**
      * Get our map
+     * @return map
      */
     HDMap getMap();
     /**
      * Reset renderer state for new ray - passes in pixel coordinate for ray
+     * @param ps - perspective state
      */
     void reset(HDPerspectiveState ps);
     /**
      * Process next ray step - called for each block on route
+     * @param ps - perspective state
      * @return true if ray is done, false if ray needs to continue
      */
     boolean processBlock(HDPerspectiveState ps);
     /**
      * Ray ended - used to report that ray has exited map (called if renderer has not reported complete)
+     * @param ps - perspective state
      */
     void rayFinished(HDPerspectiveState ps);
     /**
@@ -45,10 +51,12 @@ public interface HDShaderState {
     void cleanup();
     /**
      * Get CTM texture cache
+     * @return texture cache
      */
     DynLongHashMap getCTMTextureCache();
     /**
      * Get lighting table
+     * @return array of lighting values
      */
     int[] getLightingTable();
 }

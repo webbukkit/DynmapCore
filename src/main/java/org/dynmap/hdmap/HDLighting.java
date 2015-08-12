@@ -1,6 +1,7 @@
 package org.dynmap.hdmap;
 
 import org.dynmap.Color;
+import org.dynmap.DynmapWorld;
 import org.json.simple.JSONObject;
 
 public interface HDLighting {
@@ -24,4 +25,6 @@ public interface HDLighting {
     boolean isEmittedLightLevelNeeded();
     /* Add shader's contributions to JSON for map object */
     void addClientConfiguration(JSONObject mapObject);
+    /* Get brightness table for given world */
+    int[] getBrightnessTable(DynmapWorld world);
 }

@@ -35,22 +35,27 @@ public interface DynmapPlayer extends DynmapCommandSender {
     public String getWorld();
     /**
      * Get connected address for player
+     * @return connection address, or null if unknown
      */
     public InetSocketAddress getAddress();
     /**
      * Check if player is sneaking
+     * @return true if sneaking
      */
     public boolean isSneaking();
     /**
      * Get health
+     * @return health points
      */
-    public int getHealth();
+    public double getHealth();
     /**
      * Get armor points
+     * @return armor points
      */
     public int getArmorPoints();
     /**
      * Get spawn bed location
+     * @return bed location, or null if none
      */
     public DynmapLocation getBedSpawnLocation();
     /**
@@ -65,14 +70,17 @@ public interface DynmapPlayer extends DynmapCommandSender {
     public long getFirstLoginTime();
     /**
      * Is invisible
+     * @return true if invisible
      */
     public boolean isInvisible();
     /**
      * Get sort weight (ordered lowest to highest in player list: 0=default)
+     * @return sort weight
      */
     public int getSortWeight();
     /**
      * Set sort weight (ordered lowest to highest in player list: 0=default)
+     * @param wt - sort weight
      */
     public void setSortWeight(int wt);
 }

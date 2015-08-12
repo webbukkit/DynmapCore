@@ -17,7 +17,7 @@ public interface HDShader {
      * @param map - map being rendered
      * @param cache - chunk cache containing data for tile to be rendered
      * @param mapiter - iterator used when traversing rays in tile
-     * @param scale 
+     * @param scale - scale
      * @return state object to use for all rays in tile
      */
     HDShaderState getStateInstance(HDMap map, MapChunkCache cache, MapIterator mapiter, int scale);

@@ -61,7 +61,8 @@ public class SQLiteMapStorage extends MapStorage {
             try {
                 c = getConnection();
                 Statement stmt = c.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT HashCode FROM Tiles WHERE MapID=" + mapkey + " AND x=" + x + " AND y=" + y + " AND zoom=" + zoom + ";");
+                //ResultSet rs = stmt.executeQuery("SELECT HashCode FROM Tiles WHERE MapID=" + mapkey + " AND x=" + x + " AND y=" + y + " AND zoom=" + zoom + ";");
+                ResultSet rs = doExecuteQuery(stmt, "SELECT HashCode FROM Tiles WHERE MapID=" + mapkey + " AND x=" + x + " AND y=" + y + " AND zoom=" + zoom + ";");
                 rslt = rs.next();
                 rs.close();
                 stmt.close();
@@ -83,7 +84,8 @@ public class SQLiteMapStorage extends MapStorage {
             try {
                 c = getConnection();
                 Statement stmt = c.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT HashCode FROM Tiles WHERE MapID=" + mapkey + " AND x=" + x + " AND y=" + y + " AND zoom=" + zoom + ";");
+                //ResultSet rs = stmt.executeQuery("SELECT HashCode FROM Tiles WHERE MapID=" + mapkey + " AND x=" + x + " AND y=" + y + " AND zoom=" + zoom + ";");
+                ResultSet rs = doExecuteQuery(stmt, "SELECT HashCode FROM Tiles WHERE MapID=" + mapkey + " AND x=" + x + " AND y=" + y + " AND zoom=" + zoom + ";");
                 if (rs.next()) {
                     long v = rs.getLong("HashCode");
                     rslt = (v == hash);
@@ -108,7 +110,8 @@ public class SQLiteMapStorage extends MapStorage {
             try {
                 c = getConnection();
                 Statement stmt = c.createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT HashCode,LastUpdate,Format,Image FROM Tiles WHERE MapID=" + mapkey + " AND x=" + x + " AND y=" + y + " AND zoom=" + zoom + ";");
+                //ResultSet rs = stmt.executeQuery("SELECT HashCode,LastUpdate,Format,Image FROM Tiles WHERE MapID=" + mapkey + " AND x=" + x + " AND y=" + y + " AND zoom=" + zoom + ";");
+                ResultSet rs = doExecuteQuery(stmt, "SELECT HashCode,LastUpdate,Format,Image FROM Tiles WHERE MapID=" + mapkey + " AND x=" + x + " AND y=" + y + " AND zoom=" + zoom + ";");
                 if (rs.next()) {
                     rslt = new TileRead();
                     rslt.hashCode = rs.getLong("HashCode");
@@ -169,7 +172,8 @@ public class SQLiteMapStorage extends MapStorage {
                     stmt.setInt(7, map.getImageFormat().getEncoding().ordinal());
                     stmt.setBytes(8, encImage.buf);
                 }
-                stmt.executeUpdate();
+                //stmt.executeUpdate();
+                doExecuteUpdate(stmt);
                 stmt.close();
                 // Signal update for zoom out
                 if (zoom == 0) {
@@ -279,7 +283,8 @@ public class SQLiteMapStorage extends MapStorage {
         try {
             c = getConnection();    // Get connection (create DB if needed)
             Statement stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery( "SELECT level FROM SchemaVersion;");
+            //ResultSet rs = stmt.executeQuery( "SELECT level FROM SchemaVersion;");
+            ResultSet rs = doExecuteQuery(stmt, "SELECT level FROM SchemaVersion;");
             if (rs.next()) {
                 ver = rs.getInt("level");
             }
@@ -295,7 +300,8 @@ public class SQLiteMapStorage extends MapStorage {
     
     private void doUpdate(Connection c, String sql) throws SQLException {
         Statement stmt = c.createStatement();
-        stmt.executeUpdate(sql);
+        //stmt.executeUpdate(sql);
+        doExecuteUpdate(stmt, sql);
         stmt.close();
     }
     
@@ -310,7 +316,8 @@ public class SQLiteMapStorage extends MapStorage {
         try {
             c = getConnection();
             Statement stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * from Maps;");
+            //ResultSet rs = stmt.executeQuery("SELECT * from Maps;");
+            ResultSet rs = doExecuteQuery(stmt, "SELECT * from Maps;");
             while (rs.next()) {
                 int key = rs.getInt("ID");
                 String worldID = rs.getString("WorldID");
@@ -343,14 +350,16 @@ public class SQLiteMapStorage extends MapStorage {
                     stmt.setString(1, w.getName());
                     stmt.setString(2, mt.getPrefix());
                     stmt.setString(3, var.toString());
-                    stmt.executeUpdate();
+                    //stmt.executeUpdate();
+                    doExecuteUpdate(stmt);
                     stmt.close();
                     //  Query key assigned
                     stmt = c.prepareStatement("SELECT ID FROM Maps WHERE WorldID = ? AND MapID = ? AND Variant = ?;");
                     stmt.setString(1, w.getName());
                     stmt.setString(2, mt.getPrefix());
                     stmt.setString(3, var.toString());
-                    ResultSet rs = stmt.executeQuery();
+                    //ResultSet rs = stmt.executeQuery();
+                    ResultSet rs = doExecuteQuery(stmt);
                     if (rs.next()) {
                         k = rs.getInt("ID");
                         mapKey.put(id, k);
@@ -534,7 +543,8 @@ public class SQLiteMapStorage extends MapStorage {
             c = getConnection();
             // Query tiles for given mapkey
             Statement stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT x,y,zoom,Format FROM Tiles WHERE MapID=" + mapkey + ";");
+            //ResultSet rs = stmt.executeQuery("SELECT x,y,zoom,Format FROM Tiles WHERE MapID=" + mapkey + ";");
+            ResultSet rs = doExecuteQuery(stmt, "SELECT x,y,zoom,Format FROM Tiles WHERE MapID=" + mapkey + ";");
             while (rs.next()) {
                 StorageTile st = new StorageTile(world, map, rs.getInt("x"), rs.getInt("y"), rs.getInt("zoom"), var);
                 cb.tileFound(st, MapType.ImageEncoding.fromOrd(rs.getInt("Format")));
@@ -576,7 +586,8 @@ public class SQLiteMapStorage extends MapStorage {
             c = getConnection();
             // Query tiles for given mapkey
             Statement stmt = c.createStatement();
-            stmt.executeUpdate("DELETE FROM Tiles WHERE MapID=" + mapkey + ";");
+            //stmt.executeUpdate("DELETE FROM Tiles WHERE MapID=" + mapkey + ";");
+            doExecuteUpdate(stmt, "DELETE FROM Tiles WHERE MapID=" + mapkey + ";");
             stmt.close();
         } catch (SQLException x) {
             Log.severe("Tile purge error - " + x.getMessage());
@@ -615,7 +626,8 @@ public class SQLiteMapStorage extends MapStorage {
                 stmt.setInt(2, facetype.typeID);
                 stmt.setBytes(3, encImage.buf);
             }
-            stmt.executeUpdate();
+            //stmt.executeUpdate();
+            doExecuteUpdate(stmt);
             stmt.close();
         } catch (SQLException x) {
             Log.severe("Face write error - " + x.getMessage());
@@ -637,7 +649,8 @@ public class SQLiteMapStorage extends MapStorage {
             PreparedStatement stmt = c.prepareStatement("SELECT Image FROM Faces WHERE PlayerName=? AND TypeID=?;");
             stmt.setString(1, playername);
             stmt.setInt(2, facetype.typeID);
-            ResultSet rs = stmt.executeQuery();
+            //ResultSet rs = stmt.executeQuery();
+            ResultSet rs = doExecuteQuery(stmt);
             if (rs.next()) {
                 byte[] img = rs.getBytes("Image");
                 image = new BufferInputStream(img);
@@ -663,7 +676,8 @@ public class SQLiteMapStorage extends MapStorage {
             PreparedStatement stmt = c.prepareStatement("SELECT TypeID FROM Faces WHERE PlayerName=? AND TypeID=?;");
             stmt.setString(1, playername);
             stmt.setInt(2, facetype.typeID);
-            ResultSet rs = stmt.executeQuery();
+            //ResultSet rs = stmt.executeQuery();
+            ResultSet rs = doExecuteQuery(stmt);
             if (rs.next()) {
                 exists = true;
             }
@@ -689,7 +703,8 @@ public class SQLiteMapStorage extends MapStorage {
             PreparedStatement stmt;
             stmt = c.prepareStatement("SELECT IconName FROM MarkerIcons WHERE IconName=?;");
             stmt.setString(1, markerid);
-            ResultSet rs = stmt.executeQuery();
+            //ResultSet rs = stmt.executeQuery();
+            ResultSet rs = doExecuteQuery(stmt);
             if (rs.next()) {
                 exists = true;
             }
@@ -700,7 +715,8 @@ public class SQLiteMapStorage extends MapStorage {
                 if (!exists) return false;
                 stmt = c.prepareStatement("DELETE FROM MarkerIcons WHERE IconName=?;");
                 stmt.setString(1, markerid);
-                stmt.executeUpdate();
+                //stmt.executeUpdate();
+                doExecuteUpdate(stmt);
             }
             else if (exists) {
                 stmt = c.prepareStatement("UPDATE MarkerIcons SET Image=? WHERE IconName=?;");
@@ -712,7 +728,8 @@ public class SQLiteMapStorage extends MapStorage {
                 stmt.setString(1, markerid);
                 stmt.setBytes(2, encImage.buf);
             }
-            stmt.executeUpdate();
+            //stmt.executeUpdate();
+            doExecuteUpdate(stmt);
             stmt.close();
         } catch (SQLException x) {
             Log.severe("Marker write error - " + x.getMessage());
@@ -732,7 +749,8 @@ public class SQLiteMapStorage extends MapStorage {
             c = getConnection();
             PreparedStatement stmt = c.prepareStatement("SELECT Image FROM MarkerIcons WHERE IconName=?;");
             stmt.setString(1, markerid);
-            ResultSet rs = stmt.executeQuery();
+            //ResultSet rs = stmt.executeQuery();
+            ResultSet rs = doExecuteQuery(stmt);
             if (rs.next()) {
                 byte[] img = rs.getBytes("Image");
                 image = new BufferInputStream(img);
@@ -759,7 +777,8 @@ public class SQLiteMapStorage extends MapStorage {
             PreparedStatement stmt;
             stmt = c.prepareStatement("SELECT FileName FROM MarkerFiles WHERE FileName=?;");
             stmt.setString(1, world);
-            ResultSet rs = stmt.executeQuery();
+            //ResultSet rs = stmt.executeQuery();
+            ResultSet rs = doExecuteQuery(stmt);
             if (rs.next()) {
                 exists = true;
             }
@@ -770,7 +789,8 @@ public class SQLiteMapStorage extends MapStorage {
                 if (!exists) return false;
                 stmt = c.prepareStatement("DELETE FROM MarkerFiles WHERE FileName=?;");
                 stmt.setString(1, world);
-                stmt.executeUpdate();
+                //stmt.executeUpdate();
+                doExecuteUpdate(stmt);
             }
             else if (exists) {
                 stmt = c.prepareStatement("UPDATE MarkerFiles SET Content=? WHERE FileName=?;");
@@ -782,7 +802,8 @@ public class SQLiteMapStorage extends MapStorage {
                 stmt.setString(1, world);
                 stmt.setBytes(2, content.getBytes(UTF8));
             }
-            stmt.executeUpdate();
+            //stmt.executeUpdate();
+            doExecuteUpdate(stmt);
             stmt.close();
         } catch (SQLException x) {
             Log.severe("Marker file write error - " + x.getMessage());
@@ -802,7 +823,8 @@ public class SQLiteMapStorage extends MapStorage {
             c = getConnection();
             PreparedStatement stmt = c.prepareStatement("SELECT Content FROM MarkerFiles WHERE FileName=?;");
             stmt.setString(1, world);
-            ResultSet rs = stmt.executeQuery();
+            //ResultSet rs = stmt.executeQuery();
+            ResultSet rs = doExecuteQuery(stmt);
             if (rs.next()) {
                 byte[] img = rs.getBytes("Content");
                 content = new String(img, UTF8);
@@ -837,5 +859,49 @@ public class SQLiteMapStorage extends MapStorage {
         // Need to call base to add webpath
         super.addPaths(sb, core);
     }
-
+    
+    private ResultSet doExecuteQuery(PreparedStatement statement) throws SQLException {
+        while (true) {
+            try {
+                return statement.executeQuery();
+            } catch (SQLException x) {
+                if (!x.getMessage().contains("[SQLITE_BUSY]")) {
+                    throw x;
+                }
+            }
+        }
+    }
+    private ResultSet doExecuteQuery(Statement statement, String sql) throws SQLException {
+        while (true) {
+            try {
+                return statement.executeQuery(sql);
+            } catch (SQLException x) {
+                if (!x.getMessage().contains("[SQLITE_BUSY]")) {
+                    throw x;
+                }
+            }
+        }
+    }
+    private int doExecuteUpdate(PreparedStatement statement) throws SQLException {
+        while (true) {
+            try {
+                return statement.executeUpdate();
+            } catch (SQLException x) {
+                if (!x.getMessage().contains("[SQLITE_BUSY]")) {
+                    throw x;
+                }
+            }
+        }
+    }
+    private int doExecuteUpdate(Statement statement, String sql) throws SQLException {
+        while (true) {
+            try {
+                return statement.executeUpdate(sql);
+            } catch (SQLException x) {
+                if (!x.getMessage().contains("[SQLITE_BUSY]")) {
+                    throw x;
+                }
+            }
+        }
+    }
 }

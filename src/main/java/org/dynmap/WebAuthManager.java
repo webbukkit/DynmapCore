@@ -164,6 +164,18 @@ public class WebAuthManager {
         pwdhash_by_userid.put(uid, hash);
         return save();
     }
+    public static final boolean checkUserName(String name) {
+        int nlen = name.length();
+        if ((nlen > 0) && (nlen <= 16)) {
+            for (int i = 0; i < nlen; i++) {
+                if ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_".indexOf(name.charAt(i)) < 0) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
     public boolean processWebRegisterCommand(DynmapCore core, DynmapCommandSender sender, DynmapPlayer player, String[] args) {
         String uid = null;
         boolean other = false;
@@ -181,6 +193,10 @@ public class WebAuthManager {
         }
         else {
             uid = player.getName();
+        }
+        if (checkUserName(uid) == false) {
+            sender.sendMessage("Invalid user ID");
+            return true;
         }
         String regkey = String.format("%04d-%04d", rnd.nextInt(10000), rnd.nextInt(10000));
         pending_registrations.put(uid.toLowerCase(), regkey.toLowerCase());

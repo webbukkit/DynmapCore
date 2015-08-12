@@ -112,6 +112,13 @@ public class HDMapManager {
 
     /**
      * Initialize shader states for all shaders for given tile
+     * 
+     * @param tile - tile to init
+     * @param cache - chunk cache
+     * @param mapiter - map iterator
+     * @param mapname - map name
+     * @param scale - map scale
+     * @return array of shader states for all associated shaders
      */
     public HDShaderState[] getShaderStateForTile(HDMapTile tile, MapChunkCache cache, MapIterator mapiter, String mapname, int scale) {
         DynmapWorld w = MapManager.mapman.worldsLookup.get(tile.getDynmapWorld().getName());

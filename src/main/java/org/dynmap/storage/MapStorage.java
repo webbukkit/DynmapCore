@@ -38,6 +38,7 @@ public abstract class MapStorage {
     /**
      * Initialize with core
      * @param core - core instance
+     * @return true if success
      */
     public boolean init(DynmapCore core) {
         baseStandaloneDir = new File(core.configuration.getString("webpath", "web"), "standalone");
@@ -64,7 +65,7 @@ public abstract class MapStorage {
      * @param y - tile Y coordinate
      * @param zoom - tile zoom level (0=base rendered tiles)
      * @param var - tile variant (standard, day, etc)
-     * @returns MapStorageTile for given coordinate (whether or not tile exists)
+     * @return MapStorageTile for given coordinate (whether or not tile exists)
      */
     public abstract MapStorageTile getTile(DynmapWorld world, MapType map, int x, int y, int zoom, MapType.ImageVariant var);
 
@@ -73,7 +74,7 @@ public abstract class MapStorage {
      *
      * @param world - world
      * @param uri - tile URI
-     * @returns MapStorageTile for given coordinate (whether or not tile exists)
+     * @return MapStorageTile for given coordinate (whether or not tile exists)
      */
     public abstract MapStorageTile getTile(DynmapWorld world, String uri);
 
@@ -152,7 +153,7 @@ public abstract class MapStorage {
      * @param buf - ARGB array
      * @param off - offset of start in array
      * @param len - length of image data
-     * @return hashcode (>= 0)
+     * @return hashcode (greater than or equals to 0)
      */
     public static long calculateImageHashCode(int[] buf, int off, int len) {
         CRC32 crc32 = new CRC32();
@@ -181,24 +182,27 @@ public abstract class MapStorage {
      * URI to use for loading marker data (for external web server)
      * 
      * @param login_enabled - selects based on login security enabled
-     * @return
+     * @return URI
      */
     public abstract String getMarkersURI(boolean login_enabled);
     /**
      * URI to use for loading tiles (for external web server)
      * 
      * @param login_enabled - selects based on login security enabled
-     * @return
+     * @return URI
      */
     public abstract String getTilesURI(boolean login_enabled);
     /**
      * Test if standalone JSON files should be PHP wrapped
+     * @param login_enabled - selects based on login security enabled
+     * @return whether to wrap JSON
      */
     public boolean wrapStandaloneJSON(boolean login_enabled) {
         return login_enabled;
     }
     /**
      * Get sendmessage URI
+     * @return URI
      */
     public String getSendMessageURI() {
         return "standalone/sendmessage.php";
@@ -206,7 +210,7 @@ public abstract class MapStorage {
     /**
      * URI to use for loading configuration JSON files (for external web server)
      * @param login_enabled - selects based on login security enabled
-     * @return
+     * @return URI
      */
     public String getConfigurationJSONURI(boolean login_enabled) {
         return login_enabled?"standalone/configuration.php":"standalone/dynmap_config.json?_={timestamp}";
@@ -214,13 +218,15 @@ public abstract class MapStorage {
     /**
      * URI to use for loading update JSON files (for external web server)
      * @param login_enabled - selects based on login security enabled
-     * @return
+     * @return URI
      */
     public String getUpdateJSONURI(boolean login_enabled) {
         return login_enabled?"standalone/update.php?world={world}&ts={timestamp}":"standalone/dynmap_{world}.json?_={timestamp}";
     }
     /**
      * Add settings to dynmap_access.php needed for external server scripts
+     * @param sb - string builder for PHP file
+     * @param core - core object
      */
     public void addPaths(StringBuilder sb, DynmapCore core) {
         File wpath = core.getFile(core.getWebPath());

@@ -34,7 +34,7 @@ public class Matrix3D {
     }
     /**
      * Multiply matrix by another matrix (this = mat * this), and store result in self
-     * @param mat
+     * @param mat - matrix to multiply
      */
     public void multiply(Matrix3D mat) {
         double new_m11 = mat.m11*m11 + mat.m12*m21 + mat.m13*m31;
@@ -53,9 +53,9 @@ public class Matrix3D {
     /** 
      * Scale each coordinate by given values
      * 
-     * @param s1
-     * @param s2
-     * @param s3
+     * @param s1 - X scale
+     * @param s2 - Y scale
+     * @param s3 - Z scale
      */
     public void scale(double s1, double s2, double s3) {
         Matrix3D scalemat = new Matrix3D(s1, 0, 0, 0, s2, 0, 0, 0, s3);
@@ -85,6 +85,8 @@ public class Matrix3D {
     }
     /**
      * Shear along Z axis by factor of X and Y
+     * @param x_fact - X shear
+     * @param y_fact - Y shear
      */
     public void shearZ(double x_fact, double y_fact) {
         Matrix3D shearmat = new Matrix3D(1, 0, 0, 0, 1, 0, x_fact, y_fact, 1);
@@ -92,6 +94,7 @@ public class Matrix3D {
     }
     /**
      * Transform a given vector using the matrix
+     * @param v - array[3] of vector coords (input, updated for output)
      */
     public final void transform(double[] v) {
         double v1 = m11*v[0] + m12*v[1] + m13*v[2];
@@ -101,6 +104,7 @@ public class Matrix3D {
     }
     /**
      * Transform a given vector using the matrix
+     * @param v - vector input (updated for output)
      */
     public final void transform(Vector3D v) {
         double v1 = m11*v.x + m12*v.y + m13*v.z;
@@ -111,6 +115,8 @@ public class Matrix3D {
 
     /**
      * Transform a given vector using the matrix - put result in provided output vector
+     * @param v - input vector
+     * @param outv - output vector
      */
     public final void transform(Vector3D v, Vector3D outv) {
         outv.x = m11*v.x + m12*v.y + m13*v.z;

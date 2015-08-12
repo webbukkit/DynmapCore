@@ -221,11 +221,29 @@ public class ModTextureDefinitionImpl implements ModTextureDefinition {
         blkTextureRec.add(btr);
         return btr;
     }
+    /**
+     * Add block texture record : default assumes all metadata values are matching
+     * @param blockname - block name 
+     * @return block texture record: use methods to set texture use on faces/patches
+     */
+    @Override
+    public BlockTextureRecord addBlockTextureRecord(String blockname) {
+        BlockTextureRecordImpl btr = new BlockTextureRecordImpl(blockname);
+        blkTextureRec.add(btr);
+        return btr;
+    }
     
     @Override
     public CopyBlockTextureRecord addCopyBlockTextureRecord(int blockID,
             int srcBlockID, int srcMeta) {
         CopyBlockTextureRecordImpl btr = new CopyBlockTextureRecordImpl(blockID, srcBlockID, srcMeta);
+        blkCopyTextureRec.add(btr);
+        return btr;
+    }
+    @Override
+    public CopyBlockTextureRecord addCopyBlockTextureRecord(String blockname,
+            String srcBlockName, int srcMeta) {
+        CopyBlockTextureRecordImpl btr = new CopyBlockTextureRecordImpl(blockname, srcBlockName, srcMeta);
         blkCopyTextureRec.add(btr);
         return btr;
     }

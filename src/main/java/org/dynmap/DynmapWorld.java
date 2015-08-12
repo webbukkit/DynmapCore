@@ -17,6 +17,7 @@ import org.dynmap.utils.RectangleVisibilityLimit;
 import org.dynmap.utils.RoundVisibilityLimit;
 import org.dynmap.utils.TileFlags;
 import org.dynmap.utils.VisibilityLimit;
+import org.dynmap.utils.Polygon;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -80,6 +81,7 @@ public abstract class DynmapWorld {
     }
     /**
      * Get world's brightness table
+     * @return table
      */
     public int[] getBrightnessTable() {
         return brightnessTable;
@@ -277,21 +279,26 @@ public abstract class DynmapWorld {
     public abstract int getSkyLightLevel(int x, int y, int z);
     /**
      * Get world environment ID (lower case - normal, the_end, nether)
+     * @return environment ID
      */
     public abstract String getEnvironment();
     /**
      * Get map chunk cache for world
+     * @param chunks - list of chunks to load
+     * @return cache
      */
     public abstract MapChunkCache getChunkCache(List<DynmapChunk> chunks);
 
     /**
      * Get title for world
+     * @return title
      */
     public String getTitle() {
         return title;
     }
     /**
      * Get center location
+     * @return center
      */
     public DynmapLocation getCenterLocation() {
         if(center != null)
@@ -560,5 +567,9 @@ public abstract class DynmapWorld {
 
     public MapStorage getMapStorage() {
         return storage;
+    }
+    
+    public Polygon  getWorldBorder() {
+        return null;
     }
 }

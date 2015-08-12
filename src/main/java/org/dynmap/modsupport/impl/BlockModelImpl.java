@@ -6,11 +6,16 @@ import org.dynmap.modsupport.BlockModel;
 
 public abstract class BlockModelImpl implements BlockModel {
     private int[] ids = new int[0];
+    private String[] names = new String[0];
     private int metaMask = -1;
     protected final ModModelDefinitionImpl mdf;
 
     public BlockModelImpl(int blkid, ModModelDefinitionImpl mdf) {
         addBlockID(blkid);
+        this.mdf = mdf;
+    }
+    public BlockModelImpl(String blkname, ModModelDefinitionImpl mdf) {
+        addBlockName(blkname);
         this.mdf = mdf;
     }
     
@@ -32,12 +37,36 @@ public abstract class BlockModelImpl implements BlockModel {
     }
 
     /**
+     * Add block name to mapping (in case multiple block names use same texture mapping)
+     * @param blockname - block name
+     */
+    @Override
+    public void addBlockName(String blockname) {
+        for (int i = 0; i < names.length; i++) {
+            if (names[i].equals(blockname)) {
+                return;
+            }
+        }
+        names = Arrays.copyOf(names, names.length+1);
+        names[names.length-1] = blockname;
+    }
+
+    /**
      * Get block IDs
      * @return configured IDs
      */
     @Override
     public int[] getBlockIDs() {
         return ids;
+    }
+
+    /**
+     * Get block names
+     * @return configured names
+     */
+    @Override
+    public String[] getBlockNames() {
+        return names;
     }
 
     /**
@@ -69,7 +98,7 @@ public abstract class BlockModelImpl implements BlockModel {
     public abstract String getLine();
     
     protected String getIDsAndMeta() {
-        if (ids.length == 0) {
+        if ((ids.length == 0) && (names.length == 0)) {
             return null;
         }
         String s = "";
@@ -81,6 +110,13 @@ public abstract class BlockModelImpl implements BlockModel {
             else {
                 s += ",id=" + ids[i];
             }
+        }
+        // Add names
+        for (int i = 0; i < names.length; i++) {
+            if (s.length() > 0) {
+                s += ",";
+            }
+            s += "id=%" + names[i];
         }
         // Add meta
         if (this.metaMask == METAMASK_ALL) {

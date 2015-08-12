@@ -1119,7 +1119,7 @@ block:id=150,data=2,data=6,data=10,data=14,top=4000:comparator_on,allsides=0:sto
 block:id=150,data=3,data=7,data=11,data=15,top=0:comparator_on,allsides=0:stone,bottom=0:stone,transparency=TRANSPARENT
 
 # (151) Daylight Sensor
-block:id=151,data=*,allsides=0:daylight_detector_side,bottom=0:daylight_detector_side,top=0:daylight_detector_top,stdrot=true
+block:id=151,data=*,allsides=0:daylight_detector_side,bottom=0:daylight_detector_side,top=0:daylight_detector_top,stdrot=true,transparency=TRANSPARENT
 
 # (152) Block of Redstone
 block:id=152,data=*,allfaces=0:redstone_block,stdrot=true
@@ -1257,4 +1257,136 @@ block:id=173,data=*,stdrot=true,allfaces=0:coal_block
 # (175) Double Plant
 [1.7.0-]block:id=175,data=0,data=1,data=2,data=3,data=4,data=5,patch0=0:double_plant_sunflower_bottom,patch1=0:double_plant_syringa_bottom,patch2=1000:double_plant_grass_bottom,patch3=1000:double_plant_fern_bottom,patch4=0:double_plant_rose_bottom,patch5=0:double_plant_paeonia_bottom,transparency=TRANSPARENT
 [1.7.0-]block:id=175,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,patch0=0:double_plant_sunflower_top,patch1=0:double_plant_syringa_top,patch2=1000:double_plant_grass_top,patch3=1000:double_plant_fern_top,patch4=0:double_plant_rose_top,patch5=0:double_plant_paeonia_top,transparency=TRANSPARENT
+
+# 1.8 blocks
+[1.8.0-]texture:id=stone_granite
+[1.8.0-]texture:id=stone_granite_smooth
+[1.8.0-]texture:id=stone_diorite
+[1.8.0-]texture:id=stone_diorite_smooth
+[1.8.0-]texture:id=stone_andesite
+[1.8.0-]texture:id=stone_andesite_smooth
+[1.8.0-]texture:id=sponge_wet
+[1.8.0-]texture:id=slime
+[1.8.0-]texture:id=iron_trapdoor
+[1.8.0-]texture:id=prismarine_bricks
+[1.8.0-]texture:id=prismarine_dark
+[1.8.0-]texture:id=prismarine_rough
+[1.8.0-]texture:id=sea_lantern
+[1.8.0-]texture:id=daylight_detector_inverted_top
+[1.8.0-]texture:id=red_sandstone_bottom
+[1.8.0-]texture:id=red_sandstone_carved
+[1.8.0-]texture:id=red_sandstone_normal
+[1.8.0-]texture:id=red_sandstone_smooth
+[1.8.0-]texture:id=red_sandstone_top
+[1.8.0-]texture:id=planks_big_oak
+[1.8.0-]texture:id=door_acacia_lower
+[1.8.0-]texture:id=door_acacia_upper
+[1.8.0-]texture:id=door_birch_lower
+[1.8.0-]texture:id=door_birch_upper
+[1.8.0-]texture:id=door_dark_oak_lower
+[1.8.0-]texture:id=door_dark_oak_upper
+[1.8.0-]texture:id=door_iron_lower
+[1.8.0-]texture:id=door_iron_upper
+[1.8.0-]texture:id=door_jungle_lower
+[1.8.0-]texture:id=door_jungle_upper
+[1.8.0-]texture:id=door_spruce_lower
+[1.8.0-]texture:id=door_spruce_upper
+# Granite
+[1.8.0-]block:id=1,data=1,allfaces=0:stone_granite,stdrot=true
+# Polished Granite
+[1.8.0-]block:id=1,data=2,allfaces=0:stone_granite_smooth,stdrot=true
+# Diorite
+[1.8.0-]block:id=1,data=3,allfaces=0:stone_diorite,stdrot=true
+# Polished Diorite
+[1.8.0-]block:id=1,data=4,allfaces=0:stone_diorite_smooth,stdrot=true
+# Andesite
+[1.8.0-]block:id=1,data=5,allfaces=0:stone_andesite,stdrot=true
+# Polished Andesite
+[1.8.0-]block:id=1,data=6,allfaces=0:stone_andesite_smooth,stdrot=true
+# Wet Sponge
+[1.8.0-]block:id=19,data=1,allfaces=0:sponge_wet,stdrot=true
+# Slime Block
+[1.8.0-]block:id=165,data=*,allfaces=0:slime,stdrot=true
+# Barrier
+[1.8.0-]block:id=166,data=*,transparency=TRANSPARENT
+# Iron Trapdoor
+[1.8.0-]block:id=167,allfaces=0:iron_trapdoor,stdrot=true,transparency=TRANSPARENT
+# Prismarine
+[1.8.0-]block:id=168,data=0,allfaces=0:prismarine_rough,stdrot=true
+# Prismarine Bricks
+[1.8.0-]block:id=168,data=1,allfaces=0:prismarine_bricks,stdrot=true
+# Dark Prismarine
+[1.8.0-]block:id=168,data=2,allfaces=0:prismarine_dark,stdrot=true
+# Sea Lantern
+[1.8.0-]block:id=169,data=*,allfaces=0:sea_lantern,stdrot=true
+
+# Inverted Daylight Sensor
+[1.8.0-]block:id=178,data=*,allsides=0:daylight_detector_side,bottom=0:daylight_detector_side,top=0:daylight_detector_inverted_top,stdrot=true,transparency=TRANSPARENT
+
+# Red Sandstone
+[1.8.0-]block:id=179,data=0,bottom=0:red_sandstone_bottom,top=0:red_sandstone_top,allsides=0:red_sandstone_normal,stdrot=true
+
+# Carved Red Sandstone
+[1.8.0-]block:id=179,data=1,data=3,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,allsides=0:red_sandstone_carved,topbottom=0:red_sandstone_top,stdrot=true
+
+# Smooth Red Sandstone
+[1.8.0-]block:id=179,data=2,allsides=0:red_sandstone_smooth,topbottom=0:red_sandstone_top,stdrot=true
+
+# Red Sandstone stairs
+[1.8.0-]block:id=180,data=*,patch0=0:red_sandstone_normal,patch1=0:red_sandstone_top,patch2=0:red_sandstone_bottom,transparency=SEMITRANSPARENT
+
+# Red Sandstone Slab (Double)
+[1.8.0-]block:id=181,data=0,bottom=0:red_sandstone_bottom,top=0:red_sandstone_top,allsides=0:red_sandstone_normal,stdrot=true
+[1.8.0-]block:id=181,data=8,allfaces=0:red_sandstone_top,stdrot=true
+
+# Red Sandstone Slab
+[1.8.0-]block:id=182,data=0,data=8,bottom=0:red_sandstone_bottom,top=0:red_sandstone_top,allsides=0:red_sandstone_normal,stdrot=true,transparency=SEMITRANSPARENT
+
+# Fence Gate (Spruce)
+[1.8.0-]block:id=183,patch0-2=0:planks_spruce,stdrot=true,transparency=TRANSPARENT
+
+# Fence Gate (Birch)
+[1.8.0-]block:id=184,patch0-2=0:planks_birch,stdrot=true,transparency=TRANSPARENT
+
+# Fence Gate (Jungle)
+[1.8.0-]block:id=185,patch0-2=0:planks_jungle,stdrot=true,transparency=TRANSPARENT
+
+# Fence Gate (Dark Oak)
+[1.8.0-]block:id=186,patch0-2=0:planks_big_oak,stdrot=true,transparency=TRANSPARENT
+
+# Fence Gate (Acacia)
+[1.8.0-]block:id=187,patch0-2=0:planks_acacia,stdrot=true,transparency=TRANSPARENT
+
+# Fence (Spruce)
+[1.8.0-]block:id=188,patch0-2=0:planks_spruce,transparency=TRANSPARENT
+
+# Fence (Birch)
+[1.8.0-]block:id=189,patch0-2=0:planks_birch,transparency=TRANSPARENT
+
+# Fence (Jungle)
+[1.8.0-]block:id=190,patch0-2=0:planks_jungle,transparency=TRANSPARENT
+
+# Fence (Dark Oak)
+[1.8.0-]block:id=191,patch0-2=0:planks_big_oak,transparency=TRANSPARENT
+
+# Fence (Acacia)
+[1.8.0-]block:id=192,patch0-2=0:planks_acacia,transparency=TRANSPARENT
+
+# Wooden Door Block (Spruce)
+[1.8.0-]block:id=193,data=*,patch0=0:door_spruce_upper,patch1=0:door_spruce_lower,transparency=TRANSPARENT
+
+# Wooden Door Block (Birch)
+[1.8.0-]block:id=194,data=*,patch0=0:door_birch_upper,patch1=0:door_birch_lower,transparency=TRANSPARENT
+
+# Wooden Door Block (Jungle)
+[1.8.0-]block:id=195,data=*,patch0=0:door_jungle_upper,patch1=0:door_jungle_lower,transparency=TRANSPARENT
+
+# Wooden Door Block (Acacia)
+[1.8.0-]block:id=196,data=*,patch0=0:door_acacia_upper,patch1=0:door_acacia_lower,transparency=TRANSPARENT
+
+# Wooden Door Block (Dark Oak)
+[1.8.0-]block:id=197,data=*,patch0=0:door_dark_oak_upper,patch1=0:door_dark_oak_lower,transparency=TRANSPARENT
+
+#176		Standing Banner (Block)
+#177		Wall Banner (Block)
 

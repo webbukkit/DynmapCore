@@ -559,6 +559,8 @@ public class TexturePack {
     
     /**
      * Set tile ARGB buffer at index
+     * @param idx - index of tile
+     * @param buf - buffer to be set
      */
     public final void setTileARGB(int idx, int[] buf) {
         if (idx >= tile_argb.length) {
@@ -575,6 +577,8 @@ public class TexturePack {
     }
     /**
      * Get tile ARGB buffer at index
+     * @param idx - tile index
+     * @return ARGB array for tile, or blank array if not found
      */
     public final int[] getTileARGB(int idx) {
         int[] rslt = blank;
@@ -629,6 +633,9 @@ public class TexturePack {
     }
     /**
      * Get index of texture in texture map
+     * @param id - texture pack id
+     * @param key - key for texture
+     * @return index of texture, or -1 if not found
      */
     public static int getTextureIndexFromTextureMap(String id, int key) {
         int idx = -1;
@@ -643,6 +650,8 @@ public class TexturePack {
     }
     /*
      * Get count of textures in given texture map
+     * @param id - texture pack ID
+     * @return length of texture list, or -1 if error
      */
     public static int getTextureMapLength(String id) {
         TextureMap map = textmap_by_id.get(id);
@@ -651,7 +660,12 @@ public class TexturePack {
         }
         return -1;
     }
-    /** Get or load texture pack */
+    /** 
+     * Get or load texture pack
+     * @param core - core object
+     * @param tpname - texture pack name
+     * @return loaded texture pack, or null if error
+     */
     public static TexturePack getTexturePack(DynmapCore core, String tpname) {
         synchronized(packlock) {
             TexturePack tp = packs.get(tpname);
@@ -1350,6 +1364,8 @@ public class TexturePack {
 
     /**
      * Resample terrain pack for given scale, and return copy using that scale
+     * @param scale - scale
+     * @return resampled texture pack
      */
     public TexturePack resampleTexturePack(int scale) {
         synchronized(scaledlock) {
@@ -1526,6 +1542,8 @@ public class TexturePack {
     }
     /**
      * Load texture pack mappings
+     * @param core - core object
+     * @param config - configuration for texture mapping
      */
     public static void loadTextureMapping(DynmapCore core, ConfigurationNode config) {
         File datadir = core.getDataFolder();
@@ -1653,6 +1671,7 @@ public class TexturePack {
                 for(i = tm.faces.length; i < cnt; i++) {
                     newfaces[i] = TILEINDEX_BLANK;
                 }
+                tm.faces = newfaces;
             }
         }
         // Check to see if any blocks exist without corresponding mappings
@@ -2533,6 +2552,12 @@ public class TexturePack {
     private static final int BLOCKID_SNOW = 78;
     /**
      * Read color for given subblock coordinate, with given block id and data and face
+     * @param ps - perspective state
+     * @param mapiter - map iterator
+     * @param rslt - color result (returned with value)
+     * @param blkid - block ID
+     * @param lastblocktype - last block ID
+     * @param ss - shader state
      */
     public final void readColor(final HDPerspectiveState ps, final MapIterator mapiter, final Color rslt, final int blkid, final int lastblocktype,
             final TexturePackHDShader.ShaderState ss) {
@@ -2821,7 +2846,7 @@ public class TexturePack {
                 hasblockcoloring = false;
             }
         }
-        //if (!hasblockcoloring) {
+        if (!hasblockcoloring) {
             // Switch based on texture modifier
             switch(textop) {
                 case COLORMOD_GRASSTONED:
@@ -2922,7 +2947,7 @@ public class TexturePack {
                     }
                     break;
             }
-        //}
+        }
         
         if((clrmult != -1) && (clrmult != 0)) {
             rslt.blendColor(clrmult | clralpha);
@@ -2964,11 +2989,12 @@ public class TexturePack {
     /**
      * Add new dynmaic file definition, or return existing
      * 
-     * @param fname
-     * @param xdim
-     * @param ydim
-     * @param fmt 
-     * @param args
+     * @param fname - filename
+     * @param modname - mod name
+     * @param xdim - x dimension
+     * @param ydim - y dimension
+     * @param fmt - tile file format
+     * @param args - args for file format
      * @return dynamic file index
      */
     public static int findOrAddDynamicTileFile(String fname, String modname, int xdim, int ydim, TileFileFormat fmt, String[] args) {
@@ -3377,6 +3403,19 @@ public class TexturePack {
         if (txtidx == null) txtidx = deftxtidx;
         String[] rslt = new String[txtidx.length];   // One for each face
         boolean handlestdrot = (steps != null) && (!map.stdrotate);
+        boolean hasblockcoloring = hasBlockColoring.get(blkindex);
+        int custclrmult = -1;
+        // If block has custom coloring
+        if (hasblockcoloring) {
+            Integer idx = (Integer) this.blockColoring.get(blkindex);
+            LoadedImage img = imgs[idx];
+            if (img.argb != null) {
+                custclrmult = mapiter.getSmoothWaterColorMultiplier(img.argb);
+            }
+            else {
+                hasblockcoloring = false;
+            }
+        }
         for (int patchidx = 0; patchidx < txtidx.length; patchidx++) {
             int faceindex = txtidx[patchidx];
             int textid = map.faces[faceindex];
@@ -3406,6 +3445,8 @@ public class TexturePack {
                 rslt[patchidx] = getMatIDForTileID(textid);   // Default texture
                 int mult = 0xFFFFFF;
                 BiomeMap bio;
+                if (!hasblockcoloring) {
+
                 switch (mod) {
                     case COLORMOD_GRASSTONED:
                     case COLORMOD_GRASSTONED270:
@@ -3447,6 +3488,10 @@ public class TexturePack {
                     default:
                         mult = getBiomeTonedColor(null, -1, mapiter.getBiome(), blkindex);
                         break;
+                }
+                }
+                else {
+                    mult = custclrmult;
                 }
                 if ((mult & 0xFFFFFF) != 0xFFFFFF) {
                     rslt[patchidx] += String.format("__%06X", mult & 0xFFFFFF);

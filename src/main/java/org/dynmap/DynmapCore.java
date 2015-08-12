@@ -579,18 +579,23 @@ public class DynmapCore implements DynmapCommonAPI {
 
         events.<Object>trigger("initialized", null);
                 
-        //dumpColorMap();
+        //dumpColorMap("standard.txt", "standard");
+        //dumpColorMap("dokudark.txt", "dokudark.zip");
+        //dumpColorMap("dokulight.txt", "dokulight.zip");
+        //dumpColorMap("dokuhigh.txt", "dokuhigh.zip");
+        //dumpColorMap("misa.txt", "misa.zip");
+        //dumpColorMap("sphax.txt", "sphax.zip");
         
         return true;
     }
     
-    void dumpColorMap() {
+    void dumpColorMap(String id, String name) {
         int[] sides = new int[] { BlockStep.Y_MINUS.ordinal(), BlockStep.X_PLUS.ordinal(), BlockStep.Z_PLUS.ordinal(), 
                 BlockStep.Y_PLUS.ordinal(), BlockStep.X_MINUS.ordinal(), BlockStep.Z_MINUS.ordinal() };
         FileWriter fw = null;
         try {
-            fw = new FileWriter("colormap.txt");
-            TexturePack tp = TexturePack.getTexturePack(this, "standard");
+            fw = new FileWriter(id);
+            TexturePack tp = TexturePack.getTexturePack(this, name);
             if (tp == null) return;
             tp = tp.resampleTexturePack(1);
             if (tp == null) return;
@@ -1791,6 +1796,7 @@ public class DynmapCore implements DynmapCommonAPI {
      * Send generic message to all web users
      * @param sender - label for sender of message ("[&lt;sender&gt;] message") - if null, no from notice
      * @param msg - message to be sent
+     * @return true if successful
      */
     public boolean sendBroadcastToWeb(String sender, String msg) {
         if(mapManager != null) {
@@ -1801,6 +1807,7 @@ public class DynmapCore implements DynmapCommonAPI {
     }
     /**
      * Register markers API - used by component to supply marker API to plugin
+     * @param api - marker API
      */
     public void registerMarkerAPI(MarkerAPIImpl api) {
         markerapi = api;
@@ -1814,6 +1821,7 @@ public class DynmapCore implements DynmapCommonAPI {
     }
     /*
      * Test if full renders are paused
+     * @return true if paused
      */
     public boolean getPauseFullRadiusRenders() {
         return mapManager.getPauseFullRadiusRenders();
@@ -1827,18 +1835,23 @@ public class DynmapCore implements DynmapCommonAPI {
     }
     /*
      * Test if update renders are paused
+     * @return true if paused
      */
     public boolean getPauseUpdateRenders() {
         return mapManager.getPauseUpdateRenders();
     }
     /**
      * Get list of IDs seen on give IP (most recent to least recent)
+     * @param addr - IP address
+     * @return list of IDs
      */
     public List<String> getIDsForIP(InetAddress addr) {
         return getIDsForIP(addr.getHostAddress());
     }
     /**
      * Get list of IDs seen on give IP (most recent to least recent)
+     * @param ip - IP to check
+     * @return list of IDs
      */
     public List<String> getIDsForIP(String ip) {
         LinkedList<String> ids = ids_by_ip.get(ip);
@@ -2383,7 +2396,7 @@ public class DynmapCore implements DynmapCommonAPI {
     public void addModBlockItemIDs(String mod, Map<String, Integer> modvals) {
         mod = getNormalizedModID(mod);
         for (String k : blockmap.keySet()) {
-            String[] ks = k.split(":");
+            String[] ks = k.split(":", 2);
             if (ks.length != 2) continue;
             int id = blockmap.get(k);
             ks[0] = getNormalizedModID(ks[0]);
@@ -2392,7 +2405,7 @@ public class DynmapCore implements DynmapCommonAPI {
             }
         }
         for (String k : itemmap.keySet()) {
-            String[] ks = k.split(":");
+            String[] ks = k.split(":", 2);
             if (ks.length != 2) continue;
             int id = itemmap.get(k);
             ks[0] = getNormalizedModID(ks[0]);

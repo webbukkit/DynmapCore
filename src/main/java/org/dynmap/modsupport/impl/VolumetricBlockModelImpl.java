@@ -15,6 +15,16 @@ public class VolumetricBlockModelImpl extends BlockModelImpl implements Volumetr
             }
         }
     }
+    public VolumetricBlockModelImpl(String blkname, ModModelDefinitionImpl mdf, int scale) {
+        super(blkname, mdf);
+        grid = new boolean[scale][][];
+        for (int i = 0; i < scale; i++) {
+            grid[i] = new boolean[scale][];
+            for (int j = 0; j < scale; j++) {
+                grid[i][j] = new boolean[scale];
+            }
+        }
+    }
     @Override
     public void setSubBlockToFilled(int x, int y, int z) {
         if ((x >= 0) && (x < grid.length) && (y >= 0) && (y < grid.length) && (z >= 0) && (z < grid.length)) {

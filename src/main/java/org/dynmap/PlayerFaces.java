@@ -192,8 +192,10 @@ public class PlayerFaces {
     public PlayerFaces(DynmapCore core) {
         fetchskins = core.configuration.getBoolean("fetchskins", true);    /* Control whether to fetch skins */ 
         refreshskins = core.configuration.getBoolean("refreshskins", true);    /* Control whether to update existing fetched skins or faces */ 
-        skinurl = core.configuration.getString("skin-url", "http://s3.amazonaws.com/MinecraftSkins/%player%.png");
-        
+        skinurl = core.configuration.getString("skin-url", "http://skins.minecraft.net/MinecraftSkins/%player%.png");
+        if (skinurl.equals("http://s3.amazonaws.com/MinecraftSkins/%player%.png")) {     // Migrate from legacy URL
+            skinurl = "http://skins.minecraft.net/MinecraftSkins/%player%.png";
+        }
         core.listenerManager.addListener(EventType.PLAYER_JOIN, new PlayerEventListener() {
             @Override
             public void playerEvent(DynmapPlayer p) {

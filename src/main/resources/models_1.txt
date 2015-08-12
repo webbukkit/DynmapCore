@@ -1294,4 +1294,59 @@ boxblock:id=171,data=*,ymax=0.0625
 [1.7.0-]customblock:id=175,data=0,data=1,data=2,data=3,data=4,data=5,class=org.dynmap.hdmap.renderer.PlantRenderer,metacnt=6
 [1.7.0-]customblock:id=175,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,class=org.dynmap.hdmap.renderer.PlantRenderer,metacnt=6,metasrc=below
 
+# 1.8 blocks
 
+# Iron Trapdoor
+[1.8.0-]boxblock:id=167,data=0,data=1,data=2,data=3,ymax=0.1875
+[1.8.0-]boxblock:id=167,data=4,data=12,zmin=0.8125
+[1.8.0-]boxblock:id=167,data=5,data=13,zmax=0.1875
+[1.8.0-]boxblock:id=167,data=6,data=14,xmin=0.8125
+[1.8.0-]boxblock:id=167,data=7,data=15,xmax=0.1875
+[1.8.0-]boxblock:id=167,data=8,data=9,data=10,data=11,ymin=0.8125
+
+# Inverted Daylight Sensor
+[1.8.0-]boxblock:id=178,data=*,ymax=0.375
+
+# Red Sandstone stairs
+[1.8.0-]customblock:id=180,data=*,class=org.dynmap.hdmap.renderer.StairBlockRenderer
+
+# Red Sandstone Slab
+[1.8.0-]boxblock:id=182,data=0,ymax=0.5
+[1.8.0-]boxblock:id=182,data=8,ymin=0.5
+
+# Fence Gate (Spruce)
+[1.8.0-]customblock:id=183,data=*,class=org.dynmap.hdmap.renderer.FenceGateBlockRenderer
+
+# Fence Gate (Birch)
+[1.8.0-]customblock:id=184,data=*,class=org.dynmap.hdmap.renderer.FenceGateBlockRenderer
+
+# Fence Gate (Jungle)
+[1.8.0-]customblock:id=185,data=*,class=org.dynmap.hdmap.renderer.FenceGateBlockRenderer
+
+# Fence Gate (Dark Oak)
+[1.8.0-]customblock:id=186,data=*,class=org.dynmap.hdmap.renderer.FenceGateBlockRenderer
+
+# Fence Gate (Acacia)
+[1.8.0-]customblock:id=187,data=*,class=org.dynmap.hdmap.renderer.FenceGateBlockRenderer
+
+# Fence (Spruce)
+[1.8.0-]customblock:id=188,data=*,class=org.dynmap.hdmap.renderer.FenceWallBlockRenderer,type=fence,link0=183
+
+# Fence (Birch)
+[1.8.0-]customblock:id=189,data=*,class=org.dynmap.hdmap.renderer.FenceWallBlockRenderer,type=fence,link0=184
+
+# Fence (Jungle)
+[1.8.0-]customblock:id=190,data=*,class=org.dynmap.hdmap.renderer.FenceWallBlockRenderer,type=fence,link0=185
+
+# Fence (Dark Oak)
+[1.8.0-]customblock:id=191,data=*,class=org.dynmap.hdmap.renderer.FenceWallBlockRenderer,type=fence,link0=186
+
+# Fence (Acacia)
+[1.8.0-]customblock:id=192,data=*,class=org.dynmap.hdmap.renderer.FenceWallBlockRenderer,type=fence,link0=187
+
+# Wooden Door Block (Spruce)
+# Wooden Door Block (Birch)
+# Wooden Door Block (Jungle)
+# Wooden Door Block (Acacia)
+# Wooden Door Block (Dark Oak)
+[1.8.0-]customblock:id=193,id=194,id=195,id=196,id=197,data=*,class=org.dynmap.hdmap.renderer.DoorRenderer

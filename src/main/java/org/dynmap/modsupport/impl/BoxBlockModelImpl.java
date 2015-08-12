@@ -15,6 +15,9 @@ public class BoxBlockModelImpl extends BlockModelImpl implements BoxBlockModel {
     public BoxBlockModelImpl(int blkid, ModModelDefinitionImpl mdf) {
         super(blkid, mdf);
     }
+    public BoxBlockModelImpl(String blkname, ModModelDefinitionImpl mdf) {
+        super(blkname, mdf);
+    }
 
     @Override
     public void setXRange(double xmin, double xmax) {
