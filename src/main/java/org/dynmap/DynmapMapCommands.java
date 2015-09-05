@@ -290,7 +290,7 @@ public class DynmapMapCommands {
                 StringBuilder sb = new StringBuilder();
                 sb.append("map ").append(mt.getName()).append(": prefix=").append(hdmt.getPrefix()).append(", title=").append(hdmt.getTitle());
                 sb.append(", perspective=").append(hdmt.getPerspective().getName()).append(", shader=").append(hdmt.getShader().getName());
-                sb.append(", lighting=").append(hdmt.getLighting().getName()).append(", mapzoomin=").append(hdmt.getMapZoomIn());
+                sb.append(", lighting=").append(hdmt.getLighting().getName()).append(", mapzoomin=").append(hdmt.getMapZoomIn()).append(", mapzoomout=").append(hdmt.getMapZoomOutLevels());
                 sb.append(", img-format=").append(hdmt.getImageFormatSetting()).append(", icon=").append(hdmt.getIcon());
                 sb.append(", append-to-world=").append(hdmt.getAppendToWorld()).append(", boostzoom=").append(hdmt.getBoostZoom());
                 sb.append(", protected=").append(hdmt.isProtected());
@@ -477,6 +477,18 @@ public class DynmapMapCommands {
                     return true;
                 }
                 did_update |= mt.setMapZoomIn(mzi);
+            }
+            else if(tok[0].equalsIgnoreCase("mapzoomout")) {
+                int mzi = -1;
+                try {
+                    mzi = Integer.valueOf(tok[1]);
+                } catch (NumberFormatException nfx) {
+                }
+                if((mzi < 0) || (mzi > 32)) {
+                    sender.sendMessage("Invalid mapzoomout value: " + tok[1]);
+                    return true;
+                }
+                did_update |= mt.setMapZoomOut(mzi);
             }
             else if(tok[0].equalsIgnoreCase("boostzoom")) {
                 int mzi = -1;
