@@ -138,6 +138,7 @@ public class HDMap extends MapType {
         this.bg_day_cfg = configuration.getString("backgroundday");
         this.bg_night_cfg = configuration.getString("backgroundnight");
         this.mapzoomin = configuration.getInteger("mapzoomin", 2);
+        this.mapzoomout = configuration.getInteger("mapzoomout", this.mapzoomout);
         this.boostzoom = configuration.getInteger("boostzoom", 0);
         if(this.boostzoom < 0) this.boostzoom = 0;
         if(this.boostzoom > 3) this.boostzoom = 3;
@@ -164,6 +165,7 @@ public class HDMap extends MapType {
             cn.put("lighting", lighting.getName());
         cn.put("image-format", imgfmtstring);
         cn.put("mapzoomin", mapzoomin);
+        cn.put("mapzoomout", mapzoomout);
         cn.put("boostzoom", boostzoom);
         if(bg_cfg != null)
             cn.put("background", bg_cfg);
@@ -383,6 +385,13 @@ public class HDMap extends MapType {
     public boolean setMapZoomIn(int mzi) {
         if(mzi != mapzoomin) {
             mapzoomin = mzi;
+            return true;
+        }
+        return false;
+    }
+    public boolean setMapZoomOut(int mzi) {
+        if(mzi != mapzoomout) {
+            mapzoomout = mzi;
             return true;
         }
         return false;
