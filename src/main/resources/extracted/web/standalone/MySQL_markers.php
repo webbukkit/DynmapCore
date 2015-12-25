@@ -74,10 +74,8 @@ if ($parts[0] == "faces") {
 }
 else { // _markers_
 	$in = explode(".", $parts[1]);
-	$name = implode(".", array_slice($in, 0, count($in) - 1));
-	$ext = $in[count($in) - 1];
-	if (($ext == "json") && (strpos($name, "marker_") == 0)) {
-		$world = substr($name, 7);
+	if (($in[1] == "json") && (strpos($in[0], "marker_") == 0)) {
+		$world = substr($in[0], 7);
 		$stmt = $db->prepare('SELECT Content from ' . $dbprefix . 'MarkerFiles WHERE FileName=?');
 		$stmt->bind_param('s', $world);
 		$res = $stmt->execute();
@@ -92,7 +90,7 @@ else { // _markers_
 	}
 	else {
 		$stmt = $db->prepare('SELECT Image from ' . $dbprefix . 'MarkerIcons WHERE IconName=?');
-		$stmt->bind_param('s', $name);
+		$stmt->bind_param('s', $in[0]);
 		$res = $stmt->execute();
 		$stmt->bind_result($timage);
 		if ($stmt->fetch()) {
