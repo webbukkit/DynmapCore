@@ -1,4 +1,4 @@
-{
+{   "parent": "block/block",
     "textures": {
         "particle": "blocks/enchanting_table_bottom",
         "bottom": "blocks/enchanting_table_bottom",

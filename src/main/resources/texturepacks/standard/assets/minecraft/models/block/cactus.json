@@ -1,4 +1,4 @@
-{
+{   "parent": "block/block",
     "ambientocclusion": false,
     "textures": {
         "particle": "blocks/cactus_side",

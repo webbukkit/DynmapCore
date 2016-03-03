@@ -1387,6 +1387,53 @@ block:id=173,data=*,stdrot=true,allfaces=0:coal_block
 # Wooden Door Block (Dark Oak)
 [1.8.0-]block:id=197,data=*,patch0=0:door_dark_oak_upper,patch1=0:door_dark_oak_lower,transparency=TRANSPARENT
 
-#176		Standing Banner (Block)
-#177		Wall Banner (Block)
+# 1.9 blocks
+[1.9.0-]texture:id=end_rod
+[1.9.0-]texture:id=chorus_plant
+[1.9.0-]texture:id=chorus_flower
+[1.9.0-]texture:id=purpur_block
+[1.9.0-]texture:id=purpur_pillar_top
+[1.9.0-]texture:id=purpur_pillar
+[1.9.0-]texture:id=end_bricks
+[1.9.0-]texture:id=grass_path_top
+[1.9.0-]texture:id=grass_path_side
 
+# End rod
+[1.9.0-]block:id=198,data=*,patch0=0:end_rod,transparency=TRANSPARENT
+
+# Chorus Plant
+[1.9.0-]block:id=199,data=*,patch0-2=0:chorus_plant,transparency=TRANSPARENT
+
+# Chorus Flower
+[1.9.0-]block:id=200,data=*,stdrot=true,allfaces=0:chorus_flower,transparency=TRANSPARENT
+
+# Purpur Block
+[1.9.0-]block:id=201,data=*,stdrot=true,allfaces=0:purpur_block
+
+# Purpur Pillar
+[1.9.0-]block:id=202,data=0,allsides=0:purpur_pillar,topbottom=0:purpur_pillar_top,stdrot=true
+[1.9.0-]block:id=202,data=4,north=0:purpur_pillar_top,south=0:purpur_pillar_top,east=4000:purpur_pillar,west=4000:purpur_pillar,top=0:purpur_pillar,bottom=0:purpur_pillar
+[1.9.0-]block:id=202,data=8,north=4000:purpur_pillar,south=4000:purpur_pillar,east=0:purpur_pillar_top,west=0:purpur_pillar_top,top=4000:purpur_pillar,bottom=4000:purpur_pillar
+[1.9.0-]block:id=202,data=12,allfaces=0:purpur_pillar,stdrot=true
+
+# Purpur Stairs
+[1.9.0-]block:id=203,data=*,patch0-2=0:purpur_block,transparency=SEMITRANSPARENT
+
+# Purpur Slab (Double)
+[1.9.0-]block:id=204,data=0,bottom=0:purpur_block,top=0:purpur_block,allsides=0:purpur_block,stdrot=true
+[1.9.0-]block:id=204,data=8,allfaces=0:purpur_block,stdrot=true
+
+# Purpur Slab
+[1.9.0-]block:id=205,data=0,data=8,bottom=0:purpur_block,top=0:purpur_block,allsides=0:purpur_block,stdrot=true,transparency=SEMITRANSPARENT
+
+# End Stone Bricks
+[1.9.0-]block:id=206,data=*,stdrot=true,allfaces=0:end_bricks
+
+# 207?
+
+# Grass Path
+[1.9.0-]block:id=208,allsides=11000:grass_path_side,top=1000:grass_path_top,bottom=0:dirt,stdrot=true
+
+# 209		End Gateway
+
+# 255		Structure Block

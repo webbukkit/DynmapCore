@@ -1,4 +1,4 @@
-{
+{   "parent": "block/block",
     "textures": {
         "particle": "blocks/endframe_side",
         "bottom": "blocks/end_stone",
