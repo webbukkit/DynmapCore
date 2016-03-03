@@ -1432,7 +1432,7 @@ block:id=173,data=*,stdrot=true,allfaces=0:coal_block
 # 207?
 
 # Grass Path
-[1.9.0-]block:id=208,allsides=11000:grass_path_side,top=1000:grass_path_top,bottom=0:dirt,stdrot=true
+[1.9.0-]block:id=208,allsides=0:grass_path_side,top=1000:grass_path_top,bottom=0:dirt,stdrot=true,transparency=SEMITRANSPARENT
 
 # 209		End Gateway
 
