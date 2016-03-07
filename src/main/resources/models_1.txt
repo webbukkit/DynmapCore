@@ -1360,7 +1360,6 @@ boxblock:id=171,data=*,ymax=0.0625
 [1.9.0-]customblock:id=199,data=*,class=org.dynmap.hdmap.renderer.FenceWallBlockRenderer,type=wall,link0=200
 
 # Chorus Flower
-[1.9.0-]patchblock:id=200,data=*,patch0=VertX1Z0ToX0Z1,patch1=VertX1Z0ToX0Z1@90
 [1.9.0-]block:id=200,data=*,scale=8
 [1.9.0-]layer:0,7
 [1.9.0-]--------

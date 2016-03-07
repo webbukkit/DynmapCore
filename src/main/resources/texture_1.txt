@@ -1391,6 +1391,7 @@ block:id=173,data=*,stdrot=true,allfaces=0:coal_block
 [1.9.0-]texture:id=end_rod
 [1.9.0-]texture:id=chorus_plant
 [1.9.0-]texture:id=chorus_flower
+[1.9.0-]texture:id=chorus_flower_dead
 [1.9.0-]texture:id=purpur_block
 [1.9.0-]texture:id=purpur_pillar_top
 [1.9.0-]texture:id=purpur_pillar
@@ -1405,7 +1406,8 @@ block:id=173,data=*,stdrot=true,allfaces=0:coal_block
 [1.9.0-]block:id=199,data=*,patch0-2=0:chorus_plant,transparency=TRANSPARENT
 
 # Chorus Flower
-[1.9.0-]block:id=200,data=*,stdrot=true,allfaces=0:chorus_flower,transparency=TRANSPARENT
+[1.9.0-]block:id=200,data=0,data=1,data=2,data=3,data=4,stdrot=true,allfaces=0:chorus_flower,transparency=TRANSPARENT
+[1.9.0-]block:id=200,data=5,stdrot=true,allfaces=0:chorus_flower_dead,transparency=TRANSPARENT
 
 # Purpur Block
 [1.9.0-]block:id=201,data=*,stdrot=true,allfaces=0:purpur_block
