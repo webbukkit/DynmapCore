@@ -4,7 +4,7 @@ import org.dynmap.hdmap.HDBlockModels;
 
 /* Generic biome mapping */
 public class BiomeMap {
-    private static BiomeMap[] biome_by_index = new BiomeMap[257];
+    private static BiomeMap[] biome_by_index = new BiomeMap[1025];
     public static final BiomeMap NULL = new BiomeMap(-1, "NULL", 0.5, 0.5, 0xFFFFFF, 0, 0);
 
     public static final BiomeMap OCEAN = new BiomeMap(0, "OCEAN");
@@ -91,7 +91,7 @@ public class BiomeMap {
     }
     
     static {
-        for (int i = 0; i < 256; i++) {
+        for (int i = 0; i < 1024; i++) {
             BiomeMap bm = BiomeMap.byBiomeID(i);
             if (bm == null) {
                 bm = new BiomeMap(i, "BIOME_" + i);
