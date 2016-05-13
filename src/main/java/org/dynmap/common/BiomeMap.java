@@ -87,6 +87,9 @@ public class BiomeMap {
             new BiomeMap(166, "MESA_PLATEAU_FOREST_MOUNTAINS", 2.0, 0.0);
             new BiomeMap(167, "MESA_PLATEAU_MOUNTAINS", 2.0, 0.0);
         }
+        if (HDBlockModels.checkVersionRange(mcver, "1.9.0-")) {
+            new BiomeMap(127, "THE_VOID");
+        }
         loadDone = true;
     }
     
