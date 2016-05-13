@@ -1,4 +1,4 @@
-{
+{   "parent": "block/block",
     "elements": [
         {   "from": [ 0, 0, 0 ],
             "to": [ 16, 15, 16 ],

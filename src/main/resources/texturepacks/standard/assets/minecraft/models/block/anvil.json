@@ -1,4 +1,11 @@
-{
+{   "parent": "block/block",
+    "display": {
+        "fixed": {
+            "rotation": [ 0, 90, 0 ],
+            "translation": [ 0, 0, 0 ],
+            "scale": [ 0.5, 0.5, 0.5 ]
+        }
+    },
     "elements": [
         {   "__comment": "Anvil base",
             "from": [ 2, 0, 2 ],

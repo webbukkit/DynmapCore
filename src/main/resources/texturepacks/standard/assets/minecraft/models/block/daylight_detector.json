@@ -1,4 +1,4 @@
-{
+{   "parent": "block/thin_block",
     "textures": {
         "particle": "blocks/daylight_detector_top",
         "top": "blocks/daylight_detector_top",
