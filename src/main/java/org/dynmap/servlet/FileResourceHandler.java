@@ -1,8 +1,5 @@
 package org.dynmap.servlet;
 
-import org.dynmap.Log;
-import org.dynmap.utils.ImageIOManager;
-import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.util.resource.Resource;
