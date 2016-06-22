@@ -246,7 +246,7 @@ public class DynmapMapCommands {
             }
             else if(tok[0].equalsIgnoreCase("order")) {
                 if(w == null) {
-                    sender.sendMessage("Cannot set center on disabled or undefined world");
+                    sender.sendMessage("Cannot set order on disabled or undefined world");
                     return true;
                 }
                 int order = -1;
