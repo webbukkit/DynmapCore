@@ -4,7 +4,6 @@ import org.dynmap.Color;
 import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapCore;
 import org.dynmap.DynmapWorld;
-import org.dynmap.MapManager;
 import org.json.simple.JSONObject;
 
 import static org.dynmap.JSONUtils.s;
