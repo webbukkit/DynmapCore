@@ -62,7 +62,8 @@ var DynmapLayerControl = L.Control.Layers.extend({
 		this._layers[pos] = {
 			layer: layer,
 			name: name,
-			overlay: overlay
+			overlay: overlay,
+			id: id
 		};
 
 		if (this.options.autoZIndex && layer.setZIndex) {
