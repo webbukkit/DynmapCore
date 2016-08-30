@@ -935,6 +935,7 @@ DynMap.prototype = {
 		if(me.options.showlayercontrol != "false") {
 			for(i = 0; i < me.layersetlist.length; i++) {
 				me.layercontrol.removeLayer(me.layersetlist[i].layer);
+				me.layersetlist[i].layer._leaflet_id = undefined;
 			}
 			for(i = 0; i < me.layersetlist.length; i++) {
 				me.layercontrol.addOverlay(me.layersetlist[i].layer, me.layersetlist[i].name);
