@@ -937,7 +937,7 @@ DynMap.prototype = {
 				me.layercontrol.removeLayer(me.layersetlist[i].layer);
 			}
 			for(i = 0; i < me.layersetlist.length; i++) {
-				me.layercontrol.addOverlay(me.layersetlist[i].layer, me.layersetlist[i].name);
+				me.layercontrol.addOverlay(me.layersetlist[i].layer, me.layersetlist[i].name, i);
 			}
 		}
 	},
