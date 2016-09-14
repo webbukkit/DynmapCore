@@ -386,8 +386,8 @@ public class CTMTexturePack {
             }
         }
         private void getConnect(Properties p) {
-            String v = p.getProperty("connect");
-            if (v == null) {
+            String v = p.getProperty("connect", "none").toLowerCase();
+            if (v.equals("none")) {
                 this.connect = CTMConnect.NONE;
             }
             else if (v.equals("block")) {

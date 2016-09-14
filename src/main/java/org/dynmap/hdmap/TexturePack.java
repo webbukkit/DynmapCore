@@ -751,12 +751,8 @@ public class TexturePack {
                     tpl.closeResource(is);
                 }
             }
-            /* Find and load terrain.png */
-            is = tpl.openTPResource(TERRAIN_PNG); /* Try to find terrain.png */
-            if (is != null) {
-                loadTerrainPNG(is, is_rp);
-                tpl.closeResource(is);
-            }
+            /* Find and load terrain */
+            loadTerrain(is_rp);
             /* Try to find and load misc/grasscolor.png */
             is = tpl.openTPResource(GRASSCOLOR_PNG, GRASSCOLOR_RP_PNG);
             if (is != null) {
@@ -1059,40 +1055,15 @@ public class TexturePack {
         this.blockColoring = tp.blockColoring;
     }
     
-    /* Load terrain.png */
-    private void loadTerrainPNG(InputStream is, boolean is_rp) throws IOException {
+    /* Load terrain */
+    private void loadTerrain(boolean is_rp) throws IOException {
         int i, j;
         /* Load image */
         ImageIO.setUseCache(false);
-        BufferedImage img = ImageIO.read(is);
-        if(img == null) { throw new FileNotFoundException(); }
         tile_argb = new int[MAX_TILEINDEX][];
-        /* If we're using pre 1.5 terrain.png */
-        if(img.getWidth() >= 256) {
-            native_scale = img.getWidth() / 16;
-            blank = new int[native_scale*native_scale];
-            for(i = 0; i < 256; i++) {
-                int[] buf = new int[native_scale*native_scale];
-                img.getRGB((i & 0xF)*native_scale, (i>>4)*native_scale, native_scale, native_scale, buf, 0, native_scale);
-                setTileARGB(i, buf);
-            }
-            /* Now, load extra scaled images */
-            for(i = 256; i < terrain_map.length; i++) {
-                String fn = getBlockFileName(i);
-                if (fn == null) continue;
-                DynamicTileFile dtf = addonfilesbyname.get(fn);
-                if (dtf == null) continue;
-                LoadedImage li = imgs[dtf.idx + IMG_CNT];
-                if(li != null) {
-                    int[] buf = new int[native_scale * native_scale];
-                    scaleTerrainPNGSubImage(li.width, native_scale, li.argb, buf);
-                    setTileARGB(i, buf);
-                }
-            }
-        }
-        else if (is_rp) {   // If resource pack (1.6+)
+        if (is_rp) {   // If resource pack (1.6+)
             native_scale = 16;
-            /* Loop through textures - find biggest one */
+            /* Loop through textures - find size of first one one */
             for(i = 0; i < terrain_rp_map.length; i++) {
                 String fn = getRPFileName(i);
                 if (fn == null) continue;
@@ -1100,7 +1071,8 @@ public class TexturePack {
                 if (dtf == null) continue;
                 LoadedImage li = imgs[dtf.idx+IMG_CNT];
                 if(li != null) {
-                    if(native_scale < li.width) native_scale = li.width;
+                    native_scale = li.width;
+                    break;
                 }
             }
             blank = new int[native_scale*native_scale];
@@ -1213,8 +1185,6 @@ public class TexturePack {
         buf = new int[native_scale*native_scale];
         setTileARGB(TILEINDEX_WHITE, buf);
         Arrays.fill(buf, 0xFFFFFFFF);
-        
-        img.flush();
     }
     
     /* Load image into image array */
