@@ -46,7 +46,6 @@ import org.dynmap.utils.MapIterator;
  * Loader and processor class for minecraft texture packs
  *  Texture packs are found in dynmap/texturepacks directory, and either are either ZIP files
  *  or are directories whose content matches the structure of a zipped texture pack:
- *    ./terrain.png - main color data (required)
  *    misc/grasscolor.png - tone for grass color, biome sensitive (required)
  *    misc/foliagecolor.png - tone for leaf color, biome sensitive (required)
  *    custom_lava_still.png - custom still lava animation (optional)
@@ -62,8 +61,7 @@ public class TexturePack {
     /* Loaded texture packs */
     private static HashMap<String, TexturePack> packs = new HashMap<String, TexturePack>();
     private static Object packlock = new Object();
-    
-    private static final String TERRAIN_PNG = "terrain.png";
+
     private static final String GRASSCOLOR_PNG = "misc/grasscolor.png";
     private static final String GRASSCOLOR_RP_PNG = "assets/minecraft/textures/colormap/grass.png";
     private static final String FOLIAGECOLOR_PNG = "misc/foliagecolor.png";
