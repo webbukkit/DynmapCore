@@ -1437,5 +1437,34 @@ block:id=173,data=*,stdrot=true,allfaces=0:coal_block
 [1.9.0-]block:id=208,allsides=0:grass_path_side,top=0:grass_path_top,bottom=0:dirt,stdrot=true,transparency=SEMITRANSPARENT
 
 # 209		End Gateway
+# 1.10 blocks
+[1.10.0-]texture:id=magma
+[1.10.0-]texture:id=nether_wart_block
+[1.10.0-]texture:id=red_nether_brick
+[1.10.0-]texture:id=bone_block_side
+[1.10.0-]texture:id=bone_block_top
+[1.10.0-]texture:id=structure_block_save
+[1.10.0-]texture:id=structure_block_load
+[1.10.0-]texture:id=structure_block_corner
+[1.10.0-]texture:id=structure_block_data
 
-# 255		Structure Block
+# Magma Block
+[1.10.0-]block:id=213,data=*,stdrot=true,allfaces=0:magma
+
+# Nether Wart Block
+[1.10.0-]block:id=214,data=*,stdrot=true,allfaces=0:nether_wart_block
+
+# Red Nether Block
+[1.10.0-]block:id=215,data=*,stdrot=true,allfaces=0:red_nether_brick
+
+# Bone Block
+[1.10.0-]block:id=216,data=0,allsides=0:bone_block_side,topbottom=0:bone_block_top,stdrot=true
+[1.10.0-]block:id=216,data=4,north=0:bone_block_top,south=0:bone_block_top,east=4000:bone_block_side,west=4000:bone_block_side,top=0:bone_block_side,bottom=0:bone_block_side
+[1.10.0-]block:id=216,data=8,north=4000:bone_block_side,south=4000:bone_block_side,east=0:bone_block_top,west=0:bone_block_top,top=4000:bone_block_side,bottom=4000:bone_block_side
+[1.10.0-]block:id=216,data=12,allfaces=0:bone_block_side,stdrot=true
+
+# Structure Block
+[1.10.0-]block:id=255,data=0,stdrot=true,allfaces=0:structure_block_save
+[1.10.0-]block:id=255,data=1,stdrot=true,allfaces=0:structure_block_load
+[1.10.0-]block:id=255,data=2,stdrot=true,allfaces=0:structure_block_corner
+[1.10.0-]block:id=255,data=3,stdrot=true,allfaces=0:structure_block_data
