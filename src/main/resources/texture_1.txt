@@ -1396,8 +1396,29 @@ block:id=173,data=*,stdrot=true,allfaces=0:coal_block
 [1.9.0-]texture:id=purpur_pillar_top
 [1.9.0-]texture:id=purpur_pillar
 [1.9.0-]texture:id=end_bricks
+[1.9.0-]texture:id=beetroots_stage_0
+[1.9.0-]texture:id=beetroots_stage_1
+[1.9.0-]texture:id=beetroots_stage_2
+[1.9.0-]texture:id=beetroots_stage_3
 [1.9.0-]texture:id=grass_path_top
 [1.9.0-]texture:id=grass_path_side
+[1.9.0-]texture:id=grass_path_side
+[1.9.0-]texture:id=command_block_back
+[1.9.0-]texture:id=command_block_front
+[1.9.0-]texture:id=command_block_side
+[1.9.0-]texture:id=command_block_conditional
+[1.9.0-]texture:id=repeating_command_block_back
+[1.9.0-]texture:id=repeating_command_block_front
+[1.9.0-]texture:id=repeating_command_block_side
+[1.9.0-]texture:id=repeating_command_block_conditional
+[1.9.0-]texture:id=chain_command_block_back
+[1.9.0-]texture:id=chain_command_block_front
+[1.9.0-]texture:id=chain_command_block_side
+[1.9.0-]texture:id=chain_command_block_conditional
+[1.9.0-]texture:id=frosted_ice_0
+[1.9.0-]texture:id=frosted_ice_1
+[1.9.0-]texture:id=frosted_ice_2
+[1.9.0-]texture:id=frosted_ice_3
 
 # End rod
 [1.9.0-]block:id=198,data=*,patch0=0:end_rod,transparency=TRANSPARENT
@@ -1431,12 +1452,28 @@ block:id=173,data=*,stdrot=true,allfaces=0:coal_block
 # End Stone Bricks
 [1.9.0-]block:id=206,data=*,stdrot=true,allfaces=0:end_bricks
 
-# 207?
+# Beetroot
+[1.9.0-]block:id=207,data=0,patch0-3=0:beetroots_stage_0,transparency=TRANSPARENT
+[1.9.0-]block:id=207,data=1,patch0-3=0:beetroots_stage_1,transparency=TRANSPARENT
+[1.9.0-]block:id=207,data=2,patch0-3=0:beetroots_stage_2,transparency=TRANSPARENT
+[1.9.0-]block:id=207,data=3,patch0-3=0:beetroots_stage_3,transparency=TRANSPARENT
 
 # Grass Path
 [1.9.0-]block:id=208,allsides=0:grass_path_side,top=0:grass_path_top,bottom=0:dirt,stdrot=true,transparency=SEMITRANSPARENT
 
 # 209		End Gateway
+# Repeating Command Block (TODO: direction and conditional)
+[1.9.0-]block:id=210,data=*,allfaces=0:repeating_command_block_front,stdrot=true
+
+# Chain Command Block (TODO: direction and conditional)
+[1.9.0-]block:id=211,data=*,allfaces=0:chain_command_block_front,stdrot=true
+
+# Frosted Ice
+[1.9.0-]block:id=212,data=0,allfaces=12000:frosted_ice_0,stdrot=true,transparency=TRANSPARENT
+[1.9.0-]block:id=212,data=1,allfaces=12000:frosted_ice_1,stdrot=true,transparency=TRANSPARENT
+[1.9.0-]block:id=212,data=2,allfaces=12000:frosted_ice_2,stdrot=true,transparency=TRANSPARENT
+[1.9.0-]block:id=212,data=3,allfaces=12000:frosted_ice_3,stdrot=true,transparency=TRANSPARENT
+
 # 1.10 blocks
 [1.10.0-]texture:id=magma
 [1.10.0-]texture:id=nether_wart_block
