@@ -1462,7 +1462,9 @@ block:id=173,data=*,stdrot=true,allfaces=0:coal_block
 # Grass Path
 [1.9.0-]block:id=208,allsides=0:grass_path_side,top=0:grass_path_top,bottom=0:dirt,stdrot=true,transparency=SEMITRANSPARENT
 
-# 209		End Gateway
+# End Gateway
+[1.9.0-]block:id=209,data=*,stdrot=true,allfaces=0:endportal
+
 # Repeating Command Block (TODO: direction and conditional)
 [1.9.0-]block:id=210,data=*,allfaces=0:repeating_command_block_front,stdrot=true
 
