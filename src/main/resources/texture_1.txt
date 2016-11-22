@@ -17,6 +17,7 @@ texturefile:id=creeper,filename=mob/creeper.png,format=SKIN
 texturefile:id=wither,filename=mob/skeleton_wither.png,format=SKIN
 texturefile:id=trapchest,filename=assets/minecraft/textures/entity/chest/trapped.png,format=CHEST
 texturefile:id=bigtrapchest,filename=assets/minecraft/textures/entity/chest/trapped_double.png,format=BIGCHEST
+texturefile:id=endportal,filename=assets/minecraft/textures/environment/end_sky.png
 texturepath:assets/minecraft/textures/blocks/
 texture:id=redstone_block
 texture:id=grass_side
@@ -971,11 +972,11 @@ block:id=116,data=*,top=0:enchanting_table_top,allsides=0:enchanting_table_side,
 block:id=117,data=*,patch0=0:brewing_stand_base,patch1-7=0:brewing_stand,transparency=TRANSPARENT
 # Cauldron
 block:id=118,data=*,top=0:cauldron_top,bottom=0:cauldron_bottom,allsides=0:cauldron_side,stdrot=true,transparency=TRANSPARENT
-# Air portal (need black-with-stars texture - using obsidian for now)
-block:id=119,data=*,topbottom=0:obsidian,stdrot=true
-# Air portal frame (no eye)
+# End portal
+block:id=119,data=*,topbottom=0:endportal,stdrot=true
+# End portal frame (no eye)
 block:id=120,data=0,data=1,data=2,data=3,top=0:endframe_top,allsides=0:endframe_side,bottom=0:end_stone,stdrot=true
-# Air portal fram (eye installed) (TODO: eye installed)
+# End portal fram (eye installed) (TODO: eye installed)
 block:id=120,data=4,data=5,data=6,data=7,top=0:endframe_eye,allsides=0:endframe_side,bottom=0:end_stone,stdrot=true
 # White stone
 block:id=121,data=*,allfaces=0:end_stone,stdrot=true
