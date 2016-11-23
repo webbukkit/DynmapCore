@@ -1403,7 +1403,6 @@ block:id=173,data=*,stdrot=true,allfaces=0:coal_block
 [1.9.0-]texture:id=beetroots_stage_3
 [1.9.0-]texture:id=grass_path_top
 [1.9.0-]texture:id=grass_path_side
-[1.9.0-]texture:id=grass_path_side
 [1.9.0-]texture:id=command_block_back
 [1.9.0-]texture:id=command_block_front
 [1.9.0-]texture:id=command_block_side
