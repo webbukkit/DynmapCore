@@ -1464,11 +1464,47 @@ block:id=173,data=*,stdrot=true,allfaces=0:coal_block
 # End Gateway
 [1.9.0-]block:id=209,data=*,stdrot=true,allfaces=0:endportal
 
-# Repeating Command Block (TODO: direction and conditional)
-[1.9.0-]block:id=210,data=*,allfaces=0:repeating_command_block_front,stdrot=true
+# Command Block (1.9 improvements)
+[1.9.0-]block:id=137,data=0,top=4000:command_block_back,bottom=4000:command_block_front,south=5000:command_block_side,north=5000:command_block_side,east=5000:command_block_side,west=5000:command_block_side
+[1.9.0-]block:id=137,data=1,top=4000:command_block_front,bottom=4000:command_block_back,south=0:command_block_side,north=0:command_block_side,east=0:command_block_side,west=0:command_block_side
+[1.9.0-]block:id=137,data=2,top=6000:command_block_side,bottom=6000:command_block_side,south=6000:command_block_side,north=6000:command_block_side,east=0:command_block_front,west=0:command_block_back
+[1.9.0-]block:id=137,data=3,top=4000:command_block_side,bottom=4000:command_block_side,south=4000:command_block_side,north=4000:command_block_side,east=0:command_block_back,west=0:command_block_front
+[1.9.0-]block:id=137,data=4,top=0:command_block_side,bottom=0:command_block_side,south=0:command_block_back,north=0:command_block_front,east=4000:command_block_side,west=4000:command_block_side
+[1.9.0-]block:id=137,data=5,top=5000:command_block_side,bottom=5000:command_block_side,south=0:command_block_front,north=0:command_block_back,east=6000:command_block_side,west=6000:command_block_side
+[1.9.0-]block:id=137,data=8,top=4000:command_block_back,bottom=4000:command_block_front,south=5000:command_block_conditional,north=5000:command_block_conditional,east=5000:command_block_conditional,west=5000:command_block_conditional
+[1.9.0-]block:id=137,data=9,top=4000:command_block_front,bottom=4000:command_block_back,south=0:command_block_conditional,north=0:command_block_conditional,east=0:command_block_conditional,west=0:command_block_conditional
+[1.9.0-]block:id=137,data=10,top=6000:command_block_conditional,bottom=6000:command_block_conditional,south=6000:command_block_conditional,north=6000:command_block_conditional,east=0:command_block_front,west=0:command_block_back
+[1.9.0-]block:id=137,data=11,top=4000:command_block_conditional,bottom=4000:command_block_conditional,south=4000:command_block_conditional,north=4000:command_block_conditional,east=0:command_block_back,west=0:command_block_front
+[1.9.0-]block:id=137,data=12,top=0:command_block_conditional,bottom=0:command_block_conditional,south=0:command_block_back,north=0:command_block_front,east=4000:command_block_conditional,west=4000:command_block_conditional
+[1.9.0-]block:id=137,data=13,top=5000:command_block_conditional,bottom=5000:command_block_conditional,south=0:command_block_front,north=0:command_block_back,east=6000:command_block_conditional,west=6000:command_block_conditional
 
-# Chain Command Block (TODO: direction and conditional)
-[1.9.0-]block:id=211,data=*,allfaces=0:chain_command_block_front,stdrot=true
+# Repeating Command Block
+[1.9.0-]block:id=210,data=0,top=4000:repeating_command_block_back,bottom=4000:repeating_command_block_front,south=5000:repeating_command_block_side,north=5000:repeating_command_block_side,east=5000:repeating_command_block_side,west=5000:repeating_command_block_side
+[1.9.0-]block:id=210,data=1,top=4000:repeating_command_block_front,bottom=4000:repeating_command_block_back,south=0:repeating_command_block_side,north=0:repeating_command_block_side,east=0:repeating_command_block_side,west=0:repeating_command_block_side
+[1.9.0-]block:id=210,data=2,top=6000:repeating_command_block_side,bottom=6000:repeating_command_block_side,south=6000:repeating_command_block_side,north=6000:repeating_command_block_side,east=0:repeating_command_block_front,west=0:repeating_command_block_back
+[1.9.0-]block:id=210,data=3,top=4000:repeating_command_block_side,bottom=4000:repeating_command_block_side,south=4000:repeating_command_block_side,north=4000:repeating_command_block_side,east=0:repeating_command_block_back,west=0:repeating_command_block_front
+[1.9.0-]block:id=210,data=4,top=0:repeating_command_block_side,bottom=0:repeating_command_block_side,south=0:repeating_command_block_back,north=0:repeating_command_block_front,east=4000:repeating_command_block_side,west=4000:repeating_command_block_side
+[1.9.0-]block:id=210,data=5,top=5000:repeating_command_block_side,bottom=5000:repeating_command_block_side,south=0:repeating_command_block_front,north=0:repeating_command_block_back,east=6000:repeating_command_block_side,west=6000:repeating_command_block_side
+[1.9.0-]block:id=210,data=8,top=4000:repeating_command_block_back,bottom=4000:repeating_command_block_front,south=5000:repeating_command_block_conditional,north=5000:repeating_command_block_conditional,east=5000:repeating_command_block_conditional,west=5000:repeating_command_block_conditional
+[1.9.0-]block:id=210,data=9,top=4000:repeating_command_block_front,bottom=4000:repeating_command_block_back,south=0:repeating_command_block_conditional,north=0:repeating_command_block_conditional,east=0:repeating_command_block_conditional,west=0:repeating_command_block_conditional
+[1.9.0-]block:id=210,data=10,top=6000:repeating_command_block_conditional,bottom=6000:repeating_command_block_conditional,south=6000:repeating_command_block_conditional,north=6000:repeating_command_block_conditional,east=0:repeating_command_block_front,west=0:repeating_command_block_back
+[1.9.0-]block:id=210,data=11,top=4000:repeating_command_block_conditional,bottom=4000:repeating_command_block_conditional,south=4000:repeating_command_block_conditional,north=4000:repeating_command_block_conditional,east=0:repeating_command_block_back,west=0:repeating_command_block_front
+[1.9.0-]block:id=210,data=12,top=0:repeating_command_block_conditional,bottom=0:repeating_command_block_conditional,south=0:repeating_command_block_back,north=0:repeating_command_block_front,east=4000:repeating_command_block_conditional,west=4000:repeating_command_block_conditional
+[1.9.0-]block:id=210,data=13,top=5000:repeating_command_block_conditional,bottom=5000:repeating_command_block_conditional,south=0:repeating_command_block_front,north=0:repeating_command_block_back,east=6000:repeating_command_block_conditional,west=6000:repeating_command_block_conditional
+
+# Chain Command Block
+[1.9.0-]block:id=211,data=0,top=4000:chain_command_block_back,bottom=4000:chain_command_block_front,south=5000:chain_command_block_side,north=5000:chain_command_block_side,east=5000:chain_command_block_side,west=5000:chain_command_block_side
+[1.9.0-]block:id=211,data=1,top=4000:chain_command_block_front,bottom=4000:chain_command_block_back,south=0:chain_command_block_side,north=0:chain_command_block_side,east=0:chain_command_block_side,west=0:chain_command_block_side
+[1.9.0-]block:id=211,data=2,top=6000:chain_command_block_side,bottom=6000:chain_command_block_side,south=6000:chain_command_block_side,north=6000:chain_command_block_side,east=0:chain_command_block_front,west=0:chain_command_block_back
+[1.9.0-]block:id=211,data=3,top=4000:chain_command_block_side,bottom=4000:chain_command_block_side,south=4000:chain_command_block_side,north=4000:chain_command_block_side,east=0:chain_command_block_back,west=0:chain_command_block_front
+[1.9.0-]block:id=211,data=4,top=0:chain_command_block_side,bottom=0:chain_command_block_side,south=0:chain_command_block_back,north=0:chain_command_block_front,east=4000:chain_command_block_side,west=4000:chain_command_block_side
+[1.9.0-]block:id=211,data=5,top=5000:chain_command_block_side,bottom=5000:chain_command_block_side,south=0:chain_command_block_front,north=0:chain_command_block_back,east=6000:chain_command_block_side,west=6000:chain_command_block_side
+[1.9.0-]block:id=211,data=8,top=4000:chain_command_block_back,bottom=4000:chain_command_block_front,south=5000:chain_command_block_conditional,north=5000:chain_command_block_conditional,east=5000:chain_command_block_conditional,west=5000:chain_command_block_conditional
+[1.9.0-]block:id=211,data=9,top=4000:chain_command_block_front,bottom=4000:chain_command_block_back,south=0:chain_command_block_conditional,north=0:chain_command_block_conditional,east=0:chain_command_block_conditional,west=0:chain_command_block_conditional
+[1.9.0-]block:id=211,data=10,top=6000:chain_command_block_conditional,bottom=6000:chain_command_block_conditional,south=6000:chain_command_block_conditional,north=6000:chain_command_block_conditional,east=0:chain_command_block_front,west=0:chain_command_block_back
+[1.9.0-]block:id=211,data=11,top=4000:chain_command_block_conditional,bottom=4000:chain_command_block_conditional,south=4000:chain_command_block_conditional,north=4000:chain_command_block_conditional,east=0:chain_command_block_back,west=0:chain_command_block_front
+[1.9.0-]block:id=211,data=12,top=0:chain_command_block_conditional,bottom=0:chain_command_block_conditional,south=0:chain_command_block_back,north=0:chain_command_block_front,east=4000:chain_command_block_conditional,west=4000:chain_command_block_conditional
+[1.9.0-]block:id=211,data=13,top=5000:chain_command_block_conditional,bottom=5000:chain_command_block_conditional,south=0:chain_command_block_front,north=0:chain_command_block_back,east=6000:chain_command_block_conditional,west=6000:chain_command_block_conditional
 
 # Frosted Ice
 [1.9.0-]block:id=212,data=0,allfaces=12000:frosted_ice_0,stdrot=true,transparency=TRANSPARENT
