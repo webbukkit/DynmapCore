@@ -12,17 +12,23 @@ import org.eclipse.jetty.http.HttpStatus;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
+import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.awt.image.BufferedImage;
+
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.IOException;
+import java.io.OutputStream;
 
 public class MapStorageResourceHandler extends AbstractHandler {
-    
+
     private DynmapCore core;
+    private BufferedImage blank = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);;
 
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -30,7 +36,7 @@ public class MapStorageResourceHandler extends AbstractHandler {
         int soff = 0, eoff;
         // We're handling this request
         baseRequest.setHandled(true);
-        
+
         if (path.charAt(0) == '/') soff = 1;
         eoff = path.indexOf('/', soff);
         if (soff < 0) {
@@ -49,21 +55,25 @@ public class MapStorageResourceHandler extends AbstractHandler {
             handleMarkers(response, uri);
             return;
         }
-        
+
         DynmapWorld w = null;
         if (core.mapManager != null) {
             w = core.mapManager.getWorld(world);
         }
         // If world not found quit
         if (w == null) {
-            response.sendRedirect("/images/blank.png");
+            response.setContentType("image/png");
+            OutputStream os = response.getOutputStream();
+            ImageIO.write(blank, "png", os);
             return;
         }
         MapStorage store = w.getMapStorage();    // Get storage handler
         // Get tile reference, based on URI and world
         MapStorageTile tile = store.getTile(w, uri);
         if (tile == null) {
-            response.sendRedirect("/images/blank.png");
+            response.setContentType("image/png");
+            OutputStream os = response.getOutputStream();
+            ImageIO.write(blank, "png", os);
             return;
         }
         // Read tile
@@ -73,7 +83,9 @@ public class MapStorageResourceHandler extends AbstractHandler {
             tile.releaseReadLock();
         }
         if (tr == null) {
-            response.sendRedirect("/images/blank.png");
+            response.setContentType("image/png");
+            OutputStream os = response.getOutputStream();
+            ImageIO.write(blank, "png", os);
             return;
         }
         // Got tile, package up for response
@@ -91,7 +103,7 @@ public class MapStorageResourceHandler extends AbstractHandler {
         out.flush();
 
     }
-    
+
     private void handleFace(HttpServletResponse response, String uri) throws IOException, ServletException {
         String[] suri = uri.split("[/\\.]");
         if (suri.length < 3) {  // 3 parts : face ID, player name, png
@@ -144,7 +156,7 @@ public class MapStorageResourceHandler extends AbstractHandler {
         }
         response.sendError(HttpStatus.NOT_FOUND_404);
     }
-    
+
     public void setCore(DynmapCore core) {
         this.core = core;
     }
