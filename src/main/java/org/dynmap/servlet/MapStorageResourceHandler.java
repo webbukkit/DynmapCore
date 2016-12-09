@@ -28,7 +28,7 @@ import java.io.OutputStream;
 public class MapStorageResourceHandler extends AbstractHandler {
 
     private DynmapCore core;
-    private BufferedImage blank = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);;
+    private BufferedImage blank = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
 
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
