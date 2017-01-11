@@ -508,6 +508,7 @@ public class MySQLMapStorage extends MapStorage {
                     if (cpool[i] != null) { // Found one
                         c = cpool[i];
                         cpool[i] = null;
+                        break;
                     }
                 }
                 if (c == null) {
