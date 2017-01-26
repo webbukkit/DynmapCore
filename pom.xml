@@ -138,6 +138,10 @@
 			<id>sonatype-nexus-releases</id>
 			<url>https://oss.sonatype.org/content/repositories/releases</url>
 		</repository>
+		<repository>
+			<id>mikeprimm</id>
+			<url>http://repo.mikeprimm.com</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
