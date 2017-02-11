@@ -1395,7 +1395,8 @@ boxblock:id=171,data=*,ymax=0.0625
 
 # End Stone Bricks
 
-# 207?
+# Beetroot
+[1.9.0-]patchblock:id=207,data=*,patch0=VertX075,patch1=VertX075@90,patch2=VertX025,patch3=VertX025@90
 
 # Grass Path
 [1.9.0-]boxblock:id=208,data=*,ymax=0.9375
@@ -1404,3 +1405,4 @@ boxblock:id=171,data=*,ymax=0.0625
 
 # 255		Structure Block
 
+# 1.10 blocks
