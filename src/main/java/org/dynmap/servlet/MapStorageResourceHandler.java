@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.awt.image.BufferedImage;
-
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.IOException;
@@ -28,8 +28,18 @@ import java.io.OutputStream;
 public class MapStorageResourceHandler extends AbstractHandler {
 
     private DynmapCore core;
-    private BufferedImage blank = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
-
+    private byte[] blankpng;
+    
+    public MapStorageResourceHandler() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        BufferedImage blank = new BufferedImage(128, 128, BufferedImage.TYPE_INT_ARGB);
+        try {
+            ImageIO.write(blank, "png", baos);
+            blankpng = baos.toByteArray();
+        } catch (IOException e) {
+        }
+        
+    }
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String path = baseRequest.getPathInfo();
@@ -64,7 +74,7 @@ public class MapStorageResourceHandler extends AbstractHandler {
         if (w == null) {
             response.setContentType("image/png");
             OutputStream os = response.getOutputStream();
-            ImageIO.write(blank, "png", os);
+            os.write(blankpng);
             return;
         }
         MapStorage store = w.getMapStorage();    // Get storage handler
@@ -73,7 +83,7 @@ public class MapStorageResourceHandler extends AbstractHandler {
         if (tile == null) {
             response.setContentType("image/png");
             OutputStream os = response.getOutputStream();
-            ImageIO.write(blank, "png", os);
+            os.write(blankpng);
             return;
         }
         // Read tile
@@ -85,7 +95,7 @@ public class MapStorageResourceHandler extends AbstractHandler {
         if (tr == null) {
             response.setContentType("image/png");
             OutputStream os = response.getOutputStream();
-            ImageIO.write(blank, "png", os);
+            os.write(blankpng);
             return;
         }
         // Got tile, package up for response
