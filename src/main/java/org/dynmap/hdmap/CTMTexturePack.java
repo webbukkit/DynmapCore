@@ -790,6 +790,12 @@ public class CTMTexturePack {
             for (int i = 0; i < tilenames.length; i++) {
                 String tn = tilenames[i];
                 String ftn = tn;
+                String modname = null;
+                int colonindex = ftn.indexOf(':');
+                if (colonindex > 0) {	// Modname:resource?
+                	modname = ftn.substring(0, colonindex);
+                	ftn = ftn.substring(colonindex+1);
+                }
                 if ((ftn.indexOf('/') < 0) && (ftn.startsWith("assets/") == false)) { // no path (base tile)
                     ftn = deftxtpath + tn;
                 }
@@ -797,7 +803,7 @@ public class CTMTexturePack {
                     ftn = ftn + ".png"; // Add .png if needed
                 }
                 // Find file ID, add if needed
-                int fid = TexturePack.findOrAddDynamicTileFile(ftn, null, 1, 1, TileFileFormat.GRID, new String[0]);
+                int fid = TexturePack.findOrAddDynamicTileFile(ftn, modname, 1, 1, TileFileFormat.GRID, new String[0]);
                 rslt[i] = TexturePack.findOrAddDynamicTile(fid, 0); 
             }
             return rslt;
