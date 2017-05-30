@@ -791,17 +791,14 @@ public class CTMTexturePack {
             for (int i = 0; i < tilenames.length; i++) {
                 String tn = tilenames[i];
                 String ftn = tn;
-                String modname = "minecraft";
+                String modname = null;
                 int colonindex = ftn.indexOf(':');
                 if (colonindex > 0) {	// Modname:resource?
                 	modname = ftn.substring(0, colonindex);
                 	ftn = ftn.substring(colonindex+1);
                 }
-                if ((ftn.indexOf('/') > 0) && (modname != null)) {
-                	ftn = "assets/" + modname + "/textures/" + ftn;
-                }
-                else if ((ftn.indexOf('/') < 0) && (ftn.startsWith("assets/") == false)) { // no path (base tile)
-                    ftn = deftxtpath + ftn;
+                if ((ftn.indexOf('/') < 0) && (ftn.startsWith("assets/") == false)) { // no path (base tile)
+                    ftn = deftxtpath + tn;
                 }
                 if (!ftn.endsWith(".png")) {
                     ftn = ftn + ".png"; // Add .png if needed
