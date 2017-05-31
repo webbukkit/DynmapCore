@@ -776,31 +776,38 @@ public class CTMTexturePack {
             }
             return true;
         }
-        private void registerTiles(String deftxtpath) {
+        private void registerTiles(String deftxtpath, String propname) {
             if (this.matchTiles != null) {  // If any matching tiles, register them
-                this.matchTileIcons = registerTiles(this.matchTiles, deftxtpath);
+                this.matchTileIcons = registerTiles(this.matchTiles, deftxtpath, propname);
             }
             if (this.tiles != null) { // If any result tiles, register them
-                this.tileIcons = registerTiles(this.tiles, deftxtpath);
+                this.tileIcons = registerTiles(this.tiles, deftxtpath, propname);
             }
         }
-        private int[] registerTiles(String[] tilenames, String deftxtpath) {
+        private int[] registerTiles(String[] tilenames, String deftxtpath, String propname) {
             if (tilenames == null) return null;
+            String proppath = propname.substring(0, propname.lastIndexOf('/'));
             int[] rslt = new int[tilenames.length];
             for (int i = 0; i < tilenames.length; i++) {
                 String tn = tilenames[i];
                 String ftn = tn;
-                String modname = null;
+                String modname = "minecraft";
                 int colonindex = ftn.indexOf(':');
                 if (colonindex > 0) {	// Modname:resource?
                 	modname = ftn.substring(0, colonindex);
                 	ftn = ftn.substring(colonindex+1);
                 }
-                if ((ftn.indexOf('/') < 0) && (ftn.startsWith("assets/") == false)) { // no path (base tile)
-                    ftn = deftxtpath + tn;
+                if ((ftn.indexOf('/') > 0) && (modname != null)) {
+                	ftn = "assets/" + modname + "/textures/" + ftn;
+                }
+                else if ((ftn.indexOf('/') < 0) && (ftn.startsWith("assets/") == false)) { // no path (base tile)
+                    ftn = deftxtpath + ftn;
                 }
                 if (!ftn.endsWith(".png")) {
                     ftn = ftn + ".png"; // Add .png if needed
+                }
+                if (modname.equals("minecraft")) {
+                	modname = null;
                 }
                 // Find file ID, add if needed
                 int fid = TexturePack.findOrAddDynamicTileFile(ftn, modname, 1, 1, TileFileFormat.GRID, new String[0]);
@@ -932,7 +939,7 @@ public class CTMTexturePack {
                     
                     CTMProps ctmp = new CTMProps(p, f, this);
                     if(ctmp.isValid(f)) {
-                        ctmp.registerTiles(this.vanillatextures);
+                        ctmp.registerTiles(this.vanillatextures, f);
                         bytilelist = addToList(bytilelist, mappedtiles, ctmp.matchTileIcons, ctmp);
                         byblocklist = addToList(byblocklist, mappedblocks, ctmp.matchBlocks, ctmp);
                     }
