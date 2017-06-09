@@ -173,5 +173,5 @@
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
-	<version>2.5-SNAPSHOT</version>
+	<version>2.5</version>
 </project>
