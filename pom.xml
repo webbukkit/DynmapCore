@@ -101,6 +101,10 @@
 									<pattern>org.eclipse.jetty</pattern>
 									<shadedPattern>org.dynmap.jetty</shadedPattern>
 								</relocation>
+								<relocation>
+									<pattern>javax.servlet</pattern>
+									<shadedPattern>org.dynmap.javax.servlet</shadedPattern>
+								</relocation>
 							</relocations>
 							<filters>
 								<filter>
