@@ -1067,13 +1067,13 @@ public class TexturePack {
      */
     private void makeShulkerSideImage(int img_id, int dest_idx, int src_x) {
         int mult = imgs[img_id].width / 64; /* Nominal height for shulker images is 64 */
-        int src_y_top = 16 * mult;
-        int src_y_btm = 44 * mult;
+        int src_y_top = 16;
+        int src_y_btm = 44;
         int[] tile = new int[16 * 16 * mult * mult];    /* Make image (all are 16x16) */
         /* Top half of the shulker */
         copySubimageFromImage(img_id, src_x * mult, src_y_top * mult, 0, 0, 16 * mult, 12 * mult, tile, 16 * mult);
         /* Bottom half of the shulker */
-        combineSubimageFromImage(img_id, src_x * mult, src_y_btm * mult, 0, 8, 16 * mult, 8 * mult, tile, 16 * mult);
+        combineSubimageFromImage(img_id, src_x * mult, src_y_btm * mult, 0, 8 * mult, 16 * mult, 8 * mult, tile, 16 * mult);
         /* Put scaled result into tile buffer */
         int new_argb[] = new int[native_scale*native_scale];
         scaleTerrainPNGSubImage(16 * mult, native_scale, tile, new_argb);
