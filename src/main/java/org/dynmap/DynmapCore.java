@@ -216,6 +216,10 @@ public class DynmapCore implements DynmapCommonAPI {
         return blockmap;
     }
 
+    public final void setBlockNames(String[] names) {
+        //DEPRECATED - using getBlockIDMap
+    }
+    
     public final void setBiomeNames(String[] names) {
         biomenames = names;
     }
