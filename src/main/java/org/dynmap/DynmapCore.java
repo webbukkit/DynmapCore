@@ -44,7 +44,8 @@ import org.dynmap.exporter.DynmapExpCommands;
 import org.dynmap.hdmap.HDBlockModels;
 import org.dynmap.hdmap.HDMapManager;
 import org.dynmap.hdmap.TexturePack;
-import org.dynmap.hdmap.TexturePack.HDTextureMap;
+import org.dynmap.hdmap.TexturePack.HDBlockStateTextureMap;
+import org.dynmap.hdmap.TexturePack.HDBlockTextureMap;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.impl.MarkerAPIImpl;
 import org.dynmap.modsupport.ModSupportImpl;
@@ -587,10 +588,11 @@ public class DynmapCore implements DynmapCommonAPI {
             tp = tp.resampleTexturePack(1);
             if (tp == null) return;
             Color c = new Color();
-            for (int blkid = 1; blkid < 256; blkid++) {
+            for (int blkid = 1; blkid < 4096; blkid++) {
                 int meta0color = 0;
-                for (int blkmeta = 0; blkmeta < 16; blkmeta++) {
-                    HDTextureMap map = HDTextureMap.getMap(blkid, blkmeta, blkmeta);
+                HDBlockTextureMap bmap = HDBlockTextureMap.getByBlockID(blkid);
+                for (int blkmeta = 0; blkmeta < bmap.getStateCount(); blkmeta++) {
+                    HDBlockStateTextureMap map = bmap.getStateMap(blkmeta);
                     boolean done = false;
                     for (int i = 0; (!done) && (i < sides.length); i++) {
                         int idx = map.getIndexForFace(sides[i]);

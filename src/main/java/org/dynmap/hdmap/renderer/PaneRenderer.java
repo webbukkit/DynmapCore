@@ -3,7 +3,7 @@ package org.dynmap.hdmap.renderer;
 import java.util.Map;
 
 import org.dynmap.hdmap.TexturePack.BlockTransparency;
-import org.dynmap.hdmap.TexturePack.HDTextureMap;
+import org.dynmap.hdmap.TexturePack.HDBlockTextureMap;
 import org.dynmap.renderer.CustomRenderer;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
@@ -86,22 +86,22 @@ public class PaneRenderer extends CustomRenderer {
         int typeid = ctx.getBlockTypeID();
         /* Check north */
         id = ctx.getBlockTypeIDAt(-1,  0,  0);
-        if ((id == typeid) || (id == TYPEID_GLASS) || ((id > 0) && (HDTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {
+        if ((id == typeid) || (id == TYPEID_GLASS) || ((id > 0) && (HDBlockTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {
             blockdata |= SIDE_XN;
         }
         /* Look east */
         id = ctx.getBlockTypeIDAt(0,  0,  -1);
-        if ((id == typeid) || (id == TYPEID_GLASS) || ((id > 0) && (HDTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {
+        if ((id == typeid) || (id == TYPEID_GLASS) || ((id > 0) && (HDBlockTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {
             blockdata |= SIDE_ZN;
         }
         /* Look south */
         id = ctx.getBlockTypeIDAt(1,  0,  0);
-        if ((id == typeid) || (id == TYPEID_GLASS) || ((id > 0) && (HDTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {
+        if ((id == typeid) || (id == TYPEID_GLASS) || ((id > 0) && (HDBlockTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {
             blockdata |= SIDE_XP;
         }
         /* Look west */
         id = ctx.getBlockTypeIDAt(0,  0,  1);
-        if ((id == typeid) || (id == TYPEID_GLASS) || ((id > 0) && (HDTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {
+        if ((id == typeid) || (id == TYPEID_GLASS) || ((id > 0) && (HDBlockTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {
             blockdata |= SIDE_ZP;
         }
         return meshes[blockdata];

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.dynmap.hdmap.TexturePack.BlockTransparency;
-import org.dynmap.hdmap.TexturePack.HDTextureMap;
+import org.dynmap.hdmap.TexturePack.HDBlockTextureMap;
 import org.dynmap.renderer.CustomRenderer;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
@@ -153,7 +153,7 @@ public class FenceWallBlockRenderer extends CustomRenderer {
         for(int i = 0; i < sides.length; i++) {
             int id = ctx.getBlockTypeIDAt(sides[i][0], sides[i][1], sides[i][2]);
             if(id == 0) continue;
-            if(link_ids.get(id) || (HDTextureMap.getTransparency(id) == BlockTransparency.OPAQUE)) {
+            if(link_ids.get(id) || (HDBlockTextureMap.getTransparency(id) == BlockTransparency.OPAQUE)) {
                 connect |= sides[i][3];
             }
         }

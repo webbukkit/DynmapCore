@@ -340,12 +340,12 @@ public class TexturePackHDShader implements HDShader {
         throw new IOException("Export unsupported - invalid texture pack");
     }
     @Override
-    public String[] getCurrentBlockMaterials(int blkid, int blkdata, int renderdata, MapIterator mapiter, int[] txtidx, BlockStep[] steps) {
+    public String[] getCurrentBlockMaterials(int blkid, int blkdata, MapIterator mapiter, int[] txtidx, BlockStep[] steps) {
         if (tp == null) {
             getTexturePack();   // Make sure its loaded
         }
         if (tp != null) {
-            return tp.getCurrentBlockMaterials(blkid, blkdata, renderdata, mapiter, txtidx, steps);
+            return tp.getCurrentBlockMaterials(blkid, blkdata, mapiter, txtidx, steps);
         }
         return new String[txtidx.length];
     }
