@@ -35,6 +35,7 @@ import org.dynmap.exporter.OBJExport;
 import org.dynmap.renderer.CustomColorMultiplier;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.BufferOutputStream;
+import org.dynmap.utils.DynIntHashMap;
 import org.dynmap.utils.DynmapBufferedImage;
 import org.dynmap.utils.ForgeConfigFile;
 import org.dynmap.utils.MapIterator;
@@ -381,8 +382,8 @@ public class TexturePack {
     private CTMTexturePack ctm;
 //    private static BitSet hasBaseBlockColoring = new BitSet(); // Quick lookup - (blockID << 4) + blockMeta - set if custom colorizer
 //    private static DynIntHashMap baseBlockColoring = new DynIntHashMap();   // Base block coloring (RP independent)
-//    private BitSet hasBlockColoring = (BitSet) hasBaseBlockColoring.clone(); // Quick lookup - (blockID << 4) + blockMeta - set if custom colorizer
-//    private DynIntHashMap blockColoring = new DynIntHashMap(baseBlockColoring);  // Map - index by (blockID << 4) + blockMeta - Index of image for color map
+    // Need copy, since RP can change this....
+    private ColorizingData blockColoring = HDBlockTextureMap.getColorizingData();
 
     private int colorMultBirch = 0x80a755;  /* From ColorizerFoliage.java in MCP */
     private int colorMultPine = 0x619961;   /* From ColorizerFoliage.java in MCP */
@@ -502,7 +503,51 @@ public class TexturePack {
                 return BlockTransparency.OPAQUE;
             }
         }
-
+        // Build copy of block colorization data
+        public static ColorizingData getColorizingData() {
+            ColorizingData map = new ColorizingData();
+            for (int i = 0; i < blkmaps.length; i++) {
+                for (int j = 0; j < blkmaps[i].texmaps.length; j++) {
+                    if (blkmaps[i].texmaps[j].colorMapping != null) {
+                        map.setBlkStateValue(i, j, blkmaps[i].texmaps[j].colorMapping);
+                    }
+                }
+            }
+            return map;
+        }
+    }
+    
+    private static class ColorizingData {
+        private DynIntHashMap map = new DynIntHashMap();
+        
+        public void setBlkStateValue(int blkid, int stateid, Integer mapidx) {
+            int idx = getStateIndex(blkid, stateid);
+            if (mapidx == null) {
+                map.remove(idx);
+            }
+            else {
+                map.put(idx,  mapidx);
+            }
+        }
+        public Integer getBlkStateValue(int blkid, int stateid) {
+            int idx = getStateIndex(blkid, stateid);
+            return (Integer) map.get(idx);
+        }
+        public boolean hasBlkStateValue(int blkid, int stateid) {
+            int idx = getStateIndex(blkid, stateid);
+            return map.containsKey(idx);
+        }
+        public void scrubValues(Integer val) {
+            List<Integer> badvals = map.keysWithValue(val);
+            for (Integer v : badvals) {
+                map.remove(v);
+            }
+        }
+        
+        private static int getStateIndex(int blkid, int stateid) {
+            // 16 bits for state ID should be enough....
+            return (blkid << 16) + stateid;
+        }
     }
 
     public static class HDBlockStateTextureMap {
@@ -585,6 +630,8 @@ public class TexturePack {
         private CustomColorMultiplier custColorMult = null;
         private String blockset;
 
+        public TextureMap() { }
+        
         public int addTextureByKey(int key, int textureid) {
             int off = texture_ids.size();   /* Next index in array is texture index */
             texture_ids.add(textureid); /* Add texture ID to list */
@@ -1161,7 +1208,7 @@ public class TexturePack {
         this.ctm = tp.ctm;
         this.imgs = tp.imgs;
         //this.hasBlockColoring = tp.hasBlockColoring;
-        //this.blockColoring = tp.blockColoring;
+        this.blockColoring = tp.blockColoring;
     }
     
     /* Load terrain */
@@ -1421,14 +1468,7 @@ public class TexturePack {
         }
         // If we didn't actually load, don't use color lookup for this (handle broken RPs like John Smith)
         if (li.isLoaded == false) {
-            // See who uses this biome map
-            for (HDBlockTextureMap map : HDBlockTextureMap.blkmaps) {
-                for (HDBlockStateTextureMap smap : map.getStates()) {
-                    if (smap.colorMapping == idx) {
-                        smap.colorMapping = null;
-                    }
-                }
-            }
+            this.blockColoring.scrubValues(idx);
         }
     }
     
@@ -2682,7 +2722,7 @@ public class TexturePack {
             rslt.setTransparent();
             return;
         }
-        boolean hasblockcoloring = ss.do_biome_shading && (map.colorMapping != null);
+        boolean hasblockcoloring = ss.do_biome_shading && this.blockColoring.hasBlkStateValue(blkid, blkdata);
         // Test if we have no texture modifications
         boolean simplemap = (textid < COLORMOD_MULT_INTERNAL) && (!hasblockcoloring);
         
@@ -2917,7 +2957,7 @@ public class TexturePack {
         int custclrmult = -1;
         // If block has custom coloring
         if (hasblockcoloring) {
-            Integer idx = map.colorMapping;
+            Integer idx = this.blockColoring.getBlkStateValue(blkid, blkdata);
             LoadedImage img = imgs[idx];
             if (img.argb != null) {
                 custclrmult = mapiter.getSmoothWaterColorMultiplier(img.argb);
@@ -3251,15 +3291,12 @@ public class TexturePack {
             /* Add mappings for values */
             HDBlockTextureMap bmap = HDBlockTextureMap.getByBlockID(blkid);
             if (bmap != null) {
-                HDBlockStateTextureMap smap;
                 if ((meta >= 0) && (meta < bmap.getStateCount())) {
-                    smap = bmap.getStateMap(meta);
-                    smap.colorMapping = index;
+                    this.blockColoring.setBlkStateValue(blkid, meta, index);
                 }
                 else if (meta == -1) {  /* All meta IDs */
                     for (int v = 0; v < bmap.getStateCount(); v++) {
-                        smap = bmap.getStateMap(meta);
-                        smap.colorMapping = index;
+                        this.blockColoring.setBlkStateValue(blkid, v, index);
                     }
                 }
             }
@@ -3308,9 +3345,9 @@ public class TexturePack {
         }
     }
     public int getCustomBlockMultiplier(int blkid, int blkdata) {
-        HDBlockStateTextureMap map = HDBlockTextureMap.getMap(blkid, blkdata);
-        if (map.colorMapping != null) {
-            LoadedImage img = imgs[map.colorMapping];
+        Integer idx = this.blockColoring.getBlkStateValue(blkid, blkdata);
+        if (idx != null) {
+            LoadedImage img = imgs[idx];
             if (img.argb != null) {
                 return img.argb[BiomeMap.FOREST.biomeLookup()];
             }
@@ -3481,16 +3518,16 @@ public class TexturePack {
         if (txtidx == null) txtidx = deftxtidx;
         String[] rslt = new String[txtidx.length];   // One for each face
         boolean handlestdrot = (steps != null) && (!map.stdrotate);
-        boolean hasblockcoloring = (map.colorMapping != null);
+        Integer blockcoloring = this.blockColoring.getBlkStateValue(blkid, blkdata);
         int custclrmult = -1;
         // If block has custom coloring
-        if (hasblockcoloring) {
-            LoadedImage img = imgs[map.colorMapping];
+        if (blockcoloring != null) {
+            LoadedImage img = imgs[blockcoloring];
             if (img.argb != null) {
                 custclrmult = mapiter.getSmoothWaterColorMultiplier(img.argb);
             }
             else {
-                hasblockcoloring = false;
+                blockcoloring = null;
             }
         }
         for (int patchidx = 0; patchidx < txtidx.length; patchidx++) {
@@ -3522,48 +3559,48 @@ public class TexturePack {
                 rslt[patchidx] = getMatIDForTileID(textid);   // Default texture
                 int mult = 0xFFFFFF;
                 BiomeMap bio;
-                if (!hasblockcoloring) {
+                if (blockcoloring == null) {
 
                 switch (mod) {
                     case COLORMOD_GRASSTONED:
                     case COLORMOD_GRASSTONED270:
                         bio = mapiter.getBiome();
                         if ((bio == BiomeMap.SWAMPLAND) && (imgs[IMG_SWAMPGRASSCOLOR] != null)) {
-                            mult = getBiomeTonedColor(imgs[IMG_SWAMPGRASSCOLOR], -1, bio, map);
+                            mult = getBiomeTonedColor(imgs[IMG_SWAMPGRASSCOLOR], -1, bio, blkid, blkdata);
                         }
                         else {
-                            mult = getBiomeTonedColor(imgs[IMG_GRASSCOLOR], -1, bio, map);
+                            mult = getBiomeTonedColor(imgs[IMG_GRASSCOLOR], -1, bio, blkid, blkdata);
                         }
                         break;
                     case COLORMOD_FOLIAGETONED:
                     case COLORMOD_FOLIAGETONED270:
                     case COLORMOD_FOLIAGEMULTTONED:
-                        mult = getBiomeTonedColor(imgs[IMG_FOLIAGECOLOR], -1, mapiter.getBiome(), map);
+                        mult = getBiomeTonedColor(imgs[IMG_FOLIAGECOLOR], -1, mapiter.getBiome(), blkid, blkdata);
                         break;
                     case COLORMOD_WATERTONED:
                     case COLORMOD_WATERTONED270:
-                        mult = getBiomeTonedColor(imgs[IMG_WATERCOLORX], -1, mapiter.getBiome(), map);
+                        mult = getBiomeTonedColor(imgs[IMG_WATERCOLORX], -1, mapiter.getBiome(), blkid, blkdata);
                         break;
                     case COLORMOD_PINETONED:
-                        mult = getBiomeTonedColor(imgs[IMG_PINECOLOR], colorMultPine, mapiter.getBiome(), map);
+                        mult = getBiomeTonedColor(imgs[IMG_PINECOLOR], colorMultPine, mapiter.getBiome(), blkid, blkdata);
                         break;
                     case COLORMOD_BIRCHTONED:
-                        mult = getBiomeTonedColor(imgs[IMG_BIRCHCOLOR], colorMultBirch, mapiter.getBiome(), map);
+                        mult = getBiomeTonedColor(imgs[IMG_BIRCHCOLOR], colorMultBirch, mapiter.getBiome(), blkid, blkdata);
                         break;
                     case COLORMOD_LILYTONED:
-                        mult = getBiomeTonedColor(null, colorMultLily, mapiter.getBiome(), map);
+                        mult = getBiomeTonedColor(null, colorMultLily, mapiter.getBiome(), blkid, blkdata);
                         break;
                     case COLORMOD_MULTTONED:
                     case COLORMOD_MULTTONED_CLEARINSIDE:
                         if(map.custColorMult == null) {
-                            mult = getBiomeTonedColor(null, map.colorMult, mapiter.getBiome(), map);
+                            mult = getBiomeTonedColor(null, map.colorMult, mapiter.getBiome(), blkid, blkdata);
                         }
                         else {
                             mult = map.custColorMult.getColorMultiplier(mapiter);
                         }
                         break;
                     default:
-                        mult = getBiomeTonedColor(null, -1, mapiter.getBiome(), map);
+                        mult = getBiomeTonedColor(null, -1, mapiter.getBiome(), blkid, blkdata);
                         break;
                 }
                 }
@@ -3617,7 +3654,7 @@ public class TexturePack {
     }
     
     // Get biome-specific color multpliers
-    private int getBiomeTonedColor(LoadedImage tonemap, int defcolormult, BiomeMap biome, HDBlockStateTextureMap blkstatemap) {
+    private int getBiomeTonedColor(LoadedImage tonemap, int defcolormult, BiomeMap biome, int blkid, int blkdata) {
         int mult;
         if (tonemap == null) { // No map? just use trivial
             mult = defcolormult;
@@ -3628,8 +3665,9 @@ public class TexturePack {
         else {
             mult = tonemap.argb[biome.biomeLookup()];
         }
-        if(blkstatemap.colorMapping != null) {
-            LoadedImage custimg = imgs[blkstatemap.colorMapping];
+        Integer idx = this.blockColoring.getBlkStateValue(blkid, blkdata);
+        if (idx != null) {
+            LoadedImage custimg = imgs[idx];
             if (custimg.argb != null) {
                 mult = Color.blendColor(mult, custimg.argb[biome.biomeLookup()]);
             }

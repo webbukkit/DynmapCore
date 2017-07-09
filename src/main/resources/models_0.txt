@@ -1,4 +1,4 @@
-version:-1.5.2
+version:1.6.1-
 #
 # Patches - define surfaces to be used in patch models
 #
@@ -239,6 +239,9 @@ boxblock:id=96,data=8,data=9,data=10,data=11,ymin=0.8125
 # Carrot
 # Potatoes
 patchblock:id=59,id=141,id=142,data=*,patch0=VertX075,patch1=VertX075@90,patch2=VertX025,patch3=VertX025@90
+# Stone Button - facing bottom
+# Wooden Button - facing bottom
+boxblock:id=77,id=143,data=0,data=8,xmin=0.3125,xmax=0.6875,ymin=0.875,zmin=0.375,zmax=0.625
 # Stone Button - facing south
 # Wooden Button - facing south
 boxblock:id=77,id=143,data=1,data=9,xmax=0.125,ymin=0.375,ymax=0.625,zmin=0.3125,zmax=0.6875
@@ -251,6 +254,9 @@ boxblock:id=77,id=143,data=3,data=11,zmax=0.125,ymin=0.375,ymax=0.625,xmin=0.312
 # Stone Button - facing east
 # Wooden Button - facing east
 boxblock:id=77,id=143,data=4,data=12,zmin=0.875,ymin=0.375,ymax=0.625,xmin=0.3125,xmax=0.6875
+# Stone Button - facing top
+# Wooden Button - facing top
+boxblock:id=77,id=143,data=5,data=13,xmin=0.3125,xmax=0.6875,ymax=0.125,zmin=0.375,zmax=0.625
 # Rails - flat - east/west
 # Powered rails - flat - east/west
 # Detector rails - flat - east/west
@@ -478,6 +484,16 @@ patchblock:id=69,data=14,patch0=LeverBase1@270,patch1=LeverBase1@90,patch2=Lever
 # Ground lever, off tp west
 patchblock:id=69,data=5,patch0=LeverBase1,patch1=LeverBase1@180,patch2=LeverBase2,patch3=LeverBase2@180,patch4=LeverBase3,patch5=LeverSide1,patch6=LeverSide2,patch7=LeverSide3,patch8=LeverSide4
 patchblock:id=69,data=13,patch0=LeverBase1,patch1=LeverBase1@180,patch2=LeverBase2,patch3=LeverBase2@180,patch4=LeverBase3,patch5=LeverSide1@180,patch6=LeverSide2@180,patch7=LeverSide3@180,patch8=LeverSide4@180
+# Ceiling lever, off tp west
+patchblock:id=69,data=7
+patchrotate:id=69,data=5,rotz=180
+patchblock:id=69,data=15
+patchrotate:id=69,data=13,rotz=180
+# Ceiling lever, off tp south
+patchblock:id=69,data=0
+patchrotate:id=69,data=6,rotx=180
+patchblock:id=69,data=8
+patchrotate:id=69,data=14,rotx=180
 # Cactus
 patchblock:id=81,data=*,patch0=VertX00625,patch1=VertX00625@90,patch2=VertX00625@180,patch3=VertX00625@270,patch4=HorizY100ZTop,patch5=HorizY100ZTop@180/0/0
 # Redstone repeater (on) facing east
@@ -910,6 +926,25 @@ layer:3,4
 # Trap Chest - single, facing west
 customblock:id=54,id=146,data=*,class=org.dynmap.hdmap.renderer.ChestRenderer
 
+# Cake Block
+block:id=92,data=*,scale=16
+layer:0,1,2,3,4,5,6,7
+----------------
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+-**************-
+----------------
 # Tripwire Hook
 patch:id=HookBoxSide1,Ox=0.0,Oy=0.0,Oz=0.375,Ux=1.0,Uy=0.0,Uz=0.375,Vx=0.0,Vy=1.0,Vz=0.375,Umin=0.875,Umax=1.0,Vmin=0.0625,Vmax=0.5625,visibility=bottom
 patch:id=HookBoxSide2,Ox=0.0,Oy=0.0,Oz=0.625,Ux=1.0,Uy=0.0,Uz=0.625,Vx=0.0,Vy=1.0,Vz=0.625,Umin=0.875,Umax=1.0,Vmin=0.0625,Vmax=0.5625,visibility=top
@@ -1115,3 +1150,128 @@ layer:11,12,13,14,15
 **------------**
 ****************
 ****************
+
+# Colored glass pane (160)
+[1.7.0-]customblock:id=160,data=*,class=org.dynmap.hdmap.renderer.PaneRenderer
+# Acacia Stairs (163)
+# Dark Oak Stairs (164)
+[1.7.0-]customblock:id=163,id=164,data=*,class=org.dynmap.hdmap.renderer.StairBlockRenderer
+
+# (171) Carpet
+boxblock:id=171,data=*,ymax=0.0625
+# (175) Double Plant
+[1.7.0-]customblock:id=175,data=0,data=1,data=2,data=3,data=4,data=5,class=org.dynmap.hdmap.renderer.PlantRenderer,metacnt=6
+[1.7.0-]customblock:id=175,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,class=org.dynmap.hdmap.renderer.PlantRenderer,metacnt=6,metasrc=below
+
+# 1.8 blocks
+
+# Iron Trapdoor
+[1.8.0-]boxblock:id=167,data=0,data=1,data=2,data=3,ymax=0.1875
+[1.8.0-]boxblock:id=167,data=4,data=12,zmin=0.8125
+[1.8.0-]boxblock:id=167,data=5,data=13,zmax=0.1875
+[1.8.0-]boxblock:id=167,data=6,data=14,xmin=0.8125
+[1.8.0-]boxblock:id=167,data=7,data=15,xmax=0.1875
+[1.8.0-]boxblock:id=167,data=8,data=9,data=10,data=11,ymin=0.8125
+
+# Inverted Daylight Sensor
+[1.8.0-]boxblock:id=178,data=*,ymax=0.375
+
+# Red Sandstone stairs
+[1.8.0-]customblock:id=180,data=*,class=org.dynmap.hdmap.renderer.StairBlockRenderer
+
+# Red Sandstone Slab
+[1.8.0-]boxblock:id=182,data=0,ymax=0.5
+[1.8.0-]boxblock:id=182,data=8,ymin=0.5
+
+# Fence Gate (Spruce)
+[1.8.0-]customblock:id=183,data=*,class=org.dynmap.hdmap.renderer.FenceGateBlockRenderer
+
+# Fence Gate (Birch)
+[1.8.0-]customblock:id=184,data=*,class=org.dynmap.hdmap.renderer.FenceGateBlockRenderer
+
+# Fence Gate (Jungle)
+[1.8.0-]customblock:id=185,data=*,class=org.dynmap.hdmap.renderer.FenceGateBlockRenderer
+
+# Fence Gate (Dark Oak)
+[1.8.0-]customblock:id=186,data=*,class=org.dynmap.hdmap.renderer.FenceGateBlockRenderer
+
+# Fence Gate (Acacia)
+[1.8.0-]customblock:id=187,data=*,class=org.dynmap.hdmap.renderer.FenceGateBlockRenderer
+
+# Fence (Spruce)
+[1.8.0-]customblock:id=188,data=*,class=org.dynmap.hdmap.renderer.FenceWallBlockRenderer,type=fence,link0=183
+
+# Fence (Birch)
+[1.8.0-]customblock:id=189,data=*,class=org.dynmap.hdmap.renderer.FenceWallBlockRenderer,type=fence,link0=184
+
+# Fence (Jungle)
+[1.8.0-]customblock:id=190,data=*,class=org.dynmap.hdmap.renderer.FenceWallBlockRenderer,type=fence,link0=185
+
+# Fence (Dark Oak)
+[1.8.0-]customblock:id=191,data=*,class=org.dynmap.hdmap.renderer.FenceWallBlockRenderer,type=fence,link0=186
+
+# Fence (Acacia)
+[1.8.0-]customblock:id=192,data=*,class=org.dynmap.hdmap.renderer.FenceWallBlockRenderer,type=fence,link0=187
+
+# Wooden Door Block (Spruce)
+# Wooden Door Block (Birch)
+# Wooden Door Block (Jungle)
+# Wooden Door Block (Acacia)
+# Wooden Door Block (Dark Oak)
+[1.8.0-]customblock:id=193,id=194,id=195,id=196,id=197,data=*,class=org.dynmap.hdmap.renderer.DoorRenderer
+
+# 1.9 models
+
+# End rod
+#[1.9.0-]block:id=198,data=*,patch0=0:end_rod,transparency=TRANSPARENT
+
+# Chorus Plant
+[1.9.0-]customblock:id=199,data=*,class=org.dynmap.hdmap.renderer.FenceWallBlockRenderer,type=wall,link0=200
+
+# Chorus Flower
+[1.9.0-]block:id=200,data=*,scale=8
+[1.9.0-]layer:0,7
+[1.9.0-]--------
+[1.9.0-]-******-
+[1.9.0-]-******-
+[1.9.0-]-******-
+[1.9.0-]-******-
+[1.9.0-]-******-
+[1.9.0-]-******-
+[1.9.0-]--------
+[1.9.0-]layer:1,2,3,4,5,6
+[1.9.0-]-******-
+[1.9.0-]********
+[1.9.0-]********
+[1.9.0-]********
+[1.9.0-]********
+[1.9.0-]********
+[1.9.0-]********
+[1.9.0-]-******-
+
+# Purpur Block
+
+# Purpur Pillar
+
+# Purpur Stairs
+[1.9.0-]customblock:id=203,data=*,class=org.dynmap.hdmap.renderer.StairBlockRenderer
+
+# Purpur Slab (Double)
+
+# Purpur Slab
+[1.9.0-]boxblock:id=205,data=0,data=1,data=2,data=3,data=4,data=5,data=6,data=7,ymax=0.5
+[1.9.0-]boxblock:id=205,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,ymin=0.5
+
+# End Stone Bricks
+
+# Beetroot
+[1.9.0-]patchblock:id=207,data=*,patch0=VertX075,patch1=VertX075@90,patch2=VertX025,patch3=VertX025@90
+
+# Grass Path
+[1.9.0-]boxblock:id=208,data=*,ymax=0.9375
+
+# 209		End Gateway
+
+# 255		Structure Block
+
+# 1.10 blocks
