@@ -67,8 +67,9 @@ public class CuboidBlockModelImpl extends BlockModelImpl implements CuboidBlockM
         String line = String.format(Locale.US, "customblock:%s,class=org.dynmap.hdmap.renderer.CuboidRenderer", ids);
         for (int i = 0; i < cuboids.size(); i++) {
             Cuboid c = cuboids.get(i);
+            // Fix order : CuboidRenderer is (bottom,top,xmin,xmax,zmin,zmax)
             line += String.format(Locale.US, ",cuboid%d=%f:%f:%f/%f:%f:%f/%d:%d:%d:%d:%d:%d", i, c.xmin, c.ymin, c.zmin, c.xmax, c.ymax, c.zmax,
-                    c.textureidx[0], c.textureidx[1], c.textureidx[2], c.textureidx[3], c.textureidx[4], c.textureidx[5]);
+                    c.textureidx[0], c.textureidx[1], c.textureidx[4], c.textureidx[5], c.textureidx[2], c.textureidx[3]);
         }
         for (int i = 0; i < crosseds.size(); i++) {
             Crossed c = crosseds.get(i);
