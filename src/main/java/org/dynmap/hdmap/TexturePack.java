@@ -374,6 +374,8 @@ public class TexturePack {
         int width, height;
         int trivial_color;
         boolean isLoaded;
+        @SuppressWarnings("unused")
+		String fname, modid;
     }    
     
     private int[][]   tile_argb;
@@ -826,10 +828,10 @@ public class TexturePack {
                 is = tpl.openModTPResource(dtf.filename, dtf.modname);
                 try {
                     if(dtf.format == TileFileFormat.BIOME) {
-                      loadBiomeShadingImage(is, i+IMG_CNT); /* Load image file */
+                      loadBiomeShadingImage(is, i+IMG_CNT, dtf.filename, dtf.modname); /* Load image file */
                     }
                     else
-                        loadImage(is, i+IMG_CNT); /* Load image file */
+                        loadImage(is, i+IMG_CNT, dtf.filename, dtf.modname); /* Load image file */
                 } finally {
                     tpl.closeResource(is);
                 }
@@ -839,25 +841,25 @@ public class TexturePack {
             /* Try to find and load misc/grasscolor.png */
             is = tpl.openTPResource(GRASSCOLOR_PNG, GRASSCOLOR_RP_PNG);
             if (is != null) {
-                loadBiomeShadingImage(is, IMG_GRASSCOLOR);
+                loadBiomeShadingImage(is, IMG_GRASSCOLOR, GRASSCOLOR_RP_PNG, "minecraft");
                 tpl.closeResource(is);
             }
             /* Try to find and load misc/foliagecolor.png */
             is = tpl.openTPResource(FOLIAGECOLOR_PNG, FOLIAGECOLOR_RP_PNG);
             if (is != null) {
-                loadBiomeShadingImage(is, IMG_FOLIAGECOLOR);
+                loadBiomeShadingImage(is, IMG_FOLIAGECOLOR, FOLIAGECOLOR_RP_PNG, "minecraft");
                 tpl.closeResource(is);
             }
             /* Try to find and load misc/swampgrasscolor.png */
             is = tpl.openTPResource(SWAMPGRASSCOLOR_PNG, SWAMPGRASSCOLOR_RP_PNG);
             if (is != null) {
-                loadBiomeShadingImage(is, IMG_SWAMPGRASSCOLOR);
+                loadBiomeShadingImage(is, IMG_SWAMPGRASSCOLOR, SWAMPGRASSCOLOR_RP_PNG, "minecraft");
                 tpl.closeResource(is);
             }
             /* Try to find and load misc/swampfoliagecolor.png */
             is = tpl.openTPResource(SWAMPFOLIAGECOLOR_PNG, SWAMPFOLIAGECOLOR_RP_PNG);
             if (is != null) {
-                loadBiomeShadingImage(is, IMG_SWAMPFOLIAGECOLOR);
+                loadBiomeShadingImage(is, IMG_SWAMPFOLIAGECOLOR, SWAMPFOLIAGECOLOR_RP_PNG, "minecraft");
                 tpl.closeResource(is);
             }
             /* Try to find and load misc/watercolor.png */
@@ -867,19 +869,19 @@ public class TexturePack {
                 is = tpl.openTPResource(WATERCOLORX_PNG, WATERCOLORX2_RP_PNG);
             }
             if (is != null) {
-                loadBiomeShadingImage(is, IMG_WATERCOLORX);
+                loadBiomeShadingImage(is, IMG_WATERCOLORX, WATERCOLORX_RP_PNG, "minecraft");
                 tpl.closeResource(is);
             }
             /* Try to find pine.png */
             is = tpl.openTPResource(PINECOLOR_PNG, PINECOLOR_RP_PNG);
             if (is != null) {
-                loadBiomeShadingImage(is, IMG_PINECOLOR);
+                loadBiomeShadingImage(is, IMG_PINECOLOR, PINECOLOR_RP_PNG, "minecraft");
                 tpl.closeResource(is);
             }
             /* Try to find birch.png */
             is = tpl.openTPResource(BIRCHCOLOR_PNG, BIRCHCOLOR_RP_PNG);
             if (is != null) {
-                loadBiomeShadingImage(is, IMG_BIRCHCOLOR);
+                loadBiomeShadingImage(is, IMG_BIRCHCOLOR, BIRCHCOLOR_RP_PNG, "minecraft");
                 tpl.closeResource(is);
             }
             /* Optional files - process if they exist */
@@ -888,7 +890,7 @@ public class TexturePack {
                 is = tpl.openTPResource("anim/" + CUSTOMLAVASTILL_PNG);
             }
             if (is != null) {
-                loadImage(is, IMG_CUSTOMLAVASTILL);
+                loadImage(is, IMG_CUSTOMLAVASTILL, CUSTOMLAVASTILL_PNG, "minecraft");
                 tpl.closeResource(is);
                 patchTextureWithImage(IMG_CUSTOMLAVASTILL, TILEINDEX_STATIONARYLAVA);
                 patchTextureWithImage(IMG_CUSTOMLAVASTILL, TILEINDEX_MOVINGLAVA);
@@ -898,7 +900,7 @@ public class TexturePack {
                 is = tpl.openTPResource("anim/" + CUSTOMLAVAFLOWING_PNG);
             }
             if (is != null) {
-                loadImage(is, IMG_CUSTOMLAVAMOVING);
+                loadImage(is, IMG_CUSTOMLAVAMOVING, CUSTOMLAVAFLOWING_PNG, "minecraft");
                 tpl.closeResource(is);
                 patchTextureWithImage(IMG_CUSTOMLAVAMOVING, TILEINDEX_MOVINGLAVA);
             }
@@ -907,7 +909,7 @@ public class TexturePack {
                 is = tpl.openTPResource("anim/" + CUSTOMWATERSTILL_PNG);
             }
             if (is != null) {
-                loadImage(is, IMG_CUSTOMWATERSTILL);
+                loadImage(is, IMG_CUSTOMWATERSTILL, CUSTOMWATERSTILL_PNG, "minecraft");
                 tpl.closeResource(is);
                 patchTextureWithImage(IMG_CUSTOMWATERSTILL, TILEINDEX_STATIONARYWATER);
                 patchTextureWithImage(IMG_CUSTOMWATERSTILL, TILEINDEX_MOVINGWATER);
@@ -917,7 +919,7 @@ public class TexturePack {
                 is = tpl.openTPResource("anim/" + CUSTOMWATERFLOWING_PNG);
             }
             if (is != null) {
-                loadImage(is, IMG_CUSTOMWATERMOVING);
+                loadImage(is, IMG_CUSTOMWATERMOVING, CUSTOMWATERSTILL_PNG, "minecraft");
                 tpl.closeResource(is);
                 patchTextureWithImage(IMG_CUSTOMWATERMOVING, TILEINDEX_MOVINGWATER);
             }
@@ -1344,7 +1346,7 @@ public class TexturePack {
     }
     
     /* Load image into image array */
-    private void loadImage(InputStream is, int idx) throws IOException {
+    private void loadImage(InputStream is, int idx, String fname, String modid) throws IOException {
         BufferedImage img = null;
         /* Load image */
         if(is != null) {
@@ -1371,6 +1373,8 @@ public class TexturePack {
             imgs[idx].height = 16;
             imgs[idx].argb = new int[imgs[idx].width * imgs[idx].height];
         }
+        imgs[idx].fname = fname;
+        imgs[idx].modid = modid;
     }
         
 
@@ -1438,8 +1442,8 @@ public class TexturePack {
         }
     }
     /* Load biome shading image into image array */
-    private void loadBiomeShadingImage(InputStream is, int idx) throws IOException {
-        loadImage(is, idx); /* Get image */
+    private void loadBiomeShadingImage(InputStream is, int idx, String fname, String modid) throws IOException {
+        loadImage(is, idx, fname, modid); /* Get image */
         LoadedImage li = imgs[idx];
         if (li.width != 256) {  /* Required to be 256 x 256 */
             int[] scaled = new int[256*256];
@@ -2221,7 +2225,7 @@ public class TexturePack {
                         }
                         /* If we have everything, build block */
                         if(blkids.size() > 0) {
-                            Integer colorIndex = (blockColorIdx >= 0)?blockColorIdx:null;
+                            Integer colorIndex = (blockColorIdx >= 0)?(blockColorIdx + IMG_CNT):null;
                             HDBlockStateTextureMap map = new HDBlockStateTextureMap(faces, layers, colorMult, custColorMult, blockset, stdrot, colorIndex);
                             map.addToTable(blkids, stateids, trans);
                             cnt++;
@@ -2958,7 +2962,7 @@ public class TexturePack {
         // If block has custom coloring
         if (hasblockcoloring) {
             Integer idx = this.blockColoring.getBlkStateValue(blkid, blkdata);
-            LoadedImage img = imgs[idx];
+            LoadedImage img = imgs[idx.intValue()];
             if (img.argb != null) {
                 custclrmult = mapiter.getSmoothWaterColorMultiplier(img.argb);
             }
@@ -3347,7 +3351,7 @@ public class TexturePack {
     public int getCustomBlockMultiplier(int blkid, int blkdata) {
         Integer idx = this.blockColoring.getBlkStateValue(blkid, blkdata);
         if (idx != null) {
-            LoadedImage img = imgs[idx];
+            LoadedImage img = imgs[idx.intValue()];
             if (img.argb != null) {
                 return img.argb[BiomeMap.FOREST.biomeLookup()];
             }
@@ -3522,7 +3526,7 @@ public class TexturePack {
         int custclrmult = -1;
         // If block has custom coloring
         if (blockcoloring != null) {
-            LoadedImage img = imgs[blockcoloring];
+            LoadedImage img = imgs[blockcoloring.intValue()];
             if (img.argb != null) {
                 custclrmult = mapiter.getSmoothWaterColorMultiplier(img.argb);
             }
@@ -3667,7 +3671,7 @@ public class TexturePack {
         }
         Integer idx = this.blockColoring.getBlkStateValue(blkid, blkdata);
         if (idx != null) {
-            LoadedImage custimg = imgs[idx];
+            LoadedImage custimg = imgs[idx.intValue()];
             if (custimg.argb != null) {
                 mult = Color.blendColor(mult, custimg.argb[biome.biomeLookup()]);
             }
