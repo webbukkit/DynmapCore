@@ -1793,7 +1793,7 @@ public class TexturePack {
                 HDBlockStateTextureMap tm = blkrec.getStateMap(stateid);
                 int cnt = HDBlockModels.getNeededTextureCount(blkid, stateid);
                 if(cnt > tm.faces.length){
-                    Log.severe("Block ID " + blkid + ":" + stateid + " - not enough textures for faces (" + cnt + " > " + tm.faces.length + ")");
+                    Log.severe("Block " + DynmapCore.getBlockName(blkid) + ":" + stateid + " - not enough textures for faces (" + cnt + " > " + tm.faces.length + ")");
                     int[] newfaces = new int[cnt];
                     System.arraycopy(tm.faces, 0, newfaces, 0, tm.faces.length);
                     for(i = tm.faces.length; i < cnt; i++) {

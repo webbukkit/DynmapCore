@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -135,6 +136,7 @@ public class DynmapCore implements DynmapCommonAPI {
     private String[] biomenames = new String[0];
     private Map<String, Integer> blockmap = null;
     private Map<String, Integer> itemmap = null;
+    private static String[] blocknames = null;
     
     private boolean loginRequired;
     
@@ -215,6 +217,10 @@ public class DynmapCore implements DynmapCommonAPI {
     
     public final Map<String, Integer> getBlockIDMap() {
         return blockmap;
+    }
+    
+    public static final String getBlockName(int id) {
+    	return blocknames[id];
     }
 
     public final void setBiomeNames(String[] names) {
@@ -480,6 +486,12 @@ public class DynmapCore implements DynmapCommonAPI {
         blockmap = server.getBlockUniqueIDMap();
         itemmap = server.getItemUniqueIDMap();
 
+        /* Build block name list */
+        blocknames = new String[4096];
+        for (Entry<String, Integer> v : blockmap.entrySet()) {
+        	blocknames[v.getValue()] = v.getKey();
+        }
+        
         /* Process mod support */
         ModSupportImpl.complete(this.dataDirectory);
         /* Load block models */
