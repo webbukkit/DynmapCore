@@ -964,17 +964,8 @@ patchblock:id=131,data=3,data=7,data=11,data=15
 patchrotate:id=131,data=0,rot=270
 
 # Ender Chest - facing south
-block:id=130,data=2,scale=16
-rotate:id=54,data=0,rot=180
-# Ender Chest - facing south
-block:id=130,data=3,scale=16
-rotate:id=54,data=0,rot=0
-# Ender Chest - facing east
-block:id=130,data=4,scale=16
-rotate:id=54,data=0,rot=90
-# Ender Chest - facing north
-block:id=130,data=5,scale=16
-rotate:id=54,data=0,rot=270
+customblock:id=130,data=*,class=org.dynmap.hdmap.renderer.ChestRenderer,doublechest=false
+
 # Beacon
 patchblock:id=138,data=*,patch0=BeaconGlassSide,patch1=BeaconGlassSide@90,patch2=BeaconGlassSide@180,patch3=BeaconGlassSide@270,patch4=BeaconGlassTop,patch5=BeaconGlassBottom,patch6=BeaconObsidianSide,patch7=BeaconObsidianSide@90,patch8=BeaconObsidianSide@180,patch9=BeaconObsidianSide@270,patch10=BeaconObsidianTop,patch11=BeaconLightSide,patch12=BeaconLightSide@90,patch13=BeaconLightSide@180,,patch14=BeaconLightSide@270,patch15=BeaconLightTop
 

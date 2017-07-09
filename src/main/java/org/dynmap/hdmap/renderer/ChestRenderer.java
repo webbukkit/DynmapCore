@@ -26,11 +26,14 @@ public class ChestRenderer extends CustomRenderer {
     private static final int[] LEFT_PATCHES = { 14, 6, 10, 11, 12, 8 };
     private static final int[] RIGHT_PATCHES = { 15, 7, 10, 11, 13, 9 };
 
+    private boolean double_chest = false;
     @Override
     public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
         if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
             return false;
 
+        double_chest = !("false".equals(custparm.get("doublechest")));
+        		
         ArrayList<RenderPatch> list = new ArrayList<RenderPatch>();
         // Build single chest patch model 
         CustomRenderer.addBox(rpf, list, OFF1, OFF15, 0, OFF14, OFF1, OFF15, SINGLE_PATCHES);
@@ -44,31 +47,33 @@ public class ChestRenderer extends CustomRenderer {
             models[ChestData.SINGLE_NORTH.ordinal()][i] = rpf.getRotatedPatch(list.get(i), 0, 180, 0, SINGLE_PATCHES[i]); 
             models[ChestData.SINGLE_EAST.ordinal()][i] = rpf.getRotatedPatch(list.get(i), 0, 270, 0, SINGLE_PATCHES[i]); 
         }
-        // Build left half model for double chest
-        list.clear();
-        CustomRenderer.addBox(rpf, list, OFF1, 1, 0, OFF14, OFF1, OFF15, LEFT_PATCHES);
-        models[ChestData.LEFT_SOUTH.ordinal()] = list.toArray(new RenderPatch[list.size()]);
-        // Rotate to other orientations
-        models[ChestData.LEFT_EAST.ordinal()] = new RenderPatch[6];
-        models[ChestData.LEFT_NORTH.ordinal()] = new RenderPatch[6];
-        models[ChestData.LEFT_WEST.ordinal()] = new RenderPatch[6];
-        for (int i = 0; i < 6; i++) {
-            models[ChestData.LEFT_WEST.ordinal()][i] = rpf.getRotatedPatch(list.get(i), 0, 90, 0, LEFT_PATCHES[i]); 
-            models[ChestData.LEFT_NORTH.ordinal()][i] = rpf.getRotatedPatch(list.get(i), 0, 180, 0, LEFT_PATCHES[i]); 
-            models[ChestData.LEFT_EAST.ordinal()][i] = rpf.getRotatedPatch(list.get(i), 0, 270, 0, LEFT_PATCHES[i]); 
-        }
-        // Build right half model for double chest
-        list.clear();
-        CustomRenderer.addBox(rpf, list, 0, OFF15, 0, OFF14, OFF1, OFF15, RIGHT_PATCHES);
-        models[ChestData.RIGHT_SOUTH.ordinal()] = list.toArray(new RenderPatch[list.size()]);
-        // Rotate to other orientations
-        models[ChestData.RIGHT_EAST.ordinal()] = new RenderPatch[6];
-        models[ChestData.RIGHT_NORTH.ordinal()] = new RenderPatch[6];
-        models[ChestData.RIGHT_WEST.ordinal()] = new RenderPatch[6];
-        for (int i = 0; i < 6; i++) {
-            models[ChestData.RIGHT_WEST.ordinal()][i] = rpf.getRotatedPatch(list.get(i), 0, 90, 0, RIGHT_PATCHES[i]); 
-            models[ChestData.RIGHT_NORTH.ordinal()][i] = rpf.getRotatedPatch(list.get(i), 0, 180, 0, RIGHT_PATCHES[i]); 
-            models[ChestData.RIGHT_EAST.ordinal()][i] = rpf.getRotatedPatch(list.get(i), 0, 270, 0, RIGHT_PATCHES[i]); 
+        if (double_chest) {
+        	// Build left half model for double chest
+        	list.clear();
+        	CustomRenderer.addBox(rpf, list, OFF1, 1, 0, OFF14, OFF1, OFF15, LEFT_PATCHES);
+        	models[ChestData.LEFT_SOUTH.ordinal()] = list.toArray(new RenderPatch[list.size()]);
+        	// Rotate to other orientations
+        	models[ChestData.LEFT_EAST.ordinal()] = new RenderPatch[6];
+        	models[ChestData.LEFT_NORTH.ordinal()] = new RenderPatch[6];
+        	models[ChestData.LEFT_WEST.ordinal()] = new RenderPatch[6];
+        	for (int i = 0; i < 6; i++) {
+        		models[ChestData.LEFT_WEST.ordinal()][i] = rpf.getRotatedPatch(list.get(i), 0, 90, 0, LEFT_PATCHES[i]); 
+        		models[ChestData.LEFT_NORTH.ordinal()][i] = rpf.getRotatedPatch(list.get(i), 0, 180, 0, LEFT_PATCHES[i]); 
+        		models[ChestData.LEFT_EAST.ordinal()][i] = rpf.getRotatedPatch(list.get(i), 0, 270, 0, LEFT_PATCHES[i]); 
+        	}
+        	// Build right half model for double chest
+        	list.clear();
+        	CustomRenderer.addBox(rpf, list, 0, OFF15, 0, OFF14, OFF1, OFF15, RIGHT_PATCHES);
+        	models[ChestData.RIGHT_SOUTH.ordinal()] = list.toArray(new RenderPatch[list.size()]);
+        	// Rotate to other orientations
+        	models[ChestData.RIGHT_EAST.ordinal()] = new RenderPatch[6];
+        	models[ChestData.RIGHT_NORTH.ordinal()] = new RenderPatch[6];
+        	models[ChestData.RIGHT_WEST.ordinal()] = new RenderPatch[6];
+        	for (int i = 0; i < 6; i++) {
+        		models[ChestData.RIGHT_WEST.ordinal()][i] = rpf.getRotatedPatch(list.get(i), 0, 90, 0, RIGHT_PATCHES[i]); 
+        		models[ChestData.RIGHT_NORTH.ordinal()][i] = rpf.getRotatedPatch(list.get(i), 0, 180, 0, RIGHT_PATCHES[i]); 
+        		models[ChestData.RIGHT_EAST.ordinal()][i] = rpf.getRotatedPatch(list.get(i), 0, 270, 0, RIGHT_PATCHES[i]); 
+        	}
         }
         
         return true;
@@ -76,12 +81,20 @@ public class ChestRenderer extends CustomRenderer {
 
     @Override
     public int getMaximumTextureCount() {
-        return 16;
+    	if (double_chest) {
+    		return 16;
+    	}
+    	else {
+    		return 6;
+    	}
     }
         
     @Override
     public RenderPatch[] getRenderPatchList(MapDataContext ctx) {
         int blktype = ctx.getBlockTypeID();
+        if (!double_chest) {
+        	blktype = -1;	// Force mismatch - always single
+        }
         int blkdata = ctx.getBlockData();   /* Get block data */
         ChestData cd = ChestData.SINGLE_NORTH;   /* Default to single facing north */
         switch(blkdata) {   /* First, use orientation data */

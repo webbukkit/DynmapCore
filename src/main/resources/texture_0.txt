@@ -1003,13 +1003,7 @@ block:id=128,data=*,patch0=0:sandstone_normal,patch1=0:sandstone_top,patch2=0:sa
 # Emerald Ore
 block:id=129,data=*,allfaces=0:emerald_ore,stdrot=true
 # Ender Chest (facing east)
-block:id=130,data=2,top=6000,east=3,south=1,north=2,west=4,bottom=6005,txtid=enderchest
-# Ender Chest (facing west)
-block:id=130,data=3,top=4000,west=3,south=2,north=1,east=4,bottom=4005,txtid=enderchest
-# Ender Chest (facing north)
-block:id=130,data=4,top=5000,north=3,south=4,east=1,west=2,bottom=5005,txtid=enderchest
-# Ender Chest (facing south)
-block:id=130,data=5,top=0,south=3,north=4,east=2,west=1,bottom=5,txtid=enderchest
+block:id=130,data=*,patch0=0:enderchest,patch1=1:enderchest,patch2=2:enderchest,patch3=3:enderchest,patch4=4:enderchest,patch5=5:enderchest
 # Tripwire Hook
 block:id=131,data=*,patch0-5=0:cobblestone,patch6-7=0:trip_wire_source,transparency=TRANSPARENT
 # Tripwire
