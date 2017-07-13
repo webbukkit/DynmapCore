@@ -30,6 +30,7 @@ import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapCore;
 import org.dynmap.Log;
 import org.dynmap.MapManager;
+import org.dynmap.blockstate.BlockStateManager;
 import org.dynmap.common.BiomeMap;
 import org.dynmap.exporter.OBJExport;
 import org.dynmap.renderer.CustomColorMultiplier;
@@ -184,8 +185,6 @@ public class TexturePack {
     private static final int TILEINDEX_SHULKER_BACK = 4;
     private static final int TILEINDEX_SHULKER_BOTTOM = 5;
     private static final int TILEINDEX_SHULKER_COUNT = 6;
-
-    private static final int BLOCKTABLELEN = 4096; // Max block ID range
     
     public static enum TileFileFormat {
         GRID,
@@ -422,16 +421,16 @@ public class TexturePack {
         private HDBlockStateTextureMap[] texmaps;   // List of texture maps, indexed by state index
         private BlockTransparency transp;
         // Table of block texture map records, indexed by block ID
-        private static HDBlockTextureMap[] blkmaps = new HDBlockTextureMap[BLOCKTABLELEN];
+        private static HDBlockTextureMap[] blkmaps = new HDBlockTextureMap[DynmapCore.BLOCKTABLELEN];
         
         // Default to a simple block with blank states for metadata values
         private HDBlockTextureMap(int blkid) {
             reset();
             blockid = blkid;
         }
-        // Reset to simple block with blank states for metadata values
+        // Reset to simple block with blank states for state values
         private void reset() {
-            texmaps = new HDBlockStateTextureMap[16];
+            texmaps = new HDBlockStateTextureMap[bsm.getBlockStateCount(blockid)];
             for (int i = 0; i < texmaps.length; i++) {
                 texmaps[i] = new HDBlockStateTextureMap();
             }
@@ -607,11 +606,21 @@ public class TexturePack {
             for(Integer blkid : blockids) {
                 if(blkid > 0) {
                     HDBlockTextureMap blk = HDBlockTextureMap.getByBlockID(blkid);
-                    for (Integer stateid : stateidx) {
-                        if((this.blockset != null) && (this.blockset.equals("core") == false)) {
-                            HDBlockModels.resetIfNotBlockSet(blkid, stateid, this.blockset);
+                    if (stateidx != null) {
+                        for (Integer stateid : stateidx) {
+                            if((this.blockset != null) && (this.blockset.equals("core") == false)) {
+                                HDBlockModels.resetIfNotBlockSet(blkid, stateid, this.blockset);
+                            }
+                            blk.copyToStateIndex(stateid, this);
                         }
-                        blk.copyToStateIndex(stateid, this);
+                    }
+                    else {  // Else, loop over all state IDs for given block
+                        for (int stateid = 0; stateid < bsm.getBlockStateCount(blkid); stateid++) {
+                            if((this.blockset != null) && (this.blockset.equals("core") == false)) {
+                                HDBlockModels.resetIfNotBlockSet(blkid, stateid, this.blockset);
+                            }
+                            blk.copyToStateIndex(stateid, this);
+                        }
                     }
                     blk.transp = trans;
                 }
@@ -766,12 +775,14 @@ public class TexturePack {
             return null;
         }
     }
+    
+    private static BlockStateManager bsm;
+    
     /**
      * Constructor for texture pack, by name
      */
     private TexturePack(DynmapCore core, String tpname) throws FileNotFoundException {
         File texturedir = getTexturePackDirectory(core);
-
         /* Set up for enough files */
         imgs = new LoadedImage[IMG_CNT + addonfiles.size()];
 
@@ -1209,7 +1220,6 @@ public class TexturePack {
         this.native_scale = tp.native_scale;
         this.ctm = tp.ctm;
         this.imgs = tp.imgs;
-        //this.hasBlockColoring = tp.hasBlockColoring;
         this.blockColoring = tp.blockColoring;
     }
     
@@ -1675,6 +1685,8 @@ public class TexturePack {
      */
     public static void loadTextureMapping(DynmapCore core, ConfigurationNode config) {
         File datadir = core.getDataFolder();
+        // Get block state manager
+        bsm = core.getBlockStateManager();
         /* Start clean with texture packs - need to be loaded after mapping */
         resetFiles(core);
         /* Initialize map with blank map for all entries */
@@ -2020,7 +2032,7 @@ public class TexturePack {
                 }
                 else if(line.startsWith("block:")) {
                     List<Integer> blkids = new ArrayList<Integer>();
-                    List<Integer> stateids = new ArrayList<Integer>();
+                    List<Integer> stateids = null;
                     int srctxtid = TXTID_TERRAINPNG;
                     if (!terrain_ok)
                         srctxtid = TXTID_INVALID;  // Mark as not usable
@@ -2061,11 +2073,10 @@ public class TexturePack {
                             if(av.length < 2) continue;
                             if(av[0].equals("data")) {
                                 if(av[1].equals("*")) {
-                                    for (int v = 0; v < 16; v++) {  // Assume meta range for now
-                                        stateids.add(v);
-                                    }
+                                    stateids = null;
                                 }
                                 else {
+                                    if (stateids == null) { stateids = new ArrayList<Integer>(); }
                                     stateids.add(getIntValue(varvals,av[1]));
                                 }
                             }
@@ -2217,12 +2228,6 @@ public class TexturePack {
                                 }
                             }
                         }
-                        /* If no data bits, assume all */
-                        if (stateids.isEmpty()) {
-                            for (int v = 0; v < 16; v++) {  // Assume meta range for now
-                                stateids.add(v);
-                            }
-                        }
                         /* If we have everything, build block */
                         if(blkids.size() > 0) {
                             Integer colorIndex = (blockColorIdx >= 0)?(blockColorIdx + IMG_CNT):null;
@@ -2237,7 +2242,7 @@ public class TexturePack {
                 }
                 else if(line.startsWith("copyblock:")) {
                     List<Integer> blkids = new ArrayList<Integer>();
-                    List<Integer> stateids = new ArrayList<Integer>();
+                    List<Integer> stateids = null;
                     line = line.substring(line.indexOf(':')+1);
                     String[] args = line.split(",");
                     int srcid = -1;
@@ -2254,11 +2259,10 @@ public class TexturePack {
                         }
                         else if(av[0].equals("data")) {
                             if(av[1].equals("*")) {
-                                for (int v = 0; v < 16; v++) {
-                                    stateids.add(v);
-                                }
+                                stateids = null;    // Set all
                             }
                             else {
+                                if (stateids == null) { stateids = new ArrayList<Integer>(); }
                                 stateids.add(getIntValue(varvals,av[1]));
                             }
                         }
@@ -2285,12 +2289,6 @@ public class TexturePack {
                             if((blkids.contains(8) || blkids.contains(9)) && (HDMapManager.waterlightingfix == false)) {
                                 trans = BlockTransparency.TRANSPARENT;  /* Treat water as transparent if no fix */
                             }
-                        }
-                    }
-                    /* If no data bits, assume all */
-                    if (stateids.isEmpty()) {
-                        for (int v = 0; v < 16; v++) {
-                            stateids.add(v);
                         }
                     }
                     /* If we have everything, build block */
@@ -2372,9 +2370,7 @@ public class TexturePack {
                         }
                         else if(av[0].equals("data")) {
                             if(av[1].equals("*")) {
-                                for (int v = 0; v < 16; v++) {
-                                    stateids.add(v);
-                                }
+                                stateids = null;
                             }
                             else {
                                 stateids.add(getIntValue(varvals,av[1]));
@@ -2410,11 +2406,9 @@ public class TexturePack {
                             }
                         }
                     }
-                    /* If no data bits, assume all */
+                    /* If no states, assume all */
                     if (stateids.isEmpty()) {
-                        for (int v = 0; v < 16; v++) {
-                            stateids.add(v);
-                        }
+                        stateids = null;
                     }
                     /* If we have everything, build texture map */
                     if((blkids.size() > 0) && (mapid != null)) {
@@ -2665,7 +2659,7 @@ public class TexturePack {
 
     /* Process any block aliases */
     public static void handleBlockAlias() {
-        for(int i = 0; i < BLOCKTABLELEN; i++) {
+        for(int i = 0; i < DynmapCore.BLOCKTABLELEN; i++) {
             int id = MapManager.mapman.getBlockIDAlias(i);
             if(id != i) {   /* New mapping? */
                 HDBlockTextureMap.remapTexture(i, id);

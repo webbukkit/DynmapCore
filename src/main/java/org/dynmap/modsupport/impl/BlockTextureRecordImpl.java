@@ -3,6 +3,7 @@ package org.dynmap.modsupport.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.dynmap.DynmapCore;
 import org.dynmap.hdmap.TexturePack;
 import org.dynmap.modsupport.BlockSide;
 import org.dynmap.modsupport.BlockTextureRecord;
@@ -116,7 +117,7 @@ public class BlockTextureRecordImpl implements BlockTextureRecord {
      */
     @Override
     public void addBlockID(int blockID) {
-        if ((blockID > 0) && (blockID < 4096)) {
+        if ((blockID > 0) && (blockID < DynmapCore.BLOCKTABLELEN)) {
             for (int i = 0; i < ids.length; i++) {
                 if (ids[i] == blockID) {
                     return;

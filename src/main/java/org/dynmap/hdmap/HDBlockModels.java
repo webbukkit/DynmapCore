@@ -34,7 +34,6 @@ import org.dynmap.utils.PatchDefinitionFactory;
  * Used by perspectives to determine if rays have intersected a block that doesn't occupy its whole block
  */
 public class HDBlockModels {
-    private static final int BLOCKTABLELEN = 4096;
     private static int max_patches;
     private static HashMap<Integer, HDBlockModel> models_by_id_data = new HashMap<Integer, HDBlockModel>();
     private static PatchDefinitionFactory pdf = new PatchDefinitionFactory();
@@ -71,7 +70,7 @@ public class HDBlockModels {
 
     /* Process any block aliases */
     public static void handleBlockAlias() {
-        for(int i = 0; i < BLOCKTABLELEN; i++) {
+        for(int i = 0; i < DynmapCore.BLOCKTABLELEN; i++) {
             int id = MapManager.mapman.getBlockIDAlias(i);
             if(id != i) {   /* New mapping? */
                 remapModel(i, id);
@@ -80,7 +79,7 @@ public class HDBlockModels {
     }
     
     private static void remapModel(int id, int newid) {
-        if ((id > 0) && (id < BLOCKTABLELEN) && (newid >= 0) && (newid < BLOCKTABLELEN)) {
+        if ((id > 0) && (id < DynmapCore.BLOCKTABLELEN) && (newid >= 0) && (newid < DynmapCore.BLOCKTABLELEN)) {
             for (int meta = 0; meta < 16; meta++) {
                 int srcid = (newid * 16) + meta;
                 int destid = (id * 16) + meta;
@@ -469,9 +468,9 @@ public class HDBlockModels {
         HDScaledBlockModels model = scaled_models_by_scale.get(Integer.valueOf(scale));
         if(model == null) {
             model = new HDScaledBlockModels();
-            short[][][] blockmodels = new short[BLOCKTABLELEN][][];
-            PatchDefinition[][][] patches = new PatchDefinition[BLOCKTABLELEN][][];
-            CustomBlockModel[][] custom = new CustomBlockModel[BLOCKTABLELEN][];
+            short[][][] blockmodels = new short[DynmapCore.BLOCKTABLELEN][][];
+            PatchDefinition[][][] patches = new PatchDefinition[DynmapCore.BLOCKTABLELEN][][];
+            CustomBlockModel[][] custom = new CustomBlockModel[DynmapCore.BLOCKTABLELEN][];
             
             for(Integer id_data : models_by_id_data.keySet()) {
                 int blkid = id_data.intValue() >> 4;

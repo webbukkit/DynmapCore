@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.dynmap.blockstate.BlockStateManager;
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.common.DynmapListenerManager;
 import org.dynmap.common.DynmapListenerManager.EventType;
@@ -79,6 +80,8 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
 
 public class DynmapCore implements DynmapCommonAPI {
+    // Current architectural limit for Minecraft block IDs
+    public static final int BLOCKTABLELEN = 4096;
     /**
      * Callbacks for core initialization - subclassed by platform plugins
      */
@@ -137,6 +140,7 @@ public class DynmapCore implements DynmapCommonAPI {
     private Map<String, Integer> blockmap = null;
     private Map<String, Integer> itemmap = null;
     private static String[] blocknames = null;
+    private BlockStateManager blkstateman = new BlockStateManager();
     
     private boolean loginRequired;
     
@@ -487,7 +491,7 @@ public class DynmapCore implements DynmapCommonAPI {
         itemmap = server.getItemUniqueIDMap();
 
         /* Build block name list */
-        blocknames = new String[4096];
+        blocknames = new String[DynmapCore.BLOCKTABLELEN];
         for (Entry<String, Integer> v : blockmap.entrySet()) {
         	blocknames[v.getValue()] = v.getKey();
         }
@@ -600,7 +604,7 @@ public class DynmapCore implements DynmapCommonAPI {
             tp = tp.resampleTexturePack(1);
             if (tp == null) return;
             Color c = new Color();
-            for (int blkid = 1; blkid < 4096; blkid++) {
+            for (int blkid = 1; blkid < DynmapCore.BLOCKTABLELEN; blkid++) {
                 int meta0color = 0;
                 HDBlockTextureMap bmap = HDBlockTextureMap.getByBlockID(blkid);
                 for (int blkmeta = 0; blkmeta < bmap.getStateCount(); blkmeta++) {
@@ -2425,6 +2429,10 @@ public class DynmapCore implements DynmapCommonAPI {
     
     public MapStorage getDefaultMapStorage() {
         return defaultStorage;
+    }
+    
+    public BlockStateManager getBlockStateManager() {
+        return blkstateman;
     }
 }
 
