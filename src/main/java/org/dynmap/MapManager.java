@@ -24,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.dynmap.DynmapCore.CompassMode;
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.common.DynmapPlayer;
 import org.dynmap.debug.Debug;
@@ -1556,10 +1555,6 @@ public class MapManager {
         return core.bettergrass;
     }
     
-    public CompassMode getCompassMode() {
-        return core.compassmode;
-    }
-
     public boolean getHideOres() {
         return hideores;
     }

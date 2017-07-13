@@ -14,7 +14,6 @@ import org.dynmap.Color;
 import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapChunk;
 import org.dynmap.DynmapCore;
-import org.dynmap.DynmapCore.CompassMode;
 import org.dynmap.Log;
 import org.dynmap.MapManager;
 import org.dynmap.MapTile;
@@ -848,13 +847,9 @@ public class IsoHDPerspective implements HDPerspective {
         else {
             hashcode = name.hashCode();
         }
-        double az = configuration.getDouble("azimuth", 135.0);    /* Get azimuth (default to classic kzed POV */
-        /* Fix azimuth so that we respect new north, if that is requested (newnorth = oldeast) */
-        if(MapManager.mapman.getCompassMode() == CompassMode.NEWNORTH) {
-            az = (az + 90.0);
-            if(az >= 360.0) {
-                az = az - 360.0;
-            }
+        double az = 90.0 + configuration.getDouble("azimuth", 135.0);    /* Get azimuth (default to classic kzed POV) */
+        if(az >= 360.0) {
+            az = az - 360.0;
         }
         azimuth = az;
         double inc;
@@ -1291,11 +1286,8 @@ public class IsoHDPerspective implements HDPerspective {
         s(mapObject, "scale", basemodscale);
         s(mapObject, "worldtomap", world_to_map.toJSON());
         s(mapObject, "maptoworld", map_to_world.toJSON());
-        int dir = ((360 + (int)(22.5+azimuth)) / 45) % 8;
-        if(MapManager.mapman.getCompassMode() != CompassMode.PRE19)
-            dir = (dir + 6) % 8;
+        int dir = (((360 + (int)(22.5+azimuth)) / 45) + 6) % 8;
         s(mapObject, "compassview", directions[dir]);
-
     }
     
     private static final int fastFloor(double f) {

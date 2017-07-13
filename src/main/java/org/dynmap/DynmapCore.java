@@ -125,7 +125,6 @@ public class DynmapCore implements DynmapCommonAPI {
     private int perTickLimit = 50;   // 50 ms
     private boolean dumpMissing = false;
         
-    public CompassMode compassmode = CompassMode.PRE19;
     private int     config_hashcode;    /* Used to signal need to reload web configuration (world changes, config update, etc) */
     private int fullrenderplayerlimit;  /* Number of online players that will cause fullrender processing to pause */
     private int updateplayerlimit;  /* Number of online players that will cause update processing to pause */
@@ -144,12 +143,6 @@ public class DynmapCore implements DynmapCommonAPI {
     
     private boolean loginRequired;
     
-    public enum CompassMode {
-        PRE19,  /* Default for 1.8 and earlier (east is Z+) */
-        NEWROSE,    /* Use same map orientation, fix rose */
-        NEWNORTH    /* Use new map orientation */
-    };
-
     /* Flag to let code know that we're doing reload - make sure we don't double-register event handlers */
     public boolean is_reload = false;
     public static boolean ignore_chunk_loads = false; /* Flag keep us from processing our own chunk loads */
@@ -460,14 +453,6 @@ public class DynmapCore implements DynmapCommonAPI {
         snapshotcachesize = configuration.getInteger("snapshotcachesize", 500);
         /* Get soft ref flag for cache (weak=false, soft=true) */
         snapshotsoftref = configuration.getBoolean("soft-ref-cache", true);
-        /* Default compassmode to newrose */
-        String cmode = configuration.getString("compass-mode", "newrose");
-        if(cmode.equals("newnorth"))
-            compassmode = CompassMode.NEWNORTH;
-        else if(cmode.equals("newrose"))
-            compassmode = CompassMode.NEWROSE;
-        else
-            compassmode = CompassMode.PRE19;
         /* Default better-grass */
         bettergrass = configuration.getBoolean("better-grass", false);
         /* Load full render processing player limit */
