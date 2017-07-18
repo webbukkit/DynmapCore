@@ -1816,7 +1816,7 @@ block:id=173,data=*,stdrot=true,allfaces=0:coal_block
 [1.12.0-]block:id=251,data=12,stdrot=true,allfaces=0:concrete_brown
 [1.12.0-]block:id=251,data=13,stdrot=true,allfaces=0:concrete_green
 [1.12.0-]block:id=251,data=14,stdrot=true,allfaces=0:concrete_red
-[1.12.0-]block:id=251,data=16,stdrot=true,allfaces=0:concrete_black
+[1.12.0-]block:id=251,data=15,stdrot=true,allfaces=0:concrete_black
 
 # Concrete Powder
 [1.12.0-]block:id=252,data=0,stdrot=true,allfaces=0:concrete_powder_white
@@ -1834,5 +1834,5 @@ block:id=173,data=*,stdrot=true,allfaces=0:coal_block
 [1.12.0-]block:id=252,data=12,stdrot=true,allfaces=0:concrete_powder_brown
 [1.12.0-]block:id=252,data=13,stdrot=true,allfaces=0:concrete_powder_green
 [1.12.0-]block:id=252,data=14,stdrot=true,allfaces=0:concrete_powder_red
-[1.12.0-]block:id=252,data=16,stdrot=true,allfaces=0:concrete_powder_black
+[1.12.0-]block:id=252,data=15,stdrot=true,allfaces=0:concrete_powder_black
 
