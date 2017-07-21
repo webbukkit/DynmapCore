@@ -1,12 +1,5 @@
 package org.dynmap;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-
-import javax.imageio.ImageIO;
-
 import org.dynmap.MapType.ImageFormat;
 import org.dynmap.common.DynmapListenerManager.EventType;
 import org.dynmap.common.DynmapListenerManager.PlayerEventListener;
@@ -16,6 +9,13 @@ import org.dynmap.storage.MapStorage;
 import org.dynmap.utils.BufferOutputStream;
 import org.dynmap.utils.DynmapBufferedImage;
 import org.dynmap.utils.ImageIOManager;
+
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLEncoder;
 
 /**
  * Listen for player logins, and process player faces by fetching skins *
@@ -72,7 +72,7 @@ public class PlayerFaces {
             BufferedImage img = null;
             try {
                 if(fetchskins && (refreshskins || missing_any)) {
-                    URL url = new URL(skinurl.replace("%player%", playername));
+                    URL url = new URL(skinurl.replace("%player%", URLEncoder.encode(playername, "UTF-8")));
                     img = ImageIO.read(url);    /* Load skin for player */
                 }
             } catch (IOException iox) {
