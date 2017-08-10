@@ -441,6 +441,9 @@ DynMap.prototype = {
 			
 			$.each(me.sidebarSections, function (i, section) {
 				if ($.inArray(i, nonResizeableSections) > -1) {
+					section.upBtn.hide();
+					section.downBtn.hide();
+					section.content.height('auto');
 					return;
 				}
 				
