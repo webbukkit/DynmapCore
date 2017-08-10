@@ -448,10 +448,10 @@ DynMap.prototype = {
 				section.downBtn.show();
 				
 				var contentHeight = section.content.scrollHeight();
-				var proportionalMissingHeight = 
+				// longer sections get resized more aggressively than shorted ones
+				var proportionalMissingHeight =
 					missingHeight
-					*
-					(contentHeight / resizeableContentHeight);
+					* (contentHeight / resizeableContentHeight);
 				section.content.height(contentHeight - proportionalMissingHeight);
 			});
 		}
