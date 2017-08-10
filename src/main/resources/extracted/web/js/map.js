@@ -411,11 +411,11 @@ DynMap.prototype = {
 		
 		// collect size information about all the sections
 		$.each(me.sidebarSections, function (i, section) {
-			var legend = section.legend.outerHeight();
+			var legend = section.legend.outerHeight(true);
 			var content = section.content.scrollHeight();
 			var up = section.upBtn.outerHeight(true);
 			var down = section.downBtn.outerHeight(true);
-			var sectionPadding = section.section.outerHeight() - section.section.height();
+			var sectionPadding = section.section.outerHeight(true) - section.section.height();
 			
 			var sHeight = legend + content + sectionPadding;
 			
