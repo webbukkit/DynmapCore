@@ -550,12 +550,12 @@
 	background-position: center;
 }
 
-.playerlist {
+.sidebar .list {
 	overflow:hidden;
 }
 
-.worldlist {
-	overflow:hidden;
+.sidebar .content {
+	min-height: 24px;
 }
 
 /*******************
