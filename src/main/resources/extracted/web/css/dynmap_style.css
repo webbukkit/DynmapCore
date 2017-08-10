@@ -367,10 +367,10 @@
 }
 
 /*******************
- * map list-specific styling
+ * generic sidebar sublist styling
  */
 
-.dynmap .panel .world {
+.dynmap .panel .subsection {
     display: block;
     clear: both;
 
@@ -382,7 +382,7 @@
 
 }
 
-.dynmap .maplist .map {
+.dynmap .sublist .item {
     display: block;
     float: left;
 
@@ -399,24 +399,24 @@
     border: 1px solid rgba(64,64,64,0.6);
 }
 
-.dynmap .maplist .map:hover {
+.dynmap .sublist .item:hover {
     background: rgba(64,64,64,0.6);
     border: 1px solid rgba(128,128,128,0.6);
 }
 
-.dynmap .maplist .map.selected {
+.dynmap .sublist .item.selected {
     background: rgba(128,128,128,0.5);
     border: 1px solid rgba(255,255,255,0.5);
 }
 
-.dynmap .maplist .map > a {
+.dynmap .sublist .item > a {
     display: block;
 
     text-indent: -99999px;
     outline: none;
 }
 
-.dynmap .maplist .map > a {
+.dynmap .sublist .item > a {
     background-repeat: no-repeat;
     background-position: center;
 }
