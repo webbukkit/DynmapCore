@@ -213,7 +213,7 @@ public class TopoHDShader implements HDShader {
             /* See if we're close to an edge */
             int[] xyz = ps.getSubblockCoord();
             // Only color lines when spacing is matched
-            Color lcolor = ((ps.getMapIterator().getX() % linespacing) == 0)?linecolor:null;
+            Color lcolor = ((ps.getMapIterator().getY() % linespacing) == 0)?linecolor:null;
             
             /* See which face we're on (only do lines on top face) */
             switch(ps.getLastBlockStep()) {
