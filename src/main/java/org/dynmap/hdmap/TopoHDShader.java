@@ -24,6 +24,7 @@ public class TopoHDShader implements HDShader {
     private final Color fillcolor[];  /* Color for nontopo surfaces */
     private final Color watercolor;
     private int[] hiddenids;
+    private final int linespacing;
     
     private Color readColor(String id, ConfigurationNode cfg) {
         String lclr = cfg.getString(id, null);
@@ -84,6 +85,7 @@ public class TopoHDShader implements HDShader {
                 }
             }
         }
+        linespacing = configuration.getInteger("linespacing", 1);
     }
     
     @Override
@@ -210,17 +212,19 @@ public class TopoHDShader implements HDShader {
             }
             /* See if we're close to an edge */
             int[] xyz = ps.getSubblockCoord();
+            // Only color lines when spacing is matched
+            Color lcolor = ((ps.getMapIterator().getX() % linespacing) == 0)?linecolor:null;
             
             /* See which face we're on (only do lines on top face) */
             switch(ps.getLastBlockStep()) {
             case Y_MINUS:
             case Y_PLUS:
-                if((linecolor != null) &&
+                if((lcolor != null) &&
                         (((xyz[0] == 0) && (isHidden(mapiter.getBlockTypeIDAt(BlockStep.X_MINUS)))) ||
                         ((xyz[0] == (scale-1)) && (isHidden(mapiter.getBlockTypeIDAt(BlockStep.X_PLUS)))) ||
                         ((xyz[2] == 0) && (isHidden(mapiter.getBlockTypeIDAt(BlockStep.Z_MINUS)))) ||
                         ((xyz[2] == (scale-1)) && (isHidden(mapiter.getBlockTypeIDAt(BlockStep.Z_PLUS)))))) {
-                    c.setColor(linecolor);
+                    c.setColor(lcolor);
                     inWater = false;
                 }
                 else if((watercolor != null) && ((blocktype == 8) || (blocktype == 9))) {
@@ -238,8 +242,8 @@ public class TopoHDShader implements HDShader {
                 }
                 break;
             default:
-                if((linecolor != null) && (xyz[1] == (scale-1))) {
-                    c.setColor(linecolor);
+                if((lcolor != null) && (xyz[1] == (scale-1))) {
+                    c.setColor(lcolor);
                     inWater = false;
                 }
                 else if((watercolor != null) && ((blocktype == 8) || (blocktype == 9))) {
