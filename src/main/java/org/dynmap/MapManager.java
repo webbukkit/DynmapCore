@@ -24,7 +24,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.dynmap.DynmapCore.CompassMode;
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.common.DynmapPlayer;
 import org.dynmap.debug.Debug;
@@ -882,7 +881,7 @@ public class MapManager {
         hideores = configuration.getBoolean("hideores", false);
         useBrightnessTable = configuration.getBoolean("use-brightness-table", false);
         
-        blockidalias = new short[4096];
+        blockidalias = new short[DynmapCore.BLOCKTABLELEN];
         for (int i = 0; i < blockidalias.length; i++) {
             blockidalias[i] = (short) i;
         }
@@ -1556,10 +1555,6 @@ public class MapManager {
         return core.bettergrass;
     }
     
-    public CompassMode getCompassMode() {
-        return core.compassmode;
-    }
-
     public boolean getHideOres() {
         return hideores;
     }
@@ -1569,7 +1564,7 @@ public class MapManager {
     }
     /* Set block ID alias */
     public void setBlockIDAlias(int id, int newid) {
-        if ((id > 0) && (id < 4096) && (newid >= 0) && (newid < 4096)) {
+        if ((id > 0) && (id < DynmapCore.BLOCKTABLELEN) && (newid >= 0) && (newid < DynmapCore.BLOCKTABLELEN)) {
             blockidalias[id] = (short)newid;
         }
     }

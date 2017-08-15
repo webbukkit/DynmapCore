@@ -23,6 +23,8 @@ $content = getStandaloneFile('dynmap_config.json');
 
 header('Content-type: application/json; charset=utf-8');
 
+$json = json_decode($content);
+
 if (!$loginenabled) {
 	echo $content;
 }
@@ -30,7 +32,6 @@ else if($json->loginrequired && !$loggedin) {
     echo "{ \"error\": \"login-required\" }";
 }
 else {
-	$json = json_decode($content);
 	$uid = '[' . strtolower($userid) . ']';
 	$json->loggedin = $loggedin;
 	$wcnt = count($json->worlds);

@@ -361,9 +361,8 @@ public class OBJExport {
         BlockStep[] steps = BlockStep.values();
         int[] txtidx = null;
         int data = map.getBlockData();             
-        int renderdata = HDBlockModels.getBlockRenderData(blkid, map);  // Get render data, if needed
         // See if the block has a patch model
-        RenderPatch[] patches = models.getPatchModel(blkid,  data,  renderdata);
+        RenderPatch[] patches = models.getPatchModel(blkid,  data);
         /* If no patches, see if custom model */
         if(patches == null) {
             CustomBlockModel cbm = models.getCustomBlockModel(blkid,  data);
@@ -380,7 +379,7 @@ public class OBJExport {
             }
         }
         else {  // See if volumetric
-            short[] smod = models.getScaledModel(blkid, data, renderdata);
+            short[] smod = models.getScaledModel(blkid, data);
             if (smod != null) {
                 patches = getScaledModelAsPatches(smod);
                 steps = new BlockStep[patches.length];
@@ -397,7 +396,7 @@ public class OBJExport {
         updateGroup(GROUP_BLOCKIDMETA, "blk" + blkid + "_" + data);
 
         // Get materials for patches
-        String[] mats = shader.getCurrentBlockMaterials(blkid, data, renderdata, map, txtidx, steps);
+        String[] mats = shader.getCurrentBlockMaterials(blkid, data, map, txtidx, steps);
         
         if (patches != null) {  // Patch based model?
             for (int i = 0; i < patches.length; i++) {
@@ -405,11 +404,11 @@ public class OBJExport {
             }
         }
         else {
-            boolean opaque = TexturePack.HDTextureMap.getTransparency(blkid) == BlockTransparency.OPAQUE;
+            boolean opaque = TexturePack.HDBlockTextureMap.getTransparency(blkid) == BlockTransparency.OPAQUE;
             for (int face = 0; face < 6; face++) {
                 int id2 = map.getBlockTypeIDAt(BlockStep.oppositeValues[face]);  // Get block in direction
                 // If we're not solid, or adjacent block is not solid, draw side
-                if ((!opaque) || (id2 == 0) || edgebits[face] || (TexturePack.HDTextureMap.getTransparency(id2) != BlockTransparency.OPAQUE)) {
+                if ((!opaque) || (id2 == 0) || edgebits[face] || (TexturePack.HDBlockTextureMap.getTransparency(id2) != BlockTransparency.OPAQUE)) {
                     addPatch(defaultPathces[face], map.getX(), map.getY(), map.getZ(), mats[face]);
                 }
             }

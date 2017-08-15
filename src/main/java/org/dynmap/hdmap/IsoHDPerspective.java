@@ -14,7 +14,6 @@ import org.dynmap.Color;
 import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapChunk;
 import org.dynmap.DynmapCore;
-import org.dynmap.DynmapCore.CompassMode;
 import org.dynmap.Log;
 import org.dynmap.MapManager;
 import org.dynmap.MapTile;
@@ -29,7 +28,7 @@ import org.dynmap.storage.MapStorageTile;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.hdmap.HDBlockModels.CustomBlockModel;
 import org.dynmap.hdmap.TexturePack.BlockTransparency;
-import org.dynmap.hdmap.TexturePack.HDTextureMap;
+import org.dynmap.hdmap.TexturePack.HDBlockTextureMap;
 import org.dynmap.utils.DynmapBufferedImage;
 import org.dynmap.utils.LightLevels;
 import org.dynmap.utils.DynLongHashMap;
@@ -84,7 +83,6 @@ public class IsoHDPerspective implements HDPerspective {
     private class OurPerspectiveState implements HDPerspectiveState {
         int blocktypeid = 0;
         int blockdata = 0;
-        int blockrenderdata = -1;
         int lastblocktypeid = 0;
         Vector3D top, bottom, direction;
         int px, py;
@@ -179,14 +177,14 @@ public class IsoHDPerspective implements HDPerspective {
          */
         private final void updateLightLevel(int blktypeid, LightLevels ll) {
             /* Look up transparency for current block */
-            BlockTransparency bt = HDTextureMap.getTransparency(blktypeid);
+            BlockTransparency bt = HDBlockTextureMap.getTransparency(blktypeid);
             switch(bt) {
             	case TRANSPARENT:
             		ll.sky = mapiter.getBlockSkyLight();
             		ll.emitted = mapiter.getBlockEmittedLight();
             		break;
             	case OPAQUE:
-        			if(HDTextureMap.getTransparency(lastblocktypeid) != BlockTransparency.SEMITRANSPARENT) {
+        			if(HDBlockTextureMap.getTransparency(lastblocktypeid) != BlockTransparency.SEMITRANSPARENT) {
                 		mapiter.unstepPosition(laststep);  /* Back up to block we entered on */
                 		if(mapiter.getY() < worldheight) {
                 		    ll.sky = mapiter.getBlockSkyLight();
@@ -242,10 +240,6 @@ public class IsoHDPerspective implements HDPerspective {
          * Get current block data
          */
         public final int getBlockData() { return blockdata; }
-        /**
-         * Get current block render data
-         */
-        public final int getBlockRenderData() { return blockrenderdata; }
         /**
          * Get direction of last block step
          */
@@ -524,9 +518,8 @@ public class IsoHDPerspective implements HDPerspective {
             }
             else if(nonairhit || (blocktypeid != 0)) {
                 blockdata = mapiter.getBlockData();  
-                blockrenderdata = HDBlockModels.getBlockRenderData(blocktypeid, mapiter);
                 
-                RenderPatch[] patches = scalemodels.getPatchModel(blocktypeid,  blockdata,  blockrenderdata);
+                RenderPatch[] patches = scalemodels.getPatchModel(blocktypeid,  blockdata);
                 /* If no patches, see if custom model */
                 if(patches == null) {
                     CustomBlockModel cbm = scalemodels.getCustomBlockModel(blocktypeid,  blockdata);
@@ -542,7 +535,7 @@ public class IsoHDPerspective implements HDPerspective {
                 if(patches != null) {
                     return handlePatches(patches, shaderstate, shaderdone);
                 }
-                short[] model = scalemodels.getScaledModel(blocktypeid, blockdata, blockrenderdata);
+                short[] model = scalemodels.getScaledModel(blocktypeid, blockdata);
                 if(model != null) {
                     return handleSubModel(model, shaderstate, shaderdone);
                 }
@@ -854,13 +847,9 @@ public class IsoHDPerspective implements HDPerspective {
         else {
             hashcode = name.hashCode();
         }
-        double az = configuration.getDouble("azimuth", 135.0);    /* Get azimuth (default to classic kzed POV */
-        /* Fix azimuth so that we respect new north, if that is requested (newnorth = oldeast) */
-        if(MapManager.mapman.getCompassMode() == CompassMode.NEWNORTH) {
-            az = (az + 90.0);
-            if(az >= 360.0) {
-                az = az - 360.0;
-            }
+        double az = 90.0 + configuration.getDouble("azimuth", 135.0);    /* Get azimuth (default to classic kzed POV) */
+        if(az >= 360.0) {
+            az = az - 360.0;
         }
         azimuth = az;
         double inc;
@@ -1297,11 +1286,8 @@ public class IsoHDPerspective implements HDPerspective {
         s(mapObject, "scale", basemodscale);
         s(mapObject, "worldtomap", world_to_map.toJSON());
         s(mapObject, "maptoworld", map_to_world.toJSON());
-        int dir = ((360 + (int)(22.5+azimuth)) / 45) % 8;
-        if(MapManager.mapman.getCompassMode() != CompassMode.PRE19)
-            dir = (dir + 6) % 8;
+        int dir = (((360 + (int)(22.5+azimuth)) / 45) + 6) % 8;
         s(mapObject, "compassview", directions[dir]);
-
     }
     
     private static final int fastFloor(double f) {

@@ -38,5 +38,5 @@ public interface HDShader {
     /* Export shader as material library */
     void exportAsMaterialLibrary(DynmapCommandSender sender, OBJExport exp) throws IOException;
     /* Get materials for each patch on the current block (with +N for N*90 degree rotations) */
-    String[] getCurrentBlockMaterials(int blkid, int blkdata, int renderdata, MapIterator mapiter, int[] txtidx, BlockStep[] steps);
+    String[] getCurrentBlockMaterials(int blkid, int blkdata, MapIterator mapiter, int[] txtidx, BlockStep[] steps);
 }

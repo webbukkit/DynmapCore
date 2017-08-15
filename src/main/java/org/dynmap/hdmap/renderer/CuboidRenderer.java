@@ -12,7 +12,7 @@ import org.dynmap.renderer.RenderPatchFactory.SideVisible;
 
 /**
  * Renderer for allowing creation of a set of one or more cuboid or crossed-patch blocks, with independent textures for each
- * Each cuboid is provided with two corner offsets within the cube (xmin,ymin,zmin) and (xmax,ymax,zmax), and a list of 6 patch indexes (default is 0,1,2,3,4,5)
+ * Each cuboid is provided with two corner offsets within the cube (xmin,ymin,zmin) and (xmax,ymax,zmax), and a list of 6 patch indexes (default is 0,1,2,3,4,5 - order is bottom,top,xmin,xmax,zmin,zmax)
  * Each crossed-patch is provided with two corner offsets within the cube (xmin,ymin,zmin) and (xmax,ymax,zmax), and a single patch index (default is 0)
  */
 public class CuboidRenderer extends CustomRenderer {

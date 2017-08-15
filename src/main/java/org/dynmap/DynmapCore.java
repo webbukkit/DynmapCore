@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -33,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.dynmap.blockstate.BlockStateManager;
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.common.DynmapListenerManager;
 import org.dynmap.common.DynmapListenerManager.EventType;
@@ -44,7 +46,8 @@ import org.dynmap.exporter.DynmapExpCommands;
 import org.dynmap.hdmap.HDBlockModels;
 import org.dynmap.hdmap.HDMapManager;
 import org.dynmap.hdmap.TexturePack;
-import org.dynmap.hdmap.TexturePack.HDTextureMap;
+import org.dynmap.hdmap.TexturePack.HDBlockStateTextureMap;
+import org.dynmap.hdmap.TexturePack.HDBlockTextureMap;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.impl.MarkerAPIImpl;
 import org.dynmap.modsupport.ModSupportImpl;
@@ -77,6 +80,8 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServlet;
 
 public class DynmapCore implements DynmapCommonAPI {
+    // Current architectural limit for Minecraft block IDs
+    public static final int BLOCKTABLELEN = 4096;
     /**
      * Callbacks for core initialization - subclassed by platform plugins
      */
@@ -120,7 +125,6 @@ public class DynmapCore implements DynmapCommonAPI {
     private int perTickLimit = 50;   // 50 ms
     private boolean dumpMissing = false;
         
-    public CompassMode compassmode = CompassMode.PRE19;
     private int     config_hashcode;    /* Used to signal need to reload web configuration (world changes, config update, etc) */
     private int fullrenderplayerlimit;  /* Number of online players that will cause fullrender processing to pause */
     private int updateplayerlimit;  /* Number of online players that will cause update processing to pause */
@@ -130,20 +134,15 @@ public class DynmapCore implements DynmapCommonAPI {
     private boolean persist_ids_by_ip = false;
     private int snapshotcachesize;
     private boolean snapshotsoftref;
-    private String[] blocknames = new String[0];
     private int[] blockmaterialmap = new int[0];
     private String[] biomenames = new String[0];
     private Map<String, Integer> blockmap = null;
     private Map<String, Integer> itemmap = null;
+    private static String[] blocknames = null;
+    private BlockStateManager blkstateman = new BlockStateManager();
     
     private boolean loginRequired;
     
-    public enum CompassMode {
-        PRE19,  /* Default for 1.8 and earlier (east is Z+) */
-        NEWROSE,    /* Use same map orientation, fix rose */
-        NEWNORTH    /* Use new map orientation */
-    };
-
     /* Flag to let code know that we're doing reload - make sure we don't double-register event handlers */
     public boolean is_reload = false;
     public static boolean ignore_chunk_loads = false; /* Flag keep us from processing our own chunk loads */
@@ -206,27 +205,19 @@ public class DynmapCore implements DynmapCommonAPI {
     }
     public final DynmapServerInterface getServer() { return server; }
     
-    public final void setBlockNames(String[] names) {
-        blocknames = names;
-    }
-
-    public final String getBlockName(int blkid) {
-        String n = null;
-        if ((blkid >= 0) && (blkid < blocknames.length)) {
-            n = blocknames[blkid];
-        }
-        if(n == null) n = "block" + blkid;
-        return n;
-    }
-    public final String[] getBlockNames() {
-        return blocknames;
-    }
-
     public final void setBlockMaterialMap(int[] materials) {
         blockmaterialmap = materials;
     }
     public final int[] getBlockMaterialMap() {
         return blockmaterialmap;
+    }
+    
+    public final Map<String, Integer> getBlockIDMap() {
+        return blockmap;
+    }
+    
+    public static final String getBlockName(int id) {
+    	return blocknames[id];
     }
 
     public final void setBiomeNames(String[] names) {
@@ -462,14 +453,6 @@ public class DynmapCore implements DynmapCommonAPI {
         snapshotcachesize = configuration.getInteger("snapshotcachesize", 500);
         /* Get soft ref flag for cache (weak=false, soft=true) */
         snapshotsoftref = configuration.getBoolean("soft-ref-cache", true);
-        /* Default compassmode to newrose */
-        String cmode = configuration.getString("compass-mode", "newrose");
-        if(cmode.equals("newnorth"))
-            compassmode = CompassMode.NEWNORTH;
-        else if(cmode.equals("newrose"))
-            compassmode = CompassMode.NEWROSE;
-        else
-            compassmode = CompassMode.PRE19;
         /* Default better-grass */
         bettergrass = configuration.getBoolean("better-grass", false);
         /* Load full render processing player limit */
@@ -492,6 +475,12 @@ public class DynmapCore implements DynmapCommonAPI {
         blockmap = server.getBlockUniqueIDMap();
         itemmap = server.getItemUniqueIDMap();
 
+        /* Build block name list */
+        blocknames = new String[DynmapCore.BLOCKTABLELEN];
+        for (Entry<String, Integer> v : blockmap.entrySet()) {
+        	blocknames[v.getValue()] = v.getKey();
+        }
+        
         /* Process mod support */
         ModSupportImpl.complete(this.dataDirectory);
         /* Load block models */
@@ -600,10 +589,11 @@ public class DynmapCore implements DynmapCommonAPI {
             tp = tp.resampleTexturePack(1);
             if (tp == null) return;
             Color c = new Color();
-            for (int blkid = 1; blkid < 256; blkid++) {
+            for (int blkid = 1; blkid < DynmapCore.BLOCKTABLELEN; blkid++) {
                 int meta0color = 0;
-                for (int blkmeta = 0; blkmeta < 16; blkmeta++) {
-                    HDTextureMap map = HDTextureMap.getMap(blkid, blkmeta, blkmeta);
+                HDBlockTextureMap bmap = HDBlockTextureMap.getByBlockID(blkid);
+                for (int blkmeta = 0; blkmeta < bmap.getStateCount(); blkmeta++) {
+                    HDBlockStateTextureMap map = bmap.getStateMap(blkmeta);
                     boolean done = false;
                     for (int i = 0; (!done) && (i < sides.length); i++) {
                         int idx = map.getIndexForFace(sides[i]);
@@ -2424,6 +2414,10 @@ public class DynmapCore implements DynmapCommonAPI {
     
     public MapStorage getDefaultMapStorage() {
         return defaultStorage;
+    }
+    
+    public BlockStateManager getBlockStateManager() {
+        return blkstateman;
     }
 }
 
