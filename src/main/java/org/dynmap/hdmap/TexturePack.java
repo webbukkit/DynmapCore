@@ -2300,9 +2300,17 @@ public class TexturePack {
                         else {
                             for (Integer blkid : blkids) {
                                 HDBlockTextureMap bmap = HDBlockTextureMap.getByBlockID(blkid);
-                                for (Integer stateid : stateids) {
-                                    HDBlockStateTextureMap nmap = bmap.getStateMap(stateid);
-                                    nmap.copy(map);
+                                if (stateids == null) {
+                                    for (int sid = 0; sid < bsm.getBlockStateCount(blkid); sid++) {
+                                        HDBlockStateTextureMap nmap = bmap.getStateMap(sid);
+                                        nmap.copy(map);
+                                    }
+                                }
+                                else {
+                                    for (Integer stateid : stateids) {
+                                        HDBlockStateTextureMap nmap = bmap.getStateMap(stateid);
+                                        nmap.copy(map);
+                                    }
                                 }
                                 bmap.transp = trans;
                             }
