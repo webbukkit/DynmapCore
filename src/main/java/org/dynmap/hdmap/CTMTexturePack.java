@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -31,7 +32,7 @@ public class CTMTexturePack {
     private CTMProps[][] byblocklist;
     private BitSet mappedtiles;
     private BitSet mappedblocks;
-    private String[] blocknames;
+    private Map<String, Integer> blocknames;
     private int[] blockmaterials;
     private String[] biomenames;
     
@@ -306,7 +307,7 @@ public class CTMTexturePack {
                 return parseInt(p, fld, def);
         }
         
-        private int[] getIDList(Properties properties, String key, String type, String[] mappings) {
+        private int[] getIDList(Properties properties, String key, String type, Map<String, Integer> blocknames) {
             Set<Integer> list = new HashSet<Integer>();
             String property = properties.getProperty(key, "");
             for (String token : property.split("\\s+")) {
@@ -319,11 +320,12 @@ public class CTMTexturePack {
                         Log.info("Bad ID token: " + token);
                     }
                 } else { // String mapping - look for block name
-                    for (int i = 0; i < mappings.length; i++) {
-                        if (token.equals(mappings[i])) {
-                            list.add(i);
-                            break;
-                        }
+                    if (token.indexOf(':') < 0) {   // No 'modid:'?
+                        token = "minecraft:" + token;
+                    }
+                    Integer id = blocknames.get(token);
+                    if (id != null) {
+                        list.add(id);
                     }
                 }
             }
@@ -777,16 +779,16 @@ public class CTMTexturePack {
             return true;
         }
         private void registerTiles(String deftxtpath, String propname) {
+            String proppath = propname.substring(0, propname.lastIndexOf('/'));
             if (this.matchTiles != null) {  // If any matching tiles, register them
-                this.matchTileIcons = registerTiles(this.matchTiles, deftxtpath, propname);
+                this.matchTileIcons = registerTiles(this.matchTiles, deftxtpath, proppath);
             }
-            if (this.tiles != null) { // If any result tiles, register them
-                this.tileIcons = registerTiles(this.tiles, deftxtpath, propname);
+            if (this.tiles != null) { // If any result tiles, register them (relative to prop location)
+                this.tileIcons = registerTiles(this.tiles, proppath, proppath);
             }
         }
-        private int[] registerTiles(String[] tilenames, String deftxtpath, String propname) {
+        private int[] registerTiles(String[] tilenames, String deftxtpath, String proppath) {
             if (tilenames == null) return null;
-            String proppath = propname.substring(0, propname.lastIndexOf('/'));
             int[] rslt = new int[tilenames.length];
             for (int i = 0; i < tilenames.length; i++) {
                 String tn = tilenames[i];
@@ -797,11 +799,16 @@ public class CTMTexturePack {
                 	modname = ftn.substring(0, colonindex);
                 	ftn = ftn.substring(colonindex+1);
                 }
-                if ((ftn.indexOf('/') > 0) && (modname != null)) {
-                	ftn = "assets/" + modname + "/textures/" + ftn;
+                if (ftn.startsWith("./")) {
+                    ftn = proppath + "/" + ftn.substring(2);
                 }
-                else if ((ftn.indexOf('/') < 0) && (ftn.startsWith("assets/") == false)) { // no path (base tile)
-                    ftn = deftxtpath + ftn;
+                else if (ftn.startsWith("assets/")) {   // Already full path?
+                }
+                else if (colonindex > 0) {  // modid:path?
+                    ftn = String.format("assets/%s/textures/%s", modname, ftn);
+                }
+                else { // no path (base tile)
+                    ftn = String.format(deftxtpath, modname, ftn);
                 }
                 if (!ftn.endsWith(".png")) {
                     ftn = ftn + ".png"; // Add .png if needed
@@ -809,6 +816,7 @@ public class CTMTexturePack {
                 if (modname.equals("minecraft")) {
                 	modname = null;
                 }
+                //Log.info(tn + ":registerTiles(" + modname + ":" + ftn + ")");
                 // Find file ID, add if needed
                 int fid = TexturePack.findOrAddDynamicTileFile(ftn, modname, 1, 1, TileFileFormat.GRID, new String[0]);
                 rslt[i] = TexturePack.findOrAddDynamicTile(fid, 0); 
@@ -861,17 +869,17 @@ public class CTMTexturePack {
     public CTMTexturePack(TexturePackLoader tpl, TexturePack tp, DynmapCore core, boolean is_rp) {
         ArrayList<String> files = new ArrayList<String>();
         this.tpl = tpl;
-        blocknames = core.getBlockNames();
+        blocknames = core.getBlockIDMap();
         blockmaterials = core.getBlockMaterialMap();
         biomenames = core.getBiomeNames();
         Set<String> ent = tpl.getEntries();
         if (is_rp) {
             ctmpath = "assets/minecraft/mcpatcher/ctm/";
-            vanillatextures = "assets/minecraft/textures/blocks";
+            vanillatextures = "assets/%1$s/textures/blocks/%2$s";
         }
         else {
             ctmpath = "ctm/";
-            vanillatextures = "textures/blocks";
+            vanillatextures = "textures/blocks/%2$s";
         }
         for (String name : ent) {
             if(name.startsWith(ctmpath) && name.endsWith(".properties")) {

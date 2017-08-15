@@ -101,6 +101,10 @@
 									<pattern>org.eclipse.jetty</pattern>
 									<shadedPattern>org.dynmap.jetty</shadedPattern>
 								</relocation>
+								<relocation>
+									<pattern>javax.servlet</pattern>
+									<shadedPattern>org.dynmap.javax.servlet</shadedPattern>
+								</relocation>
 							</relocations>
 							<filters>
 								<filter>
@@ -173,5 +177,5 @@
 			<scope>compile</scope>
 		</dependency>
 	</dependencies>
-	<version>2.5</version>
+	<version>2.6-SNAPSHOT</version>
 </project>
