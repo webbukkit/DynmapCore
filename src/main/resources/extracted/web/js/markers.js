@@ -76,6 +76,8 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 					createCircle(ms, ms.circles[cname], ts);
 				});
 			});
+			
+			$(dynmap).trigger('markersupdated', [dynmapmarkersets]);
 		});
 	}
 	
@@ -453,6 +455,8 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 			deleteMarker(set, set.circle[msg.id]);
 			delete set.circle[msg.id];
 		}
+		
+		$(dynmap).trigger('markersupdated', [dynmapmarkersets]);
 	});
 	
     // Remove markers on start of map change
