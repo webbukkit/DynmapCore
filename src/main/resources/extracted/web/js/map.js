@@ -46,20 +46,31 @@ DynMap.prototype = {
 	worlds: {},
 	registeredTiles: [],
 	players: {},
+	
 	lasttimestamp: new Date().getUTCMilliseconds(), /* Pseudorandom - prevent cached '?0' */
 	reqid: 0,
     servertime: 0,
     serverday: false,
     inittime: new Date().getTime(),
+    
 	followingPlayer: '',
 	initfollow: null,
+	
 	missedupdates: 0,
 	maxcount: -1,
 	currentcount: 0,
+	
+	sidebar: null,
+	sidebarPanel: null,
+	playerlist: null,
 	playerfield: null,
 	layercontrol: undefined,
+	
+	sidebarSections: [],
+	
 	nogui: false,
 	nocompass: false,
+	
 	formatUrl: function(name, options) {
 		var url = this.options.url[name];
 		$.each(options, function(n,v) {
@@ -207,18 +218,17 @@ DynMap.prototype = {
 		var pinbutton;
 		var nopanel = (me.getParameterByName('nopanel') == 'true') || me.nogui;
 
+		var pincls = 'pinned';
+		if(me.options.sidebaropened == 'false')
+			pincls = '';
+		sidebar = me.sidebar = $('<div/>')
+			.addClass('sidebar ' + pincls);
+
+		panel = me.sidebarPanel = $('<div/>')
+			.addClass('panel')
+			.appendTo(sidebar);
+
 		if(me.options.sidebaropened != 'true') { // false or pinned
-			var pincls = 'pinned'
-			if(me.options.sidebaropened == 'false')
-				pincls = '';
-
-			sidebar = me.sidebar = $('<div/>')
-					.addClass('sidebar ' + pincls);
-
-			panel = $('<div/>')
-				.addClass('panel')
-				.appendTo(sidebar);
-
 			// Pin button.
 			pinbutton = $('<div/>')
 				.addClass('pin')
@@ -227,61 +237,25 @@ DynMap.prototype = {
 				})
 				.appendTo(panel);
 		}
-		else {
-			sidebar = me.sidebar = $('<div/>')
-				.addClass('sidebar pinned');
-
-			panel = $('<div/>')
-				.addClass('panel')
-				.appendTo(sidebar);
-		}
+		
 		if(!nopanel)
 			sidebar.appendTo(container);
 
-		// World scrollbuttons
-		var upbtn_world = $('<div/>')
-		.addClass('scrollup')
-		.bind('mousedown mouseup touchstart touchend', function(event){
-	    	if(event.type == 'mousedown' || event.type == 'touchstart'){
-				worldlist.animate({"scrollTop": "-=300px"}, 3000, 'linear');
-	    	}else{
-	        	worldlist.stop();
-	    	}
-		});
-		var downbtn_world = $('<div/>')
-		.addClass('scrolldown')
-		.bind('mousedown mouseup touchstart touchend', function(event){
-	    	if(event.type == 'mousedown' || event.type == 'touchstart'){
-				worldlist.animate({"scrollTop": "+=300px"}, 3000, 'linear');
-	    	}else{
-	        	worldlist.stop();
-	    	}
-		});
-
-		// Worlds
-		var worldlist;
-		$('<fieldset/>')
-			.append($('<legend/>').text(me.options['msg-maptypes']))
-			.append(upbtn_world)
-			.append(me.worldlist = worldlist = $('<ul/>').addClass('worldlist')
-				.bind('mousewheel', function(event, delta){
-					this.scrollTop -= (delta * 10);
-					event.preventDefault();
-				})
-			)
-			.append(downbtn_world)
-			.appendTo(panel);
+		var worldsSection = SidebarUtils.createListSection(me.options['msg-maptypes']);
+		me.worldlist = worldsSection.content.addClass('worldlist');
+		worldsSection.section.appendTo(panel);
+		me.sidebarSections.push(worldsSection);
 
         var maplists = {};
 		var worldsadded = {};
 		$.each(me.worlds, function(index, world) {
 			var maplist;
 			world.element = $('<li/>')
-				.addClass('world')
+				.addClass('world subsection')
 				.text(world.title)
 				.append(maplist = $('<ul/>')
-						.addClass('maplist')
-						)
+						.addClass('maplist sublist')
+				)
 				.data('world', world);
 			maplists[world.name] = maplist;
 		});
@@ -305,13 +279,13 @@ DynMap.prototype = {
 				}
 
 				map.element = $('<li/>')
-					.addClass('map')
+					.addClass('map item')
 					.append($('<a/>')
 							.attr({ title: map.options.title, href: '#' })
 							.addClass('maptype')
 							.css({ backgroundImage: 'url(' + (map.options.icon || ('images/block_' + mapindex + '.png')) + ')' })
 							.text(map.options.title)
-							)
+					)
 					.click(function() {
 						me.selectMap(map);
 					})
@@ -321,75 +295,30 @@ DynMap.prototype = {
 		});
 		$.each(me.worlds, function(index, world) {
 			if(worldsadded[world.name]) {
-				world.element.appendTo(worldlist);
+				world.element.appendTo(me.worldlist);
 			}
 		});
-
-		// The scrollbuttons
-		// we need to show/hide them depending: if (me.playerlist.scrollHeight() > me.playerlist.innerHeight()) or something.
-		var upbtn = $('<div/>')
-		.addClass('scrollup')
-		.bind('mousedown mouseup touchstart touchend', function(event){
-		    if(event.type == 'mousedown' || event.type == 'touchstart'){
-				playerlist.animate({"scrollTop": "-=300px"}, 3000, 'linear');
-		    }else{
-		        playerlist.stop();
-		    }
-		});
-		var downbtn = $('<div/>')
-		.addClass('scrolldown')
-		.bind('mousedown mouseup touchstart touchend', function(event){
-		    if(event.type == 'mousedown' || event.type == 'touchstart'){
-				playerlist.animate({"scrollTop": "+=300px"}, 3000, 'linear');
-		    }else{
-		        playerlist.stop();
-		    }
-		});
-
-		// The Player List
-		var playerlist;
-		$('<fieldset/>')
-			.append(me.playerfield = $('<legend/>').text(me.options['msg-players']))
-			.append(upbtn)
-			.append(me.playerlist = playerlist = $('<ul/>').addClass('playerlist')
-				.bind('mousewheel', function(event, delta){
-					this.scrollTop -= (delta * 10);
-					event.preventDefault();
-				})
-			)
-			.append(downbtn)
-			.appendTo(panel);
-
-		var updateHeight = function() {
-			if(sidebar.innerHeight() > (2*worldlist.scrollHeight())) { /* Big enough */
-				worldlist.height(worldlist.scrollHeight());
-				upbtn_world.toggle(false);
-				downbtn_world.toggle(false);
-			}
-			else{
-				worldlist.height(sidebar.innerHeight() / 2);
-				upbtn_world.toggle(true);
-				downbtn_world.toggle(true);
-			}
-			playerlist.height(sidebar.innerHeight() - (playerlist.offset().top - worldlist.offset().top) - 64); // here we need a fix to avoid the static value, but it works fine this way :P
-			var scrollable = playerlist.scrollHeight() > playerlist.height();
-			upbtn.toggle(scrollable);
-			downbtn.toggle(scrollable);
-		};
-		updateHeight();
-		$(window).resize(updateHeight);
-		$(dynmap).bind('playeradded', function() {
-			updateHeight();
-		});
-		$(dynmap).bind('playerremoved', function() {
-			updateHeight();
-		});
+		
+		var playersSection = SidebarUtils.createListSection(me.options['msg-players']);
+		me.playerlist = playersSection.content.addClass('playerlist');
+		playersSection.section.appendTo(panel);
+		me.playerfield = playersSection.legend;
+		me.sidebarSections.push(playersSection);
+		
+		function upd() {
+			me.updateSidebarHeight();
+		}
+		$(window).resize(upd);
+		$(dynmap).bind('playeradded playerremoved', upd);
+		upd();
+		
 		// The Compass
-		var compass = $('<div/>').
-			addClass('compass');
-		if(L.Browser.mobile)
-			compass.addClass('mobilecompass');
 		if ((!me.nogui) && (!me.nocompass)) {
+			var compass = $('<div/>').
+				addClass('compass');
+			if(L.Browser.mobile)
+				compass.addClass('mobilecompass');
+			
 			compass.appendTo(container);
 		}
 		
@@ -467,6 +396,91 @@ DynMap.prototype = {
 			}, 15000);
 		}
 	},
+	updateSidebarHeight: function () {
+		var me = this;
+		
+		var minContentHeight = 24;
+		
+		var minSectionsHeight = 0;
+		var sectionsHeight = 0;
+		var sectionsHeightWithScrollButtons = 0;
+		var resizeableContentHeight = 0;
+		// indexes of sections that do not benefit from resizing
+		// because the content size is smaller when shown fully than when shown with scrolling arrows
+		var nonResizeableSections = [];
+		
+		// collect size information about all the sections
+		$.each(me.sidebarSections, function (i, section) {
+			var legend = section.legend.outerHeight(true);
+			var content = section.content.scrollHeight();
+			var up = section.upBtn.outerHeight(true);
+			var down = section.downBtn.outerHeight(true);
+			var sectionPadding = section.section.outerHeight(true) - section.section.height();
+			
+			var sHeight = legend + content + sectionPadding;
+			
+			sectionsHeight += sHeight;
+			minSectionsHeight += legend + sectionPadding;
+			sectionsHeightWithScrollButtons += sHeight;
+			
+			if (content < up + down + minContentHeight) {
+				nonResizeableSections.push(i);
+				minSectionsHeight += content;
+			}
+			else {
+				resizeableContentHeight += content;
+				sectionsHeightWithScrollButtons += up + down;
+				minSectionsHeight += up + down + minContentHeight;
+			}
+		});
+		var sidebarHeight = me.sidebar.height();
+		
+		// if sidebar is too small, start reducing content size
+		if (sectionsHeight > sidebarHeight && sidebarHeight > minSectionsHeight) {
+			var missingHeight = sectionsHeightWithScrollButtons - sidebarHeight;
+			
+			$.each(me.sidebarSections, function (i, section) {
+				if ($.inArray(i, nonResizeableSections) > -1) {
+					section.upBtn.hide();
+					section.downBtn.hide();
+					section.content.height('auto');
+					return;
+				}
+				
+				section.upBtn.show();
+				section.downBtn.show();
+				
+				var contentHeight = section.content.scrollHeight();
+				// longer sections get resized more aggressively than shorted ones
+				var proportionalMissingHeight =
+					missingHeight
+					* (contentHeight / resizeableContentHeight);
+				section.content.height(contentHeight - proportionalMissingHeight);
+			});
+		}
+		else {
+			$.each(me.sidebarSections, function (i, section) {
+				section.upBtn.hide();
+				section.downBtn.hide();
+				section.content.height('auto');
+			});
+		}
+		
+		if (sidebarHeight < minSectionsHeight) {
+			// screen size makes sidebar smaller than least usable height
+			// fallback to scrollable sidebar
+			me.sidebar.css({
+				'overflow-y': 'scroll',
+				'overflow-x': 'hidden'
+			});
+		}
+		else {
+			me.sidebar.css({
+				'overflow-y': '',
+				'overflow-x': ''
+			});
+		}
+	},
 	getProjection: function() { return this.maptype.getProjection(); },
 	selectMapAndPan: function(map, location, completed) {
 		if (!map) { throw "Cannot select map " + map; }
@@ -477,12 +491,13 @@ DynMap.prototype = {
 		}
 		$(me).trigger('mapchanging');
 		var mapWorld = map.options.world;
+		var compass = $('.compass');
 		if (me.maptype) {
-			$('.compass').removeClass('compass_' + me.maptype.options.compassview);
-			$('.compass').removeClass('compass_' + me.maptype.options.name);
+			compass.removeClass('compass_' + me.maptype.options.compassview)
+				.removeClass('compass_' + me.maptype.options.name);
 		}
-		$('.compass').addClass('compass_' + map.options.compassview);
-		$('.compass').addClass('compass_' + map.options.name);
+		compass.addClass('compass_' + map.options.compassview)
+			.addClass('compass_' + map.options.name);
 		var worldChanged = me.world !== map.options.world;
 		var projectionChanged = (me.maptype && me.maptype.getProjection()) !== (map && map.projection);
 
@@ -852,7 +867,7 @@ DynMap.prototype = {
 					me.map.setZoom(me.options.followzoom);
 			});
 		}
-		this.followingPlayer = player;
+		me.followingPlayer = player;
 	},
 	updateBackground: function() {
 		var me = this;

@@ -10,7 +10,7 @@ var DynmapProjection = L.Class.extend({
 	}
 });
 
-if (!Array.prototype.indexOf) {
+if (!Array.prototype.indexOf) { // polyfill for IE < 9
 	    Array.prototype.indexOf = function (searchElement /*, fromIndex */ ) {
 	        "use strict";
 	        if (this === void 0 || this === null) {
@@ -369,24 +369,24 @@ function loadjs(url, completed) {
 }
 
 function loadcss(url, completed) {
-	var script = document.createElement('link');
-	script.setAttribute('href', url);
-	script.setAttribute('rel', 'stylesheet');
+	var link = document.createElement('link');
+	link.setAttribute('href', url);
+	link.setAttribute('rel', 'stylesheet');
 	var isloaded = false;
 	if (completed) {
-		script.onload = function() {
+		link.onload = function() {
 			if (isloaded) { return; }
 			isloaded = true;
 			completed();
 		};
 
 		// Hack for IE, don't know whether this still applies to IE9.
-		script.onreadystatechange = function() {
-			script.onload();
+		link.onreadystatechange = function() {
+			link.onload();
 		};
 	}
 
-	(document.head || document.getElementsByTagName('head')[0]).appendChild(script);
+	(document.head || document.getElementsByTagName('head')[0]).appendChild(link);
 }
 
 function splitArgs(s) {
@@ -440,4 +440,11 @@ function namedReplace(str, obj)
 		startIndex = variableEnd+1;
 	}
 	return result;
+}
+
+function concatURL(base, addition) {
+	if(base.indexOf('?') >= 0)
+		return base + escape(addition);
+	
+	return base + addition;
 }
