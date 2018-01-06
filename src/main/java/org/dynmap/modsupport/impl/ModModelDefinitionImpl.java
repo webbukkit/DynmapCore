@@ -195,6 +195,8 @@ public class ModModelDefinitionImpl implements ModModelDefinition {
             double yu, double zu, double xv, double yv, double zv, double umin,
             double umax, double vmin, double vmax, double uplusvmax, SideVisible sidevis) {
         PatchDefinition pd = pdf.getPatch(x0, y0, z0, xu, yu, zu, xv, yv, zv, umin, umax, vmin, vmax, uplusvmax, sidevis, 0);
+        if (pd == null)
+            return null;    // Invalid patch
         for (int i = 0; i < blkPatch.size(); i++) {
             if (blkPatch.get(i) == pd) { 
                 return "patch" + i; 
