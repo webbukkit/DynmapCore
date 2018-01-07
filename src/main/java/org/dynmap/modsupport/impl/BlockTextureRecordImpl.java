@@ -533,6 +533,8 @@ public class BlockTextureRecordImpl implements BlockTextureRecord {
             default:
                 break;
         }
+        // Use normal rotation
+        s += ",stdrot=true";
         
         return s;
     }

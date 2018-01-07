@@ -130,7 +130,6 @@ public class DynmapCore implements DynmapCommonAPI {
     private boolean persist_ids_by_ip = false;
     private int snapshotcachesize;
     private boolean snapshotsoftref;
-    private String[] blocknames = new String[0];
     private int[] blockmaterialmap = new int[0];
     private String[] biomenames = new String[0];
     private Map<String, Integer> blockmap = null;
@@ -206,29 +205,21 @@ public class DynmapCore implements DynmapCommonAPI {
     }
     public final DynmapServerInterface getServer() { return server; }
     
-    public final void setBlockNames(String[] names) {
-        blocknames = names;
-    }
-
-    public final String getBlockName(int blkid) {
-        String n = null;
-        if ((blkid >= 0) && (blkid < blocknames.length)) {
-            n = blocknames[blkid];
-        }
-        if(n == null) n = "block" + blkid;
-        return n;
-    }
-    public final String[] getBlockNames() {
-        return blocknames;
-    }
-
     public final void setBlockMaterialMap(int[] materials) {
         blockmaterialmap = materials;
     }
     public final int[] getBlockMaterialMap() {
         return blockmaterialmap;
     }
+    
+    public final Map<String, Integer> getBlockIDMap() {
+        return blockmap;
+    }
 
+    public final void setBlockNames(String[] names) {
+        //DEPRECATED - using getBlockIDMap
+    }
+    
     public final void setBiomeNames(String[] names) {
         biomenames = names;
     }

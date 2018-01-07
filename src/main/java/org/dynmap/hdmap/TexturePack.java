@@ -46,7 +46,6 @@ import org.dynmap.utils.MapIterator;
  * Loader and processor class for minecraft texture packs
  *  Texture packs are found in dynmap/texturepacks directory, and either are either ZIP files
  *  or are directories whose content matches the structure of a zipped texture pack:
- *    ./terrain.png - main color data (required)
  *    misc/grasscolor.png - tone for grass color, biome sensitive (required)
  *    misc/foliagecolor.png - tone for leaf color, biome sensitive (required)
  *    custom_lava_still.png - custom still lava animation (optional)
@@ -62,8 +61,7 @@ public class TexturePack {
     /* Loaded texture packs */
     private static HashMap<String, TexturePack> packs = new HashMap<String, TexturePack>();
     private static Object packlock = new Object();
-    
-    private static final String TERRAIN_PNG = "terrain.png";
+
     private static final String GRASSCOLOR_PNG = "misc/grasscolor.png";
     private static final String GRASSCOLOR_RP_PNG = "assets/minecraft/textures/colormap/grass.png";
     private static final String FOLIAGECOLOR_PNG = "misc/foliagecolor.png";
@@ -180,6 +178,15 @@ public class TexturePack {
     private static final int TILEINDEX_SKIN_FACEBOTTOM = 5;
     private static final int TILEINDEX_SKIN_COUNT = 6;
 
+    /* Indexes of faces in the SHULKER format tile file */
+    private static final int TILEINDEX_SHULKER_TOP = 0;
+    private static final int TILEINDEX_SHULKER_LEFT = 1;
+    private static final int TILEINDEX_SHULKER_RIGHT = 2;
+    private static final int TILEINDEX_SHULKER_FRONT = 3;
+    private static final int TILEINDEX_SHULKER_BACK = 4;
+    private static final int TILEINDEX_SHULKER_BOTTOM = 5;
+    private static final int TILEINDEX_SHULKER_COUNT = 6;
+
     private static final int BLOCKTABLELEN = 4096; // Max block ID range
     
     public static enum TileFileFormat {
@@ -188,6 +195,7 @@ public class TexturePack {
         BIGCHEST,
         SIGN,
         SKIN,
+        SHULKER,
         CUSTOM,
         TILESET,
         BIOME
@@ -269,7 +277,7 @@ public class TexturePack {
         "rail_normal", "wool_colored_red", "wool_colored_pink", "repeater_off", "leaves_spruce", "leaves_spruce_opaque", "bed_feet_top", "bed_head_top",
         "melon_side", "melon_top", "cauldron_top", "cauldron_inner", null, "mushroom_block_skin_stem", "mushroom_block_inside", "vine",
         "lapis_block", "wool_colored_green", "wool_colored_lime", "repeater_on", "glass_pane_top", "bed_feet_end", "bed_feet_side", "bed_head_side",
-        "bed_head_end", "log_jungle", "cauldron_side", "cauldron_bottom", "brewibrewing_stand_base", "brewing_stand", "endframe_top", "endframe_side",
+        "bed_head_end", "log_jungle", "cauldron_side", "cauldron_bottom", "brewing_stand_base", "brewing_stand", "endframe_top", "endframe_side",
         "lapis_ore", "wool_colored_brown", "wool_colored_yellow", "rail_golden", "redstone_dust_cross", "redstone_dust_line", "enchanting_table_top", "dragon_egg",
         "cocoa_stage_2", "cocoa_stage_1", "cocoa_stage_0", "emerald_ore", "trip_wire_source", "trip_wire", "endframe_eye", "end_stone",
         "sandstone_top", "wool_colored_blue", "wool_colored_light_blue", "rail_golden_powered", "redstone_dust_cross_overlay", "redstone_dust_line_overlay", "enchanting_table_side", "enchanting_table_bottom",
@@ -870,6 +878,29 @@ public class TexturePack {
             System.arraycopy(imgs[img_id].argb, (h+from_y)*imgs[img_id].width + from_x, dest_argb, dest_width*(h+to_y) + to_x, width);
         }
     }
+    /**
+     * Combine non-transparent portions of given image onto destination
+     * @param img_id - image ID of raw image
+     * @param from_x - top-left X
+     * @param from_y - top-left Y
+     * @param to_x - dest topleft
+     * @param to_y - dest topleft
+     * @param width - width to copy
+     * @param height - height to copy
+     * @param dest_argb - destination tile buffer
+     * @param dest_width - width of destination tile buffer
+     */
+    private void combineSubimageFromImage(int img_id, int from_x, int from_y, int to_x, int to_y, int width, int height, int[] dest_argb, int dest_width) {
+        for(int h = 0; h < height; h++) {
+            for(int w = 0; w < width; w++) {
+                int src_argb = imgs[img_id].argb[(h+from_y)*imgs[img_id].width + (w+from_x)];
+                // Apply only solid pixels
+                if ( ((src_argb >> 24) & 255) == 255 ) {
+                    dest_argb[dest_width * (h + to_y) + (w + to_x)] = src_argb;
+                }
+            }
+        }
+    }
     private enum HandlePos { CENTER, LEFT, RIGHT, NONE, LEFTFRONT, RIGHTFRONT };
     /**
      * Make chest side image (based on chest and largechest layouts)
@@ -1026,6 +1057,56 @@ public class TexturePack {
         makeFaceImage(img, face_back, 24, 8);
         makeFaceImage(img, face_top, 8, 0);
         makeFaceImage(img, face_bottom, 16, 0);
+    }
+
+    /**
+     * Make shulker side image from top and bottom images (based on shulker layouts)
+     * @param img_id - source image ID
+     * @param dest_idx - destination tile index
+     * @param src_x - starting X of source column (scaled based on 64 high)
+     */
+    private void makeShulkerSideImage(int img_id, int dest_idx, int src_x) {
+        int mult = imgs[img_id].width / 64; /* Nominal height for shulker images is 64 */
+        int src_y_top = 16;
+        int src_y_btm = 44;
+        int[] tile = new int[16 * 16 * mult * mult];    /* Make image (all are 16x16) */
+        /* Top half of the shulker */
+        copySubimageFromImage(img_id, src_x * mult, src_y_top * mult, 0, 0, 16 * mult, 12 * mult, tile, 16 * mult);
+        /* Bottom half of the shulker */
+        combineSubimageFromImage(img_id, src_x * mult, src_y_btm * mult, 0, 8 * mult, 16 * mult, 8 * mult, tile, 16 * mult);
+        /* Put scaled result into tile buffer */
+        int new_argb[] = new int[native_scale*native_scale];
+        scaleTerrainPNGSubImage(16 * mult, native_scale, tile, new_argb);
+        setTileARGB(dest_idx, new_argb);
+    }
+
+    /**
+     * Make shulker top/bottom image (based on shulker layouts)
+     * @param img_id - source image ID
+     * @param dest_idx - destination tile index
+     * @param src_x - starting X of source (scaled based on 64 high)
+     * @param src_y - starting Y of source (scaled based on 64 high)
+     */
+    private void makeShulkerTopBottomImage(int img_id, int dest_idx, int src_x, int src_y) {
+        int mult = imgs[img_id].width / 64; /* Nominal height for shulker images is 64 */
+        int[] tile = new int[16 * 16 * mult * mult];    /* Make image (all are 16x16) */
+        copySubimageFromImage(img_id, src_x * mult, src_y * mult, 0, 0, 16 * mult, 16 * mult, tile, 16 * mult);
+        /* Put scaled result into tile buffer */
+        int new_argb[] = new int[native_scale*native_scale];
+        scaleTerrainPNGSubImage(16 * mult, native_scale, tile, new_argb);
+        setTileARGB(dest_idx, new_argb);
+    }
+
+    /**
+     * Patch tiles based on image with shulker-style layout
+     */
+    private void patchShulkerImages(int img_id, int tile_top, int tile_bottom, int tile_front, int tile_back, int tile_left, int tile_right) {
+        makeShulkerSideImage(img_id, tile_front, 0);
+        makeShulkerSideImage(img_id, tile_back, 16);
+        makeShulkerSideImage(img_id, tile_left, 32);
+        makeShulkerSideImage(img_id, tile_right, 48);
+        makeShulkerTopBottomImage(img_id, tile_top, 16, 0);
+        makeShulkerTopBottomImage(img_id, tile_bottom, 32, 28);
     }
 
     private void patchCustomImages(int img_id, int[] imgids, List<CustomTileRec> recs, int xcnt, int ycnt)
@@ -1258,6 +1339,9 @@ public class TexturePack {
                 break;
             case SKIN:
                 patchSkinImages(idx+IMG_CNT, dtf.tile_to_dyntile[TILEINDEX_SKIN_FACEFRONT], dtf.tile_to_dyntile[TILEINDEX_SKIN_FACELEFT], dtf.tile_to_dyntile[TILEINDEX_SKIN_FACERIGHT], dtf.tile_to_dyntile[TILEINDEX_SKIN_FACEBACK], dtf.tile_to_dyntile[TILEINDEX_SKIN_FACETOP], dtf.tile_to_dyntile[TILEINDEX_SKIN_FACEBOTTOM]);
+                break;
+            case SHULKER:
+                patchShulkerImages(idx+IMG_CNT, dtf.tile_to_dyntile[TILEINDEX_SHULKER_TOP], dtf.tile_to_dyntile[TILEINDEX_SHULKER_BOTTOM], dtf.tile_to_dyntile[TILEINDEX_SHULKER_FRONT], dtf.tile_to_dyntile[TILEINDEX_SHULKER_BACK], dtf.tile_to_dyntile[TILEINDEX_SHULKER_LEFT], dtf.tile_to_dyntile[TILEINDEX_SHULKER_RIGHT]);
                 break;
             case CUSTOM:
                 patchCustomImages(idx+IMG_CNT, dtf.tile_to_dyntile, dtf.cust, dtf.tilecnt_x, dtf.tilecnt_y);
@@ -2998,6 +3082,9 @@ public class TexturePack {
                 break;
             case SIGN:
                 f.tile_to_dyntile = new int[TILEINDEX_SIGN_COUNT]; /* 10 images for sign tile */
+                break;
+            case SHULKER:
+                f.tile_to_dyntile = new int[TILEINDEX_SHULKER_COUNT]; /* 6 images for sign tile */
                 break;
             case CUSTOM:
                 {

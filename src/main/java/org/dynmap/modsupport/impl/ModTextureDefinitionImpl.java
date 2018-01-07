@@ -16,6 +16,7 @@ import org.dynmap.modsupport.GridTextureFile;
 import org.dynmap.modsupport.ModModelDefinition;
 import org.dynmap.modsupport.ModTextureDefinition;
 import org.dynmap.modsupport.SignTextureFile;
+import org.dynmap.modsupport.ShulkerTextureFile;
 import org.dynmap.modsupport.SkinTextureFile;
 
 /**
@@ -178,6 +179,16 @@ public class ModTextureDefinitionImpl implements ModTextureDefinition {
     @Override
     public SkinTextureFile registerSkinTextureFile(String id, String filename) {
         return (SkinTextureFile) registerTextureFile(new SkinTextureFileImpl(id, filename));
+    }
+    /**
+     * Register texture file with SHULKER layout (standard shulker and shulker box texture)
+     * @param id - texture ID
+     * @param filename - texture file name (including .png)
+     * @return TextureFile associated with resource
+     */
+    @Override
+    public ShulkerTextureFile registerShulkerTextureFile(String id, String filename) {
+        return (ShulkerTextureFile) registerTextureFile(new ShulkerTextureFileImpl(id, filename));
     }
     /**
      * Register texture file with GRID layout (array of xcount x ycount square textures)

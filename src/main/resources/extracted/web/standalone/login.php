@@ -47,7 +47,7 @@ if(!empty($lines)) {
 	$cnt = count($lines) - 1;
 	$changed = false;
 	for($i=1; $i < $cnt; $i++) {
-		list($uid, $pc, $hsh) = split('=', rtrim($lines[$i]));
+		list($uid, $pc, $hsh) = explode('=', rtrim($lines[$i]));
 		if($uid == $useridlc) continue;
 		if(array_key_exists($uid, $pendingreg)) {
 			$newlines[] = $uid . '=' . $pc . '=' . $hsh;

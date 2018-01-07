@@ -101,6 +101,10 @@
 									<pattern>org.eclipse.jetty</pattern>
 									<shadedPattern>org.dynmap.jetty</shadedPattern>
 								</relocation>
+								<relocation>
+									<pattern>javax.servlet</pattern>
+									<shadedPattern>org.dynmap.javax.servlet</shadedPattern>
+								</relocation>
 							</relocations>
 							<filters>
 								<filter>
@@ -140,8 +144,11 @@
 		</repository>
 		<!-- project-local repo for artifacts which are not in maven central. -->
 		<repository>
-            <id>local-downloaded</id>
+      <id>local-downloaded</id>
 			<url>file:${project.basedir}/src/main/dependencies</url>
+		<repository>
+			<id>mikeprimm</id>
+			<url>http://repo.mikeprimm.com</url>
 		</repository>
 	</repositories>
 
@@ -154,12 +161,12 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
-			<version>8.1.16.v20140903</version>
+			<version>8.1.21.v20160908</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-servlet</artifactId>
-			<version>8.1.16.v20140903</version>
+			<version>8.1.21.v20160908</version>
 		</dependency>
 
 		<dependency>
@@ -181,5 +188,5 @@
 			<version>5.0.0</version>
 		</dependency>
 	</dependencies>
-	<version>2.4-SNAPSHOT</version>
+	<version>2.6-SNAPSHOT</version>
 </project>

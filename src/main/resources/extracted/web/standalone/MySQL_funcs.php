@@ -18,6 +18,12 @@ function abortDb($errormsg) {
 function initDbIfNeeded() {
    global $db, $dbhost, $dbuserid, $dbpassword, $dbname, $dbport;
    
+   $pos = strpos($dbname, '?');
+
+   if ($pos) {
+      $dbname = substr($dbname, 0, $pos);
+   }
+   
    if (!$db) {
       $db = mysqli_connect('p:' . $dbhost, $dbuserid, $dbpassword, $dbname, $dbport);
       if (mysqli_connect_errno()) {
