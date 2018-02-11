@@ -35,10 +35,6 @@ public class ShadowHDLighting extends DefaultHDLighting {
         if(v < 0) v = 15;
         if(v > 15) v = 15;
         night_and_day = configuration.getBoolean("night-and-day", false);
-        // Ignore ambient light setting if using world's lighting table AND not night-and-day
-        if (useWorldBrightnessTable && (!night_and_day)) {
-            v = 15;
-        }
         lightscale = new int[16];
         for(int i = 0; i < 16; i++) {
             if(i < (15-v))
