@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.UUID;
 
 /**
  * Listen for player logins, and process player faces by fetching skins *
@@ -58,9 +59,13 @@ public class PlayerFaces {
     }
     
     private class LoadPlayerImages implements Runnable {
-        public String playername;
-        public LoadPlayerImages(String playername) {
+        public final String playername;
+        public final String playerskinurl;
+        public final UUID playeruuid;
+        public LoadPlayerImages(String playername, String playerskinurl, UUID playeruuid) {
             this.playername = playername;
+            this.playerskinurl = playerskinurl;
+            this.playeruuid = playeruuid;
         }
         public void run() {
             boolean has_8x8 = storage.hasPlayerFaceImage(playername, FaceType.FACE_8X8);
@@ -72,8 +77,16 @@ public class PlayerFaces {
             BufferedImage img = null;
             try {
                 if(fetchskins && (refreshskins || missing_any)) {
-                    URL url = new URL(skinurl.replace("%player%", URLEncoder.encode(playername, "UTF-8")));
-                    img = ImageIO.read(url);    /* Load skin for player */
+                	URL url = null;
+                	if (skinurl.equals("") == false) {
+                		url = new URL(skinurl.replace("%player%", URLEncoder.encode(playername, "UTF-8")));
+                	}
+                	else if (playerskinurl != null) {
+                		url = new URL(playerskinurl);
+                	}
+                	if (url != null) {
+                		img = ImageIO.read(url);    /* Load skin for player */
+                	}
                 }
             } catch (IOException iox) {
                 Debug.debug("Error loading skin for '" + playername + "' - " + iox);
@@ -192,14 +205,16 @@ public class PlayerFaces {
     public PlayerFaces(DynmapCore core) {
         fetchskins = core.configuration.getBoolean("fetchskins", true);    /* Control whether to fetch skins */ 
         refreshskins = core.configuration.getBoolean("refreshskins", true);    /* Control whether to update existing fetched skins or faces */ 
-        skinurl = core.configuration.getString("skin-url", "http://skins.minecraft.net/MinecraftSkins/%player%.png");
-        if (skinurl.equals("http://s3.amazonaws.com/MinecraftSkins/%player%.png")) {     // Migrate from legacy URL
-            skinurl = "http://skins.minecraft.net/MinecraftSkins/%player%.png";
+        skinurl = core.configuration.getString("skin-url", "");
+        // These don't work anymore - Mojang retired them
+        if (skinurl.equals("http://s3.amazonaws.com/MinecraftSkins/%player%.png") ||
+        		skinurl.equals("http://skins.minecraft.net/MinecraftSkins/%player%.png")) {
+            skinurl = "";
         }
         core.listenerManager.addListener(EventType.PLAYER_JOIN, new PlayerEventListener() {
             @Override
             public void playerEvent(DynmapPlayer p) {
-                Runnable job = new LoadPlayerImages(p.getName());
+                Runnable job = new LoadPlayerImages(p.getName(), p.getSkinURL(), p.getUUID());
                 if(fetchskins)
                     MapManager.scheduleDelayedJob(job, 0);
                 else
