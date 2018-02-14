@@ -88,10 +88,10 @@ public interface DynmapPlayer extends DynmapCommandSender {
      * Get skin URL for player
      * @return URL, or null if not available
      */
-    public default String getSkinURL() { return null; }
+    public String getSkinURL();
     /**
      * Get player UUID
      * Return UUID, or null if not available
      */
-    public default UUID getUUID() { return null; }
+    public UUID getUUID();
 }
