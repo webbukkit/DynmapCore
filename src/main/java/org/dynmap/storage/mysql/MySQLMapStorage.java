@@ -286,7 +286,7 @@ public class MySQLMapStorage extends MapStorage {
         tableStandaloneFiles = prefix + "StandaloneFiles";
         tableSchemaVersion = prefix + "SchemaVersion";
         
-        connectionString = "jdbc:mysql://" + hostname + ":" + port + "/" + database;
+        connectionString = "jdbc:mysql://" + hostname + ":" + port + "/" + database + "?allowReconnect=true";
         Log.info("Opening MySQL database " + hostname + ":" + port + "/" + database + " as map store");
         try {
             Class.forName("com.mysql.jdbc.Driver");
