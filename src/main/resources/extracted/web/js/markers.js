@@ -131,7 +131,7 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 	}
 
 	function updateMarker(set, marker, mapzoom) {
-		if (set && marker) {
+		if (set && marker && marker.our_layer) {
 			// marker specific zoom supercedes set specific zoom
 			var minzoom = (marker.minzoom >= 0) ? marker.minzoom : set.minzoom;
 			var maxzoom = (marker.maxzoom >= 0) ? marker.maxzoom : set.maxzoom;
