@@ -1,6 +1,7 @@
 package org.dynmap.common;
 
 import java.net.InetSocketAddress;
+import java.util.UUID;
 
 import org.dynmap.DynmapLocation;
 
@@ -83,4 +84,14 @@ public interface DynmapPlayer extends DynmapCommandSender {
      * @param wt - sort weight
      */
     public void setSortWeight(int wt);
+    /**
+     * Get skin URL for player
+     * @return URL, or null if not available
+     */
+    public String getSkinURL();
+    /**
+     * Get player UUID
+     * Return UUID, or null if not available
+     */
+    public UUID getUUID();
 }

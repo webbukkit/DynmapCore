@@ -54,7 +54,7 @@ public abstract class DynmapWorld {
     public final int worldheight;
     public final int heightshift;
     public final int heightmask;
-    public final int sealevel;
+    public int sealevel;
     
     protected DynmapWorld(String wname, int worldheight, int sealevel) {
         this.raw_wname = wname;
