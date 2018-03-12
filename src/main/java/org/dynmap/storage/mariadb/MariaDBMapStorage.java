@@ -286,16 +286,16 @@ public class MariaDBMapStorage extends MapStorage {
         tableStandaloneFiles = prefix + "StandaloneFiles";
         tableSchemaVersion = prefix + "SchemaVersion";
         
-        connectionString = "jdbc:mysql://" + hostname + ":" + port + "/" + database + "?allowReconnect=true";
-        Log.info("Opening MySQL database " + hostname + ":" + port + "/" + database + " as map store");
+        connectionString = "jdbc:mariadb://" + hostname + ":" + port + "/" + database + "?allowReconnect=true";
+        Log.info("Opening MariaDB database " + hostname + ":" + port + "/" + database + " as map store");
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("com.mariadb.jdbc.Driver");
             // Initialize/update tables, if needed
             if(!initializeTables()) {
                 return false;
             }
         } catch (ClassNotFoundException cnfx) {
-            Log.severe("MySQL-JDBC classes not found - MySQL data source not usable");
+            Log.severe("MariaDB-JDBC classes not found - MariaDB data source not usable");
             return false; 
         }
         return writeConfigPHP(core);
