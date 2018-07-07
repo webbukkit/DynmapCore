@@ -23,8 +23,12 @@
 
 # Mac filesystem dust
 <<<<<<< master
+<<<<<<< master
 /.DS_Store
 .DS_Store
+=======
+/.DS_Store
+>>>>>>> a0c2563 actual changes, licence of used project.
 =======
 /.DS_Store
 >>>>>>> a0c2563 actual changes, licence of used project.
