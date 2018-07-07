@@ -6,6 +6,10 @@
 # netbeans
 /nbproject
 
+# idea intellij
+/.idea
+/*.iml
+
 # we use maven!
 /build.xml
 
@@ -22,4 +26,5 @@
 /manifest.mf
 
 # Mac filesystem dust
+/.DS_Store
 .DS_Store
