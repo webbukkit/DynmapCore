@@ -176,13 +176,6 @@
 			<version>1.9</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- not on maven central :-( -->
-		<!-- This is the Google SWIG-Generated JNI Library. -->
-		<dependency>
-			<groupId>com.google.webp</groupId>
-			<artifactId>webp</artifactId>
-			<version>5.0.0</version>
-		</dependency>
 	</dependencies>
 	<version>3.0-SNAPSHOT</version>
 </project>

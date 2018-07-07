@@ -16,13 +16,9 @@ import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageOutputStream;
 
-import com.google.webp.libwebp;
-import com.google.webp.libwebpJNI;
 import org.dynmap.Log;
 import org.dynmap.MapType.ImageFormat;
 import org.dynmap.debug.Debug;
-import org.dynmap.utils.webp.WebPWriteParam;
-
 /**
  * Implements soft-locks for prevent concurrency issues with file updates
  */
@@ -37,10 +33,15 @@ public class ImageIOManager {
         synchronized(imageioLock) {
             try {
                 ImageIO.setUseCache(false); /* Don't use file cache - too small to be worth it */
-                final String fileExt = fmt.getFileExt();
-
-                if(fileExt.equals("jpg")) {
-                    BufferedImage rgbBuffer = getRenderedImage(img);
+                if(fmt.getFileExt().equals("jpg")) {
+                    WritableRaster raster = img.getRaster();
+                    WritableRaster newRaster = raster.createWritableChild(0, 0, img.getWidth(),
+                            img.getHeight(), 0, 0, new int[] {0, 1, 2});
+                    DirectColorModel cm = (DirectColorModel)img.getColorModel();
+                    DirectColorModel newCM = new DirectColorModel(cm.getPixelSize(),
+                            cm.getRedMask(), cm.getGreenMask(), cm.getBlueMask());
+                    // now create the new buffer that is used ot write the image:
+                    BufferedImage rgbBuffer = new BufferedImage(newCM, newRaster, false, null);
 
                     // Find a jpeg writer
                     ImageWriter writer = null;
@@ -64,29 +65,9 @@ public class ImageIOManager {
                     writer.dispose();
 
                     rgbBuffer.flush();
-                } else if ("webp".equalsIgnoreCase(fileExt)) {
-                    // webp shared object must be loaded.
-                    final ImageWriter webpWriter = ImageIO.getImageWritersByFormatName("webp").next();
-
-                    if(webpWriter == null) {
-                        Log.severe("No WEBP ENCODER - Ensure libwebp-jni.so or webp-jni.dll is accessible on the Java native library path (java.library.path system property).");
-                        return null;
-                    }
-
-                    final ImageWriteParam imgWriteParams = new WebPWriteParam(null);
-                    imgWriteParams.setCompressionType("Lossy");
-                    // 0~1
-                    imgWriteParams.setCompressionQuality(0.92f);
-
-                    ImageOutputStream ios = ImageIO.createImageOutputStream(bos);
-                    webpWriter.setOutput(ios);
-
-                    BufferedImage rgbBuffer = getRenderedImage(img);
-                    webpWriter.write(null, new IIOImage(rgbBuffer, null, null), imgWriteParams);
-                    webpWriter.dispose();
-                    rgbBuffer.flush();
-                } else {
-                    ImageIO.write(img, fileExt, bos); /* Write to byte array stream - prevent bogus I/O errors */
+                }
+                else {
+                    ImageIO.write(img, fmt.getFileExt(), bos); /* Write to byte array stream - prevent bogus I/O errors */
                 }
             } catch (IOException iox) {
                 Log.info("Error encoding image - " + iox.getMessage());
@@ -95,18 +76,7 @@ public class ImageIOManager {
         }
         return bos;
     }
-
-    private static BufferedImage getRenderedImage(BufferedImage img) {
-        WritableRaster raster = img.getRaster();
-        WritableRaster newRaster = raster.createWritableChild(0, 0, img.getWidth(),
-                img.getHeight(), 0, 0, new int[] {0, 1, 2});
-        DirectColorModel cm = (DirectColorModel)img.getColorModel();
-        DirectColorModel newCM = new DirectColorModel(cm.getPixelSize(),
-                cm.getRedMask(), cm.getGreenMask(), cm.getBlueMask());
-        // now create the new buffer that is used ot write the image:
-        return new BufferedImage(newCM, newRaster, false, null);
-    }
-
+    
     private static final int MAX_WRITE_RETRIES = 6;
     
     private static LinkedList<BufferOutputStream> baoslist = new LinkedList<BufferOutputStream>();
@@ -135,9 +105,15 @@ public class ImageIOManager {
         }
         synchronized(imageioLock) {
             ImageIO.setUseCache(false); /* Don't use file cache - too small to be worth it */
-            final String fileExt = fmt.getFileExt();
-            if(fileExt.equals("jpg")) {
-                BufferedImage rgbBuffer = getRenderedImage(img);
+            if(fmt.getFileExt().equals("jpg")) {
+                WritableRaster raster = img.getRaster();
+                WritableRaster newRaster = raster.createWritableChild(0, 0, img.getWidth(),
+                        img.getHeight(), 0, 0, new int[] {0, 1, 2});
+                DirectColorModel cm = (DirectColorModel)img.getColorModel();
+                DirectColorModel newCM = new DirectColorModel(cm.getPixelSize(),
+                        cm.getRedMask(), cm.getGreenMask(), cm.getBlueMask());
+                // now create the new buffer that is used ot write the image:
+                BufferedImage rgbBuffer = new BufferedImage(newCM, newRaster, false, null);
 
                 // Find a jpeg writer
                 ImageWriter writer = null;
@@ -160,30 +136,9 @@ public class ImageIOManager {
                 writer.dispose();
 
                 rgbBuffer.flush();
-            } else if ("webp".equalsIgnoreCase(fileExt)) {
-                // webp shared object must be loaded.
-                final ImageWriter webpWriter = ImageIO.getImageWritersByFormatName("webp").next();
-
-                if(webpWriter == null) {
-                    Log.severe("No WEBP ENCODER - Ensure libwebp-jni.so or webp-jni.dll is accessible on the Java native library path (java.library.path system property).");
-                    return;
-                }
-
-                final ImageWriteParam imgWriteParams = new WebPWriteParam(null);
-                imgWriteParams.setCompressionType("Lossy");
-                // 0~1
-                imgWriteParams.setCompressionQuality(0.92f);
-
-                ImageOutputStream ios = ImageIO.createImageOutputStream(baos);
-                webpWriter.setOutput(ios);
-
-                BufferedImage rgbBuffer = getRenderedImage(img);
-                webpWriter.write(null, new IIOImage(rgbBuffer, null, null), imgWriteParams);
-                webpWriter.dispose();
-                rgbBuffer.flush();
             }
             else {
-                ImageIO.write(img, fileExt, baos); /* Write to byte array stream - prevent bogus I/O errors */
+                ImageIO.write(img, fmt.getFileExt(), baos); /* Write to byte array stream - prevent bogus I/O errors */
             }
         }
         // Get buffer and length
