@@ -443,7 +443,7 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 		}
 		else if(msg.msg == 'circleupdated') {
 			var set = dynmapmarkersets[msg.set];
-			deleteMarker(set, set.circle[msg.id]);
+			deleteMarker(set, set.circles[msg.id]);
 
 			var circle = { x: msg.x, y: msg.y, z: msg.z, xr: msg.xr, zr: msg.zr, label: msg.label, markup: msg.markup, desc: msg.desc,
 				color: msg.color, weight: msg.weight, opacity: msg.opacity, fillcolor: msg.fillcolor, fillopacity: msg.fillopacity, minzoom: msg.minzoom || -1, maxzoom: msg.maxzoom || -1 };
@@ -452,8 +452,8 @@ componentconstructors['markers'] = function(dynmap, configuration) {
 		}
 		else if(msg.msg == 'circledeleted') {
 			var set = dynmapmarkersets[msg.set];
-			deleteMarker(set, set.circle[msg.id]);
-			delete set.circle[msg.id];
+			deleteMarker(set, set.circles[msg.id]);
+			delete set.circles[msg.id];
 		}
 		
 		$(dynmap).trigger('markersupdated', [dynmapmarkersets]);
