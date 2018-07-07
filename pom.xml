@@ -142,10 +142,6 @@
 			<id>sonatype-nexus-releases</id>
 			<url>https://oss.sonatype.org/content/repositories/releases</url>
 		</repository>
-		<!-- project-local repo for artifacts which are not in maven central. -->
-		<repository>
-      <id>local-downloaded</id>
-			<url>file:${project.basedir}/src/main/dependencies</url>
 		<repository>
 			<id>mikeprimm</id>
 			<url>http://repo.mikeprimm.com</url>
@@ -179,13 +175,6 @@
 			<artifactId>snakeyaml</artifactId>
 			<version>1.9</version>
 			<scope>compile</scope>
-		</dependency>
-		<!-- not on maven central :-( -->
-		<!-- This is the Google SWIG-Generated JNI Library. -->
-		<dependency>
-			<groupId>com.google.webp</groupId>
-			<artifactId>webp</artifactId>
-			<version>5.0.0</version>
 		</dependency>
 	</dependencies>
 	<version>2.6-SNAPSHOT</version>

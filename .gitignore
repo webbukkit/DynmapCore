@@ -6,10 +6,6 @@
 # netbeans
 /nbproject
 
-# idea intellij
-/.idea
-/*.iml
-
 # we use maven!
 /build.xml
 
@@ -26,5 +22,9 @@
 /manifest.mf
 
 # Mac filesystem dust
+<<<<<<< master
 /.DS_Store
 .DS_Store
+=======
+/.DS_Store
+>>>>>>> a0c2563 actual changes, licence of used project.
