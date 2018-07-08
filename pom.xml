@@ -82,6 +82,7 @@
 									<include>org.spout:simplenbt:jar:*</include>
 									<include>com.googlecode.json-simple:json-simple:*</include>
 									<include>org.yaml:snakeyaml:*</include>
+									<include>com.googlecode.owasp-java-html-sanitizer:owasp-java-html-sanitizer:*</include>
 								</includes>
 							</artifactSet>
 							<relocations>
@@ -105,6 +106,10 @@
 									<pattern>javax.servlet</pattern>
 									<shadedPattern>org.dynmap.javax.servlet</shadedPattern>
 								</relocation>
+                                <relocation>
+                                    <pattern>org.owasp.html</pattern>
+                                    <shadedPattern>org.dynmap.org.owasp.html</shadedPattern>
+                                </relocation>
 							</relocations>
 							<filters>
 								<filter>
@@ -175,6 +180,11 @@
 			<artifactId>snakeyaml</artifactId>
 			<version>1.9</version>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.googlecode.owasp-java-html-sanitizer</groupId>
+			<artifactId>owasp-java-html-sanitizer</artifactId>
+			<version>20180219.1</version>
 		</dependency>
 	</dependencies>
 	<version>2.6-SNAPSHOT</version>
