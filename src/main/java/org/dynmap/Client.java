@@ -159,6 +159,7 @@ public class Client {
 
     public static String stripColor(String s) {
         s = DynmapChatColor.stripColor(s);    /* Strip standard color encoding */
+        s = s.replaceAll("[<>]", ""); // Break any embedded HTML
         /* Handle Essentials nickname encoding too */
         int idx = 0;
         while((idx = s.indexOf('&', idx)) >= 0) {
@@ -244,6 +245,9 @@ public class Client {
                         }
                     }
                 }
+            }
+            else if ((c == '<') || (c == '>')) {
+                // Neuter other attempted HTML tags in string
             }
             else if (magic) {
                 sb.append(rndchars.charAt(rnd.nextInt(rndchars.length())));
