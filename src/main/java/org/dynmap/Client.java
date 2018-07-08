@@ -6,6 +6,8 @@ import java.util.Random;
 
 import org.json.simple.JSONAware;
 import org.json.simple.JSONStreamAware;
+import org.owasp.html.PolicyFactory;
+import org.owasp.html.Sanitizers;
 import org.dynmap.common.DynmapChatColor;
 
 public class Client {
@@ -27,7 +29,7 @@ public class Client {
     public static class ChatMessage extends Update {
         public String type = "chat";
         public String source;
-        public String playerName;
+        public String playerName;   // Note: this needs to be client-safe HTML text (can include tags, but only sanitized ones)
         public String message;
         public String account;
         public String channel;
@@ -59,7 +61,7 @@ public class Client {
 
     public static class PlayerJoinMessage extends Update {
         public String type = "playerjoin";
-        public String playerName;
+        public String playerName;   // Note: this needs to be client-safe HTML text (can include tags, but only sanitized ones)
         public String account;
         public PlayerJoinMessage(String playerName, String playeraccount) {
             if (ClientUpdateComponent.hideNames)
@@ -86,7 +88,7 @@ public class Client {
 
     public static class PlayerQuitMessage extends Update {
         public String type = "playerquit";
-        public String playerName;
+        public String playerName;   // Note: this needs to be client-safe HTML text (can include tags, but only sanitized ones)
         public String account;
         public PlayerQuitMessage(String playerName, String playeraccount) {
             if (ClientUpdateComponent.hideNames)
@@ -156,10 +158,10 @@ public class Client {
         public String type = "component";
         /* Each subclass must provide 'ctype' string for component 'type' */
     }
-
+    
+    // Strip color - assume we're returning safe html text
     public static String stripColor(String s) {
         s = DynmapChatColor.stripColor(s);    /* Strip standard color encoding */
-        s = s.replaceAll("[<>]", ""); // Break any embedded HTML
         /* Handle Essentials nickname encoding too */
         int idx = 0;
         while((idx = s.indexOf('&', idx)) >= 0) {
@@ -172,7 +174,8 @@ public class Client {
             }
             idx++;
         }
-        return s;
+        // Apply sanitize policy before returning
+        return sanitizeHTML(s);
     }
     private static String[][] codes = {
         { "0", "<span style=\'color:#000000\'>" },
@@ -199,7 +202,7 @@ public class Client {
     };
     private static Random rnd = new Random();
     private static String rndchars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    // Replace color codes with corresponding <span 
+    // Replace color codes with corresponding <span - assume we're returning safe HTML text 
     public static String encodeColorInHTML(String s) {
         StringBuilder sb = new StringBuilder();
         int cnt = s.length();
@@ -246,9 +249,6 @@ public class Client {
                     }
                 }
             }
-            else if ((c == '<') || (c == '>')) {
-                // Neuter other attempted HTML tags in string
-            }
             else if (magic) {
                 sb.append(rndchars.charAt(rnd.nextInt(rndchars.length())));
             }
@@ -259,6 +259,17 @@ public class Client {
         for (int i = 0; i < spancnt; i++) {
             sb.append("</span>");
         }
-        return sb.toString();
+        return sanitizeHTML(sb.toString());
+    }
+
+    private static PolicyFactory sanitizer = null; 
+    public static String sanitizeHTML(String html) {
+        PolicyFactory s = sanitizer;
+        if (s == null) {
+            // Generous but safe html formatting allowances
+            s = Sanitizers.FORMATTING.and(Sanitizers.BLOCKS).and(Sanitizers.IMAGES).and(Sanitizers.LINKS).and(Sanitizers.STYLES);
+            sanitizer = s;
+        }
+        return sanitizer.sanitize(html);
     }
 }
