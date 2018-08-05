@@ -21,12 +21,12 @@ import org.dynmap.MapType;
 import org.dynmap.MapType.ImageFormat;
 import org.dynmap.MapTypeState;
 import org.dynmap.markers.impl.MarkerAPIImpl;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory.SideVisible;
 import org.dynmap.storage.MapStorage;
 import org.dynmap.storage.MapStorageTile;
 import org.dynmap.utils.BlockStep;
-import org.dynmap.hdmap.HDBlockModels.CustomBlockModel;
 import org.dynmap.hdmap.TexturePack.BlockTransparency;
 import org.dynmap.hdmap.TexturePack.HDBlockTextureMap;
 import org.dynmap.utils.DynmapBufferedImage;
@@ -81,9 +81,8 @@ public class IsoHDPerspective implements HDPerspective {
     private static final BlockStep [] semi_steps = { BlockStep.Y_PLUS, BlockStep.X_MINUS, BlockStep.X_PLUS, BlockStep.Z_MINUS, BlockStep.Z_PLUS };
 
     private class OurPerspectiveState implements HDPerspectiveState {
-        int blocktypeid = 0;
-        int blockdata = 0;
-        int lastblocktypeid = 0;
+        DynmapBlockState blocktype = DynmapBlockState.AIR;
+        DynmapBlockState lastblocktype = DynmapBlockState.AIR;
         Vector3D top, bottom, direction;
         int px, py;
         BlockStep laststep = BlockStep.Y_MINUS;
@@ -91,7 +90,7 @@ public class IsoHDPerspective implements HDPerspective {
         BlockStep stepx, stepy, stepz;
 
         /* Scaled models for non-cube blocks */
-        private final HDBlockModels.HDScaledBlockModels scalemodels;
+        private final HDScaledBlockModels scalemodels;
         private final int modscale;
 
         /* Section-level raytrace variables */
@@ -175,16 +174,16 @@ public class IsoHDPerspective implements HDPerspective {
         /**
          * Update sky and emitted light 
          */
-        private final void updateLightLevel(int blktypeid, LightLevels ll) {
+        private final void updateLightLevel(DynmapBlockState blk, LightLevels ll) {
             /* Look up transparency for current block */
-            BlockTransparency bt = HDBlockTextureMap.getTransparency(blktypeid);
+            BlockTransparency bt = HDBlockTextureMap.getTransparency(blk);
             switch(bt) {
             	case TRANSPARENT:
             		ll.sky = mapiter.getBlockSkyLight();
             		ll.emitted = mapiter.getBlockEmittedLight();
             		break;
             	case OPAQUE:
-        			if(HDBlockTextureMap.getTransparency(lastblocktypeid) != BlockTransparency.SEMITRANSPARENT) {
+        			if(HDBlockTextureMap.getTransparency(lastblocktype) != BlockTransparency.SEMITRANSPARENT) {
                 		mapiter.unstepPosition(laststep);  /* Back up to block we entered on */
                 		if(mapiter.getY() < worldheight) {
                 		    ll.sky = mapiter.getBlockSkyLight();
@@ -213,12 +212,14 @@ public class IsoHDPerspective implements HDPerspective {
         /**
          * Get light level - only available if shader requested it
          */
+        @Override
         public final void getLightLevels(LightLevels ll) {
-            updateLightLevel(blocktypeid, ll);
+            updateLightLevel(blocktype, ll);
         }
         /**
          * Get sky light level - only available if shader requested it
          */
+        @Override
         public final void getLightLevelsAtStep(BlockStep step, LightLevels ll) {
             if(((step == BlockStep.Y_MINUS) && (y == 0)) ||
                     ((step == BlockStep.Y_PLUS) && (y == worldheight))) {
@@ -228,33 +229,34 @@ public class IsoHDPerspective implements HDPerspective {
             BlockStep blast = laststep;
             mapiter.stepPosition(step);
             laststep = blast;
-            updateLightLevel(mapiter.getBlockTypeID(), ll);
+            updateLightLevel(mapiter.getBlockType(), ll);
             mapiter.unstepPosition(step);
             laststep = blast;
         }
         /**
          * Get current block type ID
          */
-        public final int getBlockTypeID() { return blocktypeid; }
-        /**
-         * Get current block data
-         */
-        public final int getBlockData() { return blockdata; }
+        @Override
+        public final DynmapBlockState getBlockState() { return blocktype; }
         /**
          * Get direction of last block step
          */
+        @Override
         public final BlockStep getLastBlockStep() { return laststep; }
         /**
          * Get perspective scale
          */
+        @Override
         public final double getScale() { return modscale; }
         /**
          * Get start of current ray, in world coordinates
          */
+        @Override
         public final Vector3D getRayStart() { return top; }
         /**
          * Get end of current ray, in world coordinates
          */
+        @Override
         public final Vector3D getRayEnd() { return bottom; }
         /**
          * Get pixel X coordinate
@@ -509,20 +511,18 @@ public class IsoHDPerspective implements HDPerspective {
          * Process visit of ray to block
          */
         private final boolean visit_block(HDShaderState[] shaderstate, boolean[] shaderdone) {
-            lastblocktypeid = blocktypeid;
-            blocktypeid = mapiter.getBlockTypeID();
+            lastblocktype = blocktype;
+            blocktype = mapiter.getBlockType();
             if(skiptoair) {	/* If skipping until we see air */
-                if(blocktypeid == 0) {	/* If air, we're done */
+                if (blocktype.isAir()) {	/* If air, we're done */
                 	skiptoair = false;
                 }
             }
-            else if(nonairhit || (blocktypeid != 0)) {
-                blockdata = mapiter.getBlockData();  
-                
-                RenderPatch[] patches = scalemodels.getPatchModel(blocktypeid,  blockdata);
+            else if(nonairhit || blocktype.isNotAir()) {
+                RenderPatch[] patches = scalemodels.getPatchModel(blocktype);
                 /* If no patches, see if custom model */
                 if(patches == null) {
-                    CustomBlockModel cbm = scalemodels.getCustomBlockModel(blocktypeid,  blockdata);
+                    CustomBlockModel cbm = scalemodels.getCustomBlockModel(blocktype);
                     if(cbm != null) {   /* If found, see if cached already */
                         patches = this.getCustomMesh();
                         if(patches == null) {
@@ -535,7 +535,7 @@ public class IsoHDPerspective implements HDPerspective {
                 if(patches != null) {
                     return handlePatches(patches, shaderstate, shaderdone);
                 }
-                short[] model = scalemodels.getScaledModel(blocktypeid, blockdata);
+                short[] model = scalemodels.getScaledModel(blocktype);
                 if(model != null) {
                     return handleSubModel(model, shaderstate, shaderdone);
                 }
@@ -556,6 +556,7 @@ public class IsoHDPerspective implements HDPerspective {
             }
             return false;
         }
+        
         /* Skip empty : return false if exited */
         private final boolean raytraceSkipEmpty(MapChunkCache cache) {
             while(cache.isEmptySection(sx, sy, sz)) {
@@ -585,6 +586,7 @@ public class IsoHDPerspective implements HDPerspective {
             }
             return true;
         }
+        
         /**
          * Step block iterator: false if done
          */
@@ -619,6 +621,7 @@ public class IsoHDPerspective implements HDPerspective {
             }
             return true;
         }
+        
         /**
          * Trace ray, based on "Voxel Tranversal along a 3D line"
          */
@@ -771,6 +774,7 @@ public class IsoHDPerspective implements HDPerspective {
             }
             return true;
         }
+        
         public final int[] getSubblockCoord() {
             if(cur_patch >= 0) {    /* If patch hit */
                 double tt = cur_patch_t;
@@ -797,21 +801,27 @@ public class IsoHDPerspective implements HDPerspective {
             }
             return subblock_xyz;
         }
+        
         /**
          * Get current texture index
          */
+        @Override
         public int getTextureIndex() {
             return cur_patch;
         }
+
         /**
          * Get current U of patch intercept
          */
+        @Override
         public double getPatchU() {
             return cur_patch_u;
         }
+
         /**
          * Get current V of patch intercept
          */
+        @Override
         public double getPatchV() {
             return cur_patch_v;
         }
@@ -819,6 +829,7 @@ public class IsoHDPerspective implements HDPerspective {
          * Light level cache
          * @param index of light level (0-3)
          */
+        @Override
         public final LightLevels getCachedLightLevels(int idx) {
             return llcache[idx];
         }
@@ -1143,7 +1154,7 @@ public class IsoHDPerspective implements HDPerspective {
                 try {
                     ps.raytrace(cache, shaderstate, shaderdone);
                 } catch (Exception ex) {
-                    Log.severe("Error while raytracing tile: perspective=" + this.name + ", coord=" + mapiter.getX() + "," + mapiter.getY() + "," + mapiter.getZ() + ", blockid=" + mapiter.getBlockTypeID() + ":" + mapiter.getBlockData() + ", lighting=" + mapiter.getBlockSkyLight() + ":" + mapiter.getBlockEmittedLight() + ", biome=" + mapiter.getBiome().toString(), ex);
+                    Log.severe("Error while raytracing tile: perspective=" + this.name + ", coord=" + mapiter.getX() + "," + mapiter.getY() + "," + mapiter.getZ() + ", blockid=" + mapiter.getBlockType() + ", lighting=" + mapiter.getBlockSkyLight() + ":" + mapiter.getBlockEmittedLight() + ", biome=" + mapiter.getBiome().toString(), ex);
                 }
                 for(int i = 0; i < numshaders; i++) {
                     if(shaderdone[i] == false) {
@@ -1256,18 +1267,22 @@ public class IsoHDPerspective implements HDPerspective {
          return need_rawbiomedata;
      }
 
+    @Override
     public boolean isHightestBlockYDataNeeded() {
         return false;
     }
     
+    @Override
     public boolean isBlockTypeDataNeeded() {
         return true;
     }
     
+    @Override
     public double getScale() {
         return basemodscale;
     }
 
+    @Override
     public int getModelScale() {
         return basemodscale;
     }
@@ -1303,5 +1318,4 @@ public class IsoHDPerspective implements HDPerspective {
     public int hashCode() {
         return hashcode;
     }
-
 }

@@ -158,8 +158,8 @@ public class RPMicroRenderer extends CustomRenderer {
         { 69 } // 68 = Copper Block (blockStorage:5)
     };
     @Override
-    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
-        if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
+    public boolean initializeRenderer(RenderPatchFactory rpf, String blkname, int blockdatamask, Map<String,String> custparm) {
+        if(!super.initializeRenderer(rpf, blkname, blockdatamask, custparm))
             return false;
         /* Flesh out sides map */
         for(int i = 0; i < materialTextureMap.length; i++) {

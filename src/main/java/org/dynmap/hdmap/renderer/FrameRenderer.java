@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.dynmap.Log;
 import org.dynmap.renderer.CustomRenderer;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
@@ -38,9 +39,18 @@ public class FrameRenderer extends CustomRenderer {
     
     private String[] tileEntityAttribs = null;
 
+    private void addIDs(String blkname) {
+        DynmapBlockState bbs = DynmapBlockState.getBaseStateByName(blkname);
+        if (bbs.isNotAir()) {
+            for (int i = 0; i < bbs.getStateCount(); i++) {
+                DynmapBlockState bs = bbs.getState(i);
+                linked_ids.set(bs.globalStateIndex);
+            }
+        }
+    }
     @Override
-    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
-        if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
+    public boolean initializeRenderer(RenderPatchFactory rpf, String blkname, int blockdatamask, Map<String,String> custparm) {
+        if(!super.initializeRenderer(rpf, blkname, blockdatamask, custparm))
             return false;
         String linkset = custparm.get("linkset");
         if(linkset == null) linkset = "default";
@@ -49,7 +59,7 @@ public class FrameRenderer extends CustomRenderer {
             linked_ids = new BitSet();
             linked_ids_by_set.put(linkset,  linked_ids);
         }
-        linked_ids.set(blkid);  // Add us to set
+        addIDs(blkname);  // Add us to set
         // Get diameter
         String dia = custparm.get("diameter");
         if(dia == null) dia = "0.5";
@@ -65,15 +75,8 @@ public class FrameRenderer extends CustomRenderer {
         }
         // Process other link block IDs
         for(String k : custparm.keySet()) {
-            if(k.startsWith("linkid")) {
-                int linkblkid = 0;
-                try {
-                    linkblkid = Integer.parseInt(custparm.get(k));
-                } catch (NumberFormatException nfx) {
-                }
-                if(linkblkid > 0) {
-                    linked_ids.set(linkblkid);
-                }
+            if(k.startsWith("link")) {
+                addIDs(custparm.get(k));
             }
         }
         // Check for axis force
@@ -220,8 +223,8 @@ public class FrameRenderer extends CustomRenderer {
         int idx = base_index;
         for(int i = 0; i < x_off.length; i++) {
             if((idx & (1 << i)) != 0) continue;
-            int blkid = ctx.getBlockTypeIDAt(x_off[i],  y_off[i],  z_off[i]);
-            if(linked_ids.get(blkid)) {
+            DynmapBlockState blk = ctx.getBlockTypeAt(x_off[i],  y_off[i],  z_off[i]);
+            if(linked_ids.get(blk.globalStateIndex)) {
                 idx |= (1 << i);
             }
         }

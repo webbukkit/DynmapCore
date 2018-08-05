@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.dynmap.renderer.CustomRenderer;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
@@ -26,17 +27,25 @@ public class TFCSupportRenderer extends CustomRenderer {
     // Meshes, indexed by connection combination (bit 0=X+, bit 1=X-, bit 2=Z+, bit 3=Z-, bit 4=Y-)
     private RenderPatch[][] meshes = new RenderPatch[32][];
     
+    private void setID(BitSet set, String bname) {
+        DynmapBlockState bbs = DynmapBlockState.getBaseStateByName(bname);
+        if (bbs.isNotAir()) {
+            for (int i = 0; i < bbs.getStateCount(); i++) {
+                set.set(bbs.getState(i).globalStateIndex);
+            }
+        }
+    }
     @Override
-    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
-        if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
+    public boolean initializeRenderer(RenderPatchFactory rpf, String blkname, int blockdatamask, Map<String,String> custparm) {
+        if(!super.initializeRenderer(rpf, blkname, blockdatamask, custparm))
             return false;
         String vert = custparm.get("vert");
         if((vert != null) && (vert.equals("true"))) {
             isVert = true;
-            vertid.set(blkid, true);
+            setID(vertid, blkname);
         }
         else {
-            horizid.set(blkid, true);
+            setID(horizid, blkname);
         }
         /* Generate meshes */
         buildMeshes(rpf);
@@ -103,16 +112,16 @@ public class TFCSupportRenderer extends CustomRenderer {
     public RenderPatch[] getRenderPatchList(MapDataContext ctx) {
         /* Build connection map - check each axis */
         int connect = 0;
-        for(int i = 0; i < sides.length; i++) {
-            int id = ctx.getBlockTypeIDAt(sides[i][0], sides[i][1], sides[i][2]);
-            if(id == 0) continue;
-            if(vertid.get(id) || horizid.get(id)) {
+        for (int i = 0; i < sides.length; i++) {
+            DynmapBlockState blk = ctx.getBlockTypeAt(sides[i][0], sides[i][1], sides[i][2]);
+            if (blk.isAir()) continue;
+            if (vertid.get(blk.globalStateIndex) || horizid.get(blk.globalStateIndex)) {
                 connect |= sides[i][3];
             }
         }
-        if(!isVert) {   /* Link horizontal to verticals below */
-            int id = ctx.getBlockTypeIDAt(0, -1, 0);
-            if((id > 0) && vertid.get(id)) {
+        if (!isVert) {   /* Link horizontal to verticals below */
+            DynmapBlockState blk = ctx.getBlockTypeAt(0, -1, 0);
+            if (blk.isNotAir() && vertid.get(blk.globalStateIndex)) {
                 connect |= SIDE_YN;
             }
         }

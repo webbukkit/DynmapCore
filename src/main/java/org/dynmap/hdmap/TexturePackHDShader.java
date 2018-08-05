@@ -13,6 +13,7 @@ import org.dynmap.Log;
 import org.dynmap.MapManager;
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.exporter.OBJExport;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.DynLongHashMap;
 import org.dynmap.utils.MapChunkCache;
@@ -106,7 +107,7 @@ public class TexturePackHDShader implements HDShader {
         final protected HDMap map;
         final private TexturePack scaledtp;
         final private HDLighting lighting;
-        private int lastblkid;
+        private DynmapBlockState lastblk;
         final boolean do_biome_shading;
         final boolean do_better_grass;
         DynLongHashMap ctm_cache;
@@ -143,6 +144,7 @@ public class TexturePackHDShader implements HDShader {
         /**
          * Get our shader
          */
+        @Override
         public HDShader getShader() {
             return TexturePackHDShader.this;
         }
@@ -150,6 +152,7 @@ public class TexturePackHDShader implements HDShader {
         /**
          * Get our map
          */
+        @Override
         public HDMap getMap() {
             return map;
         }
@@ -157,6 +160,7 @@ public class TexturePackHDShader implements HDShader {
         /**
          * Get our lighting
          */
+        @Override
         public HDLighting getLighting() {
             return lighting;
         }
@@ -164,10 +168,11 @@ public class TexturePackHDShader implements HDShader {
         /**
          * Reset renderer state for new ray
          */
+        @Override
         public void reset(HDPerspectiveState ps) {
             for(int i = 0; i < color.length; i++)
                 color[i].setTransparent();
-            lastblkid = 0;
+            lastblk = DynmapBlockState.AIR;
         }
         
         /**
@@ -175,14 +180,14 @@ public class TexturePackHDShader implements HDShader {
          * @return true if ray is done, false if ray needs to continue
          */
         public boolean processBlock(HDPerspectiveState ps) {
-            int blocktype = ps.getBlockTypeID();
-            if ((hiddenids != null) && hiddenids.get(blocktype)) {
-                blocktype = 0;
+            DynmapBlockState blocktype = ps.getBlockState();
+            if ((hiddenids != null) && hiddenids.get(blocktype.globalStateIndex)) {
+                blocktype = DynmapBlockState.AIR;
             }
-            int lastblocktype = lastblkid;
-            lastblkid = blocktype;
+            DynmapBlockState lastblocktype = lastblk;
+            lastblk = blocktype;
             
-            if(blocktype == 0) {
+            if (blocktype.isAir()) {
                 return false;
             }
             
@@ -340,12 +345,12 @@ public class TexturePackHDShader implements HDShader {
         throw new IOException("Export unsupported - invalid texture pack");
     }
     @Override
-    public String[] getCurrentBlockMaterials(int blkid, int blkdata, MapIterator mapiter, int[] txtidx, BlockStep[] steps) {
+    public String[] getCurrentBlockMaterials(DynmapBlockState blk, MapIterator mapiter, int[] txtidx, BlockStep[] steps) {
         if (tp == null) {
             getTexturePack();   // Make sure its loaded
         }
         if (tp != null) {
-            return tp.getCurrentBlockMaterials(blkid, blkdata, mapiter, txtidx, steps);
+            return tp.getCurrentBlockMaterials(blk, mapiter, txtidx, steps);
         }
         return new String[txtidx.length];
     }

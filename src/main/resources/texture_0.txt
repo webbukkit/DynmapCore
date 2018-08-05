@@ -354,112 +354,112 @@ texturefile:id=w_txt,filename=assets/minecraft/textures/blocks/test_block/w_text
 
 ######
 # Stone
-block:id=1,allfaces=0:stone,stdrot=true
+block:id=stone,allfaces=0:stone,stdrot=true
 # Grass (TODO: sides)
-block:id=2,allsides=11000:grass_side,top=1000:grass_top,bottom=0:dirt,stdrot=true
+block:id=grass,allsides=11000:grass_side,top=1000:grass_top,bottom=0:dirt,stdrot=true
 # Dirt
-block:id=3,allfaces=0:dirt,stdrot=true
-[1.7.0-]block:id=3,data=2,top=0:dirt_podzol_top,bottom=0:dirt,allsides=0:dirt_podzol_side,stdrot=true
+block:id=dirt,allfaces=0:dirt,stdrot=true
+[1.7.0-]block:id=dirt,data=2,top=0:dirt_podzol_top,bottom=0:dirt,allsides=0:dirt_podzol_side,stdrot=true
 # Cobblestone
-block:id=4,allfaces=0:cobblestone,stdrot=true
+block:id=cobblestone,allfaces=0:cobblestone,stdrot=true
 # Wooden Plank (oak)
-[-1.6.4]block:id=5,data=0,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,allfaces=0:planks_oak,stdrot=true
-[1.7.0-]block:id=5,data=0,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,allfaces=0:planks_oak,stdrot=true
+[-1.6.4]block:id=planks,data=0,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,allfaces=0:planks_oak,stdrot=true
+[1.7.0-]block:id=planks,data=0,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,allfaces=0:planks_oak,stdrot=true
 # Wooden Plank (spruce)
-block:id=5,data=1,allfaces=0:planks_spruce,stdrot=true
+block:id=planks,data=1,allfaces=0:planks_spruce,stdrot=true
 # Wooden Plank (birch)
-block:id=5,data=2,allfaces=0:planks_birch,stdrot=true
+block:id=planks,data=2,allfaces=0:planks_birch,stdrot=true
 # Wooden Plank (jungle)
-block:id=5,data=3,allfaces=0:planks_jungle,stdrot=true
+block:id=planks,data=3,allfaces=0:planks_jungle,stdrot=true
 # Wooden Plank (acacia)
-[1.7.0-]block:id=5,data=4,allfaces=0:planks_acacia,stdrot=true
+[1.7.0-]block:id=planks,data=4,allfaces=0:planks_acacia,stdrot=true
 # Wooden Plank (big oak)
-[1.7.0-]block:id=5,data=5,allfaces=0:planks_big_oak,stdrot=true
+[1.7.0-]block:id=planks,data=5,allfaces=0:planks_big_oak,stdrot=true
 # Sapling (Oak)
-block:id=6,data=0,data=8,patch0-1=0:sapling_oak,transparency=TRANSPARENT
+block:id=sapling,data=0,data=8,patch0-1=0:sapling_oak,transparency=TRANSPARENT
 # Sapling (Spruce)
-block:id=6,data=1,data=9,patch0-1=0:sapling_spruce,transparency=TRANSPARENT
+block:id=sapling,data=1,data=9,patch0-1=0:sapling_spruce,transparency=TRANSPARENT
 # Sapling (Birch)
-block:id=6,data=2,data=10,patch0-1=0:sapling_birch,transparency=TRANSPARENT
+block:id=sapling,data=2,data=10,patch0-1=0:sapling_birch,transparency=TRANSPARENT
 # Sapling (Jungle)
-block:id=6,data=3,data=11,patch0-1=0:sapling_jungle,transparency=TRANSPARENT
+block:id=sapling,data=3,data=11,patch0-1=0:sapling_jungle,transparency=TRANSPARENT
 # Sapling (Acacia)
-[1.7.0-]block:id=6,data=4,data=12,patch0-1=0:sapling_acacia,transparency=TRANSPARENT
+[1.7.0-]block:id=sapling,data=4,data=12,patch0-1=0:sapling_acacia,transparency=TRANSPARENT
 # Sapling (Roofed Oak)
-[1.7.0-]block:id=6,data=5,data=13,patch0-1=0:sapling_roofed_oak,transparency=TRANSPARENT
+[1.7.0-]block:id=sapling,data=5,data=13,patch0-1=0:sapling_roofed_oak,transparency=TRANSPARENT
 # Bedrock
-block:id=7,allfaces=0:bedrock,stdrot=true
+block:id=bedrock,allfaces=0:bedrock,stdrot=true
 # Water
-block:id=8,allfaces=12000:water_flow,stdrot=true,transparency=SEMITRANSPARENT
+block:id=flowing_water,allfaces=12000:water_flow,stdrot=true,transparency=SEMITRANSPARENT
 # Stationary water
-block:id=9,data=0,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,topbottom=12000:water_still,allsides=12000:water_flow,stdrot=true,transparency=SEMITRANSPARENT
-block:id=9,data=1,data=2,data=3,data=4,data=5,data=6,data=7,allfaces=12000:water_flow,stdrot=true,transparency=SEMITRANSPARENT
+block:id=water,data=0,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,topbottom=12000:water_still,allsides=12000:water_flow,stdrot=true,transparency=SEMITRANSPARENT
+block:id=water,data=1,data=2,data=3,data=4,data=5,data=6,data=7,allfaces=12000:water_flow,stdrot=true,transparency=SEMITRANSPARENT
 # Lava
-block:id=10,allfaces=0:lava_flow,stdrot=true,transparency=SEMITRANSPARENT
+block:id=flowing_lava,allfaces=0:lava_flow,stdrot=true,transparency=SEMITRANSPARENT
 # Stationary Lava
-block:id=11,allfaces=0:lava_still,stdrot=true,transparency=SEMITRANSPARENT
+block:id=lava,allfaces=0:lava_still,stdrot=true,transparency=SEMITRANSPARENT
 # Sand
-block:id=12,allfaces=0:sand,stdrot=true
-[1.7.0-]block:id=12,data=1,allfaces=0:red_sand,stdrot=true
+block:id=sand,allfaces=0:sand,stdrot=true
+[1.7.0-]block:id=sand,data=1,allfaces=0:red_sand,stdrot=true
 # Gravel
-block:id=13,allfaces=0:gravel,stdrot=true
+block:id=gravel,allfaces=0:gravel,stdrot=true
 # Gold Ore
-block:id=14,allfaces=0:gold_ore,stdrot=true
+block:id=gold_ore,allfaces=0:gold_ore,stdrot=true
 # Iron Ore
-block:id=15,allfaces=0:iron_ore,stdrot=true
+block:id=iron_ore,allfaces=0:iron_ore,stdrot=true
 # Coal Ore
-block:id=16,allfaces=0:coal_ore,stdrot=true
+block:id=coal_ore,allfaces=0:coal_ore,stdrot=true
 # Wood (oak)
-block:id=17,data=0,allsides=0:log_oak,topbottom=0:log_oak_top,stdrot=true
-block:id=17,data=4,north=0:log_oak_top,south=0:log_oak_top,east=4000:log_oak,west=4000:log_oak,top=0:log_oak,bottom=0:log_oak
-block:id=17,data=8,north=4000:log_oak,south=4000:log_oak,east=0:log_oak_top,west=0:log_oak_top,top=4000:log_oak,bottom=4000:log_oak
-block:id=17,data=12,allfaces=0:log_oak,stdrot=true
+block:id=log,data=0,allsides=0:log_oak,topbottom=0:log_oak_top,stdrot=true
+block:id=log,data=4,north=0:log_oak_top,south=0:log_oak_top,east=4000:log_oak,west=4000:log_oak,top=0:log_oak,bottom=0:log_oak
+block:id=log,data=8,north=4000:log_oak,south=4000:log_oak,east=0:log_oak_top,west=0:log_oak_top,top=4000:log_oak,bottom=4000:log_oak
+block:id=log,data=12,allfaces=0:log_oak,stdrot=true
 # Wood (spruce/pine)
-block:id=17,data=1,allsides=0:log_spruce,topbottom=0:log_spruce_top,stdrot=true
-block:id=17,data=5,north=0:log_spruce_top,south=0:log_spruce_top,east=4000:log_spruce,west=4000:log_spruce,top=0:log_spruce,bottom=0:log_spruce
-block:id=17,data=9,north=4000:log_spruce,south=4000:log_spruce,east=0:log_spruce_top,west=0:log_spruce_top,top=4000:log_spruce,bottom=4000:log_spruce
-block:id=17,data=13,allfaces=0:log_spruce,stdrot=true
+block:id=log,data=1,allsides=0:log_spruce,topbottom=0:log_spruce_top,stdrot=true
+block:id=log,data=5,north=0:log_spruce_top,south=0:log_spruce_top,east=4000:log_spruce,west=4000:log_spruce,top=0:log_spruce,bottom=0:log_spruce
+block:id=log,data=9,north=4000:log_spruce,south=4000:log_spruce,east=0:log_spruce_top,west=0:log_spruce_top,top=4000:log_spruce,bottom=4000:log_spruce
+block:id=log,data=13,allfaces=0:log_spruce,stdrot=true
 # Wood (birch)
-block:id=17,data=2,allsides=0:log_birch,topbottom=0:log_birch_top,stdrot=true
-block:id=17,data=6,north=0:log_birch_top,south=0:log_birch_top,east=4000:log_birch,west=4000:log_birch,top=0:log_birch,bottom=0:log_birch
-block:id=17,data=10,north=4000:log_birch,south=4000:log_birch,east=0:log_birch_top,west=0:log_birch_top,top=4000:log_birch,bottom=4000:log_birch
-block:id=17,data=14,allfaces=0:log_birch,stdrot=true
+block:id=log,data=2,allsides=0:log_birch,topbottom=0:log_birch_top,stdrot=true
+block:id=log,data=6,north=0:log_birch_top,south=0:log_birch_top,east=4000:log_birch,west=4000:log_birch,top=0:log_birch,bottom=0:log_birch
+block:id=log,data=10,north=4000:log_birch,south=4000:log_birch,east=0:log_birch_top,west=0:log_birch_top,top=4000:log_birch,bottom=4000:log_birch
+block:id=log,data=14,allfaces=0:log_birch,stdrot=true
 # Wood (jungle)
-block:id=17,data=3,allsides=0:log_jungle,topbottom=0:log_jungle_top,stdrot=true
-block:id=17,data=7,north=0:log_jungle_top,south=0:log_jungle_top,east=4000:log_jungle,west=4000:log_jungle,top=0:log_jungle,bottom=0:log_jungle
-block:id=17,data=11,north=4000:log_jungle,south=4000:log_jungle,east=0:log_jungle_top,west=0:log_jungle_top,top=4000:log_jungle,bottom=4000:log_jungle
-block:id=17,data=15,allfaces=0:log_jungle,stdrot=true
+block:id=log,data=3,allsides=0:log_jungle,topbottom=0:log_jungle_top,stdrot=true
+block:id=log,data=7,north=0:log_jungle_top,south=0:log_jungle_top,east=4000:log_jungle,west=4000:log_jungle,top=0:log_jungle,bottom=0:log_jungle
+block:id=log,data=11,north=4000:log_jungle,south=4000:log_jungle,east=0:log_jungle_top,west=0:log_jungle_top,top=4000:log_jungle,bottom=4000:log_jungle
+block:id=log,data=15,allfaces=0:log_jungle,stdrot=true
 # Leaves (oak)
-block:id=18,data=0,data=4,data=8,data=12,allfaces=2000:leaves_oak,stdrot=true,transparency=LEAVES
+block:id=leaves,data=0,data=4,data=8,data=12,allfaces=2000:leaves_oak,stdrot=true,transparency=LEAVES
 # Leaves (spruce/pine)
-block:id=18,data=1,data=5,data=9,data=13,allfaces=13000:leaves_spruce,stdrot=true,transparency=LEAVES
+block:id=leaves,data=1,data=5,data=9,data=13,allfaces=13000:leaves_spruce,stdrot=true,transparency=LEAVES
 # Leaves (birch)
-block:id=18,data=2,data=6,data=10,data=14,allfaces=14000:leaves_birch,stdrot=true,transparency=LEAVES
+block:id=leaves,data=2,data=6,data=10,data=14,allfaces=14000:leaves_birch,stdrot=true,transparency=LEAVES
 # Leaves (jungle)
-block:id=18,data=3,data=7,data=11,data=15,allfaces=2000:leaves_jungle,stdrot=true,transparency=LEAVES
+block:id=leaves,data=3,data=7,data=11,data=15,allfaces=2000:leaves_jungle,stdrot=true,transparency=LEAVES
 # Sponge
-block:id=19,allfaces=0:sponge,stdrot=true
+block:id=sponge,allfaces=0:sponge,stdrot=true
 # Glass
-block:id=20,allfaces=12000:glass,stdrot=true,transparency=TRANSPARENT
+block:id=glass,allfaces=12000:glass,stdrot=true,transparency=TRANSPARENT
 # Lapis Lazuli Ore
-block:id=21,allfaces=0:lapis_ore,stdrot=true
+block:id=lapis_ore,allfaces=0:lapis_ore,stdrot=true
 # Lapis Lazuli Block
-block:id=22,allfaces=0:lapis_block,stdrot=true
+block:id=lapis_block,allfaces=0:lapis_block,stdrot=true
 # Dispenser
-block:id=23,data=0,data=8,face0=0:dispenser_front_vertical,face1=0:furnace_top,face2=0:furnace_top,face3=0:furnace_top,face4=0:furnace_top,face5=0:furnace_top,stdrot=true
-block:id=23,data=1,data=9,face0=0:furnace_top,face1=0:dispenser_front_vertical,face2=0:furnace_top,face3=0:furnace_top,face4=0:furnace_top,face5=0:furnace_top,stdrot=true
-block:id=23,data=2,data=10,face0=0:furnace_top,face1=0:furnace_top,face2=0:dispenser_front_horizontal,face3=0:furnace_side,face4=0:furnace_side,face5=0:furnace_side,stdrot=true
-block:id=23,data=3,data=11,face0=0:furnace_top,face1=0:furnace_top,face2=0:furnace_side,face3=0:dispenser_front_horizontal,face4=0:furnace_side,face5=0:furnace_side,stdrot=true
-block:id=23,data=4,data=12,face0=0:furnace_top,face1=0:furnace_top,face2=0:furnace_side,face3=0:furnace_side,face4=0:dispenser_front_horizontal,face5=0:furnace_side,stdrot=true
-block:id=23,data=5,data=13,face0=0:furnace_top,face1=0:furnace_top,face2=0:furnace_side,face3=0:furnace_side,face4=0:furnace_side,face5=0:dispenser_front_horizontal,stdrot=true
+block:id=dispenser,data=0,data=8,face0=0:dispenser_front_vertical,face1=0:furnace_top,face2=0:furnace_top,face3=0:furnace_top,face4=0:furnace_top,face5=0:furnace_top,stdrot=true
+block:id=dispenser,data=1,data=9,face0=0:furnace_top,face1=0:dispenser_front_vertical,face2=0:furnace_top,face3=0:furnace_top,face4=0:furnace_top,face5=0:furnace_top,stdrot=true
+block:id=dispenser,data=2,data=10,face0=0:furnace_top,face1=0:furnace_top,face2=0:dispenser_front_horizontal,face3=0:furnace_side,face4=0:furnace_side,face5=0:furnace_side,stdrot=true
+block:id=dispenser,data=3,data=11,face0=0:furnace_top,face1=0:furnace_top,face2=0:furnace_side,face3=0:dispenser_front_horizontal,face4=0:furnace_side,face5=0:furnace_side,stdrot=true
+block:id=dispenser,data=4,data=12,face0=0:furnace_top,face1=0:furnace_top,face2=0:furnace_side,face3=0:furnace_side,face4=0:dispenser_front_horizontal,face5=0:furnace_side,stdrot=true
+block:id=dispenser,data=5,data=13,face0=0:furnace_top,face1=0:furnace_top,face2=0:furnace_side,face3=0:furnace_side,face4=0:furnace_side,face5=0:dispenser_front_horizontal,stdrot=true
 # Sandstone
-block:id=24,data=0,bottom=0:sandstone_bottom,top=0:sandstone_top,allsides=0:sandstone_normal,stdrot=true
+block:id=sandstone,data=0,bottom=0:sandstone_bottom,top=0:sandstone_top,allsides=0:sandstone_normal,stdrot=true
 # Smooth Sandstone
-block:id=24,data=2,allsides=0:sandstone_smooth,topbottom=0:sandstone_top,stdrot=true
+block:id=sandstone,data=2,allsides=0:sandstone_smooth,topbottom=0:sandstone_top,stdrot=true
 # Carved Sandstone
-block:id=24,data=1,data=3,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,allsides=0:sandstone_carved,topbottom=0:sandstone_top,stdrot=true
+block:id=sandstone,data=1,data=3,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,allsides=0:sandstone_carved,topbottom=0:sandstone_top,stdrot=true
 # Note Block 
-block:id=25,allfaces=0:noteblock,stdrot=true
+block:id=noteblock,allfaces=0:noteblock,stdrot=true
 # Bed - head - pointing west
 block:id=26,data=8,topbottom=5000:bed_head_top,south=7000:bed_head_side,north=0:bed_head_side,west=0:bed_head_end,transparency=TRANSPARENT
 # Bed - foot - pointing west

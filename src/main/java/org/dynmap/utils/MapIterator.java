@@ -1,6 +1,7 @@
 package org.dynmap.utils;
 
 import org.dynmap.common.BiomeMap;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.renderer.MapDataContext;
 
 /**
@@ -85,7 +86,7 @@ public interface MapIterator extends MapDataContext {
      * @param s - direction to step
      * @return block id
      */
-    int getBlockTypeIDAt(BlockStep s);
+    DynmapBlockState getBlockTypeAt(BlockStep s);
     /**
      * Get last step taken
      * @return last step

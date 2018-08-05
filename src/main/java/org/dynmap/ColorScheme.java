@@ -28,13 +28,14 @@ public class ColorScheme {
         this.biomecolors = biomecolors;
         this.raincolors = raincolors;
         this.tempcolors = tempcolors;
-        for(int i = 0; i < colors.length; i++) {
-            int id = MapManager.mapman.getBlockIDAlias(i);
-            if(id != i) {
-                this.colors[i] = this.colors[id];
-                this.datacolors[i] = this.datacolors[id];
-            }
-        }
+        //TODO: see if we can fix this for IDs vs names...
+//        for(int i = 0; i < colors.length; i++) {
+//            int id = MapManager.mapman.getBlockAlias(i);
+//            if(id != i) {
+//                this.colors[i] = this.colors[id];
+//                this.datacolors[i] = this.datacolors[id];
+//            }
+//        }
     }
 
     private static File getColorSchemeDirectory(DynmapCore core) {
@@ -54,8 +55,8 @@ public class ColorScheme {
 
     public static ColorScheme loadScheme(DynmapCore core, String name) {
         File colorSchemeFile = new File(getColorSchemeDirectory(core), name + ".txt");
-        Color[][] colors = new Color[DynmapCore.BLOCKTABLELEN][];
-        Color[][][] datacolors = new Color[DynmapCore.BLOCKTABLELEN][][];
+        Color[][] colors = new Color[4096][];
+        Color[][][] datacolors = new Color[4096][][];
         Color[][] biomecolors = new Color[BiomeMap.values().length][];
         Color[][] raincolors = new Color[64][];
         Color[][] tempcolors = new Color[64][];

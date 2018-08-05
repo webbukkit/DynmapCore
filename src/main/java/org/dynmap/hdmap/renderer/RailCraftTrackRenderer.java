@@ -16,8 +16,8 @@ public class RailCraftTrackRenderer extends CustomRenderer {
     private int maxTrackId;
     
     @Override
-    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
-        if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
+    public boolean initializeRenderer(RenderPatchFactory rpf, String blkname, int blockdatamask, Map<String,String> custparm) {
+        if(!super.initializeRenderer(rpf, blkname, blockdatamask, custparm))
             return false;
 
         String cnt = custparm.get("maxTrackId"); // How many defined track IDs

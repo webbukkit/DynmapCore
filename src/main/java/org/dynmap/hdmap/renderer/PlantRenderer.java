@@ -19,8 +19,8 @@ public class PlantRenderer extends CustomRenderer {
     private int metaCnt = 16;
     
     @Override
-    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
-        if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
+    public boolean initializeRenderer(RenderPatchFactory rpf, String blkname, int blockdatamask, Map<String,String> custparm) {
+        if(!super.initializeRenderer(rpf, blkname, blockdatamask, custparm))
             return false;
         String idxsrc = custparm.get("metasrc");
         if ((idxsrc != null) && (idxsrc.equals("below"))) {
@@ -54,10 +54,10 @@ public class PlantRenderer extends CustomRenderer {
     public RenderPatch[] getRenderPatchList(MapDataContext ctx) {
         int idx = 0;
         if (metaFromBelow) {
-            idx = ctx.getBlockDataAt(0, -1, 0);
+            idx = ctx.getBlockTypeAt(0, -1, 0).stateIndex;
         }
         else {
-            idx = ctx.getBlockData();
+            idx = ctx.getBlockType().stateIndex;
         }
         if (idx >= metaCnt) {
             idx = 0;

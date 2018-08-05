@@ -30,7 +30,7 @@ public class TexturePackHDCaveShader extends TexturePackHDShader {
         public boolean processBlock(HDPerspectiveState ps) {
             if(ready)
                 return super.processBlock(ps);
-            if((ps.getLastBlockStep() == BlockStep.Y_MINUS) && (ps.getBlockTypeID() == 0)) {  /* In air? */
+            if((ps.getLastBlockStep() == BlockStep.Y_MINUS) && ps.getBlockState().isAir()) {  /* In air? */
                 ps.getLightLevels(ll);
                 if((ll.sky <= maxskylevel) && (ll.emitted > minemittedlevel)) {
                     ready = true;

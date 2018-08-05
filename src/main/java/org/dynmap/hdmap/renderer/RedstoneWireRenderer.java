@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.dynmap.renderer.CustomRenderer;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
@@ -12,7 +13,7 @@ import org.dynmap.renderer.RenderPatchFactory.SideVisible;
 public class RedstoneWireRenderer extends CustomRenderer {
     private static final int TEXTURE_REDSTONE_STRAIGHT = 0;
     private static final int TEXTURE_REDSTONE_CROSS = 1;
-    private int blkid;
+    private DynmapBlockState blkbs;;
 
     // Patches for bottom - indexed by connection graph (bit0=N,bit1=S,bit2=E,bit3=W)
     private RenderPatch[] bottom_patches = new RenderPatch[16];
@@ -22,10 +23,10 @@ public class RedstoneWireRenderer extends CustomRenderer {
     private RenderPatch[][] meshes = new RenderPatch[256][];
     
     @Override
-    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
-        if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
+    public boolean initializeRenderer(RenderPatchFactory rpf, String blkname, int blockdatamask, Map<String,String> custparm) {
+        if(!super.initializeRenderer(rpf, blkname, blockdatamask, custparm))
             return false;
-        this.blkid = blkid; /* Remember our block ID */
+        blkbs = DynmapBlockState.getBaseStateByName(blkname);
         /* Build list of side patches */
         side_patches[0] = rpf.getPatch(0.0,  0.0,  0.0,  0.0,  1.0,  0.0,  0.0,  0.0, 1.0, 0.0, 1.0, 0.0, 1.0, SideVisible.TOP, TEXTURE_REDSTONE_STRAIGHT);
         side_patches[1] = rpf.getRotatedPatch(side_patches[0], 0, 180, 0, TEXTURE_REDSTONE_STRAIGHT);
@@ -76,13 +77,13 @@ public class RedstoneWireRenderer extends CustomRenderer {
         /* Check in each direction for wire */
         for(int i = 0; i < x_off.length; i++) {
             /* Look up */
-            if(mapDataCtx.getBlockTypeIDAt(x_off[i],  1, z_off[i]) == blkid) {
+            if(mapDataCtx.getBlockTypeAt(x_off[i],  1, z_off[i]).matchingBaseState(blkbs)) {
                 idx |= (1 << i) | (16 << i);
             }
-            else if(mapDataCtx.getBlockTypeIDAt(x_off[i],  0, z_off[i]) == blkid) {
+            else if(mapDataCtx.getBlockTypeAt(x_off[i],  0, z_off[i]).matchingBaseState(blkbs)) {
                 idx |= (1 << i);
             }
-            else if(mapDataCtx.getBlockTypeIDAt(x_off[i],  -1, z_off[i]) == blkid) {
+            else if(mapDataCtx.getBlockTypeAt(x_off[i],  -1, z_off[i]).matchingBaseState(blkbs)) {
                 idx |= (1 << i);
             }
         }

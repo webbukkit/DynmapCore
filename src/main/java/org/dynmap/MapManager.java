@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
@@ -29,6 +30,7 @@ import org.dynmap.common.DynmapPlayer;
 import org.dynmap.debug.Debug;
 import org.dynmap.exporter.OBJExport;
 import org.dynmap.hdmap.HDMapManager;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.utils.MapChunkCache;
 import org.dynmap.utils.TileFlags;
 
@@ -52,7 +54,7 @@ public class MapManager {
     private boolean hideores = false;
     private boolean useBrightnessTable = false;
     private boolean usenormalpriority = false;
-    private short blockidalias[];
+    private HashMap<String, String> blockalias = new HashMap<String, String>();
     
     private boolean pausefullrenders = false;
 
@@ -881,38 +883,32 @@ public class MapManager {
         hideores = configuration.getBoolean("hideores", false);
         useBrightnessTable = configuration.getBoolean("use-brightness-table", false);
         
-        blockidalias = new short[DynmapCore.BLOCKTABLELEN];
-        for (int i = 0; i < blockidalias.length; i++) {
-            blockidalias[i] = (short) i;
-        }
+        blockalias = new HashMap<String, String>();
         if (hideores) {
-            setBlockIDAlias(14, 1); // Gold ore
-            setBlockIDAlias(15, 1); // Iron ore
-            setBlockIDAlias(16, 1); // Coal ore
-            setBlockIDAlias(21, 1); // Lapis ore
-            setBlockIDAlias(56, 1); // Diamond ore
-            setBlockIDAlias(73, 1); // Redstone ore
-            setBlockIDAlias(74, 1); // Glowing Redstone ore
-            setBlockIDAlias(129, 1); // Emerald ore
-            setBlockIDAlias(153, 87); // Nether quartz ore
+            setBlockAlias(DynmapBlockState.GOLD_ORE_BLOCK, DynmapBlockState.STONE_BLOCK); // Gold ore
+            setBlockAlias(DynmapBlockState.IRON_ORE_BLOCK, DynmapBlockState.STONE_BLOCK);  // Iron ore
+            setBlockAlias(DynmapBlockState.COAL_ORE_BLOCK, DynmapBlockState.STONE_BLOCK);  // Coal ore
+            setBlockAlias(DynmapBlockState.LAPIS_ORE_BLOCK, DynmapBlockState.STONE_BLOCK);  // Lapis ore
+            setBlockAlias(DynmapBlockState.DIAMOND_ORE_BLOCK, DynmapBlockState.STONE_BLOCK);  // Diamond ore
+            setBlockAlias(DynmapBlockState.REDSTONE_ORE_BLOCK, DynmapBlockState.STONE_BLOCK);  // Redstone ore
+            setBlockAlias(DynmapBlockState.LIT_REDSTONE_ORE_BLOCK, DynmapBlockState.STONE_BLOCK);  // Glowing Redstone ore
+            setBlockAlias(DynmapBlockState.EMERALD_ORE_BLOCK, DynmapBlockState.STONE_BLOCK);  // Emerald ore
+            setBlockAlias(DynmapBlockState.QUARTZ_ORE_BLOCK, DynmapBlockState.STONE_BLOCK);  // Nether quartz ore
         }
-        ConfigurationNode blockalias = configuration.getNode("block-id-alias");
-        if (blockalias != null) {
-            for (String id : blockalias.keySet()) {
-                int srcid = Integer.parseInt(id.trim());
-                int newid = blockalias.getInteger(id, srcid);
-                if (srcid != newid) {
-                    setBlockIDAlias(srcid, newid);
+        ConfigurationNode ba = configuration.getNode("block-alias");
+        if (ba != null) {
+            for (String id : ba.keySet()) {
+                String srcname = id.trim();
+                String newname = ba.getString(id, srcname);
+                if (srcname != newname) {
+                    setBlockAlias(srcname, newname);
                 }
             }
         }
         
         /* See what priority to use */
         usenormalpriority = configuration.getBoolean("usenormalthreadpriority", false);
-        
-        /* Clear color scheme */
-        ColorScheme.reset();
-        
+                
         /* Initialize HD map manager */
         hdmapman = new HDMapManager();  
         hdmapman.loadHDShaders(core);
@@ -1559,14 +1555,24 @@ public class MapManager {
         return hideores;
     }
     /* Map block ID to aliased ID - used to hide ores */
-    public int getBlockIDAlias(int id) {
-        return blockidalias[id];
+    public String getBlockAlias(String blockname) {
+        String v = blockalias.get(blockname);
+        if (v == null) {
+            v = blockname;
+        }
+        return v;
+    }
+    /* Get names of aliased blocks */
+    public Set<String> getAliasedBlocks() {
+        return blockalias.keySet();
     }
     /* Set block ID alias */
-    public void setBlockIDAlias(int id, int newid) {
-        if ((id > 0) && (id < DynmapCore.BLOCKTABLELEN) && (newid >= 0) && (newid < DynmapCore.BLOCKTABLELEN)) {
-            blockidalias[id] = (short)newid;
-        }
+    public void setBlockAlias(String blockname, String newblockname) {
+        if (blockname.indexOf(':') < 0)
+            blockname = "minecraft:" + blockname;
+        if (newblockname.indexOf(':') < 0)
+            newblockname = "minecraft:" + newblockname;
+        blockalias.put(blockname, newblockname);
     }
     /*
      * Pause full/radius render processing

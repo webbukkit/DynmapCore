@@ -3,6 +3,7 @@ package org.dynmap.hdmap;
 import static org.dynmap.JSONUtils.s;
 
 import java.io.IOException;
+import java.util.BitSet;
 import java.util.List;
 
 import org.dynmap.Color;
@@ -12,6 +13,7 @@ import org.dynmap.Log;
 import org.dynmap.MapManager;
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.exporter.OBJExport;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.utils.DynLongHashMap;
 import org.dynmap.utils.MapChunkCache;
 import org.dynmap.utils.MapIterator;
@@ -23,7 +25,7 @@ public class TopoHDShader implements HDShader {
     private final Color linecolor;  /* Color for topo lines */
     private final Color fillcolor[];  /* Color for nontopo surfaces */
     private final Color watercolor;
-    private int[] hiddenids;
+    private BitSet hiddenids;
     private final int linespacing;
     
     private Color readColor(String id, ConfigurationNode cfg) {
@@ -72,20 +74,25 @@ public class TopoHDShader implements HDShader {
                 starty = i;  /* New start color */
             }
         }
-        hiddenids = new int[2048];
-        hiddenids[0] = 0x1; /* Air is hidden always */
-        List<Object> hidden = configuration.getList("hiddenids");
+        hiddenids = new BitSet();
+        setHidden(DynmapBlockState.AIR_BLOCK);  /* Air is hidden always */
+        List<Object> hidden = configuration.getList("hiddennames");
         if(hidden != null) {
             for(Object o : hidden) {
-                if(o instanceof Integer) {
-                    int v = ((Integer)o);
-                    if((v > 0) && (v < 65535)) {
-                        hiddenids[v >> 5] |= (1 << (v & 0x1F));
-                    }
+                if(o instanceof String) {
+                    setHidden((String) o);
                 }
             }
         }
         linespacing = configuration.getInteger("linespacing", 1);
+    }
+    
+    private void setHidden(String bn) {
+        DynmapBlockState bs = DynmapBlockState.getBaseStateByName(bn);
+        for (int i = 0; i < bs.getStateCount(); i++) {
+            DynmapBlockState b = bs.getState(i);
+            hiddenids.set(b.globalStateIndex);
+        }
     }
     
     @Override
@@ -194,20 +201,18 @@ public class TopoHDShader implements HDShader {
             inWater = false;
         }
         
-        private final boolean isHidden(int id) {
-            if((id == 0) || ((hiddenids[id >> 5] & (1 << (id & 0x1F))) != 0)) {
-                return true;
-            }
-            return false;
+        private final boolean isHidden(DynmapBlockState blk) {
+            return hiddenids.get(blk.globalStateIndex);
         }
+        
         /**
          * Process next ray step - called for each block on route
          * @return true if ray is done, false if ray needs to continue
          */
         public boolean processBlock(HDPerspectiveState ps) {
-            int blocktype = ps.getBlockTypeID();
+            DynmapBlockState blocktype = ps.getBlockState();
             
-            if(isHidden(blocktype)) {
+            if (isHidden(blocktype)) {
                 return false;
             }
             /* See if we're close to an edge */
@@ -220,14 +225,14 @@ public class TopoHDShader implements HDShader {
             case Y_MINUS:
             case Y_PLUS:
                 if((lcolor != null) &&
-                        (((xyz[0] == 0) && (isHidden(mapiter.getBlockTypeIDAt(BlockStep.X_MINUS)))) ||
-                        ((xyz[0] == (scale-1)) && (isHidden(mapiter.getBlockTypeIDAt(BlockStep.X_PLUS)))) ||
-                        ((xyz[2] == 0) && (isHidden(mapiter.getBlockTypeIDAt(BlockStep.Z_MINUS)))) ||
-                        ((xyz[2] == (scale-1)) && (isHidden(mapiter.getBlockTypeIDAt(BlockStep.Z_PLUS)))))) {
+                        (((xyz[0] == 0) && (isHidden(mapiter.getBlockTypeAt(BlockStep.X_MINUS)))) ||
+                        ((xyz[0] == (scale-1)) && (isHidden(mapiter.getBlockTypeAt(BlockStep.X_PLUS)))) ||
+                        ((xyz[2] == 0) && (isHidden(mapiter.getBlockTypeAt(BlockStep.Z_MINUS)))) ||
+                        ((xyz[2] == (scale-1)) && (isHidden(mapiter.getBlockTypeAt(BlockStep.Z_PLUS)))))) {
                     c.setColor(lcolor);
                     inWater = false;
                 }
-                else if((watercolor != null) && ((blocktype == 8) || (blocktype == 9))) {
+                else if ((watercolor != null) && blocktype.isWater()) {
                     if (!inWater) {
                         c.setColor(watercolor);
                         inWater = true;
@@ -246,7 +251,7 @@ public class TopoHDShader implements HDShader {
                     c.setColor(lcolor);
                     inWater = false;
                 }
-                else if((watercolor != null) && ((blocktype == 8) || (blocktype == 9))) {
+                else if ((watercolor != null) && blocktype.isWater()) {
                     if (!inWater) {
                         c.setColor(watercolor);
                         inWater = true;
@@ -338,7 +343,7 @@ public class TopoHDShader implements HDShader {
     }
     private static final String[] nulllist = new String[0];
     @Override
-    public String[] getCurrentBlockMaterials(int blkid, int blkdata, MapIterator mapiter, int[] txtidx, BlockStep[] steps) {
+    public String[] getCurrentBlockMaterials(DynmapBlockState blk, MapIterator mapiter, int[] txtidx, BlockStep[] steps) {
         return nulllist;
     }
 }

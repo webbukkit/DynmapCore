@@ -18,6 +18,7 @@ import org.dynmap.Log;
 import org.dynmap.common.BiomeMap;
 import org.dynmap.debug.Debug;
 import org.dynmap.hdmap.TexturePack.TileFileFormat;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.DynLongHashMap;
 import org.dynmap.utils.MapIterator;
@@ -39,9 +40,6 @@ public class CTMTexturePack {
     private String ctmpath;
     private String vanillatextures;
     
-    private static final int BLOCK_ID_LOG = 17;
-    private static final int BLOCK_ID_QUARTZ = 155;
-
     static final int BOTTOM_FACE = 0; // 0, -1, 0
     static final int TOP_FACE = 1; // 0, 1, 0
     static final int NORTH_FACE = 2; // 0, 0, -1
@@ -664,12 +662,12 @@ public class CTMTexturePack {
             }
             return true;
         }
-        public final boolean exclude(int blockID, int face, int blockmeta, Context ctx) {
+        public final boolean exclude(DynmapBlockState block, int face, Context ctx) {
             if ((faces & (1 << ctx.reorient(face))) == 0) {
                 return true;
-            } else if (this.metadata != -1 && blockmeta >= 0 && blockmeta < 32) {
-                int altMetadata = getOrientationFromMetadata(blockID, blockmeta) & META_MASK;
-                if ((this.metadata & ((1 << blockmeta) | (1 << altMetadata))) == 0) {
+            } else if (this.metadata != -1 && block.stateIndex >= 0 && block.stateIndex < 32) {
+                int altMetadata = getOrientationFromMetadata(block) & META_MASK;
+                if ((this.metadata & ((1 << block.stateIndex) | (1 << altMetadata))) == 0) {
                     return true;
                 }
             }
@@ -825,15 +823,14 @@ public class CTMTexturePack {
         }
         
         final boolean shouldConnect(Context ctx, int[] offset) {
-            int neighborID = ctx.mapiter.getBlockTypeIDAt(offset[0], offset[1], offset[2]);
-            if(neighborID == 0) {   // Always exclude air...
+            DynmapBlockState neighbor = ctx.mapiter.getBlockTypeAt(offset[0], offset[1], offset[2]);
+            if (neighbor.isAir()) {   // Always exclude air...
                 return false;
             }
-            int neighborMeta = ctx.mapiter.getBlockDataAt(offset[0], offset[1], offset[2]);
-            if (exclude(neighborID, ctx.face, neighborMeta, ctx)) {
+            if (exclude(neighbor, ctx.face, ctx)) {
                 return false;
             }
-            int neighborOrientation = getOrientationFromMetadata(neighborID, neighborMeta);
+            int neighborOrientation = getOrientationFromMetadata(neighbor);
             if ((ctx.orientation & ~META_MASK) != (neighborOrientation & ~META_MASK)) {
                 return false;
             }
@@ -844,14 +841,14 @@ public class CTMTexturePack {
             }
             switch (connect) {
                 case BLOCK:
-                    return neighborID == ctx.blkid;
+                    return neighbor == ctx.blk;
 
                 case TILE:
-                    int txt = TexturePack.getTextureIDAt(ctx.mapiter, neighborID, neighborMeta, ctx.laststep);
+                    int txt = TexturePack.getTextureIDAt(ctx.mapiter, neighbor, ctx.laststep);
                     return (txt == ctx.textid);
 
                 case MATERIAL:
-                    return ctx.checkMaterialMatch(neighborID);
+                    return ctx.checkMaterialMatch(neighbor);
 
                 default:
                     return false;
@@ -974,8 +971,7 @@ public class CTMTexturePack {
 
     private class Context {
         final MapIterator mapiter;
-        final int blkid;
-        final int blkdata;
+        final DynmapBlockState blk;
         final BlockStep laststep;
         final int face;
         int textid;
@@ -985,14 +981,13 @@ public class CTMTexturePack {
         final int rotateUV;
         final int x, y, z;
         CTMProps prev1, prev2, prev3;
-        Context(MapIterator mapiter, int blkid, int blkdata, BlockStep laststep, int textid) {
+        Context(MapIterator mapiter, DynmapBlockState blk, BlockStep laststep, int textid) {
             this.mapiter = mapiter;
-            this.blkid = blkid;
-            this.blkdata = blkdata;
+            this.blk = blk;
             this.laststep = laststep;
             this.face = laststep.getFaceEntered();
             this.textid = textid;
-            this.orientation = getOrientationFromMetadata(blkid, blkdata);
+            this.orientation = getOrientationFromMetadata(blk);
             this.x = mapiter.getX();
             this.y = mapiter.getY();
             this.z = mapiter.getZ();
@@ -1045,11 +1040,11 @@ public class CTMTexturePack {
             else if (prev3 == null)
                 prev3 = p;
         }
-        final boolean checkMaterialMatch(int neighborID) {
-            if (blkid == neighborID)
+        final boolean checkMaterialMatch(DynmapBlockState neighbor) {
+            if (blk == neighbor)
                 return true;
-            else if ((blkid < blockmaterials.length) && (neighborID < blockmaterials.length)) {
-                return blockmaterials[blkid] == blockmaterials[neighborID];
+            else if ((blk.globalStateIndex < blockmaterials.length) && (neighbor.globalStateIndex < blockmaterials.length)) {
+                return blockmaterials[blk.globalStateIndex] == blockmaterials[neighbor.globalStateIndex];
             }
             else {
                 return false;
@@ -1057,9 +1052,9 @@ public class CTMTexturePack {
         }
     }
     
-    public int mapTexture(MapIterator mapiter, int blkid, int blkdata, BlockStep laststep, int textid, HDShaderState ss) {
+    public int mapTexture(MapIterator mapiter, DynmapBlockState blk, BlockStep laststep, int textid, HDShaderState ss) {
         int newtext = -1;
-        if ((!this.mappedblocks.get(blkid)) && ((textid < 0) || (!this.mappedtiles.get(textid)))) {
+        if ((!this.mappedblocks.get(blk.globalStateIndex)) && ((textid < 0) || (!this.mappedtiles.get(textid)))) {
             return textid;
         }
         // See if cached result
@@ -1074,14 +1069,14 @@ public class CTMTexturePack {
             }
         }
             
-        Context ctx = new Context(mapiter, blkid, blkdata, laststep, textid);
+        Context ctx = new Context(mapiter, blk, laststep, textid);
 
         /* Check for first match */
         if ((textid >= 0) && (textid < bytilelist.length)) {
             newtext = mapTextureByList(bytilelist[textid], ctx);
         }
-        if ((newtext < 0) && (blkid > 0) && (blkid < byblocklist.length)) {
-            newtext = mapTextureByList(byblocklist[blkid], ctx);
+        if ((newtext < 0) && (blk.globalStateIndex < byblocklist.length)) {
+            newtext = mapTextureByList(byblocklist[blk.globalStateIndex], ctx);
         }
         /* If matched, check for second match */
         if (newtext >= 0) {
@@ -1143,7 +1138,7 @@ public class CTMTexturePack {
         }
         // Test if right metadata
         if (p.metadata != -1) {
-            int meta = ctx.blkdata;
+            int meta = ctx.blk.stateIndex;
             if ((p.metadata & (1 << meta)) == 0) {
                 return -1;
             }
@@ -1154,7 +1149,7 @@ public class CTMTexturePack {
             return -1;
         }
         // Test if excluded
-        if (p.exclude(ctx.blkid, ctx.laststep.getFaceEntered(), ctx.blkdata, ctx)) {
+        if (p.exclude(ctx.blk, ctx.laststep.getFaceEntered(), ctx)) {
             return -1;
         }
 
@@ -1506,46 +1501,42 @@ public class CTMTexturePack {
         return c;
     }
 
-    private static int getOrientationFromMetadata(int blockID, int metadata) {
-        int newMeta = metadata;
+    //TODO: need to see if this is still valid or needed
+    private static int getOrientationFromMetadata(DynmapBlockState block) {
         int orientation = ORIENTATION_U_D;
-
-        switch (blockID) {
-            case BLOCK_ID_LOG:
-                newMeta = metadata & ~0xc;
-                switch (metadata & 0xc) {
-                    case 4:
-                        orientation = ORIENTATION_E_W;
-                        break;
-
-                    case 8:
-                        orientation = ORIENTATION_N_S;
-                        break;
-
-                    default:
-                        break;
-                }
+        int metadata = block.stateIndex;
+        int newMeta = block.stateIndex;
+        
+        if (block.isLog()) {
+            newMeta = metadata & ~0xc;
+            switch (metadata & 0xc) {
+            case 4:
+                orientation = ORIENTATION_E_W;
                 break;
 
-            case BLOCK_ID_QUARTZ:
-                switch (metadata) {
-                    case 3:
-                        newMeta = 2;
-                        orientation = ORIENTATION_E_W_2;
-                        break;
-
-                    case 4:
-                        newMeta = 2;
-                        orientation = ORIENTATION_N_S_2;
-                        break;
-
-                    default:
-                        break;
-                }
+            case 8:
+                orientation = ORIENTATION_N_S;
                 break;
 
             default:
                 break;
+            }
+        }
+        else if (block.blockName.equals(DynmapBlockState.QUARTZ_BLOCK)) {
+            switch (metadata) {
+            case 3:
+                newMeta = 2;
+                orientation = ORIENTATION_E_W_2;
+                break;
+
+            case 4:
+                newMeta = 2;
+                orientation = ORIENTATION_N_S_2;
+                break;
+
+            default:
+                break;
+            }
         }
 
         return orientation | newMeta;

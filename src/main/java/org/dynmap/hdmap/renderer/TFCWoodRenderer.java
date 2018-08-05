@@ -5,12 +5,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.dynmap.renderer.CustomRenderer;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
 
 public class TFCWoodRenderer extends CustomRenderer {
-    private int blkid;    
+    private DynmapBlockState blkbs;    
 
     private static final int SIDE_XP = 0x1;
     private static final int SIDE_XN = 0x2;
@@ -24,10 +25,10 @@ public class TFCWoodRenderer extends CustomRenderer {
     private RenderPatch[][] meshes = new RenderPatch[32][];
     
     @Override
-    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
-        if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
+    public boolean initializeRenderer(RenderPatchFactory rpf, String blkname, int blockdatamask, Map<String,String> custparm) {
+        if(!super.initializeRenderer(rpf, blkname, blockdatamask, custparm))
             return false;
-        this.blkid = blkid; /* Remember our block ID */
+        blkbs = DynmapBlockState.getBaseStateByName(blkname);
         /* Generate meshes */
         buildMeshes(rpf);
         
@@ -94,13 +95,13 @@ public class TFCWoodRenderer extends CustomRenderer {
         /* Build connection map - check each axis */
         int connect = 0;
         for(int i = 0; i < sides.length; i++) {
-            int id = ctx.getBlockTypeIDAt(sides[i][0], sides[i][1], sides[i][2]);
-            if(id == blkid) {
+            DynmapBlockState blk = ctx.getBlockTypeAt(sides[i][0], sides[i][1], sides[i][2]);
+            if (blkbs.matchingBaseState(blk)) {
                 connect |= sides[i][3];
             }
         }
-        int id = ctx.getBlockTypeIDAt(0, -1, 0);
-        if(id > 0) {
+        DynmapBlockState id = ctx.getBlockTypeAt(0, -1, 0);
+        if (id.isNotAir()) {
             connect |= SIDE_YN;
         }
         return meshes[connect];

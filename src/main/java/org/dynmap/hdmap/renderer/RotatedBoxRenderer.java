@@ -20,8 +20,8 @@ public class RotatedBoxRenderer extends CustomRenderer {
     private String[] tileEntityAttribs = null;
 
     @Override
-    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
-        if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
+    public boolean initializeRenderer(RenderPatchFactory rpf, String blkname, int blockdatamask, Map<String,String> custparm) {
+        if(!super.initializeRenderer(rpf, blkname, blockdatamask, custparm))
             return false;
         /* See if index attribute defined */
         idx_attrib = custparm.get("textureIndex");
@@ -118,7 +118,7 @@ public class RotatedBoxRenderer extends CustomRenderer {
             }
         }
         else {  /* Else, use data if no index attribute */
-            textureIdx = ctx.getBlockData();
+            textureIdx = ctx.getBlockType().stateIndex;
         }
         //Log.info("index=" + textureIdx);
         for(int i = 0; i < rotValues.length; i++) {
@@ -127,7 +127,7 @@ public class RotatedBoxRenderer extends CustomRenderer {
                 return models[i];
             }
         }
-        Log.info("Unmatched rotation index: " + textureIdx + " for " + ctx.getBlockTypeID() + ":" + ctx.getBlockData());
+        Log.info("Unmatched rotation index: " + textureIdx + " for " + ctx.getBlockType());
         return models[0];
     }
 }
