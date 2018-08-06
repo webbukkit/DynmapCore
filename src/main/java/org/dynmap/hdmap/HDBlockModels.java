@@ -303,7 +303,7 @@ public class HDBlockModels {
                 val = val.substring(0,  off);
             }
             if (val.indexOf(':') < 0) {
-                val += modid + ":" + val;
+                val = modid + ":" + val;
             }
             return val;
         }

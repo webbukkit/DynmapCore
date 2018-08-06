@@ -44,10 +44,9 @@ import org.dynmap.debug.Debug;
 import org.dynmap.debug.Debugger;
 import org.dynmap.exporter.DynmapExpCommands;
 import org.dynmap.hdmap.HDBlockModels;
+import org.dynmap.hdmap.HDBlockStateTextureMap;
 import org.dynmap.hdmap.HDMapManager;
 import org.dynmap.hdmap.TexturePack;
-import org.dynmap.hdmap.TexturePack.HDBlockStateTextureMap;
-import org.dynmap.hdmap.TexturePack.HDBlockTextureMap;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.impl.MarkerAPIImpl;
 import org.dynmap.modsupport.ModSupportImpl;
@@ -598,7 +597,7 @@ public class DynmapCore implements DynmapCommonAPI {
                 DynmapBlockState blk = DynmapBlockState.getStateByGlobalIndex(gidx);
                 if (blk.isAir()) continue;
                 int meta0color = 0;
-                HDBlockStateTextureMap map = HDBlockTextureMap.getByBlockState(blk);
+                HDBlockStateTextureMap map = HDBlockStateTextureMap.getByBlockState(blk);
                 boolean done = false;
                 for (int i = 0; (!done) && (i < sides.length); i++) {
                     int idx = map.getIndexForFace(sides[i]);

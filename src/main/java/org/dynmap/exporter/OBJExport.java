@@ -21,9 +21,9 @@ import org.dynmap.DynmapWorld;
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.hdmap.CustomBlockModel;
 import org.dynmap.hdmap.HDBlockModels;
+import org.dynmap.hdmap.HDBlockStateTextureMap;
 import org.dynmap.hdmap.HDScaledBlockModels;
 import org.dynmap.hdmap.HDShader;
-import org.dynmap.hdmap.TexturePack;
 import org.dynmap.hdmap.TexturePack.BlockTransparency;
 import org.dynmap.renderer.CustomRenderer;
 import org.dynmap.renderer.DynmapBlockState;
@@ -404,11 +404,11 @@ public class OBJExport {
             }
         }
         else {
-            boolean opaque = TexturePack.HDBlockTextureMap.getTransparency(blk) == BlockTransparency.OPAQUE;
+            boolean opaque = HDBlockStateTextureMap.getTransparency(blk) == BlockTransparency.OPAQUE;
             for (int face = 0; face < 6; face++) {
                 DynmapBlockState blk2 = map.getBlockTypeAt(BlockStep.oppositeValues[face]);  // Get block in direction
                 // If we're not solid, or adjacent block is not solid, draw side
-                if ((!opaque) || blk2.isAir() || edgebits[face] || (TexturePack.HDBlockTextureMap.getTransparency(blk2) != BlockTransparency.OPAQUE)) {
+                if ((!opaque) || blk2.isAir() || edgebits[face] || (HDBlockStateTextureMap.getTransparency(blk2) != BlockTransparency.OPAQUE)) {
                     addPatch(defaultPathces[face], map.getX(), map.getY(), map.getZ(), mats[face]);
                 }
             }

@@ -28,7 +28,6 @@ import org.dynmap.storage.MapStorage;
 import org.dynmap.storage.MapStorageTile;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.hdmap.TexturePack.BlockTransparency;
-import org.dynmap.hdmap.TexturePack.HDBlockTextureMap;
 import org.dynmap.utils.DynmapBufferedImage;
 import org.dynmap.utils.LightLevels;
 import org.dynmap.utils.DynLongHashMap;
@@ -176,14 +175,14 @@ public class IsoHDPerspective implements HDPerspective {
          */
         private final void updateLightLevel(DynmapBlockState blk, LightLevels ll) {
             /* Look up transparency for current block */
-            BlockTransparency bt = HDBlockTextureMap.getTransparency(blk);
+            BlockTransparency bt = HDBlockStateTextureMap.getTransparency(blk);
             switch(bt) {
             	case TRANSPARENT:
             		ll.sky = mapiter.getBlockSkyLight();
             		ll.emitted = mapiter.getBlockEmittedLight();
             		break;
             	case OPAQUE:
-        			if(HDBlockTextureMap.getTransparency(lastblocktype) != BlockTransparency.SEMITRANSPARENT) {
+        			if(HDBlockStateTextureMap.getTransparency(lastblocktype) != BlockTransparency.SEMITRANSPARENT) {
                 		mapiter.unstepPosition(laststep);  /* Back up to block we entered on */
                 		if(mapiter.getY() < worldheight) {
                 		    ll.sky = mapiter.getBlockSkyLight();

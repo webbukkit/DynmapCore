@@ -5,8 +5,8 @@ import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
 
+import org.dynmap.hdmap.HDBlockStateTextureMap;
 import org.dynmap.hdmap.TexturePack.BlockTransparency;
-import org.dynmap.hdmap.TexturePack.HDBlockTextureMap;
 import org.dynmap.renderer.CustomRenderer;
 import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.renderer.MapDataContext;
@@ -163,7 +163,7 @@ public class FenceWallBlockRenderer extends CustomRenderer {
         for(int i = 0; i < sides.length; i++) {
             DynmapBlockState blk = ctx.getBlockTypeAt(sides[i][0], sides[i][1], sides[i][2]);
             if (blk.isAir()) continue;
-            if (link_ids.get(blk.globalStateIndex) || (HDBlockTextureMap.getTransparency(blk) == BlockTransparency.OPAQUE)) {
+            if (link_ids.get(blk.globalStateIndex) || (HDBlockStateTextureMap.getTransparency(blk) == BlockTransparency.OPAQUE)) {
                 connect |= sides[i][3];
             }
         }

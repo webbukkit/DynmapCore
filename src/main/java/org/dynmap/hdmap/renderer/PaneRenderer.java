@@ -2,8 +2,8 @@ package org.dynmap.hdmap.renderer;
 
 import java.util.Map;
 
+import org.dynmap.hdmap.HDBlockStateTextureMap;
 import org.dynmap.hdmap.TexturePack.BlockTransparency;
-import org.dynmap.hdmap.TexturePack.HDBlockTextureMap;
 import org.dynmap.renderer.CustomRenderer;
 import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.renderer.MapDataContext;
@@ -85,22 +85,22 @@ public class PaneRenderer extends CustomRenderer {
         DynmapBlockState type = ctx.getBlockType();
         /* Check north */
         t = ctx.getBlockTypeAt(-1,  0,  0);
-        if ((t == type) || t.is(DynmapBlockState.GLASS_BLOCK) || (HDBlockTextureMap.getTransparency(t) == BlockTransparency.OPAQUE)) {
+        if ((t == type) || t.is(DynmapBlockState.GLASS_BLOCK) || (HDBlockStateTextureMap.getTransparency(t) == BlockTransparency.OPAQUE)) {
             blockdata |= SIDE_XN;
         }
         /* Look east */
         t = ctx.getBlockTypeAt(0,  0,  -1);
-        if ((t == type) || t.is(DynmapBlockState.GLASS_BLOCK) || (HDBlockTextureMap.getTransparency(t) == BlockTransparency.OPAQUE)) {
+        if ((t == type) || t.is(DynmapBlockState.GLASS_BLOCK) || (HDBlockStateTextureMap.getTransparency(t) == BlockTransparency.OPAQUE)) {
             blockdata |= SIDE_ZN;
         }
         /* Look south */
         t = ctx.getBlockTypeAt(1,  0,  0);
-        if ((t == type) || t.is(DynmapBlockState.GLASS_BLOCK) || (HDBlockTextureMap.getTransparency(t) == BlockTransparency.OPAQUE)) {
+        if ((t == type) || t.is(DynmapBlockState.GLASS_BLOCK) || (HDBlockStateTextureMap.getTransparency(t) == BlockTransparency.OPAQUE)) {
             blockdata |= SIDE_XP;
         }
         /* Look west */
         t = ctx.getBlockTypeAt(0,  0,  1);
-        if ((t == type) || t.is(DynmapBlockState.GLASS_BLOCK) || (HDBlockTextureMap.getTransparency(t) == BlockTransparency.OPAQUE)) {
+        if ((t == type) || t.is(DynmapBlockState.GLASS_BLOCK) || (HDBlockStateTextureMap.getTransparency(t) == BlockTransparency.OPAQUE)) {
             blockdata |= SIDE_ZP;
         }
         return meshes[blockdata];
