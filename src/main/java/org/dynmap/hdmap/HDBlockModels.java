@@ -411,22 +411,25 @@ public class HDBlockModels {
                 else if(line.startsWith("rotate:")) {
                     line = line.substring(7);
                     String args[] = line.split(",");
-                    int id = -1;
+                    String id = null;
                     int data = -1;
                     int rot = -1;
                     for(String a : args) {
                         String[] av = a.split("=");
                         if(av.length < 2) continue;
                         if(av[0].equals("id")) {
-                            int newid = getIntValue(varvals,av[1]);
-                            if(newid > 0)
-                                id = newid;
+                            id = getBlockName(modname,av[1]);
                         }
                         if(av[0].equals("data")) { data = getIntValue(varvals,av[1]); }
                         if(av[0].equals("rot")) { rot = Integer.parseInt(av[1]); }
                     }
                     /* get old model to be rotated */
-                    HDBlockModel mod = models_by_id_data.get((id<<4)+data);
+                    DynmapBlockState bs = DynmapBlockState.getStateByNameAndIndex(id, (data > 0)?data:0);
+                    if (bs.isAir()) {
+                    	Log.severe("Invalid rotate ID: " + id + " on line " + rdr.getLineNumber());
+                    	return;
+                    }
+                    HDBlockModel mod = models_by_id_data.get(bs.globalStateIndex);
                     if (modlist.isEmpty()) {
                     }
                     else if ((mod != null) && ((rot%90) == 0) && (mod instanceof HDBlockVolumetricModel)) {
@@ -469,7 +472,7 @@ public class HDBlockModels {
                 else if(line.startsWith("patchrotate:")) {
                     line = line.substring(12);
                     String args[] = line.split(",");
-                    int id = -1;
+                    String id = null;
                     int data = -1;
                     int rotx = 0;
                     int roty = 0;
@@ -478,10 +481,7 @@ public class HDBlockModels {
                         String[] av = a.split("=");
                         if(av.length < 2) continue;
                         if(av[0].equals("id")) {
-                            int newid = getIntValue(varvals,av[1]);
-                            if(newid > 0) {
-                                id = newid;
-                            }
+                            id = getBlockName(modname, av[1]);
                         }
                         if(av[0].equals("data")) { data = getIntValue(varvals,av[1]); }
                         if(av[0].equals("rot")) { roty = Integer.parseInt(av[1]); }
@@ -490,7 +490,12 @@ public class HDBlockModels {
                         if(av[0].equals("rotz")) { rotz = Integer.parseInt(av[1]); }
                     }
                     /* get old model to be rotated */
-                    HDBlockModel mod = models_by_id_data.get((id<<4)+data);
+                    DynmapBlockState bs = DynmapBlockState.getStateByNameAndIndex(id, (data > 0)?data:0);
+                    if (bs.isAir()) {
+                    	Log.severe("Invalid patchrotate id: " + id + " on line " + rdr.getLineNumber());
+                    	return;
+                    }
+                    HDBlockModel mod = models_by_id_data.get(bs.globalStateIndex);
                     if(pmodlist.isEmpty()) {
                     }
                     else if((mod != null) && (mod instanceof HDBlockPatchModel)) {
@@ -512,7 +517,7 @@ public class HDBlockModels {
                     }
                 }
                 else if(line.startsWith("ignore-updates:")) {
-                    ArrayList<Integer> blkids = new ArrayList<Integer>();
+                    ArrayList<String> blknames = new ArrayList<String>();
                     int blkdat = 0;
                     line = line.substring(line.indexOf(':')+1);
                     String[] args = line.split(",");
@@ -520,7 +525,7 @@ public class HDBlockModels {
                         String[] av = a.split("=");
                         if(av.length < 2) continue;
                         if(av[0].equals("id")) {
-                            blkids.add(getIntValue(varvals,av[1]));
+                            blknames.add(getBlockName(modname,av[1]));
                         }
                         else if(av[0].equals("data")) {
                             if(av[1].equals("*"))
@@ -530,11 +535,14 @@ public class HDBlockModels {
                         }
                     }
                     if(blkdat == 0) blkdat = 0xFFFF;
-                    for(Integer id : blkids) {
-                        if(id <= 0) continue;
-                        for(int i = 0; i < 16; i++) {
-                            changeIgnoredBlocks.set(id*16 + i);
-                        }
+                    for (String nm : blknames) {
+                    	DynmapBlockState bbs = DynmapBlockState.getBaseStateByName(nm);
+                    	if (bbs.isNotAir()) {
+                    		for (int i = 0; i < bbs.getStateCount(); i++) {
+                    			DynmapBlockState bs = bbs.getState(i);
+                    			changeIgnoredBlocks.set(bs.globalStateIndex);
+                    		}
+                    	}
                     }
                 }
                 else if(line.startsWith("#") || line.startsWith(";")) {
