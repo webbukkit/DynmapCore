@@ -1,5 +1,5 @@
 # Mapping of texture resources to block ID and data values (v1.6.1+)
-version:1.6.1-1.12.2
+version:1.13
 # block:id=<block-id>,data=<data-val|*>,top=<index>,bottom=<index>,north=<index>,south=<index>,east=<index>,west=<index>,allfaces=<index>,allsides=<index>
 # <index>=0-255 (index of patch in terrain.png), -1=clear, 1xxx=biome tint from grasscolor.png,257=stationary water,258=moving water,
 #      259=stationary lava,260=moving lava,261=extended piston side,262=piston side while extended,263=glass pane top,2xxx=biome tint from foliagecolor.png,4xxx=rotate texture 90,
@@ -21,6 +21,7 @@ texturefile:id=endportal,filename=assets/minecraft/textures/environment/end_sky.
 texturepath:assets/minecraft/textures/blocks/
 texture:id=redstone_block
 texture:id=grass_side
+texture:id=grass_side_snowed
 texture:id=quartz_ore
 texture:id=quartz_block_bottom
 texture:id=quartz_block_chiseled
@@ -355,8 +356,9 @@ texturefile:id=w_txt,filename=assets/minecraft/textures/blocks/test_block/w_text
 ######
 # Stone
 block:id=stone,allfaces=0:stone,stdrot=true
-# Grass (TODO: sides)
-block:id=grass,allsides=11000:grass_side,top=1000:grass_top,bottom=0:dirt,stdrot=true
+# Grass
+block:id=grass_block,data=0,allsides=1000:grass_side,top=1000:grass_top,bottom=0:dirt,stdrot=true
+block:id=grass_block,data=1,allsides=1000:grass_side_snowed,top=1000:snow,bottom=0:dirt,stdrot=true
 # Dirt
 block:id=dirt,allfaces=0:dirt,stdrot=true
 [1.7.0-]block:id=dirt,data=2,top=0:dirt_podzol_top,bottom=0:dirt,allsides=0:dirt_podzol_side,stdrot=true
