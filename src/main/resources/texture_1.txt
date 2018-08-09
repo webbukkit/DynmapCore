@@ -309,8 +309,8 @@ texture:id=anvil_top_damaged_0
 texture:id=anvil_top_damaged_1
 texture:id=anvil_top_damaged_2
 texture:id=trip_wire_source
-texture:id=dirt_podzol_top
-texture:id=dirt_podzol_side
+texture:id=podzol_top
+texture:id=podzol_side
 texture:id=flower_blue_orchid
 texture:id=flower_allium
 texture:id=flower_houstonia
@@ -379,14 +379,14 @@ texture:id=stripped_dark_oak_log_top
 texture:id=acacia_planks
 texture:id=dark_oak_planks
 texture:id=acacia_sapling
-texture:id=sapling_roofed_oak
+texture:id=dark_oak_sapling
 texture:id=red_sand
-texture:id=stone_granite
-texture:id=stone_granite_smooth
-texture:id=stone_diorite
-texture:id=stone_diorite_smooth
-texture:id=stone_andesite
-texture:id=stone_andesite_smooth
+texture:id=granite
+texture:id=polished_granite
+texture:id=diorite
+texture:id=polished_diorite
+texture:id=andesite
+texture:id=polished_andesite
 texture:id=sponge_wet
 texture:id=slime
 texture:id=iron_trapdoor
@@ -504,24 +504,24 @@ texture:id=concrete_powder_brown
 texture:id=concrete_powder_green
 texture:id=concrete_powder_red
 texture:id=concrete_powder_black
-texture:id=dirt_pozdol_top
-texture:id=dirt_pozdol_side
+texture:id=pozdol_top
+texture:id=pozdol_side
 
 ######
 # Stone
 block:id=stone,allfaces=0:stone,stdrot=true
 # Granite
-block:id=granite,allfaces=0:stone_granite,stdrot=true
+block:id=granite,allfaces=0:granite,stdrot=true
 # Polished Granite
-block:id=polished_granite,allfaces=0:stone_granite_smooth,stdrot=true
+block:id=polished_granite,allfaces=0:polished_granite,stdrot=true
 # Diorite
-block:id=diorite,allfaces=0:stone_diorite,stdrot=true
+block:id=diorite,allfaces=0:diorite,stdrot=true
 # Polished Diorite
-block:id=polished_diorite,allfaces=0:stone_diorite_smooth,stdrot=true
+block:id=polished_diorite,allfaces=0:polished_diorite,stdrot=true
 # Andesite
-block:id=andesite,allfaces=0:stone_andesite,stdrot=true
+block:id=andesite,allfaces=0:andesite,stdrot=true
 # Polished Andesite
-block:id=polished_andesite,allfaces=0:stone_andesite_smooth,stdrot=true
+block:id=polished_andesite,allfaces=0:polished_andesite,stdrot=true
 # Grass
 block:id=grass_block,data=0,allsides=1000:grass_block_side_overlay,top=1000:grass_block_top,bottom=0:dirt,patch6=1000:grass_block_side,layer0=6,layer2-3=6,layer5=6,stdrot=true
 block:id=grass_block,data=1,allsides=0:grass_block_snow,top=1000:grass_block_top,bottom=0:dirt,stdrot=true
@@ -530,8 +530,8 @@ block:id=dirt,allfaces=0:dirt,stdrot=true
 # Coarse Dirt
 block:id=coarse_dirt,allfaces=0:coarse_dirt,stdrot=true
 # Pozdol
-block:id=podzol,data=0,allsides=1000:dirt_podzol_side,top=1000:dirt_podzol_top,bottom=0:dirt,stdrot=true
-block:id=podzol,data=1,allsides=1000:dirt_podzol_side,top=0:snow,bottom=0:dirt,stdrot=true
+block:id=podzol,data=0,allsides=1000:podzol_side,top=1000:podzol_top,bottom=0:dirt,stdrot=true
+block:id=podzol,data=1,allsides=1000:podzol_side,top=0:snow,bottom=0:dirt,stdrot=true
 # Cobblestone
 block:id=cobblestone,allfaces=0:cobblestone,stdrot=true
 # Wooden Plank (oak)
