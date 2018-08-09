@@ -2012,7 +2012,7 @@ public class TexturePack {
                                         trans = BlockTransparency.OPAQUE;
                                 }
                                 /* If no water lighting fix */
-                                if((blknames.contains("minecraft:water") || blknames.contains("minecraft:flowing_water")) && (HDMapManager.waterlightingfix == false)) {
+                                if((blknames.contains(DynmapBlockState.WATER_BLOCK) || blknames.contains(DynmapBlockState.FLOWING_WATER_BLOCK)) && (HDMapManager.waterlightingfix == false)) {
                                     trans = BlockTransparency.TRANSPARENT;  /* Treat water as transparent if no fix */
                                 }
                             }
@@ -2109,7 +2109,7 @@ public class TexturePack {
                                     trans = BlockTransparency.OPAQUE;
                             }
                             /* If no water lighting fix */
-                            if((blknames.contains("minecraft:water") || blknames.contains("minecraft:flowing_water")) && (HDMapManager.waterlightingfix == false)) {
+                            if((blknames.contains(DynmapBlockState.WATER_BLOCK) || blknames.contains(DynmapBlockState.FLOWING_WATER_BLOCK)) && (HDMapManager.waterlightingfix == false)) {
                                 trans = BlockTransparency.TRANSPARENT;  /* Treat water as transparent if no fix */
                             }
                         }
@@ -2618,7 +2618,7 @@ public class TexturePack {
         /* If clear-inside op, get out early */
         if((textop == COLORMOD_CLEARINSIDE) || (textop == COLORMOD_MULTTONED_CLEARINSIDE)) {
             /* Check if previous block is same block type as we are: surface is transparent if it is */
-            if(blk == lastblocktype) {
+            if (blk.matchingBaseState(lastblocktype)) {
                 rslt.setTransparent();
                 return;
             }
@@ -2851,10 +2851,7 @@ public class TexturePack {
                     }
                     else {
                         if(ss.do_biome_shading) {
-                            if (colorMultWater != 0xFFFFFF)
-                                clrmult = colorMultWater;
-                            else
-                                clrmult = mapiter.getSmoothWaterColorMultiplier();
+                            clrmult = mapiter.getSmoothWaterColorMultiplier();
                         }
                     }
                     break;

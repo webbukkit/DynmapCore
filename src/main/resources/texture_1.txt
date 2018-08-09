@@ -42,8 +42,9 @@ texturefile:id=u_txt,filename=assets/minecraft/textures/blocks/test_block/u_text
 texturefile:id=w_txt,filename=assets/minecraft/textures/blocks/test_block/w_texture.png,xcount=1,ycount=1
 texturepath:assets/minecraft/textures/block/
 texture:id=redstone_block
-texture:id=grass_side
-texture:id=grass_side_snowed
+texture:id=grass_block_side
+texture:id=grass_block_side_overlay
+texture:id=grass_block_snow
 texture:id=quartz_ore
 texture:id=quartz_block_bottom
 texture:id=quartz_block_chiseled
@@ -101,20 +102,22 @@ texture:id=wool_colored_yellow
 texture:id=hardened_clay
 texture:id=coal_block
 texture:id=stone
-texture:id=grass_top
+texture:id=grass_block_top
 texture:id=dirt
 texture:id=coarse_dirt
 texture:id=cobblestone
-texture:id=planks_oak
-texture:id=planks_spruce
-texture:id=planks_birch
-texture:id=planks_jungle
-texture:id=sapling_oak
-texture:id=sapling_spruce
-texture:id=sapling_birch
-texture:id=sapling_jungle
+texture:id=oak_planks
+texture:id=spruce_planks
+texture:id=birch_planks
+texture:id=jungle_planks
+texture:id=oak_sapling
+texture:id=spruce_sapling
+texture:id=birch_sapling
+texture:id=jungle_sapling
 texture:id=bedrock
-texture:id=water_still,material=WATER
+#texture:id=water_still,material=WATER
+#TODO: fix when I figure out 1.13 biome shading logic
+texturefile:id=water_still,filename=assets/minecraft/textures/blocks/water_still.png,xcount=1,ycount=1
 texture:id=water_flow,material=WATER
 texture:id=lava_still
 texture:id=lava_flow
@@ -123,18 +126,26 @@ texture:id=gravel
 texture:id=gold_ore
 texture:id=iron_ore
 texture:id=coal_ore
-texture:id=log_birch_top
-texture:id=log_birch
-texture:id=log_jungle_top
-texture:id=log_jungle
-texture:id=log_oak_top
-texture:id=log_oak
-texture:id=log_spruce_top
-texture:id=log_spruce
-texture:id=leaves_birch
-texture:id=leaves_jungle
-texture:id=leaves_oak
-texture:id=leaves_spruce
+texture:id=birch_log_top
+texture:id=birch_log
+texture:id=stripped_birch_log_top
+texture:id=stripped_birch_log
+texture:id=jungle_log_top
+texture:id=jungle_log
+texture:id=stripped_jungle_log_top
+texture:id=stripped_jungle_log
+texture:id=oak_log_top
+texture:id=oak_log
+texture:id=stripped_oak_log_top
+texture:id=stripped_oak_log
+texture:id=spruce_log_top
+texture:id=spruce_log
+texture:id=stripped_spruce_log_top
+texture:id=stripped_spruce_log
+texture:id=birch_leaves
+texture:id=jungle_leaves
+texture:id=oak_leaves
+texture:id=spruce_leaves
 texture:id=sponge
 texture:id=glass,material=GLASS
 texture:id=glass_pane_top,material=GLASS
@@ -355,15 +366,19 @@ texture:id=glass_pane_top_silver,material=GLASS
 texture:id=glass_pane_top_white,material=GLASS
 texture:id=glass_pane_top_yellow,material=GLASS
 texture:id=ice_packed
-texture:id=leaves_acacia
-texture:id=leaves_big_oak
+texture:id=acacia_leaves
+texture:id=dark_oak_leaves
 texture:id=log_acacia
 texture:id=log_acacia_top
-texture:id=log_big_oak
-texture:id=log_big_oak_top
-texture:id=planks_acacia
-texture:id=planks_big_oak
-texture:id=sapling_acacia
+texture:id=stripped_log_acacia
+texture:id=stripped_log_acacia_top
+texture:id=dark_oak_log
+texture:id=dark_oak_log_top
+texture:id=stripped_dark_oak_log
+texture:id=stripped_dark_oak_log_top
+texture:id=acacia_planks
+texture:id=dark_oak_planks
+texture:id=acacia_sapling
 texture:id=sapling_roofed_oak
 texture:id=red_sand
 texture:id=stone_granite
@@ -385,19 +400,19 @@ texture:id=red_sandstone_carved
 texture:id=red_sandstone_normal
 texture:id=red_sandstone_smooth
 texture:id=red_sandstone_top
-texture:id=planks_big_oak
-texture:id=door_acacia_lower
-texture:id=door_acacia_upper
-texture:id=door_birch_lower
-texture:id=door_birch_upper
-texture:id=door_dark_oak_lower
-texture:id=door_dark_oak_upper
+texture:id=dark_oak_planks
+texture:id=acacia_door_lower
+texture:id=acacia_door_upper
+texture:id=birch_door_lower
+texture:id=birch_door_upper
+texture:id=dark_oak_door_lower
+texture:id=dark_oak_door_upper
 texture:id=door_iron_lower
 texture:id=door_iron_upper
-texture:id=door_jungle_lower
-texture:id=door_jungle_upper
-texture:id=door_spruce_lower
-texture:id=door_spruce_upper
+texture:id=jungle_door_lower
+texture:id=jungle_door_upper
+texture:id=spruce_door_lower
+texture:id=spruce_door_upper
 texture:id=observer_front
 texture:id=observer_back
 texture:id=observer_side
@@ -500,55 +515,55 @@ block:id=granite,allfaces=0:stone_granite,stdrot=true
 # Polished Granite
 block:id=polished_granite,allfaces=0:stone_granite_smooth,stdrot=true
 # Diorite
-block:id=dilorite,allfaces=0:stone_diorite,stdrot=true
+block:id=diorite,allfaces=0:stone_diorite,stdrot=true
 # Polished Diorite
-block:id=polished_dilorite,allfaces=0:stone_diorite_smooth,stdrot=true
+block:id=polished_diorite,allfaces=0:stone_diorite_smooth,stdrot=true
 # Andesite
-block:id=andersite,allfaces=0:stone_andesite,stdrot=true
+block:id=andesite,allfaces=0:stone_andesite,stdrot=true
 # Polished Andesite
-block:id=polished_andersite,allfaces=0:stone_andesite_smooth,stdrot=true
+block:id=polished_andesite,allfaces=0:stone_andesite_smooth,stdrot=true
 # Grass
-block:id=grass_block,data=0,allsides=1000:grass_side,top=1000:grass_top,bottom=0:dirt,stdrot=true
-block:id=grass_block,data=1,allsides=1000:grass_side_snowed,top=1000:snow,bottom=0:dirt,stdrot=true
+block:id=grass_block,data=0,allsides=1000:grass_block_side_overlay,top=1000:grass_block_top,bottom=0:dirt,patch6=1000:grass_block_side,layer0=6,layer2-3=6,layer5=6,stdrot=true
+block:id=grass_block,data=1,allsides=0:grass_block_snow,top=1000:grass_block_top,bottom=0:dirt,stdrot=true
 # Dirt
 block:id=dirt,allfaces=0:dirt,stdrot=true
 # Coarse Dirt
 block:id=coarse_dirt,allfaces=0:coarse_dirt,stdrot=true
 # Pozdol
-block:id=pozdol,data=0,allsides=1000:dirt_pozdol_side,top=1000:dirt_pozdol_top,bottom=0:dirt,stdrot=true
-block:id=pozdol,data=1,allsides=1000:dirt_pozdol_side,top=0:snow,bottom=0:dirt,stdrot=true
+block:id=podzol,data=0,allsides=1000:dirt_podzol_side,top=1000:dirt_podzol_top,bottom=0:dirt,stdrot=true
+block:id=podzol,data=1,allsides=1000:dirt_podzol_side,top=0:snow,bottom=0:dirt,stdrot=true
 # Cobblestone
 block:id=cobblestone,allfaces=0:cobblestone,stdrot=true
 # Wooden Plank (oak)
-block:id=oak_planks,allfaces=0:planks_oak,stdrot=true
+block:id=oak_planks,allfaces=0:oak_planks,stdrot=true
 # Wooden Plank (spruce)
-block:id=spruce_planks,allfaces=0:planks_spruce,stdrot=true
+block:id=spruce_planks,allfaces=0:spruce_planks,stdrot=true
 # Wooden Plank (birch)
-block:id=birch_planks,allfaces=0:planks_birch,stdrot=true
+block:id=birch_planks,allfaces=0:birch_planks,stdrot=true
 # Wooden Plank (jungle)
-block:id=jungle_planks,allfaces=0:planks_jungle,stdrot=true
+block:id=jungle_planks,allfaces=0:jungle_planks,stdrot=true
 # Wooden Plank (acacia)
-block:id=acacia_planks,allfaces=0:planks_acacia,stdrot=true
+block:id=acacia_planks,allfaces=0:acacia_planks,stdrot=true
 # Wooden Plank (dark oak)
-block:id=dark_oak_planks,allfaces=0:planks_big_oak,stdrot=true
+block:id=dark_oak_planks,allfaces=0:dark_oak_planks,stdrot=true
 # Sapling (Oak)
-block:id=oak_sapling,data=0,patch0-1=0:sapling_oak,transparency=TRANSPARENT
-block:id=oak_sapling,data=1,patch0-1=0:sapling_oak,transparency=TRANSPARENT
+block:id=oak_sapling,data=0,patch0-1=0:oak_sapling,transparency=TRANSPARENT
+block:id=oak_sapling,data=1,patch0-1=0:oak_sapling,transparency=TRANSPARENT
 # Sapling (Spruce)
-block:id=spruce_sapling,data=0,patch0-1=0:sapling_spruce,transparency=TRANSPARENT
-block:id=spruce_sapling,data=1,patch0-1=0:sapling_spruce,transparency=TRANSPARENT
+block:id=spruce_sapling,data=0,patch0-1=0:spruce_sapling,transparency=TRANSPARENT
+block:id=spruce_sapling,data=1,patch0-1=0:spruce_sapling,transparency=TRANSPARENT
 # Sapling (Birch)
-block:id=birch_sapling,data=0,patch0-1=0:sapling_birch,transparency=TRANSPARENT
-block:id=birch_sapling,data=1,patch0-1=0:sapling_birch,transparency=TRANSPARENT
+block:id=birch_sapling,data=0,patch0-1=0:birch_sapling,transparency=TRANSPARENT
+block:id=birch_sapling,data=1,patch0-1=0:birch_sapling,transparency=TRANSPARENT
 # Sapling (Jungle)
-block:id=jungle_sapling,data=0,patch0-1=0:sapling_jungle,transparency=TRANSPARENT
-block:id=jungle_sapling,data=1,patch0-1=0:sapling_jungle,transparency=TRANSPARENT
+block:id=jungle_sapling,data=0,patch0-1=0:jungle_sapling,transparency=TRANSPARENT
+block:id=jungle_sapling,data=1,patch0-1=0:jungle_sapling,transparency=TRANSPARENT
 # Sapling (Acacia)
-block:id=acacia_sapling,data=0,patch0-1=0:sapling_acacia,transparency=TRANSPARENT
-block:id=acacia_sapling,data=1,patch0-1=0:sapling_acacia,transparency=TRANSPARENT
+block:id=acacia_sapling,data=0,patch0-1=0:acacia_sapling,transparency=TRANSPARENT
+block:id=acacia_sapling,data=1,patch0-1=0:acacia_sapling,transparency=TRANSPARENT
 # Sapling (Dark Oak)
-block:id=dark_oak_sapling,data=0,patch0-1=0:sapling_roofed_oak,transparency=TRANSPARENT
-block:id=dark_oak_sapling,data=1,patch0-1=0:sapling_roofed_oak,transparency=TRANSPARENT
+block:id=dark_oak_sapling,data=0,patch0-1=0:dark_oak_sapling,transparency=TRANSPARENT
+block:id=dark_oak_sapling,data=1,patch0-1=0:dark_oak_sapling,transparency=TRANSPARENT
 # Bedrock
 block:id=bedrock,allfaces=0:bedrock,stdrot=true
 # Water
@@ -567,30 +582,114 @@ block:id=gold_ore,allfaces=0:gold_ore,stdrot=true
 block:id=iron_ore,allfaces=0:iron_ore,stdrot=true
 # Coal Ore
 block:id=coal_ore,allfaces=0:coal_ore,stdrot=true
+# Log (oak)
+block:id=oak_log,data=0,allsides=0:oak_log,topbottom=0:oak_log_top,stdrot=true
+block:id=oak_log,data=1,north=0:oak_log_top,south=0:oak_log_top,east=4000:oak_log,west=4000:oak_log,top=0:oak_log,bottom=0:oak_log
+block:id=oak_log,data=2,north=4000:oak_log,south=4000:oak_log,east=0:oak_log_top,west=0:oak_log_top,top=4000:oak_log,bottom=4000:oak_log
+# Log (spruce/pine)
+block:id=spruce_log,data=0,allsides=0:spruce_log,topbottom=0:spruce_log_top,stdrot=true
+block:id=spruce_log,data=1,north=0:spruce_log_top,south=0:spruce_log_top,east=4000:spruce_log,west=4000:spruce_log,top=0:spruce_log,bottom=0:spruce_log
+block:id=spruce_log,data=2,north=4000:spruce_log,south=4000:spruce_log,east=0:spruce_log_top,west=0:spruce_log_top,top=4000:spruce_log,bottom=4000:spruce_log
+# Log (birch)
+block:id=birch_log,data=0,allsides=0:birch_log,topbottom=0:birch_log_top,stdrot=true
+block:id=birch_log,data=1,north=0:birch_log_top,south=0:birch_log_top,east=4000:birch_log,west=4000:birch_log,top=0:birch_log,bottom=0:birch_log
+block:id=birch_log,data=2,north=4000:birch_log,south=4000:birch_log,east=0:birch_log_top,west=0:birch_log_top,top=4000:birch_log,bottom=4000:birch_log
+# Log (jungle)
+block:id=jungle_log,data=0,allsides=0:jungle_log,topbottom=0:jungle_log_top,stdrot=true
+block:id=jungle_log,data=1,north=0:jungle_log_top,south=0:jungle_log_top,east=4000:jungle_log,west=4000:jungle_log,top=0:jungle_log,bottom=0:jungle_log
+block:id=jungle_log,data=2,north=4000:jungle_log,south=4000:jungle_log,east=0:jungle_log_top,west=0:jungle_log_top,top=4000:jungle_log,bottom=4000:jungle_log
+# Log (acacia)
+block:id=acacia_log,data=0,allsides=0:log_acacia,topbottom=0:log_acacia_top,stdrot=true
+block:id=acacia_log,data=1,north=0:log_acacia_top,south=0:log_acacia_top,east=4000:log_acacia,west=4000:log_acacia,top=0:log_acacia,bottom=0:log_acacia
+block:id=acacia_log,data=2,north=4000:log_acacia,south=4000:log_acacia,east=0:log_acacia_top,west=0:log_acacia_top,top=4000:log_acacia,bottom=4000:log_acacia
+# Log (dark oak)
+block:id=dark_oak_log,data=0,allsides=0:dark_oak_log,topbottom=0:dark_oak_log_top,stdrot=true
+block:id=dark_oak_log,data=1,north=0:dark_oak_log_top,south=0:dark_oak_log_top,east=4000:dark_oak_log,west=4000:dark_oak_log,top=0:dark_oak_log,bottom=0:dark_oak_log
+block:id=dark_oak_log,data=2,north=4000:dark_oak_log,south=4000:dark_oak_log,east=0:dark_oak_log_top,west=0:dark_oak_log_top,top=4000:dark_oak_log,bottom=4000:dark_oak_log
+# Stripped log (oak)
+block:id=stripped_oak_log,data=0,allsides=0:stripped_oak_log,topbottom=0:stripped_oak_log_top,stdrot=true
+block:id=stripped_oak_log,data=1,north=0:stripped_oak_log_top,south=0:stripped_oak_log_top,east=4000:stripped_oak_log,west=4000:stripped_oak_log,top=0:stripped_oak_log,bottom=0:stripped_oak_log
+block:id=stripped_oak_log,data=2,north=4000:stripped_oak_log,south=4000:stripped_oak_log,east=0:stripped_oak_log_top,west=0:stripped_oak_log_top,top=4000:stripped_oak_log,bottom=4000:stripped_oak_log
+# Stripped log (spruce/pine)
+block:id=stripped_spruce_log,data=0,allsides=0:stripped_spruce_log,topbottom=0:stripped_spruce_log_top,stdrot=true
+block:id=stripped_spruce_log,data=1,north=0:stripped_spruce_log_top,south=0:stripped_spruce_log_top,east=4000:stripped_spruce_log,west=4000:stripped_spruce_log,top=0:stripped_spruce_log,bottom=0:stripped_spruce_log
+block:id=stripped_spruce_log,data=2,north=4000:stripped_spruce_log,south=4000:stripped_spruce_log,east=0:stripped_spruce_log_top,west=0:stripped_spruce_log_top,top=4000:stripped_spruce_log,bottom=4000:stripped_spruce_log
+# Stripped log (birch)
+block:id=stripped_birch_log,data=0,allsides=0:stripped_birch_log,topbottom=0:stripped_birch_log_top,stdrot=true
+block:id=stripped_birch_log,data=1,north=0:stripped_birch_log_top,south=0:stripped_birch_log_top,east=4000:stripped_birch_log,west=4000:stripped_birch_log,top=0:stripped_birch_log,bottom=0:stripped_birch_log
+block:id=stripped_birch_log,data=2,north=4000:stripped_birch_log,south=4000:stripped_birch_log,east=0:stripped_birch_log_top,west=0:stripped_birch_log_top,top=4000:stripped_birch_log,bottom=4000:stripped_birch_log
+# Stripped log (jungle)
+block:id=stripped_jungle_log,data=0,allsides=0:stripped_jungle_log,topbottom=0:stripped_jungle_log_top,stdrot=true
+block:id=stripped_jungle_log,data=1,north=0:stripped_jungle_log_top,south=0:stripped_jungle_log_top,east=4000:stripped_jungle_log,west=4000:stripped_jungle_log,top=0:stripped_jungle_log,bottom=0:stripped_jungle_log
+block:id=stripped_jungle_log,data=2,north=4000:stripped_jungle_log,south=4000:stripped_jungle_log,east=0:stripped_jungle_log_top,west=0:stripped_jungle_log_top,top=4000:stripped_jungle_log,bottom=4000:stripped_jungle_log
+# Stripped log (acacia)
+block:id=stripped_acacia_log,data=0,allsides=0:stripped_log_acacia,topbottom=0:stripped_log_acacia_top,stdrot=true
+block:id=stripped_acacia_log,data=1,north=0:stripped_log_acacia_top,south=0:stripped_log_acacia_top,east=4000:stripped_log_acacia,west=4000:stripped_log_acacia,top=0:stripped_log_acacia,bottom=0:stripped_log_acacia
+block:id=stripped_acacia_log,data=2,north=4000:stripped_log_acacia,south=4000:stripped_log_acacia,east=0:stripped_log_acacia_top,west=0:stripped_log_acacia_top,top=4000:stripped_log_acacia,bottom=4000:stripped_log_acacia
+# Stripped log (dark oak)
+block:id=stripped_dark_oak_log,data=0,allsides=0:stripped_dark_oak_log,topbottom=0:stripped_dark_oak_log_top,stdrot=true
+block:id=stripped_dark_oak_log,data=1,north=0:stripped_dark_oak_log_top,south=0:stripped_dark_oak_log_top,east=4000:stripped_dark_oak_log,west=4000:stripped_dark_oak_log,top=0:stripped_dark_oak_log,bottom=0:stripped_dark_oak_log
+block:id=stripped_dark_oak_log,data=2,north=4000:stripped_dark_oak_log,south=4000:stripped_dark_oak_log,east=0:stripped_dark_oak_log_top,west=0:stripped_dark_oak_log_top,top=4000:stripped_dark_oak_log,bottom=4000:stripped_dark_oak_log
 # Wood (oak)
-block:id=oak_log,data=0,allsides=0:log_oak,topbottom=0:log_oak_top,stdrot=true
-block:id=oak_log,data=1,north=0:log_oak_top,south=0:log_oak_top,east=4000:log_oak,west=4000:log_oak,top=0:log_oak,bottom=0:log_oak
-block:id=oak_log,data=2,north=4000:log_oak,south=4000:log_oak,east=0:log_oak_top,west=0:log_oak_top,top=4000:log_oak,bottom=4000:log_oak
+block:id=oak_wood,data=0,allsides=0:oak_log,topbottom=0:oak_log,stdrot=true
+block:id=oak_wood,data=1,north=0:oak_log,south=0:oak_log,east=4000:oak_log,west=4000:oak_log,top=0:oak_log,bottom=0:oak_log
+block:id=oak_wood,data=2,north=4000:oak_log,south=4000:oak_log,east=0:oak_log,west=0:oak_log,top=4000:oak_log,bottom=4000:oak_log
 # Wood (spruce/pine)
-block:id=spruce_log,data=0,allsides=0:log_spruce,topbottom=0:log_spruce_top,stdrot=true
-block:id=spruce_log,data=1,north=0:log_spruce_top,south=0:log_spruce_top,east=4000:log_spruce,west=4000:log_spruce,top=0:log_spruce,bottom=0:log_spruce
-block:id=spruce_log,data=2,north=4000:log_spruce,south=4000:log_spruce,east=0:log_spruce_top,west=0:log_spruce_top,top=4000:log_spruce,bottom=4000:log_spruce
+block:id=spruce_wood,data=0,allsides=0:spruce_log,topbottom=0:spruce_log,stdrot=true
+block:id=spruce_wood,data=1,north=0:spruce_log,south=0:spruce_log,east=4000:spruce_log,west=4000:spruce_log,top=0:spruce_log,bottom=0:spruce_log
+block:id=spruce_wood,data=2,north=4000:spruce_log,south=4000:spruce_log,east=0:spruce_log,west=0:spruce_log,top=4000:spruce_log,bottom=4000:spruce_log
 # Wood (birch)
-block:id=birch_log,data=0,allsides=0:log_birch,topbottom=0:log_birch_top,stdrot=true
-block:id=birch_log,data=1,north=0:log_birch_top,south=0:log_birch_top,east=4000:log_birch,west=4000:log_birch,top=0:log_birch,bottom=0:log_birch
-block:id=birch_log,data=2,north=4000:log_birch,south=4000:log_birch,east=0:log_birch_top,west=0:log_birch_top,top=4000:log_birch,bottom=4000:log_birch
+block:id=birch_wood,data=0,allsides=0:birch_log,topbottom=0:birch_log,stdrot=true
+block:id=birch_wood,data=1,north=0:birch_log,south=0:birch_log,east=4000:birch_log,west=4000:birch_log,top=0:birch_log,bottom=0:birch_log
+block:id=birch_wood,data=2,north=4000:birch_log,south=4000:birch_log,east=0:birch_log,west=0:birch_log,top=4000:birch_log,bottom=4000:birch_log
 # Wood (jungle)
-block:id=jungle_log,data=0,allsides=0:log_jungle,topbottom=0:log_jungle_top,stdrot=true
-block:id=jungle_log,data=1,north=0:log_jungle_top,south=0:log_jungle_top,east=4000:log_jungle,west=4000:log_jungle,top=0:log_jungle,bottom=0:log_jungle
-block:id=jungle_log,data=2,north=4000:log_jungle,south=4000:log_jungle,east=0:log_jungle_top,west=0:log_jungle_top,top=4000:log_jungle,bottom=4000:log_jungle
+block:id=jungle_wood,data=0,allsides=0:jungle_log,topbottom=0:jungle_log,stdrot=true
+block:id=jungle_wood,data=1,north=0:jungle_log,south=0:jungle_log,east=4000:jungle_log,west=4000:jungle_log,top=0:jungle_log,bottom=0:jungle_log
+block:id=jungle_wood,data=2,north=4000:jungle_log,south=4000:jungle_log,east=0:jungle_log,west=0:jungle_log,top=4000:jungle_log,bottom=4000:jungle_log
+# Wood (acacia)
+block:id=acacia_wood,data=0,allsides=0:log_acacia,topbottom=0:log_acacia,stdrot=true
+block:id=acacia_wood,data=1,north=0:log_acacia,south=0:log_acacia,east=4000:log_acacia,west=4000:log_acacia,top=0:log_acacia,bottom=0:log_acacia
+block:id=acacia_wood,data=2,north=4000:log_acacia,south=4000:log_acacia,east=0:log_acacia,west=0:log_acacia,top=4000:log_acacia,bottom=4000:log_acacia
+# Wood (dark oak)
+block:id=dark_oak_wood,data=0,allsides=0:dark_oak_log,topbottom=0:dark_oak_log,stdrot=true
+block:id=dark_oak_wood,data=1,north=0:dark_oak_log,south=0:dark_oak_log,east=4000:dark_oak_log,west=4000:dark_oak_log,top=0:dark_oak_log,bottom=0:dark_oak_log
+block:id=dark_oak_wood,data=2,north=4000:dark_oak_log,south=4000:dark_oak_log,east=0:dark_oak_log,west=0:dark_oak_log,top=4000:dark_oak_log,bottom=4000:dark_oak_log
+# Stripped wood (oak)
+block:id=stripped_oak_wood,data=0,allsides=0:stripped_oak_log,topbottom=0:stripped_oak_log,stdrot=true
+block:id=stripped_oak_wood,data=1,north=0:stripped_oak_log,south=0:stripped_oak_log,east=4000:stripped_oak_log,west=4000:stripped_oak_log,top=0:stripped_oak_log,bottom=0:stripped_oak_log
+block:id=stripped_oak_wood,data=2,north=4000:stripped_oak_log,south=4000:stripped_oak_log,east=0:stripped_oak_log,west=0:stripped_oak_log,top=4000:stripped_oak_log,bottom=4000:stripped_oak_log
+# Stripped wood (spruce/pine)
+block:id=stripped_spruce_wood,data=0,allsides=0:stripped_spruce_log,topbottom=0:stripped_spruce_log,stdrot=true
+block:id=stripped_spruce_wood,data=1,north=0:stripped_spruce_log,south=0:stripped_spruce_log,east=4000:stripped_spruce_log,west=4000:stripped_spruce_log,top=0:stripped_spruce_log,bottom=0:stripped_spruce_log
+block:id=stripped_spruce_wood,data=2,north=4000:stripped_spruce_log,south=4000:stripped_spruce_log,east=0:stripped_spruce_log,west=0:stripped_spruce_log,top=4000:stripped_spruce_log,bottom=4000:stripped_spruce_log
+# Stripped wood (birch)
+block:id=stripped_birch_wood,data=0,allsides=0:stripped_birch_log,topbottom=0:stripped_birch_log,stdrot=true
+block:id=stripped_birch_wood,data=1,north=0:stripped_birch_log,south=0:stripped_birch_log,east=4000:stripped_birch_log,west=4000:stripped_birch_log,top=0:stripped_birch_log,bottom=0:stripped_birch_log
+block:id=stripped_birch_wood,data=2,north=4000:stripped_birch_log,south=4000:stripped_birch_log,east=0:stripped_birch_log,west=0:stripped_birch_log,top=4000:stripped_birch_log,bottom=4000:stripped_birch_log
+# Stripped wood (jungle)
+block:id=stripped_jungle_wood,data=0,allsides=0:stripped_jungle_log,topbottom=0:stripped_jungle_log,stdrot=true
+block:id=stripped_jungle_wood,data=1,north=0:stripped_jungle_log,south=0:stripped_jungle_log,east=4000:stripped_jungle_log,west=4000:stripped_jungle_log,top=0:stripped_jungle_log,bottom=0:stripped_jungle_log
+block:id=stripped_jungle_wood,data=2,north=4000:stripped_jungle_log,south=4000:stripped_jungle_log,east=0:stripped_jungle_log,west=0:stripped_jungle_log,top=4000:stripped_jungle_log,bottom=4000:stripped_jungle_log
+# Stripped wood (acacia)
+block:id=stripped_acacia_wood,data=0,allsides=0:stripped_log_acacia,topbottom=0:stripped_log_acacia,stdrot=true
+block:id=stripped_acacia_wood,data=1,north=0:stripped_log_acacia,south=0:stripped_log_acacia,east=4000:stripped_log_acacia,west=4000:stripped_log_acacia,top=0:stripped_log_acacia,bottom=0:stripped_log_acacia
+block:id=stripped_acacia_wood,data=2,north=4000:stripped_log_acacia,south=4000:stripped_log_acacia,east=0:stripped_log_acacia,west=0:stripped_log_acacia,top=4000:stripped_log_acacia,bottom=4000:stripped_log_acacia
+# Stripped wood (dark oak)
+block:id=stripped_dark_oak_wood,data=0,allsides=0:stripped_dark_oak_log,topbottom=0:stripped_dark_oak_log,stdrot=true
+block:id=stripped_dark_oak_wood,data=1,north=0:stripped_dark_oak_log,south=0:stripped_dark_oak_log,east=4000:stripped_dark_oak_log,west=4000:stripped_dark_oak_log,top=0:stripped_dark_oak_log,bottom=0:stripped_dark_oak_log
+block:id=stripped_dark_oak_wood,data=2,north=4000:stripped_dark_oak_log,south=4000:stripped_dark_oak_log,east=0:stripped_dark_oak_log,west=0:stripped_dark_oak_log,top=4000:stripped_dark_oak_log,bottom=4000:stripped_dark_oak_log
 # Leaves (oak)
-block:id=leaves,data=0,data=4,data=8,data=12,allfaces=2000:leaves_oak,stdrot=true,transparency=LEAVES
+block:id=oak_leaves,allfaces=2000:oak_leaves,stdrot=true,transparency=LEAVES
 # Leaves (spruce/pine)
-block:id=leaves,data=1,data=5,data=9,data=13,allfaces=13000:leaves_spruce,stdrot=true,transparency=LEAVES
+block:id=spruce_leaves,allfaces=13000:spruce_leaves,stdrot=true,transparency=LEAVES
 # Leaves (birch)
-block:id=leaves,data=2,data=6,data=10,data=14,allfaces=14000:leaves_birch,stdrot=true,transparency=LEAVES
+block:id=birch_leaves,allfaces=14000:birch_leaves,stdrot=true,transparency=LEAVES
 # Leaves (jungle)
-block:id=leaves,data=3,data=7,data=11,data=15,allfaces=2000:leaves_jungle,stdrot=true,transparency=LEAVES
+block:id=jungle_leaves,allfaces=2000:jungle_leaves,stdrot=true,transparency=LEAVES
+# Leaves (acacia)
+block:id=acacia_leaves,allfaces=2000:acacia_leaves,stdrot=true,transparency=LEAVES
+# Leaves (dark oak)
+block:id=dark_oak_leaves,allfaces=2000:dark_oak_leaves,stdrot=true,transparency=LEAVES
 # Sponge
 block:id=sponge,allfaces=0:sponge,stdrot=true
 # Glass
@@ -600,20 +699,20 @@ block:id=lapis_ore,allfaces=0:lapis_ore,stdrot=true
 # Lapis Lazuli Block
 block:id=lapis_block,allfaces=0:lapis_block,stdrot=true
 # Dispenser
-block:id=dispenser,data=0,data=8,face0=0:dispenser_front_vertical,face1=0:furnace_top,face2=0:furnace_top,face3=0:furnace_top,face4=0:furnace_top,face5=0:furnace_top,stdrot=true
-block:id=dispenser,data=1,data=9,face0=0:furnace_top,face1=0:dispenser_front_vertical,face2=0:furnace_top,face3=0:furnace_top,face4=0:furnace_top,face5=0:furnace_top,stdrot=true
-block:id=dispenser,data=2,data=10,face0=0:furnace_top,face1=0:furnace_top,face2=0:dispenser_front_horizontal,face3=0:furnace_side,face4=0:furnace_side,face5=0:furnace_side,stdrot=true
-block:id=dispenser,data=3,data=11,face0=0:furnace_top,face1=0:furnace_top,face2=0:furnace_side,face3=0:dispenser_front_horizontal,face4=0:furnace_side,face5=0:furnace_side,stdrot=true
-block:id=dispenser,data=4,data=12,face0=0:furnace_top,face1=0:furnace_top,face2=0:furnace_side,face3=0:furnace_side,face4=0:dispenser_front_horizontal,face5=0:furnace_side,stdrot=true
-block:id=dispenser,data=5,data=13,face0=0:furnace_top,face1=0:furnace_top,face2=0:furnace_side,face3=0:furnace_side,face4=0:furnace_side,face5=0:dispenser_front_horizontal,stdrot=true
+block:id=dispenser,data=0,data=1,face0=0:dispenser_front_vertical,face1=0:furnace_top,face2=0:furnace_top,face3=0:furnace_top,face4=0:furnace_top,face5=0:furnace_top,stdrot=true
+block:id=dispenser,data=2,data=3,face0=0:furnace_top,face1=0:dispenser_front_vertical,face2=0:furnace_top,face3=0:furnace_top,face4=0:furnace_top,face5=0:furnace_top,stdrot=true
+block:id=dispenser,data=4,data=5,face0=0:furnace_top,face1=0:furnace_top,face2=0:dispenser_front_horizontal,face3=0:furnace_side,face4=0:furnace_side,face5=0:furnace_side,stdrot=true
+block:id=dispenser,data=6,data=7,face0=0:furnace_top,face1=0:furnace_top,face2=0:furnace_side,face3=0:dispenser_front_horizontal,face4=0:furnace_side,face5=0:furnace_side,stdrot=true
+block:id=dispenser,data=8,data=9,face0=0:furnace_top,face1=0:furnace_top,face2=0:furnace_side,face3=0:furnace_side,face4=0:dispenser_front_horizontal,face5=0:furnace_side,stdrot=true
+block:id=dispenser,data=10,data=11,face0=0:furnace_top,face1=0:furnace_top,face2=0:furnace_side,face3=0:furnace_side,face4=0:furnace_side,face5=0:dispenser_front_horizontal,stdrot=true
 # Sandstone
-block:id=sandstone,data=0,bottom=0:sandstone_bottom,top=0:sandstone_top,allsides=0:sandstone_normal,stdrot=true
-# Smooth Sandstone
-block:id=sandstone,data=2,allsides=0:sandstone_smooth,topbottom=0:sandstone_top,stdrot=true
+block:id=sandstone,bottom=0:sandstone_bottom,top=0:sandstone_top,allsides=0:sandstone_normal,stdrot=true
 # Carved Sandstone
-block:id=sandstone,data=1,data=3,data=4,data=5,data=6,data=7,data=8,data=9,data=10,data=11,data=12,data=13,data=14,data=15,allsides=0:sandstone_carved,topbottom=0:sandstone_top,stdrot=true
+block:id=chiseled_sandstone,allsides=0:sandstone_carved,topbottom=0:sandstone_top,stdrot=true
+# Smooth Sandstone
+block:id=cut_sandstone,allsides=0:sandstone_smooth,topbottom=0:sandstone_top,stdrot=true
 # Note Block 
-block:id=noteblock,allfaces=0:noteblock,stdrot=true
+block:id=note_block,allfaces=0:noteblock,stdrot=true
 # Bed - head - pointing west
 block:id=bed,data=8,topbottom=5000:bed_head_top,south=7000:bed_head_side,north=0:bed_head_side,west=0:bed_head_end,transparency=TRANSPARENT
 # Bed - foot - pointing west
@@ -788,8 +887,8 @@ block:id=double_stone_slab,data=8,allfaces=0:stone_slab_top,stdrot=true
 block:id=double_stone_slab,data=1,bottom=0:sandstone_bottom,top=0:sandstone_top,allsides=0:sandstone_normal,stdrot=true
 block:id=double_stone_slab,data=9,allfaces=0:sandstone_top,stdrot=true
 # Double Slab - Wood
-block:id=double_stone_slab,data=2,allfaces=0:planks_oak,stdrot=true
-block:id=double_stone_slab,data=10,allfaces=0:planks_oak,stdrot=true
+block:id=double_stone_slab,data=2,allfaces=0:oak_planks,stdrot=true
+block:id=double_stone_slab,data=10,allfaces=0:oak_planks,stdrot=true
 # Double Slab - Cobblestone
 block:id=double_stone_slab,data=3,allfaces=0:cobblestone,stdrot=true
 block:id=double_stone_slab,data=11,allfaces=0:cobblestone,stdrot=true
@@ -810,7 +909,7 @@ block:id=stone_slab,data=0,data=8,allsides=0:stone_slab_side,topbottom=0:stone_s
 # Slab - Sandstone
 block:id=stone_slab,data=1,data=9,bottom=0:sandstone_bottom,top=0:sandstone_top,allsides=0:sandstone_normal,stdrot=true,transparency=SEMITRANSPARENT
 # Slab - Wood
-block:id=stone_slab,data=2,data=10,allfaces=0:planks_oak,stdrot=true,transparency=SEMITRANSPARENT
+block:id=stone_slab,data=2,data=10,allfaces=0:oak_planks,stdrot=true,transparency=SEMITRANSPARENT
 # Slab - Cobblestone
 block:id=stone_slab,data=3,data=11,allfaces=0:cobblestone,stdrot=true,transparency=SEMITRANSPARENT
 # Slab - Brick
@@ -826,7 +925,7 @@ block:id=brick_block,allfaces=0:brick,stdrot=true
 # TNT
 block:id=tnt,top=0:tnt_top,bottom=0:tnt_bottom,allsides=0:tnt_side,stdrot=true
 # Bookshelf
-block:id=bookshelf,topbottom=0:planks_oak,allsides=0:bookshelf,stdrot=true
+block:id=bookshelf,topbottom=0:oak_planks,allsides=0:bookshelf,stdrot=true
 # Mossy Cobblestone
 block:id=mossy_cobblestone,allfaces=0:cobblestone_mossy,stdrot=true
 # Obsidian
@@ -838,7 +937,7 @@ block:id=fire,patch0-3=0:fire_layer_0,patch4-7=0:fire_layer_1,transparency=TRANS
 # Monster spawner
 block:id=mob_spawner,allfaces=0:mob_spawner,stdrot=true,transparency=TRANSPARENT
 # Wooden stairs
-block:id=oak_stairs,data=*,patch0-2=0:planks_oak,transparency=SEMITRANSPARENT
+block:id=oak_stairs,data=*,patch0-2=0:oak_planks,transparency=SEMITRANSPARENT
 # Chest
 block:id=chest,data=*,patch0=0:chest,patch1=1:chest,patch2=2:chest,patch3=3:chest,patch4=4:chest,patch5=5:chest,patch6=0:bigchest,patch7=1:bigchest,patch8=2:bigchest,patch9=3:bigchest,patch10=4:bigchest,patch11=5:bigchest,patch12=6:bigchest,patch13=7:bigchest,patch14=8:bigchest,patch15=9:bigchest
 # Redstone wire
@@ -920,7 +1019,7 @@ block:id=stone_pressure_plate,allfaces=0:stone,stdrot=true,transparency=TRANSPAR
 block:id=iron_door,data=*,patch0=0:door_iron_upper,patch1=0:door_iron_lower,transparency=TRANSPARENT
 
 # Wooden pressure plate
-block:id=wooden_pressure_plate,allfaces=0:planks_oak,stdrot=true,transparency=TRANSPARENT
+block:id=wooden_pressure_plate,allfaces=0:oak_planks,stdrot=true,transparency=TRANSPARENT
 # Redstone Ore
 block:id=redstone_ore,id=lit_redstone_ore,allfaces=0:redstone_ore,stdrot=true
 # Redstone Torch - unlit - inclined
@@ -948,7 +1047,7 @@ block:id=reeds,patch0-1=0:reeds,transparency=TRANSPARENT
 # Jukebox
 block:id=jukebox,allsides=0:jukebox_side,topbottom=0:jukebox_top,stdrot=true
 # Fence
-block:id=fence,patch0-2=0:planks_oak,transparency=TRANSPARENT
+block:id=fence,patch0-2=0:oak_planks,transparency=TRANSPARENT
 # Pumpkin
 block:id=pumpkin,allsides=0:pumpkin_side,topbottom=0:pumpkin_top,stdrot=true
 # Netherrock
@@ -1083,7 +1182,7 @@ block:id=melon_stem,allsides=1000:melon_stem_disconnected,stdrot=true,transparen
 # Vines
 block:id=vine,patch0-4=2000:vine,transparency=TRANSPARENT
 # Fence gate
-block:id=fence_gate,patch0-2=0:planks_oak,stdrot=true,transparency=TRANSPARENT
+block:id=fence_gate,patch0-2=0:oak_planks,stdrot=true,transparency=TRANSPARENT
 # Brick stair
 block:id=brick_stairs,data=*,patch0-2=0:brick,transparency=SEMITRANSPARENT
 # Stone brick stair
@@ -1125,29 +1224,29 @@ block:id=redstone_lamp,data=*,allfaces=0:redstone_lamp_off,stdrot=true
 # Redstone lamp (on)
 block:id=lit_redstone_lamp,data=*,allfaces=0:redstone_lamp_on,stdrot=true
 # Wooden Double Slab (Oak)
-block:id=double_wooden_slab,data=0,data=8,allfaces=0:planks_oak,stdrot=true
+block:id=double_wooden_slab,data=0,data=8,allfaces=0:oak_planks,stdrot=true
 # Wooden Double Slab (Spruce)
-block:id=double_wooden_slab,data=1,data=9,allfaces=0:planks_spruce,stdrot=true
+block:id=double_wooden_slab,data=1,data=9,allfaces=0:spruce_planks,stdrot=true
 # Wooden Double Slab (Birch)
-block:id=double_wooden_slab,data=2,data=10,allfaces=0:planks_birch,stdrot=true
+block:id=double_wooden_slab,data=2,data=10,allfaces=0:birch_planks,stdrot=true
 # Wooden Double Slab (Jungle)
-block:id=double_wooden_slab,data=3,data=11,allfaces=0:planks_jungle,stdrot=true
+block:id=double_wooden_slab,data=3,data=11,allfaces=0:jungle_planks,stdrot=true
 # Wooden Double Slab (Acacia)
-block:id=double_wooden_slab,data=4,data=12,allfaces=0:planks_acacia,stdrot=true
+block:id=double_wooden_slab,data=4,data=12,allfaces=0:acacia_planks,stdrot=true
 # Wooden Double Slab (Big Oak)
-block:id=double_wooden_slab,data=5,data=13,allfaces=0:planks_big_oak,stdrot=true
+block:id=double_wooden_slab,data=5,data=13,allfaces=0:dark_oak_planks,stdrot=true
 # Wooden Slab (Oak)
-block:id=wooden_slab,data=0,data=8,allfaces=0:planks_oak,stdrot=true,transparency=SEMITRANSPARENT
+block:id=wooden_slab,data=0,data=8,allfaces=0:oak_planks,stdrot=true,transparency=SEMITRANSPARENT
 # Wooden Slab (Spruce)
-block:id=wooden_slab,data=1,data=9,allfaces=0:planks_spruce,stdrot=true,transparency=SEMITRANSPARENT
+block:id=wooden_slab,data=1,data=9,allfaces=0:spruce_planks,stdrot=true,transparency=SEMITRANSPARENT
 # Wooden Slab (Birch)
-block:id=wooden_slab,data=2,data=10,allfaces=0:planks_birch,stdrot=true,transparency=SEMITRANSPARENT
+block:id=wooden_slab,data=2,data=10,allfaces=0:birch_planks,stdrot=true,transparency=SEMITRANSPARENT
 # Wooden Slab (Jungle)
-block:id=wooden_slab,data=3,data=11,allfaces=0:planks_jungle,stdrot=true,transparency=SEMITRANSPARENT
+block:id=wooden_slab,data=3,data=11,allfaces=0:jungle_planks,stdrot=true,transparency=SEMITRANSPARENT
 # Wooden Slab (Acacia)
-block:id=wooden_slab,data=4,data=12,allfaces=0:planks_acacia,stdrot=true,transparency=SEMITRANSPARENT
+block:id=wooden_slab,data=4,data=12,allfaces=0:acacia_planks,stdrot=true,transparency=SEMITRANSPARENT
 # Wooden Slab (Big Oak)
-block:id=wooden_slab,data=5,data=13,allfaces=0:planks_big_oak,stdrot=true,transparency=SEMITRANSPARENT
+block:id=wooden_slab,data=5,data=13,allfaces=0:dark_oak_planks,stdrot=true,transparency=SEMITRANSPARENT
 # Cocoa Plant (TODO: handle different stages, orientations)
 block:id=cocoa,data=*,allsides=0:cocoa_stage_2
 # Sandstone stairs
@@ -1163,11 +1262,11 @@ block:id=tripwire,data=*
 # Block of Emerald
 block:id=emerald_block,data=*,allfaces=0:emerald_block,stdrot=true
 # Spruce Wooden stairs
-block:id=spruce_stairs,data=*,patch0-2=0:planks_spruce,transparency=SEMITRANSPARENT
+block:id=spruce_stairs,data=*,patch0-2=0:spruce_planks,transparency=SEMITRANSPARENT
 # Birch Wooden stairs
-block:id=birch_stairs,data=*,patch0-2=0:planks_birch,transparency=SEMITRANSPARENT
+block:id=birch_stairs,data=*,patch0-2=0:birch_planks,transparency=SEMITRANSPARENT
 # Jungle Wooden stairs
-block:id=jungle_stairs,data=*,patch0-2=0:planks_jungle,transparency=SEMITRANSPARENT
+block:id=jungle_stairs,data=*,patch0-2=0:jungle_planks,transparency=SEMITRANSPARENT
 # Command block
 block:id=command_block,data=*,allfaces=0:command_block,stdrot=true
 # Beacon
@@ -1183,13 +1282,13 @@ block:id=flower_pot,data=1,patch0-5=0:flower_pot,patch6=0:dirt,patch7-8=0:flower
 # Flower pot with Dandelion
 block:id=flower_pot,data=2,patch0-5=0:flower_pot,patch6=0:dirt,patch7-8=0:flower_dandelion,transparency=TRANSPARENT
 # Flower pot with Oak Sapling
-block:id=flower_pot,data=3,patch0-5=0:flower_pot,patch6=0:dirt,patch7-8=0:sapling_oak,transparency=TRANSPARENT
+block:id=flower_pot,data=3,patch0-5=0:flower_pot,patch6=0:dirt,patch7-8=0:oak_sapling,transparency=TRANSPARENT
 # Flower pot with Spruce Sapling
-block:id=flower_pot,data=4,patch0-5=0:flower_pot,patch6=0:dirt,patch7-8=0:sapling_spruce,transparency=TRANSPARENT
+block:id=flower_pot,data=4,patch0-5=0:flower_pot,patch6=0:dirt,patch7-8=0:spruce_sapling,transparency=TRANSPARENT
 # Flower pot with Birch Sapling
-block:id=flower_pot,data=5,patch0-5=0:flower_pot,patch6=0:dirt,patch7-8=0:sapling_birch,transparency=TRANSPARENT
+block:id=flower_pot,data=5,patch0-5=0:flower_pot,patch6=0:dirt,patch7-8=0:birch_sapling,transparency=TRANSPARENT
 # Flower pot with Jungle Sapling
-block:id=flower_pot,data=6,patch0-5=0:flower_pot,patch6=0:dirt,patch7-8=0:sapling_jungle,transparency=TRANSPARENT
+block:id=flower_pot,data=6,patch0-5=0:flower_pot,patch6=0:dirt,patch7-8=0:jungle_sapling,transparency=TRANSPARENT
 # Flower pot with Red Mushroom
 block:id=flower_pot,data=7,patch0-5=0:flower_pot,patch6=0:dirt,patch7-8=0:mushroom_red,transparency=TRANSPARENT
 # Flower pot with Brown Mushroom
@@ -1211,7 +1310,7 @@ block:id=potatoes,data=2,data=3,patch0-3=0:potatoes_stage_1,transparency=TRANSPA
 block:id=potatoes,data=4,data=5,data=6,patch0-3=0:potatoes_stage_2,transparency=TRANSPARENT
 block:id=potatoes,data=7,patch0-3=0:potatoes_stage_3,transparency=TRANSPARENT
 # Wooden button
-block:id=wooden_button,allfaces=0:planks_oak,stdrot=true,transparency=TRANSPARENT
+block:id=wooden_button,allfaces=0:oak_planks,stdrot=true,transparency=TRANSPARENT
 # Head
 block:id=skull,data=*,patch0=5:skeleton,patch1=4:skeleton,patch2=1:skeleton,patch3=0:skeleton,patch4=2:skeleton,patch5=3:skeleton,patch6=5:wither,patch7=4:wither,patch8=1:wither,patch9=0:wither,patch10=2:wither,patch11=3:wither,patch12=5:zombie,patch13=4:zombie,patch14=1:zombie,patch15=0:zombie,patch16=2:zombie,patch17=3:zombie,patch18=5:char,patch19=4:char,patch20=1:char,patch21=0:char,patch22=2:char,patch23=3:char,patch24=5:creeper,patch25=4:creeper,patch26=1:creeper,patch27=0:creeper,patch28=2:creeper,patch29=3:creeper,transparency=TRANSPARENT
 # Anvil (normal)
@@ -1331,25 +1430,10 @@ block:id=stained_glass_pane,data=13,patch0=12000:glass_green,patch1=12000:glass_
 block:id=stained_glass_pane,data=14,patch0=12000:glass_red,patch1=12000:glass_pane_top_red,transparency=TRANSPARENT
 block:id=stained_glass_pane,data=15,patch0=12000:glass_black,patch1=12000:glass_pane_top_black,transparency=TRANSPARENT
 
-# Leaves (acacia) (161)
-block:id=leaves2,data=0,data=4,data=8,data=12,allfaces=2000:leaves_acacia,stdrot=true,transparency=LEAVES
-# Leaves (big oak) (161)
-block:id=leaves2,data=1,data=5,data=9,data=13,allfaces=2000:leaves_big_oak,stdrot=true,transparency=LEAVES
-
-# Wood (acacia) (162)
-block:id=log2,data=0,allsides=0:log_acacia,topbottom=0:log_acacia_top,stdrot=true
-block:id=log2,data=4,north=0:log_acacia_top,south=0:log_acacia_top,east=4000:log_acacia,west=4000:log_acacia,top=0:log_acacia,bottom=0:log_acacia
-block:id=log2,data=8,north=4000:log_acacia,south=4000:log_acacia,east=0:log_acacia_top,west=0:log_acacia_top,top=4000:log_acacia,bottom=4000:log_acacia
-block:id=log2,data=12,allfaces=0:log_acacia,stdrot=true
-# Wood (big oak) (162)
-block:id=log2,data=1,allsides=0:log_spruce,topbottom=0:log_spruce_top,stdrot=true
-block:id=log2,data=5,north=0:log_spruce_top,south=0:log_spruce_top,east=4000:log_spruce,west=4000:log_spruce,top=0:log_spruce,bottom=0:log_spruce
-block:id=log2,data=9,north=4000:log_spruce,south=4000:log_spruce,east=0:log_spruce_top,west=0:log_spruce_top,top=4000:log_spruce,bottom=4000:log_spruce
-block:id=log2,data=13,allfaces=0:log_spruce,stdrot=true
 # Acacia Stairs (163)
-block:id=acacia_stairs,data=*,patch0-2=0:planks_acacia,transparency=SEMITRANSPARENT
+block:id=acacia_stairs,data=*,patch0-2=0:acacia_planks,transparency=SEMITRANSPARENT
 # Dark Oak Stairs (164)
-block:id=dark_oak_stairs,data=*,patch0-2=0:planks_big_oak,transparency=SEMITRANSPARENT
+block:id=dark_oak_stairs,data=*,patch0-2=0:dark_oak_planks,transparency=SEMITRANSPARENT
 
 # (170) Hay
 block:id=hay_block,data=*,allsides=0:hay_block_side,topbottom=0:hay_block_top,stdrot=true
@@ -1420,49 +1504,49 @@ block:id=double_stone_slab2,data=8,allfaces=0:red_sandstone_top,stdrot=true
 block:id=stone_slab2,data=0,data=8,bottom=0:red_sandstone_bottom,top=0:red_sandstone_top,allsides=0:red_sandstone_normal,stdrot=true,transparency=SEMITRANSPARENT
 
 # Fence Gate (Spruce)
-block:id=spruce_fence_gate,patch0-2=0:planks_spruce,stdrot=true,transparency=TRANSPARENT
+block:id=spruce_fence_gate,patch0-2=0:spruce_planks,stdrot=true,transparency=TRANSPARENT
 
 # Fence Gate (Birch)
-block:id=birch_fence_gate,patch0-2=0:planks_birch,stdrot=true,transparency=TRANSPARENT
+block:id=birch_fence_gate,patch0-2=0:birch_planks,stdrot=true,transparency=TRANSPARENT
 
 # Fence Gate (Jungle)
-block:id=jungle_fence_gate,patch0-2=0:planks_jungle,stdrot=true,transparency=TRANSPARENT
+block:id=jungle_fence_gate,patch0-2=0:jungle_planks,stdrot=true,transparency=TRANSPARENT
 
 # Fence Gate (Dark Oak)
-block:id=dark_oak_fence_gate,patch0-2=0:planks_big_oak,stdrot=true,transparency=TRANSPARENT
+block:id=dark_oak_fence_gate,patch0-2=0:dark_oak_planks,stdrot=true,transparency=TRANSPARENT
 
 # Fence Gate (Acacia)
-block:id=acacia_fence_gate,patch0-2=0:planks_acacia,stdrot=true,transparency=TRANSPARENT
+block:id=acacia_fence_gate,patch0-2=0:acacia_planks,stdrot=true,transparency=TRANSPARENT
 
 # Fence (Spruce)
-block:id=spruce_fence,patch0-2=0:planks_spruce,transparency=TRANSPARENT
+block:id=spruce_fence,patch0-2=0:spruce_planks,transparency=TRANSPARENT
 
 # Fence (Birch)
-block:id=birch_fence,patch0-2=0:planks_birch,transparency=TRANSPARENT
+block:id=birch_fence,patch0-2=0:birch_planks,transparency=TRANSPARENT
 
 # Fence (Jungle)
-block:id=jungle_fence,patch0-2=0:planks_jungle,transparency=TRANSPARENT
+block:id=jungle_fence,patch0-2=0:jungle_planks,transparency=TRANSPARENT
 
 # Fence (Dark Oak)
-block:id=dark_oak_fence,patch0-2=0:planks_big_oak,transparency=TRANSPARENT
+block:id=dark_oak_fence,patch0-2=0:dark_oak_planks,transparency=TRANSPARENT
 
 # Fence (Acacia)
-block:id=acacia_fence,patch0-2=0:planks_acacia,transparency=TRANSPARENT
+block:id=acacia_fence,patch0-2=0:acacia_planks,transparency=TRANSPARENT
 
 # Wooden Door Block (Spruce)
-block:id=spruce_door,data=*,patch0=0:door_spruce_upper,patch1=0:door_spruce_lower,transparency=TRANSPARENT
+block:id=spruce_door,data=*,patch0=0:spruce_door_upper,patch1=0:spruce_door_lower,transparency=TRANSPARENT
 
 # Wooden Door Block (Birch)
-block:id=birch_door,data=*,patch0=0:door_birch_upper,patch1=0:door_birch_lower,transparency=TRANSPARENT
+block:id=birch_door,data=*,patch0=0:birch_door_upper,patch1=0:birch_door_lower,transparency=TRANSPARENT
 
 # Wooden Door Block (Jungle)
-block:id=jungle_door,data=*,patch0=0:door_jungle_upper,patch1=0:door_jungle_lower,transparency=TRANSPARENT
+block:id=jungle_door,data=*,patch0=0:jungle_door_upper,patch1=0:jungle_door_lower,transparency=TRANSPARENT
 
 # Wooden Door Block (Acacia)
-block:id=acacia_door,data=*,patch0=0:door_acacia_upper,patch1=0:door_acacia_lower,transparency=TRANSPARENT
+block:id=acacia_door,data=*,patch0=0:acacia_door_upper,patch1=0:acacia_door_lower,transparency=TRANSPARENT
 
 # Wooden Door Block (Dark Oak)
-block:id=dark_oak_door,data=*,patch0=0:door_dark_oak_upper,patch1=0:door_dark_oak_lower,transparency=TRANSPARENT
+block:id=dark_oak_door,data=*,patch0=0:dark_oak_door_upper,patch1=0:dark_oak_door_lower,transparency=TRANSPARENT
 
 
 # End rod
