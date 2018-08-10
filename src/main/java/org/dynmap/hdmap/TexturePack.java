@@ -186,6 +186,27 @@ public class TexturePack {
     private static final int TILEINDEX_SHULKER_BOTTOM = 5;
     private static final int TILEINDEX_SHULKER_COUNT = 6;
     
+    /* Indexes of faces in the BED format tile file */
+    private static final int TILEINDEX_BED_HEAD_TOP = 0;
+    private static final int TILEINDEX_BED_HEAD_BOTTOM = 1;
+    private static final int TILEINDEX_BED_HEAD_LEFT = 2;
+    private static final int TILEINDEX_BED_HEAD_RIGHT = 3;
+    private static final int TILEINDEX_BED_HEAD_END = 4;
+    private static final int TILEINDEX_BED_FOOT_TOP = 5;
+    private static final int TILEINDEX_BED_FOOT_BOTTOM = 6;
+    private static final int TILEINDEX_BED_FOOT_LEFT = 7;
+    private static final int TILEINDEX_BED_FOOT_RIGHT = 8;
+    private static final int TILEINDEX_BED_FOOT_END = 9;
+    private static final int TILEINDEX_BED_HEAD_LEFTLEG_1 = 10;
+    private static final int TILEINDEX_BED_HEAD_LEFTLEG_2 = 11;
+    private static final int TILEINDEX_BED_HEAD_RIGHTLEG_1 = 12;
+    private static final int TILEINDEX_BED_HEAD_RIGHTLEG_2 = 13;
+    private static final int TILEINDEX_BED_FOOT_LEFTLEG_1 = 14;
+    private static final int TILEINDEX_BED_FOOT_LEFTLEG_2 = 15;
+    private static final int TILEINDEX_BED_FOOT_RIGHTLEG_1 = 16;
+    private static final int TILEINDEX_BED_FOOT_RIGHTLEG_2 = 17;
+    private static final int TILEINDEX_BED_COUNT = 18;
+    
     public static enum TileFileFormat {
         GRID,
         CHEST,
@@ -195,7 +216,8 @@ public class TexturePack {
         SHULKER,
         CUSTOM,
         TILESET,
-        BIOME
+        BIOME,
+        BED	// 1.13 bed texture
     };
     
     // Material type: used for setting advanced rendering/export characteristics for image in given file
@@ -294,6 +316,15 @@ public class TexturePack {
 
     private static class CustomTileRec {
         int srcx, srcy, width, height, targetx, targety;
+        public CustomTileRec() {}
+        public CustomTileRec(int srcx, int srcy, int width, int height, int targetx, int targety) {
+        	this.srcx = srcx; this.srcy = srcy;
+        	this.width = width; this.height = height;
+        	this.targetx = targetx; this.targety = targety;
+        }
+        public CustomTileRec(int srcx, int srcy, int width, int height) {
+        	this(srcx, srcy, width, height, 0, 0);
+        }
     }
     
     private static int next_dynamic_tile = MAX_TILEINDEX+1;
@@ -1027,6 +1058,50 @@ public class TexturePack {
         }
     }
 
+    private static List<CustomTileRec> bed_patches = 
+		Arrays.asList(new CustomTileRec[] {
+			    // TILEINDEX_BED_HEAD_TOP
+				new CustomTileRec(6, 6, 16, 16),
+			    // TILEINDEX_BED_HEAD_BOTTOM
+				new CustomTileRec(28, 6, 16, 16),
+			    // TILEINDEX_BED_HEAD_LEFT
+				new CustomTileRec(0, 6, 6, 16),
+			    // TILEINDEX_BED_HEAD_RIGHT
+				new CustomTileRec(22, 6, 6, 16),
+			    // TILEINDEX_BED_HEAD_END
+				new CustomTileRec(6, 0, 16, 6),
+			    // TILEINDEX_BED_FOOT_TOP
+				new CustomTileRec(6, 28, 16, 16),
+			    // TILEINDEX_BED_FOOT_BOTTOM
+				new CustomTileRec(28, 28, 16, 16),
+			    // TILEINDEX_BED_FOOT_LEFT
+				new CustomTileRec(0, 28, 6, 16),
+			    // TILEINDEX_BED_FOOT_RIGHT
+				new CustomTileRec(22, 28, 6, 16),
+			    // TILEINDEX_BED_FOOT_END
+				new CustomTileRec(22, 22, 16, 6),
+			    // TILEINDEX_BED_HEAD_LEFTLEG_1
+				new CustomTileRec(50, 0, 6, 6),
+			    // TILEINDEX_BED_HEAD_LEFTLEG_2 
+				new CustomTileRec(56, 0, 6, 6),
+			    // TILEINDEX_BED_HEAD_RIGHTLEG_1
+				new CustomTileRec(50, 6, 6, 6),
+			    // TILEINDEX_BED_HEAD_RIGHTLEG_2
+				new CustomTileRec(56, 6, 6, 6),
+			    // TILEINDEX_BED_FOOT_LEFTLEG_1
+				new CustomTileRec(50, 12, 6, 6),
+			    // TILEINDEX_BED_FOOT_LEFTLEG_2
+				new CustomTileRec(56, 12, 6, 6),
+			    // TILEINDEX_BED_FOOT_RIGHTLEG_1
+				new CustomTileRec(50, 18, 6, 6),
+			    // TILEINDEX_BED_FOOT_RIGHTLEG_2
+				new CustomTileRec(56, 18, 6, 6)
+		});
+    
+    private void patchBedImages(int img_id, int[] imgids) {
+        patchCustomImages(img_id, imgids, bed_patches, 64, 64);
+    }
+    
     /* Copy texture pack */
     private TexturePack(TexturePack tp) {
         this.tile_argb = Arrays.copyOf(tp.tile_argb, tp.tile_argb.length);
@@ -1247,6 +1322,9 @@ public class TexturePack {
                 break;
             case CUSTOM:
                 patchCustomImages(idx+IMG_CNT, dtf.tile_to_dyntile, dtf.cust, dtf.tilecnt_x, dtf.tilecnt_y);
+                break;
+            case BED:
+                patchBedImages(idx+IMG_CNT, dtf.tile_to_dyntile);
                 break;
             case TILESET:
                 break;
@@ -2976,6 +3054,9 @@ public class TexturePack {
                 break;
             case SHULKER:
                 f.tile_to_dyntile = new int[TILEINDEX_SHULKER_COUNT]; /* 6 images for sign tile */
+                break;
+            case BED:
+                f.tile_to_dyntile = new int[TILEINDEX_BED_COUNT]; /* 18 images for tile */
                 break;
             case CUSTOM:
                 {

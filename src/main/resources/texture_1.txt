@@ -40,6 +40,22 @@ texturefile:id=n_txt,filename=assets/minecraft/textures/blocks/test_block/n_text
 texturefile:id=s_txt,filename=assets/minecraft/textures/blocks/test_block/s_texture.png,xcount=1,ycount=1
 texturefile:id=u_txt,filename=assets/minecraft/textures/blocks/test_block/u_texture.png,xcount=1,ycount=1
 texturefile:id=w_txt,filename=assets/minecraft/textures/blocks/test_block/w_texture.png,xcount=1,ycount=1
+texturefile:id=white_bed,filename=assets/minecraft/textures/entity/bed/white.png,format=BED
+texturefile:id=orange_bed,filename=assets/minecraft/textures/entity/bed/orange.png,format=BED
+texturefile:id=magenta_bed,filename=assets/minecraft/textures/entity/bed/magenta.png,format=BED
+texturefile:id=light_blue_bed,filename=assets/minecraft/textures/entity/bed/light_blue.png,format=BED
+texturefile:id=yellow_bed,filename=assets/minecraft/textures/entity/bed/yellow.png,format=BED
+texturefile:id=lime_bed,filename=assets/minecraft/textures/entity/bed/lime.png,format=BED
+texturefile:id=pink_bed,filename=assets/minecraft/textures/entity/bed/pink.png,format=BED
+texturefile:id=gray_bed,filename=assets/minecraft/textures/entity/bed/gray.png,format=BED
+texturefile:id=silver_bed,filename=assets/minecraft/textures/entity/bed/silver.png,format=BED
+texturefile:id=cyan_bed,filename=assets/minecraft/textures/entity/bed/cyan.png,format=BED
+texturefile:id=purple_bed,filename=assets/minecraft/textures/entity/bed/purple.png,format=BED
+texturefile:id=blue_bed,filename=assets/minecraft/textures/entity/bed/blue.png,format=BED
+texturefile:id=brown_bed,filename=assets/minecraft/textures/entity/bed/brown.png,format=BED
+texturefile:id=green_bed,filename=assets/minecraft/textures/entity/bed/green.png,format=BED
+texturefile:id=red_bed,filename=assets/minecraft/textures/entity/bed/red.png,format=BED
+texturefile:id=black_bed,filename=assets/minecraft/textures/entity/bed/black.png,format=BED
 texturepath:assets/minecraft/textures/block/
 texture:id=redstone_block
 texture:id=grass_block_side
@@ -163,12 +179,6 @@ texture:id=sandstone_normal
 texture:id=sandstone_smooth
 texture:id=sandstone_top
 texture:id=noteblock
-texture:id=bed_feet_end
-texture:id=bed_feet_side
-texture:id=bed_feet_top
-texture:id=bed_head_end
-texture:id=bed_head_side
-texture:id=bed_head_top
 texture:id=rail_golden_powered
 texture:id=rail_golden
 texture:id=rail_detector_powered
@@ -523,15 +533,15 @@ block:id=andesite,allfaces=0:andesite,stdrot=true
 # Polished Andesite
 block:id=polished_andesite,allfaces=0:polished_andesite,stdrot=true
 # Grass
-block:id=grass_block,data=0,allsides=1000:grass_block_side_overlay,top=1000:grass_block_top,bottom=0:dirt,patch6=1000:grass_block_side,layer0=6,layer2-3=6,layer5=6,stdrot=true
-block:id=grass_block,data=1,allsides=0:grass_block_snow,top=1000:grass_block_top,bottom=0:dirt,stdrot=true
+block:id=grass_block,data=0,allsides=0:grass_block_snow,top=1000:grass_block_top,bottom=0:dirt,stdrot=true
+block:id=grass_block,data=1,allsides=1000:grass_block_side_overlay,top=1000:grass_block_top,bottom=0:dirt,patch6=0:grass_block_side,layer0=6,layer2-3=6,layer5=6,stdrot=true
 # Dirt
 block:id=dirt,allfaces=0:dirt,stdrot=true
 # Coarse Dirt
 block:id=coarse_dirt,allfaces=0:coarse_dirt,stdrot=true
 # Pozdol
-block:id=podzol,data=0,allsides=1000:podzol_side,top=1000:podzol_top,bottom=0:dirt,stdrot=true
-block:id=podzol,data=1,allsides=1000:podzol_side,top=0:snow,bottom=0:dirt,stdrot=true
+block:id=podzol,data=0,allsides=1000:podzol_side,top=0:snow,bottom=0:dirt,stdrot=true
+block:id=podzol,data=1,allsides=1000:podzol_side,top=1000:podzol_top,bottom=0:dirt,stdrot=true
 # Cobblestone
 block:id=cobblestone,allfaces=0:cobblestone,stdrot=true
 # Wooden Plank (oak)
@@ -713,42 +723,60 @@ block:id=chiseled_sandstone,allsides=0:sandstone_carved,topbottom=0:sandstone_to
 block:id=cut_sandstone,allsides=0:sandstone_smooth,topbottom=0:sandstone_top,stdrot=true
 # Note Block 
 block:id=note_block,allfaces=0:noteblock,stdrot=true
-# Bed - head - pointing west
-block:id=bed,data=8,topbottom=5000:bed_head_top,south=7000:bed_head_side,north=0:bed_head_side,west=0:bed_head_end,transparency=TRANSPARENT
-# Bed - foot - pointing west
-block:id=bed,data=0,topbottom=5000:bed_feet_top,south=7000:bed_feet_side,north=0:bed_feet_side,east=0:bed_feet_end,transparency=TRANSPARENT
-# Bed - head - pointing north
-block:id=bed,data=9,topbottom=4000:bed_head_top,north=0:bed_head_end,east=0:bed_head_side,west=7000:bed_head_side,transparency=TRANSPARENT
-# Bed - foot - pointing north
-block:id=bed,data=1,topbottom=4000:bed_feet_top,south=0:bed_feet_end,,east=0:bed_feet_side,west=7000:bed_feet_side,transparency=TRANSPARENT
-# Bed - head - pointing east
-block:id=bed,data=10,topbottom=0:bed_head_top,south=0:bed_head_side,north=7000:bed_head_side,east=0:bed_head_end,transparency=TRANSPARENT
-# Bed - foot - pointing east
-block:id=bed,data=2,topbottom=0:bed_feet_top,south=0:bed_feet_side,north=7000:bed_feet_side,west=0:bed_feet_end,,transparency=TRANSPARENT
-# Bed - head - pointing south
-block:id=bed,data=11,topbottom=6000:bed_head_top,south=0:bed_head_end,east=7000:bed_head_side,west=0:bed_head_side,transparency=TRANSPARENT
-# Bed - foot - pointing south
-block:id=bed,data=3,topbottom=6000:bed_feet_top,north=0:bed_feet_end,,east=7000:bed_feet_side,west=0:bed_feet_side,transparency=TRANSPARENT
-# Powered rail - heading east-west - unpowered
-block:id=golden_rail,data=0,patch0=0:rail_golden,transparency=TRANSPARENT
-# Powered rail - incline to east - unpowered
-# Powered rail - incline to west - unpowered
-block:id=golden_rail,data=4,data=5,patch0=0:rail_golden,transparency=TRANSPARENT
+# White Bed
+block:id=white_bed,patch0=0:white_bed,patch1=1:white_bed,patch2=2:white_bed,patch3=3:white_bed,patch4=4:white_bed,patch5=5:white_bed,patch6=6:white_bed,patch7=7:white_bed,patch8=8:white_bed,patch9=9:white_bed,patch10=10:white_bed,patch11=11:white_bed,patch12=12:white_bed,patch13=13:white_bed,patch14=14:white_bed,patch15=15:whit_bed,patch16=16:white_bed,patch17=17:white_bed,transparency=TRANSPARENT
+# Orange Bed
+block:id=orange_bed,patch0=0:orange_bed,patch1=1:orange_bed,patch2=2:orange_bed,patch3=3:orange_bed,patch4=4:orange_bed,patch5=5:orange_bed,patch6=6:orange_bed,patch7=7:orange_bed,patch8=8:orange_bed,patch9=9:orange_bed,patch10=10:orange_bed,patch11=11:orange_bed,patch12=12:orange_bed,patch13=13:orange_bed,patch14=14:orange_bed,patch15=15:whit_bed,patch16=16:orange_bed,patch17=17:orange_bed,transparency=TRANSPARENT
+# Magenta Bed
+block:id=magenta_bed,patch0=0:magenta_bed,patch1=1:magenta_bed,patch2=2:magenta_bed,patch3=3:magenta_bed,patch4=4:magenta_bed,patch5=5:magenta_bed,patch6=6:magenta_bed,patch7=7:magenta_bed,patch8=8:magenta_bed,patch9=9:magenta_bed,patch10=10:magenta_bed,patch11=11:magenta_bed,patch12=12:magenta_bed,patch13=13:magenta_bed,patch14=14:magenta_bed,patch15=15:whit_bed,patch16=16:magenta_bed,patch17=17:magenta_bed,transparency=TRANSPARENT
+# Light Blue Bed
+block:id=light_blue_bed,patch0=0:light_blue_bed,patch1=1:light_blue_bed,patch2=2:light_blue_bed,patch3=3:light_blue_bed,patch4=4:light_blue_bed,patch5=5:light_blue_bed,patch6=6:light_blue_bed,patch7=7:light_blue_bed,patch8=8:light_blue_bed,patch9=9:light_blue_bed,patch10=10:light_blue_bed,patch11=11:light_blue_bed,patch12=12:light_blue_bed,patch13=13:light_blue_bed,patch14=14:light_blue_bed,patch15=15:whit_bed,patch16=16:light_blue_bed,patch17=17:light_blue_bed,transparency=TRANSPARENT
+# Yellow Bed
+block:id=yellow_bed,patch0=0:yellow_bed,patch1=1:yellow_bed,patch2=2:yellow_bed,patch3=3:yellow_bed,patch4=4:yellow_bed,patch5=5:yellow_bed,patch6=6:yellow_bed,patch7=7:yellow_bed,patch8=8:yellow_bed,patch9=9:yellow_bed,patch10=10:yellow_bed,patch11=11:yellow_bed,patch12=12:yellow_bed,patch13=13:yellow_bed,patch14=14:yellow_bed,patch15=15:whit_bed,patch16=16:yellow_bed,patch17=17:yellow_bed,transparency=TRANSPARENT
+# Lime Bed
+block:id=lime_bed,patch0=0:lime_bed,patch1=1:lime_bed,patch2=2:lime_bed,patch3=3:lime_bed,patch4=4:lime_bed,patch5=5:lime_bed,patch6=6:lime_bed,patch7=7:lime_bed,patch8=8:lime_bed,patch9=9:lime_bed,patch10=10:lime_bed,patch11=11:lime_bed,patch12=12:lime_bed,patch13=13:lime_bed,patch14=14:lime_bed,patch15=15:whit_bed,patch16=16:lime_bed,patch17=17:lime_bed,transparency=TRANSPARENT
+# Pink Bed
+block:id=pink_bed,patch0=0:pink_bed,patch1=1:pink_bed,patch2=2:pink_bed,patch3=3:pink_bed,patch4=4:pink_bed,patch5=5:pink_bed,patch6=6:pink_bed,patch7=7:pink_bed,patch8=8:pink_bed,patch9=9:pink_bed,patch10=10:pink_bed,patch11=11:pink_bed,patch12=12:pink_bed,patch13=13:pink_bed,patch14=14:pink_bed,patch15=15:whit_bed,patch16=16:pink_bed,patch17=17:pink_bed,transparency=TRANSPARENT
+# Gray Bed
+block:id=gray_bed,patch0=0:gray_bed,patch1=1:gray_bed,patch2=2:gray_bed,patch3=3:gray_bed,patch4=4:gray_bed,patch5=5:gray_bed,patch6=6:gray_bed,patch7=7:gray_bed,patch8=8:gray_bed,patch9=9:gray_bed,patch10=10:gray_bed,patch11=11:gray_bed,patch12=12:gray_bed,patch13=13:gray_bed,patch14=14:gray_bed,patch15=15:whit_bed,patch16=16:gray_bed,patch17=17:gray_bed,transparency=TRANSPARENT
+# Light Gray Bed
+block:id=light_gray_bed,patch0=0:light_gray_bed,patch1=1:light_gray_bed,patch2=2:light_gray_bed,patch3=3:light_gray_bed,patch4=4:light_gray_bed,patch5=5:light_gray_bed,patch6=6:light_gray_bed,patch7=7:light_gray_bed,patch8=8:light_gray_bed,patch9=9:light_gray_bed,patch10=10:light_gray_bed,patch11=11:light_gray_bed,patch12=12:light_gray_bed,patch13=13:light_gray_bed,patch14=14:light_gray_bed,patch15=15:whit_bed,patch16=16:light_gray_bed,patch17=17:light_gray_bed,transparency=TRANSPARENT
+# Cyan Bed
+block:id=cyan_bed,patch0=0:cyan_bed,patch1=1:cyan_bed,patch2=2:cyan_bed,patch3=3:cyan_bed,patch4=4:cyan_bed,patch5=5:cyan_bed,patch6=6:cyan_bed,patch7=7:cyan_bed,patch8=8:cyan_bed,patch9=9:cyan_bed,patch10=10:cyan_bed,patch11=11:cyan_bed,patch12=12:cyan_bed,patch13=13:cyan_bed,patch14=14:cyan_bed,patch15=15:whit_bed,patch16=16:cyan_bed,patch17=17:cyan_bed,transparency=TRANSPARENT
+# Purple Bed
+block:id=purple_bed,patch0=0:purple_bed,patch1=1:purple_bed,patch2=2:purple_bed,patch3=3:purple_bed,patch4=4:purple_bed,patch5=5:purple_bed,patch6=6:purple_bed,patch7=7:purple_bed,patch8=8:purple_bed,patch9=9:purple_bed,patch10=10:purple_bed,patch11=11:purple_bed,patch12=12:purple_bed,patch13=13:purple_bed,patch14=14:purple_bed,patch15=15:whit_bed,patch16=16:purple_bed,patch17=17:purple_bed,transparency=TRANSPARENT
+# Blue Bed
+block:id=blue_bed,patch0=0:blue_bed,patch1=1:blue_bed,patch2=2:blue_bed,patch3=3:blue_bed,patch4=4:blue_bed,patch5=5:blue_bed,patch6=6:blue_bed,patch7=7:blue_bed,patch8=8:blue_bed,patch9=9:blue_bed,patch10=10:blue_bed,patch11=11:blue_bed,patch12=12:blue_bed,patch13=13:blue_bed,patch14=14:blue_bed,patch15=15:whit_bed,patch16=16:blue_bed,patch17=17:blue_bed,transparency=TRANSPARENT
+# Brown Bed
+block:id=brown_bed,patch0=0:brown_bed,patch1=1:brown_bed,patch2=2:brown_bed,patch3=3:brown_bed,patch4=4:brown_bed,patch5=5:brown_bed,patch6=6:brown_bed,patch7=7:brown_bed,patch8=8:brown_bed,patch9=9:brown_bed,patch10=10:brown_bed,patch11=11:brown_bed,patch12=12:brown_bed,patch13=13:brown_bed,patch14=14:brown_bed,patch15=15:whit_bed,patch16=16:brown_bed,patch17=17:brown_bed,transparency=TRANSPARENT
+# Green Bed
+block:id=green_bed,patch0=0:green_bed,patch1=1:green_bed,patch2=2:green_bed,patch3=3:green_bed,patch4=4:green_bed,patch5=5:green_bed,patch6=6:green_bed,patch7=7:green_bed,patch8=8:green_bed,patch9=9:green_bed,patch10=10:green_bed,patch11=11:green_bed,patch12=12:green_bed,patch13=13:green_bed,patch14=14:green_bed,patch15=15:whit_bed,patch16=16:green_bed,patch17=17:green_bed,transparency=TRANSPARENT
+# Red Bed
+block:id=red_bed,patch0=0:red_bed,patch1=1:red_bed,patch2=2:red_bed,patch3=3:red_bed,patch4=4:red_bed,patch5=5:red_bed,patch6=6:red_bed,patch7=7:red_bed,patch8=8:red_bed,patch9=9:red_bed,patch10=10:red_bed,patch11=11:red_bed,patch12=12:red_bed,patch13=13:red_bed,patch14=14:red_bed,patch15=15:whit_bed,patch16=16:red_bed,patch17=17:red_bed,transparency=TRANSPARENT
+# Black Bed
+block:id=black_bed,patch0=0:black_bed,patch1=1:black_bed,patch2=2:black_bed,patch3=3:black_bed,patch4=4:black_bed,patch5=5:black_bed,patch6=6:black_bed,patch7=7:black_bed,patch8=8:black_bed,patch9=9:black_bed,patch10=10:black_bed,patch11=11:black_bed,patch12=12:black_bed,patch13=13:black_bed,patch14=14:black_bed,patch15=15:whit_bed,patch16=16:black_bed,patch17=17:black_bed,transparency=TRANSPARENT
+
+# Powered rail - heading north-south - powered
+block:id=powered_rail,data=0,patch0=0:rail_golden_powered,transparency=TRANSPARENT
 # Powered rail - heading east-west - powered
-block:id=golden_rail,data=8,patch0=0:rail_golden_powered,transparency=TRANSPARENT
+block:id=powered_rail,data=1,patch0=0:rail_golden_powered,transparency=TRANSPARENT
 # Powered rail - incline to east - powered
 # Powered rail - incline to west - powered
-block:id=golden_rail,data=12,data=13,patch0=0:rail_golden_powered,transparency=TRANSPARENT
-# Powered rail - heading north-south - unpowered
-block:id=golden_rail,data=1,patch0=0:rail_golden,transparency=TRANSPARENT
-# Powered rail - inclined to north - unpowered
-# Powered rail - inclined to south - unpowered
-block:id=golden_rail,data=2,data=3,patch0=0:rail_golden,transparency=TRANSPARENT
-# Powered rail - heading north-south - powered
-block:id=golden_rail,data=9,patch0=0:rail_golden_powered,transparency=TRANSPARENT
+block:id=powered_rail,data=2,data=3,patch0=0:rail_golden_powered,transparency=TRANSPARENT
 # Powered rail - inclined to north - powered
 # Powered rail - inclined to south - powered
-block:id=golden_rail,data=10,data=11,patch0=0:rail_golden_powered,transparency=TRANSPARENT
+block:id=powered_rail,data=4,data=5,patch0=0:rail_golden_powered,transparency=TRANSPARENT
+# Powered rail - heading north-south - unpowered
+block:id=powered_rail,data=6,patch0=0:rail_golden,transparency=TRANSPARENT
+# Powered rail - heading east-west - unpowered
+block:id=powered_rail,data=7,patch0=0:rail_golden,transparency=TRANSPARENT
+# Powered rail - incline to east - unpowered
+# Powered rail - incline to west - unpowered
+block:id=powered_rail,data=4,data=5,patch0=0:rail_golden,transparency=TRANSPARENT
+# Powered rail - inclined to north - unpowered
+# Powered rail - inclined to south - unpowered
+block:id=powered_rail,data=2,data=3,patch0=0:rail_golden,transparency=TRANSPARENT
+
 # Detector rail - heading east-west
 block:id=detector_rail,data=0,patch0=0:rail_detector,transparency=TRANSPARENT
 # Detector rail - incline to east
