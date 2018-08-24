@@ -44,13 +44,13 @@ import org.dynmap.debug.Debug;
 import org.dynmap.debug.Debugger;
 import org.dynmap.exporter.DynmapExpCommands;
 import org.dynmap.hdmap.HDBlockModels;
+import org.dynmap.hdmap.HDBlockStateTextureMap;
 import org.dynmap.hdmap.HDMapManager;
 import org.dynmap.hdmap.TexturePack;
-import org.dynmap.hdmap.TexturePack.HDBlockStateTextureMap;
-import org.dynmap.hdmap.TexturePack.HDBlockTextureMap;
 import org.dynmap.markers.MarkerAPI;
 import org.dynmap.markers.impl.MarkerAPIImpl;
 import org.dynmap.modsupport.ModSupportImpl;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.servlet.FileResourceHandler;
 import org.dynmap.servlet.JettyNullLogger;
 import org.dynmap.servlet.LoginServlet;
@@ -593,82 +593,80 @@ public class DynmapCore implements DynmapCommonAPI {
             tp = tp.resampleTexturePack(1);
             if (tp == null) return;
             Color c = new Color();
-            for (int blkid = 1; blkid < DynmapCore.BLOCKTABLELEN; blkid++) {
+            for (int gidx = 0; gidx < DynmapBlockState.getGlobalIndexMax(); gidx++) {
+                DynmapBlockState blk = DynmapBlockState.getStateByGlobalIndex(gidx);
+                if (blk.isAir()) continue;
                 int meta0color = 0;
-                HDBlockTextureMap bmap = HDBlockTextureMap.getByBlockID(blkid);
-                for (int blkmeta = 0; blkmeta < bmap.getStateCount(); blkmeta++) {
-                    HDBlockStateTextureMap map = bmap.getStateMap(blkmeta);
-                    boolean done = false;
-                    for (int i = 0; (!done) && (i < sides.length); i++) {
-                        int idx = map.getIndexForFace(sides[i]);
-                        if (idx < 0) continue;
-                        int rgb[] = tp.getTileARGB(idx % 1000000);
-                        if (rgb == null) continue;
-                        if (rgb[0] == 0) continue;
-                        c.setARGB(rgb[0]);
-                        idx = (idx / 1000000);
-                        switch(idx) {
-                            case 1: // grass
-                            case 18: // grass
-                                System.out.println("Used grass for " + blkid + ":" + blkmeta);
-                                c.blendColor(tp.getTrivialGrassMultiplier() | 0xFF000000);
-                                break;
-                            case 2: // foliage
-                            case 19: // foliage
-                            case 22: // foliage
-                                System.out.println("Used foliage for " + blkid + ":" + blkmeta);
-                                c.blendColor(tp.getTrivialFoliageMultiplier() | 0xFF000000);
-                                break;
-                            case 13: // pine
-                                c.blendColor(0x619961 | 0xFF000000);
-                                break;
-                            case 14: // birch
-                                c.blendColor(0x80a755 | 0xFF000000);
-                                break;
-                            case 15: // lily
-                                c.blendColor(0x208030 | 0xFF000000);
-                                break;
-                            case 3: // water
-                            case 20: // water
-                                System.out.println("Used water for " + blkid + ":" + blkmeta);
+                HDBlockStateTextureMap map = HDBlockStateTextureMap.getByBlockState(blk);
+                boolean done = false;
+                for (int i = 0; (!done) && (i < sides.length); i++) {
+                    int idx = map.getIndexForFace(sides[i]);
+                    if (idx < 0) continue;
+                    int rgb[] = tp.getTileARGB(idx % 1000000);
+                    if (rgb == null) continue;
+                    if (rgb[0] == 0) continue;
+                    c.setARGB(rgb[0]);
+                    idx = (idx / 1000000);
+                    switch(idx) {
+                        case 1: // grass
+                        case 18: // grass
+                            System.out.println("Used grass for " + blk);
+                            c.blendColor(tp.getTrivialGrassMultiplier() | 0xFF000000);
+                            break;
+                        case 2: // foliage
+                        case 19: // foliage
+                        case 22: // foliage
+                            System.out.println("Used foliage for " + blk);
+                            c.blendColor(tp.getTrivialFoliageMultiplier() | 0xFF000000);
+                            break;
+                        case 13: // pine
+                            c.blendColor(0x619961 | 0xFF000000);
+                            break;
+                        case 14: // birch
+                            c.blendColor(0x80a755 | 0xFF000000);
+                            break;
+                        case 15: // lily
+                            c.blendColor(0x208030 | 0xFF000000);
+                            break;
+                        case 3: // water
+                        case 20: // water
+                            System.out.println("Used water for " + blk);
+                            c.blendColor(tp.getTrivialWaterMultiplier() | 0xFF000000);
+                            break;
+                        case 12: // clear inside
+                            if (blk.isWater()) { // special case for water
+                                System.out.println("Used water for " + blk);
                                 c.blendColor(tp.getTrivialWaterMultiplier() | 0xFF000000);
-                                break;
-                            case 12: // clear inside
-                                if((blkid == 8) || (blkid == 9)) { // special case for water
-                                    System.out.println("Used water for " + blkid + ":" + blkmeta);
-                                    c.blendColor(tp.getTrivialWaterMultiplier() | 0xFF000000);
-                                }
-                                break;
-                        }
-                        int custmult = tp.getCustomBlockMultiplier(blkid, blkmeta);
-                        if (custmult != 0xFFFFFF) {
-                            System.out.println(String.format("Custom color: %06x for %d:%d", custmult, blkid, blkmeta));
-                            if ((custmult & 0xFF000000) == 0) {
-                                custmult |= 0xFF000000;
                             }
-                            c.blendColor(custmult);
-                        }
-                        String ln = "";
-                        if (blkmeta == 0) {
-                            meta0color = c.getARGB();
-                            ln = blkid + " ";
-                        }
-                        else {
-                            ln = blkid + ":" + blkmeta + " ";
-                        }
-                        if ((blkmeta == 0) || (meta0color != c.getARGB())) {
-                            ln += c.getRed() + " " + c.getGreen() + " " + c.getBlue() + " " + c.getAlpha();
-                            ln += " " + (c.getRed()*4/5) + " " + (c.getGreen()*4/5) + " " + (c.getBlue()*4/5) + " " + c.getAlpha();
-                            ln += " " + (c.getRed()/2) + " " + (c.getGreen()/2) + " " + (c.getBlue()/2) + " " + c.getAlpha();
-                            ln += " " + (c.getRed()*2/5) + " " + (c.getGreen()*2/5) + " " + (c.getBlue()*2/5) + " " + c.getAlpha() + "\n";
-                            fw.write(ln);
-                        }
-                        done = true;
+                            break;
                     }
+                    int custmult = tp.getCustomBlockMultiplier(blk);
+                    if (custmult != 0xFFFFFF) {
+                        System.out.println(String.format("Custom color: %06x for %s", custmult, blk));
+                        if ((custmult & 0xFF000000) == 0) {
+                            custmult |= 0xFF000000;
+                        }
+                        c.blendColor(custmult);
+                    }
+                    String ln = "";
+                    if (blk.stateIndex == 0) {
+                        meta0color = c.getARGB();
+                        ln = blk.blockName + " ";
+                    }
+                    else {
+                        ln = blk + " ";
+                    }
+                    if ((blk.stateIndex == 0) || (meta0color != c.getARGB())) {
+                        ln += c.getRed() + " " + c.getGreen() + " " + c.getBlue() + " " + c.getAlpha();
+                        ln += " " + (c.getRed()*4/5) + " " + (c.getGreen()*4/5) + " " + (c.getBlue()*4/5) + " " + c.getAlpha();
+                        ln += " " + (c.getRed()/2) + " " + (c.getGreen()/2) + " " + (c.getBlue()/2) + " " + c.getAlpha();
+                        ln += " " + (c.getRed()*2/5) + " " + (c.getGreen()*2/5) + " " + (c.getBlue()*2/5) + " " + c.getAlpha() + "\n";
+                        fw.write(ln);
+                    }
+                    done = true;
                 }
             }
         } catch (IOException iox) {
-
         } finally {
             if (fw != null) { try { fw.close(); } catch (IOException x) {} }
         }

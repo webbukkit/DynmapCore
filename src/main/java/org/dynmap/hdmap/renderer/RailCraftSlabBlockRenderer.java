@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.dynmap.renderer.CustomRenderer;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
@@ -23,11 +24,21 @@ public class RailCraftSlabBlockRenderer extends CustomRenderer {
     private String[] tilefields = null;
     private String[] texturemap;
     
+    private void setID(String bname) {
+        DynmapBlockState bss = DynmapBlockState.getBaseStateByName(bname);
+        if (bss.isNotAir()) {
+            for (int i = 0; i < bss.getStateCount(); i++) {
+                DynmapBlockState bs = bss.getState(i);
+                stair_ids.set(bs.globalStateIndex);
+            }
+        }
+    }
+    
     @Override
-    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
-        if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
+    public boolean initializeRenderer(RenderPatchFactory rpf, String blkname, int blockdatamask, Map<String,String> custparm) {
+        if(!super.initializeRenderer(rpf, blkname, blockdatamask, custparm))
             return false;
-        stair_ids.set(blkid);   /* Mark block as a stair */
+        setID(blkname);   /* Mark block as a stair */
         /* Build step meshes */
         for(int i = 0; i < 3; i++) {
             stepmeshes[i] = buildStepMeshes(rpf, i);   

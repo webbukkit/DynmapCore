@@ -18,8 +18,8 @@ public class FenceGateBlockRenderer extends CustomRenderer {
     private RenderPatch[][] meshes = new RenderPatch[8][];
     
     @Override
-    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
-        if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
+    public boolean initializeRenderer(RenderPatchFactory rpf, String blkname, int blockdatamask, Map<String,String> custparm) {
+        if(!super.initializeRenderer(rpf, blkname, blockdatamask, custparm))
             return false;
         buildMeshes(rpf);
         return true;
@@ -103,7 +103,7 @@ public class FenceGateBlockRenderer extends CustomRenderer {
     
     @Override
     public RenderPatch[] getRenderPatchList(MapDataContext ctx) {
-        int meta = ctx.getBlockData();
+        int meta = ctx.getBlockType().stateIndex;
         
         return meshes[meta & 0x7];
     }    

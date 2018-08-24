@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.dynmap.renderer.CustomRenderer;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
@@ -28,8 +29,8 @@ public class ChestRenderer extends CustomRenderer {
 
     private boolean double_chest = false;
     @Override
-    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
-        if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
+    public boolean initializeRenderer(RenderPatchFactory rpf, String blkname, int blockdatamask, Map<String,String> custparm) {
+        if(!super.initializeRenderer(rpf, blkname, blockdatamask, custparm))
             return false;
 
         double_chest = !("false".equals(custparm.get("doublechest")));
@@ -91,18 +92,18 @@ public class ChestRenderer extends CustomRenderer {
         
     @Override
     public RenderPatch[] getRenderPatchList(MapDataContext ctx) {
-        int blktype = ctx.getBlockTypeID();
+        DynmapBlockState blktype = ctx.getBlockType().baseState;
         if (!double_chest) {
-        	blktype = -1;	// Force mismatch - always single
+        	blktype = DynmapBlockState.AIR;	// Force mismatch - always single
         }
-        int blkdata = ctx.getBlockData();   /* Get block data */
+        int blkdata = blktype.stateIndex;   /* Get block data */
         ChestData cd = ChestData.SINGLE_NORTH;   /* Default to single facing north */
         switch(blkdata) {   /* First, use orientation data */
             case 2: /* North */
-                if(ctx.getBlockTypeIDAt(-1, 0, 0) == blktype) {
+                if(ctx.getBlockTypeAt(-1, 0, 0).baseState == blktype) {
                     cd = ChestData.LEFT_NORTH;
                 }
-                else if(ctx.getBlockTypeIDAt(1, 0, 0) == blktype) {
+                else if(ctx.getBlockTypeAt(1, 0, 0).baseState == blktype) {
                     cd = ChestData.RIGHT_NORTH;
                 }
                 else {
@@ -110,10 +111,10 @@ public class ChestRenderer extends CustomRenderer {
                 }
                 break;
             case 4: /* West */
-                if(ctx.getBlockTypeIDAt(0, 0, -1) == blktype) {
+                if(ctx.getBlockTypeAt(0, 0, -1).baseState == blktype) {
                     cd = ChestData.RIGHT_WEST;
                 }
-                else if(ctx.getBlockTypeIDAt(0, 0, 1) == blktype) {
+                else if(ctx.getBlockTypeAt(0, 0, 1).baseState == blktype) {
                     cd = ChestData.LEFT_WEST;
                 }
                 else {
@@ -121,10 +122,10 @@ public class ChestRenderer extends CustomRenderer {
                 }
                 break;
             case 5: /* East */
-                if(ctx.getBlockTypeIDAt(0, 0, -1) == blktype) {
+                if(ctx.getBlockTypeAt(0, 0, -1).baseState == blktype) {
                     cd = ChestData.LEFT_EAST;
                 }
-                else if(ctx.getBlockTypeIDAt(0, 0, 1) == blktype) {
+                else if(ctx.getBlockTypeAt(0, 0, 1).baseState == blktype) {
                     cd = ChestData.RIGHT_EAST;
                 }
                 else {
@@ -133,10 +134,10 @@ public class ChestRenderer extends CustomRenderer {
                 break;
             case 3: /* South */
             default:
-                if(ctx.getBlockTypeIDAt(-1, 0, 0) == blktype) {
+                if(ctx.getBlockTypeAt(-1, 0, 0).baseState == blktype) {
                     cd = ChestData.RIGHT_SOUTH;
                 }
-                else if(ctx.getBlockTypeIDAt(1, 0, 0) == blktype) {
+                else if(ctx.getBlockTypeAt(1, 0, 0).baseState == blktype) {
                     cd = ChestData.LEFT_SOUTH;
                 }
                 else {

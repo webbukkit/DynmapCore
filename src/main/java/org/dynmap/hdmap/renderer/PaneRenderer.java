@@ -2,9 +2,10 @@ package org.dynmap.hdmap.renderer;
 
 import java.util.Map;
 
+import org.dynmap.hdmap.HDBlockStateTextureMap;
 import org.dynmap.hdmap.TexturePack.BlockTransparency;
-import org.dynmap.hdmap.TexturePack.HDBlockTextureMap;
 import org.dynmap.renderer.CustomRenderer;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
@@ -21,15 +22,13 @@ public class PaneRenderer extends CustomRenderer {
     private static final int SIDE_XN = 0x1;
     private static final int SIDE_ZP = 0x8;
     private static final int SIDE_ZN = 0x2;
-
-    private static final int TYPEID_GLASS = 20; // Block ID of glass blocks
     
     // Meshes, indexed by connection combination (bit 0=X-, bit 1=Z-, bit 2=X+, bit 3=Z+)
     private RenderPatch[][] meshes = new RenderPatch[16][];
     
     @Override
-    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
-        if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
+    public boolean initializeRenderer(RenderPatchFactory rpf, String blkname, int blockdatamask, Map<String,String> custparm) {
+        if(!super.initializeRenderer(rpf, blkname, blockdatamask, custparm))
             return false;
         buildPatches(rpf);
         return true;
@@ -82,26 +81,26 @@ public class PaneRenderer extends CustomRenderer {
     public RenderPatch[] getRenderPatchList(MapDataContext ctx) {
         /* Build connection map - check each axis */
         int blockdata = 0;
-        int id;
-        int typeid = ctx.getBlockTypeID();
+        DynmapBlockState t;
+        DynmapBlockState type = ctx.getBlockType();
         /* Check north */
-        id = ctx.getBlockTypeIDAt(-1,  0,  0);
-        if ((id == typeid) || (id == TYPEID_GLASS) || ((id > 0) && (HDBlockTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {
+        t = ctx.getBlockTypeAt(-1,  0,  0);
+        if ((t == type) || t.is(DynmapBlockState.GLASS_BLOCK) || (HDBlockStateTextureMap.getTransparency(t) == BlockTransparency.OPAQUE)) {
             blockdata |= SIDE_XN;
         }
         /* Look east */
-        id = ctx.getBlockTypeIDAt(0,  0,  -1);
-        if ((id == typeid) || (id == TYPEID_GLASS) || ((id > 0) && (HDBlockTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {
+        t = ctx.getBlockTypeAt(0,  0,  -1);
+        if ((t == type) || t.is(DynmapBlockState.GLASS_BLOCK) || (HDBlockStateTextureMap.getTransparency(t) == BlockTransparency.OPAQUE)) {
             blockdata |= SIDE_ZN;
         }
         /* Look south */
-        id = ctx.getBlockTypeIDAt(1,  0,  0);
-        if ((id == typeid) || (id == TYPEID_GLASS) || ((id > 0) && (HDBlockTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {
+        t = ctx.getBlockTypeAt(1,  0,  0);
+        if ((t == type) || t.is(DynmapBlockState.GLASS_BLOCK) || (HDBlockStateTextureMap.getTransparency(t) == BlockTransparency.OPAQUE)) {
             blockdata |= SIDE_XP;
         }
         /* Look west */
-        id = ctx.getBlockTypeIDAt(0,  0,  1);
-        if ((id == typeid) || (id == TYPEID_GLASS) || ((id > 0) && (HDBlockTextureMap.getTransparency(id) == BlockTransparency.OPAQUE))) {
+        t = ctx.getBlockTypeAt(0,  0,  1);
+        if ((t == type) || t.is(DynmapBlockState.GLASS_BLOCK) || (HDBlockStateTextureMap.getTransparency(t) == BlockTransparency.OPAQUE)) {
             blockdata |= SIDE_ZP;
         }
         return meshes[blockdata];

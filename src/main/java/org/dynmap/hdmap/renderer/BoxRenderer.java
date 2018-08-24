@@ -18,8 +18,8 @@ public class BoxRenderer extends CustomRenderer {
     private static final int patchlist[] = { 1, 4, 2, 5, 0, 3 };
 
     @Override
-    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
-        if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
+    public boolean initializeRenderer(RenderPatchFactory rpf, String blkname, int blockdatamask, Map<String,String> custparm) {
+        if(!super.initializeRenderer(rpf, blkname, blockdatamask, custparm))
             return false;
         double xmin = 0.0, xmax = 1.0;
         double ymin = 0.0, ymax = 1.0;

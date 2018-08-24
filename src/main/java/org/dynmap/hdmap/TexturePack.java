@@ -30,10 +30,10 @@ import org.dynmap.ConfigurationNode;
 import org.dynmap.DynmapCore;
 import org.dynmap.Log;
 import org.dynmap.MapManager;
-import org.dynmap.blockstate.BlockStateManager;
 import org.dynmap.common.BiomeMap;
 import org.dynmap.exporter.OBJExport;
 import org.dynmap.renderer.CustomColorMultiplier;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.BufferOutputStream;
 import org.dynmap.utils.DynIntHashMap;
@@ -109,7 +109,7 @@ public class TexturePack {
     private static final int COLORMOD_MULT_FILE = 1000;
     private static final int COLORMOD_MULT_INTERNAL = 1000000;
     /* Special tile index values */
-    private static final int TILEINDEX_BLANK = -1;
+    public static final int TILEINDEX_BLANK = -1;
     private static final int TILEINDEX_GRASS = 0;
     private static final int TILEINDEX_GRASSMASK = 38;
     private static final int TILEINDEX_SNOW = 66;
@@ -186,6 +186,27 @@ public class TexturePack {
     private static final int TILEINDEX_SHULKER_BOTTOM = 5;
     private static final int TILEINDEX_SHULKER_COUNT = 6;
     
+    /* Indexes of faces in the BED format tile file */
+    private static final int TILEINDEX_BED_HEAD_TOP = 0;
+    private static final int TILEINDEX_BED_HEAD_BOTTOM = 1;
+    private static final int TILEINDEX_BED_HEAD_LEFT = 2;
+    private static final int TILEINDEX_BED_HEAD_RIGHT = 3;
+    private static final int TILEINDEX_BED_HEAD_END = 4;
+    private static final int TILEINDEX_BED_FOOT_TOP = 5;
+    private static final int TILEINDEX_BED_FOOT_BOTTOM = 6;
+    private static final int TILEINDEX_BED_FOOT_LEFT = 7;
+    private static final int TILEINDEX_BED_FOOT_RIGHT = 8;
+    private static final int TILEINDEX_BED_FOOT_END = 9;
+    private static final int TILEINDEX_BED_HEAD_LEFTLEG_1 = 10;
+    private static final int TILEINDEX_BED_HEAD_LEFTLEG_2 = 11;
+    private static final int TILEINDEX_BED_HEAD_RIGHTLEG_1 = 12;
+    private static final int TILEINDEX_BED_HEAD_RIGHTLEG_2 = 13;
+    private static final int TILEINDEX_BED_FOOT_LEFTLEG_1 = 14;
+    private static final int TILEINDEX_BED_FOOT_LEFTLEG_2 = 15;
+    private static final int TILEINDEX_BED_FOOT_RIGHTLEG_1 = 16;
+    private static final int TILEINDEX_BED_FOOT_RIGHTLEG_2 = 17;
+    private static final int TILEINDEX_BED_COUNT = 18;
+    
     public static enum TileFileFormat {
         GRID,
         CHEST,
@@ -195,7 +216,8 @@ public class TexturePack {
         SHULKER,
         CUSTOM,
         TILESET,
-        BIOME
+        BIOME,
+        BED	// 1.13 bed texture
     };
     
     // Material type: used for setting advanced rendering/export characteristics for image in given file
@@ -294,6 +316,15 @@ public class TexturePack {
 
     private static class CustomTileRec {
         int srcx, srcy, width, height, targetx, targety;
+        public CustomTileRec() {}
+        public CustomTileRec(int srcx, int srcy, int width, int height, int targetx, int targety) {
+        	this.srcx = srcx; this.srcy = srcy;
+        	this.width = width; this.height = height;
+        	this.targetx = targetx; this.targety = targety;
+        }
+        public CustomTileRec(int srcx, int srcy, int width, int height) {
+        	this(srcx, srcy, width, height, 0, 0);
+        }
     }
     
     private static int next_dynamic_tile = MAX_TILEINDEX+1;
@@ -384,7 +415,7 @@ public class TexturePack {
 //    private static BitSet hasBaseBlockColoring = new BitSet(); // Quick lookup - (blockID << 4) + blockMeta - set if custom colorizer
 //    private static DynIntHashMap baseBlockColoring = new DynIntHashMap();   // Base block coloring (RP independent)
     // Need copy, since RP can change this....
-    private ColorizingData blockColoring = HDBlockTextureMap.getColorizingData();
+    private ColorizingData blockColoring = HDBlockStateTextureMap.getColorizingData();
 
     private int colorMultBirch = 0x80a755;  /* From ColorizerFoliage.java in MCP */
     private int colorMultPine = 0x619961;   /* From ColorizerFoliage.java in MCP */
@@ -416,113 +447,12 @@ public class TexturePack {
         SEMITRANSPARENT, /* Opaque block that doesn't block all rays (steps, slabs) - use light above for face lighting on opaque blocks */
         LEAVES /* Special case of transparent, to work around lighting errors in SpoutPlugin */
     }
-    public static class HDBlockTextureMap {
-        private final int blockid;
-        private HDBlockStateTextureMap[] texmaps;   // List of texture maps, indexed by state index
-        private BlockTransparency transp;
-        // Table of block texture map records, indexed by block ID
-        private static HDBlockTextureMap[] blkmaps = new HDBlockTextureMap[DynmapCore.BLOCKTABLELEN];
-        
-        // Default to a simple block with blank states for metadata values
-        private HDBlockTextureMap(int blkid) {
-            reset();
-            blockid = blkid;
-        }
-        // Reset to simple block with blank states for state values
-        private void reset() {
-            texmaps = new HDBlockStateTextureMap[bsm.getBlockStateCount(blockid)];
-            for (int i = 0; i < texmaps.length; i++) {
-                texmaps[i] = new HDBlockStateTextureMap();
-            }
-            transp = BlockTransparency.OPAQUE;
-        }
-        // Initialize/reset block texture table
-        public static void initializeTable() {
-            for (int i = 0; i < blkmaps.length; i++) {
-                if (blkmaps[i] == null) {
-                    blkmaps[i] = new HDBlockTextureMap(i);
-                }
-                else {
-                    blkmaps[i].reset();
-                }
-            }
-        }
-        // Lookup records by block ID
-        public static final HDBlockTextureMap getByBlockID(int blkid) {
-            return blkmaps[blkid];
-        }
-        public static final int getBlockCnt() {
-            return blkmaps.length;
-        }
-        // Copy given block state to given state index
-        public void copyToStateIndex(int stateid, HDBlockStateTextureMap map) {
-            if ((stateid < 0) || (stateid >= texmaps.length)) {
-                Log.warning("Invalid state index " + stateid + " for block " + this.blockid);
-                return;
-            }
-            texmaps[stateid].copy(map);
-        }
-        // Look up map, based on block ID and state ID
-        public static HDBlockStateTextureMap getMap(int blkid, int stateid) {
-            try {
-                return blkmaps[blkid].texmaps[stateid];
-            } catch (Exception x) {
-                return HDBlockStateTextureMap.BLANK;
-            }
-        }
-        // Copy textures from source block ID to destination
-        public static void remapTexture(int destid, int srcid) {
-            HDBlockTextureMap srcmap = blkmaps[srcid];
-            HDBlockTextureMap destmap = blkmaps[destid];
-            destmap.texmaps = new HDBlockStateTextureMap[srcmap.texmaps.length];
-            for (int i = 0; i < srcmap.texmaps.length; i++) {
-                destmap.texmaps[i] = new HDBlockStateTextureMap();
-                destmap.texmaps[i].copy(srcmap.texmaps[i]);
-            }
-        }
-        // Get number of states
-        public final int getStateCount() {
-            return texmaps.length;
-        }
-        // Get state by index
-        public final HDBlockStateTextureMap getStateMap(int stateid) {
-            try {
-                return texmaps[stateid];
-            } catch (Exception x) {
-                return HDBlockStateTextureMap.BLANK;
-            }
-        }
-        public final HDBlockStateTextureMap[] getStates() {
-            return texmaps;
-        }
-        
-        // Get transparency for given block ID
-        public static BlockTransparency getTransparency(int blkid) {
-            try {
-                return blkmaps[blkid].transp;
-            } catch (Exception x) {
-                return BlockTransparency.OPAQUE;
-            }
-        }
-        // Build copy of block colorization data
-        public static ColorizingData getColorizingData() {
-            ColorizingData map = new ColorizingData();
-            for (int i = 0; i < blkmaps.length; i++) {
-                for (int j = 0; j < blkmaps[i].texmaps.length; j++) {
-                    if (blkmaps[i].texmaps[j].colorMapping != null) {
-                        map.setBlkStateValue(i, j, blkmaps[i].texmaps[j].colorMapping);
-                    }
-                }
-            }
-            return map;
-        }
-    }
     
-    private static class ColorizingData {
+    public static class ColorizingData {
         private DynIntHashMap map = new DynIntHashMap();
         
-        public void setBlkStateValue(int blkid, int stateid, Integer mapidx) {
-            int idx = getStateIndex(blkid, stateid);
+        public void setBlkStateValue(DynmapBlockState blk, Integer mapidx) {
+            int idx = blk.globalStateIndex;
             if (mapidx == null) {
                 map.remove(idx);
             }
@@ -530,100 +460,16 @@ public class TexturePack {
                 map.put(idx,  mapidx);
             }
         }
-        public Integer getBlkStateValue(int blkid, int stateid) {
-            int idx = getStateIndex(blkid, stateid);
-            return (Integer) map.get(idx);
+        public Integer getBlkStateValue(DynmapBlockState blk) {
+            return (Integer) map.get(blk.globalStateIndex);
         }
-        public boolean hasBlkStateValue(int blkid, int stateid) {
-            int idx = getStateIndex(blkid, stateid);
-            return map.containsKey(idx);
+        public boolean hasBlkStateValue(DynmapBlockState blk) {
+            return map.containsKey(blk.globalStateIndex);
         }
         public void scrubValues(Integer val) {
             List<Integer> badvals = map.keysWithValue(val);
             for (Integer v : badvals) {
                 map.remove(v);
-            }
-        }
-        
-        private static int getStateIndex(int blkid, int stateid) {
-            // 16 bits for state ID should be enough....
-            return (blkid << 16) + stateid;
-        }
-    }
-
-    public static class HDBlockStateTextureMap {
-        private int faces[];  /* texture index of image for each face (indexed by BlockStep.ordinal() OR patch index) */
-        private byte[] layers;  /* If layered, each index corresponds to faces index, and value is index of next layer */
-        private String blockset;
-        private int colorMult;
-        private CustomColorMultiplier custColorMult;
-        private boolean stdrotate; // Marked for corrected to proper : stdrot=true
-        private Integer colorMapping;   // If non-null, color mapping texture
-
-        public static final HDBlockStateTextureMap BLANK = new HDBlockStateTextureMap();
-        
-        // Default to a blank mapping
-        private HDBlockStateTextureMap() {
-            blockset = null;
-            colorMult = 0;
-            custColorMult = null;
-            faces = new int[] { TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK, TILEINDEX_BLANK };
-            layers = null;
-            stdrotate = true;
-            colorMapping = null;
-        }
-        // Create block state map with given attributes
-        public HDBlockStateTextureMap(int[] faces, byte[] layers, int colorMult, CustomColorMultiplier custColorMult, String blockset, boolean stdrot, Integer colorIndex) {
-            this.faces = faces;
-            this.layers = layers;
-            this.colorMult = colorMult;
-            this.custColorMult = custColorMult;
-            this.blockset = blockset;
-            this.stdrotate = stdrot;
-            this.colorMapping = colorIndex;
-        }
-        // Shallow copy state from another state map
-        public void copy(HDBlockStateTextureMap map) {
-            this.faces = map.faces;
-            this.layers = map.layers;
-            this.blockset = map.blockset;
-            this.colorMult = map.colorMult;
-            this.custColorMult = map.custColorMult;
-            this.stdrotate = map.stdrotate;
-            this.colorMapping = map.colorMapping;
-        }
-
-        // Get texture index for given face
-        public int getIndexForFace(int face) {
-            if ((faces != null) && (faces.length > face))
-                return faces[face];
-            return TILEINDEX_BLANK;
-        }
-
-        // Add block state to table, with given block IDs and state indexes
-        public void addToTable(List<Integer> blockids, List<Integer> stateidx, BlockTransparency trans) {
-            /* Add entries to lookup table */
-            for(Integer blkid : blockids) {
-                if(blkid > 0) {
-                    HDBlockTextureMap blk = HDBlockTextureMap.getByBlockID(blkid);
-                    if (stateidx != null) {
-                        for (Integer stateid : stateidx) {
-                            if((this.blockset != null) && (this.blockset.equals("core") == false)) {
-                                HDBlockModels.resetIfNotBlockSet(blkid, stateid, this.blockset);
-                            }
-                            blk.copyToStateIndex(stateid, this);
-                        }
-                    }
-                    else {  // Else, loop over all state IDs for given block
-                        for (int stateid = 0; stateid < bsm.getBlockStateCount(blkid); stateid++) {
-                            if((this.blockset != null) && (this.blockset.equals("core") == false)) {
-                                HDBlockModels.resetIfNotBlockSet(blkid, stateid, this.blockset);
-                            }
-                            blk.copyToStateIndex(stateid, this);
-                        }
-                    }
-                    blk.transp = trans;
-                }
             }
         }
     }
@@ -634,7 +480,7 @@ public class TexturePack {
     public static class TextureMap {
         private Map<Integer, Integer> key_to_index = new HashMap<Integer, Integer>();
         private List<Integer> texture_ids = new ArrayList<Integer>();
-        private List<Integer> blockids = new ArrayList<Integer>();
+        private List<String> blocknames = new ArrayList<String>();
         private List<Integer> stateids = new ArrayList<Integer>();
         private BlockTransparency trans = BlockTransparency.OPAQUE;
         private int colorMult = 0;
@@ -699,13 +545,13 @@ public class TexturePack {
     /**
      * Add settings for texture map
      */
-    private static void addTextureIndex(String id, List<Integer> blockids, List<Integer> stateids, BlockTransparency trans, int colorMult, CustomColorMultiplier custColorMult, String blockset) {
+    private static void addTextureIndex(String id, List<String> blocknames, List<Integer> stateids, BlockTransparency trans, int colorMult, CustomColorMultiplier custColorMult, String blockset) {
         TextureMap idx = textmap_by_id.get(id);
         if(idx == null) {   /* Add empty one, if not found */
             idx = new TextureMap();
             textmap_by_id.put(id,  idx);
         }
-        idx.blockids = blockids;
+        idx.blocknames = blocknames;
         idx.stateids = stateids;
         idx.trans = trans;
         idx.colorMult = colorMult;
@@ -716,13 +562,13 @@ public class TexturePack {
      */
     private static void processTextureMaps() {
         for(TextureMap ti : textmap_by_id.values()) {
-            if(ti.blockids.isEmpty()) continue;
+            if(ti.blocknames.isEmpty()) continue;
             int[] txtids = new int[ti.texture_ids.size()];
             for(int i = 0; i < txtids.length; i++) {
                 txtids[i] = ti.texture_ids.get(i).intValue();
             }
-            HDBlockStateTextureMap map = new HDBlockStateTextureMap(txtids, null, ti.colorMult, ti.custColorMult, ti.blockset, true, null);
-            map.addToTable(ti.blockids, ti.stateids, ti.trans);
+            HDBlockStateTextureMap map = new HDBlockStateTextureMap(txtids, null, ti.colorMult, ti.custColorMult, ti.blockset, true, null, ti.trans);
+            map.addToTable(ti.blocknames, ti.stateids);
         }
     }
     /**
@@ -775,8 +621,6 @@ public class TexturePack {
             return null;
         }
     }
-    
-    private static BlockStateManager bsm;
     
     /**
      * Constructor for texture pack, by name
@@ -1214,6 +1058,50 @@ public class TexturePack {
         }
     }
 
+    private static List<CustomTileRec> bed_patches = 
+		Arrays.asList(new CustomTileRec[] {
+			    // TILEINDEX_BED_HEAD_TOP
+				new CustomTileRec(6, 6, 16, 16),
+			    // TILEINDEX_BED_HEAD_BOTTOM
+				new CustomTileRec(28, 6, 16, 16),
+			    // TILEINDEX_BED_HEAD_LEFT
+				new CustomTileRec(0, 6, 6, 16),
+			    // TILEINDEX_BED_HEAD_RIGHT
+				new CustomTileRec(22, 6, 6, 16),
+			    // TILEINDEX_BED_HEAD_END
+				new CustomTileRec(6, 0, 16, 6),
+			    // TILEINDEX_BED_FOOT_TOP
+				new CustomTileRec(6, 28, 16, 16),
+			    // TILEINDEX_BED_FOOT_BOTTOM
+				new CustomTileRec(28, 28, 16, 16),
+			    // TILEINDEX_BED_FOOT_LEFT
+				new CustomTileRec(0, 28, 6, 16),
+			    // TILEINDEX_BED_FOOT_RIGHT
+				new CustomTileRec(22, 28, 6, 16),
+			    // TILEINDEX_BED_FOOT_END
+				new CustomTileRec(22, 22, 16, 6),
+			    // TILEINDEX_BED_HEAD_LEFTLEG_1
+				new CustomTileRec(50, 0, 6, 6),
+			    // TILEINDEX_BED_HEAD_LEFTLEG_2 
+				new CustomTileRec(56, 0, 6, 6),
+			    // TILEINDEX_BED_HEAD_RIGHTLEG_1
+				new CustomTileRec(50, 6, 6, 6),
+			    // TILEINDEX_BED_HEAD_RIGHTLEG_2
+				new CustomTileRec(56, 6, 6, 6),
+			    // TILEINDEX_BED_FOOT_LEFTLEG_1
+				new CustomTileRec(50, 12, 6, 6),
+			    // TILEINDEX_BED_FOOT_LEFTLEG_2
+				new CustomTileRec(56, 12, 6, 6),
+			    // TILEINDEX_BED_FOOT_RIGHTLEG_1
+				new CustomTileRec(50, 18, 6, 6),
+			    // TILEINDEX_BED_FOOT_RIGHTLEG_2
+				new CustomTileRec(56, 18, 6, 6)
+		});
+    
+    private void patchBedImages(int img_id, int[] imgids) {
+        patchCustomImages(img_id, imgids, bed_patches, 64, 64);
+    }
+    
     /* Copy texture pack */
     private TexturePack(TexturePack tp) {
         this.tile_argb = Arrays.copyOf(tp.tile_argb, tp.tile_argb.length);
@@ -1434,6 +1322,9 @@ public class TexturePack {
                 break;
             case CUSTOM:
                 patchCustomImages(idx+IMG_CNT, dtf.tile_to_dyntile, dtf.cust, dtf.tilecnt_x, dtf.tilecnt_y);
+                break;
+            case BED:
+                patchBedImages(idx+IMG_CNT, dtf.tile_to_dyntile);
                 break;
             case TILESET:
                 break;
@@ -1685,12 +1576,10 @@ public class TexturePack {
      */
     public static void loadTextureMapping(DynmapCore core, ConfigurationNode config) {
         File datadir = core.getDataFolder();
-        // Get block state manager
-        bsm = core.getBlockStateManager();
         /* Start clean with texture packs - need to be loaded after mapping */
         resetFiles(core);
         /* Initialize map with blank map for all entries */
-        HDBlockTextureMap.initializeTable();
+        HDBlockStateTextureMap.initializeTable();
         /* Load block textures (0-N) */
         int i = 0;
         boolean done = false;
@@ -1799,43 +1688,35 @@ public class TexturePack {
         /* Finish processing of texture maps */
         processTextureMaps();
         /* Check integrity of texture mappings versus models */
-        for (int blkid = 0; blkid < HDBlockTextureMap.getBlockCnt(); blkid++) {
-            HDBlockTextureMap blkrec = HDBlockTextureMap.getByBlockID(blkid);
-            for (int stateid = 0; stateid < blkrec.getStateCount(); stateid++) {
-                HDBlockStateTextureMap tm = blkrec.getStateMap(stateid);
-                int cnt = HDBlockModels.getNeededTextureCount(blkid, stateid);
-                if(cnt > tm.faces.length){
-                    Log.severe("Block " + DynmapCore.getBlockName(blkid) + ":" + stateid + " - not enough textures for faces (" + cnt + " > " + tm.faces.length + ")");
-                    int[] newfaces = new int[cnt];
-                    System.arraycopy(tm.faces, 0, newfaces, 0, tm.faces.length);
-                    for(i = tm.faces.length; i < cnt; i++) {
-                        newfaces[i] = TILEINDEX_BLANK;
-                    }
-                    tm.faces = newfaces;
-                }
+        for (int gidx = 0; gidx < DynmapBlockState.getGlobalIndexMax(); gidx++) {
+            DynmapBlockState blk = DynmapBlockState.getStateByGlobalIndex(gidx);
+            if (blk.isAir()) continue;
+            HDBlockStateTextureMap tm = HDBlockStateTextureMap.getByBlockState(blk);
+            if (tm == null) continue;
+            int cnt = HDBlockModels.getNeededTextureCount(blk);
+            if(cnt > tm.faces.length){
+                Log.severe("Block " + blk + " - not enough textures for faces (" + cnt + " > " + tm.faces.length + ")");
+                tm.resizeFaces(cnt);
             }
         }
         // Check to see if any blocks exist without corresponding mappings
         if (core.dumpMissingBlocks()) {
-            Map<Integer, String> blks = core.getServer().getBlockIDMap();
             String missing = "";
-            for (Integer blkid : new TreeSet<Integer>(blks.keySet())) {
-                if (blkid.intValue() == 0) continue;
+            /* Check integrity of texture mappings versus models */
+            for (int gidx = 0; gidx < DynmapBlockState.getGlobalIndexMax(); gidx++) {
+                DynmapBlockState blk = DynmapBlockState.getStateByGlobalIndex(gidx);
+                if (!blk.isNotAir()) continue;
+                if (blk.stateIndex != 0) continue;
                 boolean blank = true;
-                HDBlockTextureMap blkrec = HDBlockTextureMap.getByBlockID(blkid);
-                for (int stateid = 0; blank && (stateid < blkrec.texmaps.length); stateid++) {
-                    if (blkrec.texmaps[stateid] != HDBlockStateTextureMap.BLANK) {
+                for (int stateid = 0; blank && (stateid < blk.getStateCount()); stateid++) {
+                    DynmapBlockState blk2 = blk.getState(stateid);
+                    HDBlockStateTextureMap tm = HDBlockStateTextureMap.getByBlockState(blk2);
+                    if (tm != HDBlockStateTextureMap.BLANK) {
                         blank = false;
                     }
                 }
                 if (blank) {
-                    String id = blks.get(blkid);
-                    if ((id != null) && (id.length() > 0)) {
-                        missing += blkid + "(" + id + ") ";
-                    }
-                    else {
-                        missing += blkid + " ";
-                    }
+                    missing += blk.blockName;
                 }
             }
             if (missing.length() > 0) {
@@ -1844,6 +1725,26 @@ public class TexturePack {
         }
     }
 
+    private static String getBlockName(String modid, String val) throws NumberFormatException {
+        char c = val.charAt(0);
+        if(Character.isLetter(c) || (c == '%') || (c == '&')) {
+            if ((c == '%') || (c == '&')) {
+                val = val.substring(1);
+            }
+            int off = val.indexOf('+');
+            if (off > 0) {
+                val = val.substring(0,  off);
+            }
+            if (val.indexOf(':') < 0) {
+                val = modid + ":" + val;
+            }
+            return val;
+        }
+        else {
+            throw new NumberFormatException("invalid ID - " + val);
+        }
+    }
+    
     private static Integer getIntValue(Map<String,Integer> vars, String val) throws NumberFormatException {
         char c = val.charAt(0);
         if(Character.isLetter(c) || (c == '%') || (c == '&')) {
@@ -2000,7 +1901,7 @@ public class TexturePack {
         final String mcver = core.getDynmapPluginPlatformVersion();
         boolean mod_cfg_needed = false;
         boolean mod_cfg_loaded = false;
-        String modname = null;
+        String modname = "minecraft";   // Default to minecraft base
         String modversion = null;
         String texturemod = null;
         String texturepath = null;
@@ -2031,7 +1932,7 @@ public class TexturePack {
                 if (skip) {
                 }
                 else if(line.startsWith("block:")) {
-                    List<Integer> blkids = new ArrayList<Integer>();
+                    List<String> blknames = new ArrayList<String>();
                     List<Integer> stateids = null;
                     int srctxtid = TXTID_TERRAINPNG;
                     if (!terrain_ok)
@@ -2061,13 +1962,13 @@ public class TexturePack {
                         String[] av = a.split("=");
                         if(av.length < 2) continue;
                         if(av[0].equals("id")) {
-                            Integer id = getIntValue(varvals, av[1]);
-                            if ((id != null) && (id > 0)) {
-                                blkids.add(id);
+                            String id = getBlockName(modname, av[1]);
+                            if (id != null) {
+                                blknames.add(id);
                             }
                         }
                     }
-                    if (blkids.size() > 0) {
+                    if (blknames.size() > 0) {
                         for(String a : args) {
                             String[] av = a.split("=");
                             if(av.length < 2) continue;
@@ -2189,7 +2090,7 @@ public class TexturePack {
                                         trans = BlockTransparency.OPAQUE;
                                 }
                                 /* If no water lighting fix */
-                                if((blkids.contains(8) || blkids.contains(9)) && (HDMapManager.waterlightingfix == false)) {
+                                if((blknames.contains(DynmapBlockState.WATER_BLOCK) || blknames.contains(DynmapBlockState.FLOWING_WATER_BLOCK)) && (HDMapManager.waterlightingfix == false)) {
                                     trans = BlockTransparency.TRANSPARENT;  /* Treat water as transparent if no fix */
                                 }
                             }
@@ -2229,10 +2130,10 @@ public class TexturePack {
                             }
                         }
                         /* If we have everything, build block */
-                        if(blkids.size() > 0) {
+                        if(blknames.size() > 0) {
                             Integer colorIndex = (blockColorIdx >= 0)?(blockColorIdx + IMG_CNT):null;
-                            HDBlockStateTextureMap map = new HDBlockStateTextureMap(faces, layers, colorMult, custColorMult, blockset, stdrot, colorIndex);
-                            map.addToTable(blkids, stateids, trans);
+                            HDBlockStateTextureMap map = new HDBlockStateTextureMap(faces, layers, colorMult, custColorMult, blockset, stdrot, colorIndex, trans);
+                            map.addToTable(blknames, stateids);
                             cnt++;
                         }
                         else {
@@ -2241,20 +2142,20 @@ public class TexturePack {
                     }
                 }
                 else if(line.startsWith("copyblock:")) {
-                    List<Integer> blkids = new ArrayList<Integer>();
+                    List<String> blknames = new ArrayList<String>();
                     List<Integer> stateids = null;
                     line = line.substring(line.indexOf(':')+1);
                     String[] args = line.split(",");
-                    int srcid = -1;
+                    String srcname = null;
                     int srcmeta = 0;
                     BlockTransparency trans = null;
                     for(String a : args) {
                         String[] av = a.split("=");
                         if(av.length < 2) continue;
                         if(av[0].equals("id")) {
-                            Integer id = getIntValue(varvals, av[1]);
-                            if ((id != null) && (id > 0)) {
-                                blkids.add(id);
+                            String id = getBlockName(modname, av[1]);
+                            if (id != null) {
+                                blknames.add(id);
                             }
                         }
                         else if(av[0].equals("data")) {
@@ -2267,7 +2168,7 @@ public class TexturePack {
                             }
                         }
                         else if(av[0].equals("srcid")) {
-                            srcid = getIntValue(varvals, av[1]);
+                            srcname = getBlockName(modname, av[1]);
                         }
                         else if(av[0].equals("srcmeta")) {
                             srcmeta = getIntValue(varvals,av[1]);
@@ -2286,33 +2187,34 @@ public class TexturePack {
                                     trans = BlockTransparency.OPAQUE;
                             }
                             /* If no water lighting fix */
-                            if((blkids.contains(8) || blkids.contains(9)) && (HDMapManager.waterlightingfix == false)) {
+                            if((blknames.contains(DynmapBlockState.WATER_BLOCK) || blknames.contains(DynmapBlockState.FLOWING_WATER_BLOCK)) && (HDMapManager.waterlightingfix == false)) {
                                 trans = BlockTransparency.TRANSPARENT;  /* Treat water as transparent if no fix */
                             }
                         }
                     }
                     /* If we have everything, build block */
-                    if((blkids.size() > 0) && (srcid > 0)) {
-                        HDBlockStateTextureMap map = HDBlockTextureMap.getMap(srcid, srcmeta);
+                    if((blknames.size() > 0) && (srcname != null)) {
+                        DynmapBlockState srcblk = DynmapBlockState.getStateByNameAndIndex(srcname, srcmeta);
+                        HDBlockStateTextureMap map = null;
+                        if (srcblk != null) map = HDBlockStateTextureMap.getByBlockState(srcblk);
                         if (map == null) {
                             Log.severe("Copy of texture mapping failed = line " + rdr.getLineNumber() + " of " + txtname);
                         }
                         else {
-                            for (Integer blkid : blkids) {
-                                HDBlockTextureMap bmap = HDBlockTextureMap.getByBlockID(blkid);
+                            for (String blkname : blknames) {
+                                DynmapBlockState dblk = DynmapBlockState.getBaseStateByName(blkname);
                                 if (stateids == null) {
-                                    for (int sid = 0; sid < bsm.getBlockStateCount(blkid); sid++) {
-                                        HDBlockStateTextureMap nmap = bmap.getStateMap(sid);
-                                        nmap.copy(map);
+                                    for (int sid = 0; sid < dblk.getStateCount(); sid++) {
+                                        DynmapBlockState dblk2 = dblk.getState(sid);
+                                        HDBlockStateTextureMap.copyToStateIndex(dblk2, map);
                                     }
                                 }
                                 else {
                                     for (Integer stateid : stateids) {
-                                        HDBlockStateTextureMap nmap = bmap.getStateMap(stateid);
-                                        nmap.copy(map);
+                                        DynmapBlockState dblk2 = dblk.getState(stateid);
+                                        HDBlockStateTextureMap.copyToStateIndex(dblk2, map);
                                     }
                                 }
-                                bmap.transp = trans;
                             }
                             cnt++;
                         }
@@ -2356,7 +2258,7 @@ public class TexturePack {
                     }
                 }
                 else if(line.startsWith("texturemap:")) {
-                    List<Integer> blkids = new ArrayList<Integer>();
+                    List<String> blknames = new ArrayList<String>();
                     List<Integer> stateids = new ArrayList<Integer>();
                     String mapid = null;
                     line = line.substring(line.indexOf(':') + 1);
@@ -2368,9 +2270,9 @@ public class TexturePack {
                         String[] av = a.split("=");
                         if(av.length < 2) continue;
                         if(av[0].equals("id")) {
-                            Integer id = getIntValue(varvals, av[1]);
-                            if ((id != null) && (id > 0)) {
-                                blkids.add(id);
+                            String id = getBlockName(modname, av[1]);
+                            if (id != null) {
+                                blknames.add(id);
                             }
                         }
                         else if(av[0].equals("mapid")) {
@@ -2398,7 +2300,7 @@ public class TexturePack {
                                     trans = BlockTransparency.OPAQUE;
                             }
                             /* If no water lighting fix */
-                            if((blkids.contains(8) || blkids.contains(9)) && (HDMapManager.waterlightingfix == false)) {
+                            if((blknames.contains(DynmapBlockState.WATER_BLOCK) || blknames.contains(DynmapBlockState.FLOWING_WATER_BLOCK)) && (HDMapManager.waterlightingfix == false)) {
                                 trans = BlockTransparency.TRANSPARENT;  /* Treat water as transparent if no fix */
                             }
                         }
@@ -2419,8 +2321,8 @@ public class TexturePack {
                         stateids = null;
                     }
                     /* If we have everything, build texture map */
-                    if((blkids.size() > 0) && (mapid != null)) {
-                        addTextureIndex(mapid, blkids, stateids, trans, colorMult, custColorMult, blockset);
+                    if((blknames.size() > 0) && (mapid != null)) {
+                        addTextureIndex(mapid, blknames, stateids, trans, colorMult, custColorMult, blockset);
                     }
                     else {
                         Log.severe("Texture map missing required parameters = line " + rdr.getLineNumber() + " of " + txtname);
@@ -2667,16 +2569,15 @@ public class TexturePack {
 
     /* Process any block aliases */
     public static void handleBlockAlias() {
-        for(int i = 0; i < DynmapCore.BLOCKTABLELEN; i++) {
-            int id = MapManager.mapman.getBlockIDAlias(i);
-            if(id != i) {   /* New mapping? */
-                HDBlockTextureMap.remapTexture(i, id);
+        Set<String> aliased = MapManager.mapman.getAliasedBlocks();
+        for (String an : aliased) {
+            String newid = MapManager.mapman.getBlockAlias(an);
+            if (newid.equals(an) == false) {
+                HDBlockStateTextureMap.remapTexture(an, newid);
             }
         }
     }
 
-    private static final int BLOCKID_GRASS = 2;
-    private static final int BLOCKID_SNOW = 78;
     /**
      * Read color for given subblock coordinate, with given block id and data and face
      * @param ps - perspective state
@@ -2686,10 +2587,9 @@ public class TexturePack {
      * @param lastblocktype - last block ID
      * @param ss - shader state
      */
-    public final void readColor(final HDPerspectiveState ps, final MapIterator mapiter, final Color rslt, final int blkid, final int lastblocktype,
+    public final void readColor(final HDPerspectiveState ps, final MapIterator mapiter, final Color rslt, final DynmapBlockState blk, final DynmapBlockState lastblocktype,
             final TexturePackHDShader.ShaderState ss) {
-        int blkdata = ps.getBlockData();
-        HDBlockStateTextureMap map = HDBlockTextureMap.getMap(blkid, blkdata);
+        HDBlockStateTextureMap map = HDBlockStateTextureMap.getByBlockState(blk);
         BlockStep laststep = ps.getLastBlockStep();
         int patchid = ps.getTextureIndex();   /* See if patch index */
         int textid;
@@ -2707,28 +2607,28 @@ public class TexturePack {
                 mod = (textid / COLORMOD_MULT_INTERNAL) * COLORMOD_MULT_INTERNAL;
                 textid -= mod;
             }
-            textid = mod + ctm.mapTexture(mapiter, blkid, blkdata, laststep, textid, ss);
+            textid = mod + ctm.mapTexture(mapiter, blk, laststep, textid, ss);
         }
-        readColor(ps, mapiter, rslt, blkid, lastblocktype, ss, blkdata, map, laststep, patchid, textid, map.stdrotate);
+        readColor(ps, mapiter, rslt, blk, lastblocktype, ss, map, laststep, patchid, textid, map.stdrotate);
         if(map.layers != null) {    /* If layered */
             /* While transparent and more layers */
             while(rslt.isTransparent() && (map.layers[faceindex] >= 0)) {
                 faceindex = map.layers[faceindex];
                 textid = map.faces[faceindex];
-                readColor(ps, mapiter, rslt, blkid, lastblocktype, ss, blkdata, map, laststep, patchid, textid, map.stdrotate);
+                readColor(ps, mapiter, rslt, blk, lastblocktype, ss, map, laststep, patchid, textid, map.stdrotate);
             }
         }
     }
     /**
      * Read color for given subblock coordinate, with given block id and data and face
      */
-    private final void readColor(final HDPerspectiveState ps, final MapIterator mapiter, final Color rslt, final int blkid, final int lastblocktype,
-                final TexturePackHDShader.ShaderState ss, int blkdata, HDBlockStateTextureMap map, BlockStep laststep, int patchid, int textid, boolean stdrot) {
+    private final void readColor(final HDPerspectiveState ps, final MapIterator mapiter, final Color rslt, final DynmapBlockState blk, final DynmapBlockState lastblocktype,
+                final TexturePackHDShader.ShaderState ss, HDBlockStateTextureMap map, BlockStep laststep, int patchid, int textid, boolean stdrot) {
         if(textid < 0) {
             rslt.setTransparent();
             return;
         }
-        boolean hasblockcoloring = ss.do_biome_shading && this.blockColoring.hasBlkStateValue(blkid, blkdata);
+        boolean hasblockcoloring = ss.do_biome_shading && this.blockColoring.hasBlkStateValue(blk);
         // Test if we have no texture modifications
         boolean simplemap = (textid < COLORMOD_MULT_INTERNAL) && (!hasblockcoloring);
         
@@ -2796,12 +2696,12 @@ public class TexturePack {
         /* If clear-inside op, get out early */
         if((textop == COLORMOD_CLEARINSIDE) || (textop == COLORMOD_MULTTONED_CLEARINSIDE)) {
             /* Check if previous block is same block type as we are: surface is transparent if it is */
-            if(blkid == lastblocktype) {
+            if (blk.matchingBaseState(lastblocktype)) {
                 rslt.setTransparent();
                 return;
             }
             /* If water block, to watercolor tone op */
-            if((blkid == 8) || (blkid == 9)) {
+            if (blk.isWater()) {
                 textop = COLORMOD_WATERTONED;
             }
             else if(textop == COLORMOD_MULTTONED_CLEARINSIDE) {
@@ -2897,15 +2797,15 @@ public class TexturePack {
                 boolean do_snow_side = false;
                 if(ss.do_better_grass) {
                     mapiter.unstepPosition(laststep);
-                    if(mapiter.getBlockTypeID() == BLOCKID_SNOW)
+                    if (mapiter.getBlockType().isSnow())
                         do_snow_side = true;
-                    if(mapiter.getBlockTypeIDAt(BlockStep.Y_MINUS) == BLOCKID_GRASS)
+                    if (mapiter.getBlockTypeAt(BlockStep.Y_MINUS).isGrass())
                         do_grass_side = true;
                     mapiter.stepPosition(laststep);
                 }
                 
                 /* Check if snow above block */
-                if(mapiter.getBlockTypeIDAt(BlockStep.Y_PLUS) == BLOCKID_SNOW) {
+                if(mapiter.getBlockTypeAt(BlockStep.Y_PLUS).isSnow()) {
                     if(do_snow_side) {
                         texture = getTileARGB(TILEINDEX_SNOW); /* Snow full side block */
                         textid = TILEINDEX_SNOW;
@@ -2963,7 +2863,7 @@ public class TexturePack {
         int custclrmult = -1;
         // If block has custom coloring
         if (hasblockcoloring) {
-            Integer idx = this.blockColoring.getBlkStateValue(blkid, blkdata);
+            Integer idx = this.blockColoring.getBlkStateValue(blk);
             LoadedImage img = imgs[idx.intValue()];
             if (img.argb != null) {
                 custclrmult = mapiter.getSmoothWaterColorMultiplier(img.argb);
@@ -3029,10 +2929,7 @@ public class TexturePack {
                     }
                     else {
                         if(ss.do_biome_shading) {
-                            if (colorMultWater != 0xFFFFFF)
-                                clrmult = colorMultWater;
-                            else
-                                clrmult = mapiter.getSmoothWaterColorMultiplier();
+                            clrmult = mapiter.getSmoothWaterColorMultiplier();
                         }
                     }
                     break;
@@ -3158,6 +3055,9 @@ public class TexturePack {
             case SHULKER:
                 f.tile_to_dyntile = new int[TILEINDEX_SHULKER_COUNT]; /* 6 images for sign tile */
                 break;
+            case BED:
+                f.tile_to_dyntile = new int[TILEINDEX_BED_COUNT]; /* 18 images for tile */
+                break;
             case CUSTOM:
                 {
                     List<CustomTileRec> recs = new ArrayList<CustomTileRec>();
@@ -3242,8 +3142,8 @@ public class TexturePack {
 
     private static final int[] smooth_water_mult = new int[10];
     
-    public static int getTextureIDAt(MapIterator mapiter, int blkdata, int blkmeta, BlockStep face) {
-        HDBlockStateTextureMap map = HDBlockTextureMap.getMap(blkdata, blkmeta);
+    public static int getTextureIDAt(MapIterator mapiter, DynmapBlockState blk, BlockStep face) {
+        HDBlockStateTextureMap map = HDBlockStateTextureMap.getByBlockState(blk);
         int idx = -1;
         if (map != null) {
             int sideidx = face.ordinal();
@@ -3273,36 +3173,42 @@ public class TexturePack {
         for (String id : ids.split("\\s+")) {
             String[] tok = id.split(":");
             int meta = -1;
-            int blkid = -1;
+            DynmapBlockState blk = null;
+            String blkname = null;
             if (tok.length == 1) {  /* Only ID */
-                try {
-                    blkid = Integer.parseInt(tok[0]);
-                } catch (NumberFormatException nfx) {
+                blkname = tok[0];
+                blk = DynmapBlockState.getBaseStateByName(blkname);
+                if (blk.isAir()) {
                     Log.info("Bad custom color block ID: " + tok[0]);
                 }
             }
             else if (tok.length == 2) { /* ID : meta */
-                try {
-                    blkid = Integer.parseInt(tok[0]);
-                } catch (NumberFormatException nfx) {
-                    Log.info("Bad custom color block ID: " + tok[0]);
-                }
+                blkname = tok[0];
                 try {
                     meta = Integer.parseInt(tok[1]);
                 } catch (NumberFormatException nfx) {
                     Log.info("Bad custom color meta ID: " + tok[1]);
                 }
+                blk = DynmapBlockState.getStateByNameAndIndex(blkname, meta);
+                if (blk.isAir()) {
+                    Log.info("Bad custom color block ID: " + tok[0] + ":" + meta);
+                }
             }
 
             /* Add mappings for values */
-            HDBlockTextureMap bmap = HDBlockTextureMap.getByBlockID(blkid);
+            HDBlockStateTextureMap bmap = HDBlockStateTextureMap.getByBlockState(blk);
             if (bmap != null) {
-                if ((meta >= 0) && (meta < bmap.getStateCount())) {
-                    this.blockColoring.setBlkStateValue(blkid, meta, index);
+                if (meta >= 0) {
+                    if (blk.isNotAir()) {
+                        this.blockColoring.setBlkStateValue(blk, index);
+                    }
                 }
                 else if (meta == -1) {  /* All meta IDs */
-                    for (int v = 0; v < bmap.getStateCount(); v++) {
-                        this.blockColoring.setBlkStateValue(blkid, v, index);
+                    for (int v = 0; v < blk.getStateCount(); v++) {
+                        DynmapBlockState b = blk.getState(v);
+                        if (b.isNotAir()) {
+                            this.blockColoring.setBlkStateValue(b, index);
+                        }
                     }
                 }
             }
@@ -3350,8 +3256,8 @@ public class TexturePack {
             return 0xFFFFFF;
         }
     }
-    public int getCustomBlockMultiplier(int blkid, int blkdata) {
-        Integer idx = this.blockColoring.getBlkStateValue(blkid, blkdata);
+    public int getCustomBlockMultiplier(DynmapBlockState blk) {
+        Integer idx = this.blockColoring.getBlkStateValue(blk);
         if (idx != null) {
             LoadedImage img = imgs[idx.intValue()];
             if (img.argb != null) {
@@ -3519,12 +3425,12 @@ public class TexturePack {
     }
     private static final int[] deftxtidx = { 0, 1, 2, 3, 4, 5 };
     
-    public String[] getCurrentBlockMaterials(int blkid, int blkdata, MapIterator mapiter, int[] txtidx, BlockStep[] steps) {
-        HDBlockStateTextureMap map = HDBlockTextureMap.getMap(blkid, blkdata);
+    public String[] getCurrentBlockMaterials(DynmapBlockState blk, MapIterator mapiter, int[] txtidx, BlockStep[] steps) {
+        HDBlockStateTextureMap map = HDBlockStateTextureMap.getByBlockState(blk);
         if (txtidx == null) txtidx = deftxtidx;
         String[] rslt = new String[txtidx.length];   // One for each face
         boolean handlestdrot = (steps != null) && (!map.stdrotate);
-        Integer blockcoloring = this.blockColoring.getBlkStateValue(blkid, blkdata);
+        Integer blockcoloring = this.blockColoring.getBlkStateValue(blk);
         int custclrmult = -1;
         // If block has custom coloring
         if (blockcoloring != null) {
@@ -3546,11 +3452,11 @@ public class TexturePack {
             if((mod == COLORMOD_CLEARINSIDE) || (mod == COLORMOD_MULTTONED_CLEARINSIDE)) {
                 BlockStep dir = step.opposite();
                 /* Check if previous block is same block type as we are: surface is transparent if it is */
-                if((blkid == mapiter.getBlockTypeIDAt(dir)) && (blkdata == mapiter.getBlockDataAt(dir.xoff, dir.yoff, dir.zoff))) {
+                if (blk == mapiter.getBlockTypeAt(dir)) {
                     continue;   // Skip: no texture
                 }
                 /* If water block, to watercolor tone op */
-                if ((blkid == 8) || (blkid == 9)) {
+                if (blk.isWater()) {
                     mod = COLORMOD_WATERTONED;
                 }
                 else if (mod == COLORMOD_MULTTONED_CLEARINSIDE) {
@@ -3559,7 +3465,7 @@ public class TexturePack {
             }
             
             if (ctm != null) {
-                textid = ctm.mapTexture(mapiter, blkid, blkdata, step, textid, null);
+                textid = ctm.mapTexture(mapiter, blk, step, textid, null);
             }
             if (textid >= 0) {
                 rslt[patchidx] = getMatIDForTileID(textid);   // Default texture
@@ -3572,41 +3478,41 @@ public class TexturePack {
                     case COLORMOD_GRASSTONED270:
                         bio = mapiter.getBiome();
                         if ((bio == BiomeMap.SWAMPLAND) && (imgs[IMG_SWAMPGRASSCOLOR] != null)) {
-                            mult = getBiomeTonedColor(imgs[IMG_SWAMPGRASSCOLOR], -1, bio, blkid, blkdata);
+                            mult = getBiomeTonedColor(imgs[IMG_SWAMPGRASSCOLOR], -1, bio, blk);
                         }
                         else {
-                            mult = getBiomeTonedColor(imgs[IMG_GRASSCOLOR], -1, bio, blkid, blkdata);
+                            mult = getBiomeTonedColor(imgs[IMG_GRASSCOLOR], -1, bio, blk);
                         }
                         break;
                     case COLORMOD_FOLIAGETONED:
                     case COLORMOD_FOLIAGETONED270:
                     case COLORMOD_FOLIAGEMULTTONED:
-                        mult = getBiomeTonedColor(imgs[IMG_FOLIAGECOLOR], -1, mapiter.getBiome(), blkid, blkdata);
+                        mult = getBiomeTonedColor(imgs[IMG_FOLIAGECOLOR], -1, mapiter.getBiome(), blk);
                         break;
                     case COLORMOD_WATERTONED:
                     case COLORMOD_WATERTONED270:
-                        mult = getBiomeTonedColor(imgs[IMG_WATERCOLORX], -1, mapiter.getBiome(), blkid, blkdata);
+                        mult = getBiomeTonedColor(imgs[IMG_WATERCOLORX], -1, mapiter.getBiome(), blk);
                         break;
                     case COLORMOD_PINETONED:
-                        mult = getBiomeTonedColor(imgs[IMG_PINECOLOR], colorMultPine, mapiter.getBiome(), blkid, blkdata);
+                        mult = getBiomeTonedColor(imgs[IMG_PINECOLOR], colorMultPine, mapiter.getBiome(), blk);
                         break;
                     case COLORMOD_BIRCHTONED:
-                        mult = getBiomeTonedColor(imgs[IMG_BIRCHCOLOR], colorMultBirch, mapiter.getBiome(), blkid, blkdata);
+                        mult = getBiomeTonedColor(imgs[IMG_BIRCHCOLOR], colorMultBirch, mapiter.getBiome(), blk);
                         break;
                     case COLORMOD_LILYTONED:
-                        mult = getBiomeTonedColor(null, colorMultLily, mapiter.getBiome(), blkid, blkdata);
+                        mult = getBiomeTonedColor(null, colorMultLily, mapiter.getBiome(), blk);
                         break;
                     case COLORMOD_MULTTONED:
                     case COLORMOD_MULTTONED_CLEARINSIDE:
                         if(map.custColorMult == null) {
-                            mult = getBiomeTonedColor(null, map.colorMult, mapiter.getBiome(), blkid, blkdata);
+                            mult = getBiomeTonedColor(null, map.colorMult, mapiter.getBiome(), blk);
                         }
                         else {
                             mult = map.custColorMult.getColorMultiplier(mapiter);
                         }
                         break;
                     default:
-                        mult = getBiomeTonedColor(null, -1, mapiter.getBiome(), blkid, blkdata);
+                        mult = getBiomeTonedColor(null, -1, mapiter.getBiome(), blk);
                         break;
                 }
                 }
@@ -3660,7 +3566,7 @@ public class TexturePack {
     }
     
     // Get biome-specific color multpliers
-    private int getBiomeTonedColor(LoadedImage tonemap, int defcolormult, BiomeMap biome, int blkid, int blkdata) {
+    private int getBiomeTonedColor(LoadedImage tonemap, int defcolormult, BiomeMap biome, DynmapBlockState blk) {
         int mult;
         if (tonemap == null) { // No map? just use trivial
             mult = defcolormult;
@@ -3671,7 +3577,7 @@ public class TexturePack {
         else {
             mult = tonemap.argb[biome.biomeLookup()];
         }
-        Integer idx = this.blockColoring.getBlkStateValue(blkid, blkdata);
+        Integer idx = this.blockColoring.getBlkStateValue(blk);
         if (idx != null) {
             LoadedImage custimg = imgs[idx.intValue()];
             if (custimg.argb != null) {

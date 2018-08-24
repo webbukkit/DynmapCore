@@ -19,13 +19,14 @@ import org.dynmap.DynmapChunk;
 import org.dynmap.DynmapCore;
 import org.dynmap.DynmapWorld;
 import org.dynmap.common.DynmapCommandSender;
+import org.dynmap.hdmap.CustomBlockModel;
 import org.dynmap.hdmap.HDBlockModels;
+import org.dynmap.hdmap.HDBlockStateTextureMap;
+import org.dynmap.hdmap.HDScaledBlockModels;
 import org.dynmap.hdmap.HDShader;
-import org.dynmap.hdmap.TexturePack;
-import org.dynmap.hdmap.HDBlockModels.CustomBlockModel;
-import org.dynmap.hdmap.HDBlockModels.HDScaledBlockModels;
 import org.dynmap.hdmap.TexturePack.BlockTransparency;
 import org.dynmap.renderer.CustomRenderer;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory.SideVisible;
 import org.dynmap.utils.BlockStep;
@@ -250,25 +251,25 @@ public class OBJExport {
                             // Do first (bottom)
                             edgebits[BlockStep.Y_MINUS.ordinal()] = true;
                             edgebits[BlockStep.Y_PLUS.ordinal()] = false;
-                            int id = iter.getBlockTypeID();
-                            if (id > 0) {  // Not air
-                                handleBlock(id, iter, edgebits);
+                            DynmapBlockState blk = iter.getBlockType();
+                            if (blk.isNotAir()) {  // Not air
+                                handleBlock(blk, iter, edgebits);
                             }
                             // Do middle
                             edgebits[BlockStep.Y_MINUS.ordinal()] = false;
                             for (int y = minY + 1; y < maxY; y++) {
                                 iter.setY(y);
-                                id = iter.getBlockTypeID();
-                                if (id > 0) {  // Not air
-                                    handleBlock(id, iter, edgebits);
+                                blk = iter.getBlockType();
+                                if (blk.isNotAir()) {  // Not air
+                                    handleBlock(blk, iter, edgebits);
                                 }
                             }
                             // Do top
                             edgebits[BlockStep.Y_PLUS.ordinal()] = true;
                             iter.setY(maxY);
-                            id = iter.getBlockTypeID();
-                            if (id > 0) {  // Not air
-                                handleBlock(id, iter, edgebits);
+                            blk = iter.getBlockType();
+                            if (blk.isNotAir()) {  // Not air
+                                handleBlock(blk, iter, edgebits);
                             }
                         }
                     }
@@ -357,15 +358,14 @@ public class OBJExport {
      * @param iter - iterator
      * @param edgebits - bit N corresponds to side N being an endge (forge render)
      */
-    private void handleBlock(int blkid, MapIterator map, boolean[] edgebits) throws IOException {
+    private void handleBlock(DynmapBlockState blk, MapIterator map, boolean[] edgebits) throws IOException {
         BlockStep[] steps = BlockStep.values();
         int[] txtidx = null;
-        int data = map.getBlockData();             
         // See if the block has a patch model
-        RenderPatch[] patches = models.getPatchModel(blkid,  data);
+        RenderPatch[] patches = models.getPatchModel(blk);
         /* If no patches, see if custom model */
         if(patches == null) {
-            CustomBlockModel cbm = models.getCustomBlockModel(blkid,  data);
+            CustomBlockModel cbm = models.getCustomBlockModel(blk);
             if(cbm != null) {   /* If so, get our meshes */
                 patches = cbm.getMeshForBlock(map);
             }
@@ -379,7 +379,7 @@ public class OBJExport {
             }
         }
         else {  // See if volumetric
-            short[] smod = models.getScaledModel(blkid, data);
+            short[] smod = models.getScaledModel(blk);
             if (smod != null) {
                 patches = getScaledModelAsPatches(smod);
                 steps = new BlockStep[patches.length];
@@ -392,11 +392,11 @@ public class OBJExport {
             }
         }
         // Set block ID and ID+meta groups
-        updateGroup(GROUP_BLOCKID, "blk" + blkid);
-        updateGroup(GROUP_BLOCKIDMETA, "blk" + blkid + "_" + data);
+        updateGroup(GROUP_BLOCKID, "blk" + blk.baseState.globalStateIndex);
+        updateGroup(GROUP_BLOCKIDMETA, "blk" + blk.globalStateIndex);
 
         // Get materials for patches
-        String[] mats = shader.getCurrentBlockMaterials(blkid, data, map, txtidx, steps);
+        String[] mats = shader.getCurrentBlockMaterials(blk, map, txtidx, steps);
         
         if (patches != null) {  // Patch based model?
             for (int i = 0; i < patches.length; i++) {
@@ -404,11 +404,11 @@ public class OBJExport {
             }
         }
         else {
-            boolean opaque = TexturePack.HDBlockTextureMap.getTransparency(blkid) == BlockTransparency.OPAQUE;
+            boolean opaque = HDBlockStateTextureMap.getTransparency(blk) == BlockTransparency.OPAQUE;
             for (int face = 0; face < 6; face++) {
-                int id2 = map.getBlockTypeIDAt(BlockStep.oppositeValues[face]);  // Get block in direction
+                DynmapBlockState blk2 = map.getBlockTypeAt(BlockStep.oppositeValues[face]);  // Get block in direction
                 // If we're not solid, or adjacent block is not solid, draw side
-                if ((!opaque) || (id2 == 0) || edgebits[face] || (TexturePack.HDBlockTextureMap.getTransparency(id2) != BlockTransparency.OPAQUE)) {
+                if ((!opaque) || blk2.isAir() || edgebits[face] || (HDBlockStateTextureMap.getTransparency(blk2) != BlockTransparency.OPAQUE)) {
                     addPatch(defaultPathces[face], map.getX(), map.getY(), map.getZ(), mats[face]);
                 }
             }

@@ -14,32 +14,32 @@
 
 	<link rel="icon" href="images/dynmap.ico" type="image/ico" />
 
-	<script type="text/javascript" src="js/jquery-1.11.0.js?_=${project.version}-${BUILD_NUMBER}"></script>
-	<link rel="stylesheet" type="text/css" href="css/leaflet.css?_=${project.version}-${BUILD_NUMBER}" />
-	<script type="text/javascript" src="js/leaflet.js?_=${project.version}-${BUILD_NUMBER}"></script>
+	<script type="text/javascript" src="js/jquery-1.11.0.js?_=${version}-${buildnumber}"></script>
+	<link rel="stylesheet" type="text/css" href="css/leaflet.css?_=${version}-${buildnumber}" />
+	<script type="text/javascript" src="js/leaflet.js?_=${version}-${buildnumber}"></script>
 
-	<script type="text/javascript" src="js/custommarker.js?_=${project.version}-${BUILD_NUMBER}"></script>
+	<script type="text/javascript" src="js/custommarker.js?_=${version}-${buildnumber}"></script>
 
-	<script type="text/javascript" src="js/dynmaputils.js?_=${project.version}-${BUILD_NUMBER}"></script>
-	<script type="text/javascript" src="js/sidebarutils.js?_=${project.version}-${BUILD_NUMBER}"></script>
+	<script type="text/javascript" src="js/dynmaputils.js?_=${version}-${buildnumber}"></script>
+	<script type="text/javascript" src="js/sidebarutils.js?_=${version}-${buildnumber}"></script>
 
 	<!--<link rel="stylesheet" type="text/css" href="css/embedded.css" media="screen" />-->
-	<link rel="stylesheet" type="text/css" href="css/standalone.css?_=${project.version}-${BUILD_NUMBER}" media="screen" />
-	<link rel="stylesheet" type="text/css" href="css/dynmap_style.css?_=${project.version}-${BUILD_NUMBER}" media="screen" />
+	<link rel="stylesheet" type="text/css" href="css/standalone.css?_=${version}-${buildnumber}" media="screen" />
+	<link rel="stylesheet" type="text/css" href="css/dynmap_style.css?_=${version}-${buildnumber}" media="screen" />
 	<!-- <link rel="stylesheet" type="text/css" href="css/override.css" media="screen" /> -->
 
-	<script type="text/javascript" src="version.js?_=${project.version}-${BUILD_NUMBER}"></script>
-	<script type="text/javascript" src="js/jquery.json.js?_=${project.version}-${BUILD_NUMBER}"></script>
-	<script type="text/javascript" src="js/jquery.mousewheel.js?_=${project.version}-${BUILD_NUMBER}"></script>
-	<script type="text/javascript" src="js/minecraft.js?_=${project.version}-${BUILD_NUMBER}"></script>
-	<script type="text/javascript" src="js/map.js?_=${project.version}-${BUILD_NUMBER}"></script>
-	<script type="text/javascript" src="js/hdmap.js?_=${project.version}-${BUILD_NUMBER}"></script>
-	<script type="text/javascript" src="standalone/config.js?_=${project.version}-${BUILD_NUMBER}"></script>
+	<script type="text/javascript" src="version.js?_=${version}-${buildnumber}"></script>
+	<script type="text/javascript" src="js/jquery.json.js?_=${version}-${buildnumber}"></script>
+	<script type="text/javascript" src="js/jquery.mousewheel.js?_=${version}-${buildnumber}"></script>
+	<script type="text/javascript" src="js/minecraft.js?_=${version}-${buildnumber}"></script>
+	<script type="text/javascript" src="js/map.js?_=${version}-${buildnumber}"></script>
+	<script type="text/javascript" src="js/hdmap.js?_=${version}-${buildnumber}"></script>
+	<script type="text/javascript" src="standalone/config.js?_=${version}-${buildnumber}"></script>
 
 	<script type="text/javascript">
-			$(document).ready(function() {
-				window.dynmap = new DynMap($.extend({
-					container: $('#mcmap')
+			\$(document).ready(function() {
+				window.dynmap = new DynMap(\$.extend({
+					container: \$('#mcmap')
 				}, config));
 			});
 	</script>

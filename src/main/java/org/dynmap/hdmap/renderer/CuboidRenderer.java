@@ -28,8 +28,8 @@ public class CuboidRenderer extends CustomRenderer {
         return f;
     }
     @Override
-    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
-        if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
+    public boolean initializeRenderer(RenderPatchFactory rpf, String blkname, int blockdatamask, Map<String,String> custparm) {
+        if(!super.initializeRenderer(rpf, blkname, blockdatamask, custparm))
             return false;
         ArrayList<RenderPatch> list = new ArrayList<RenderPatch>();
         // Loop through parameters

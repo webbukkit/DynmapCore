@@ -3,6 +3,7 @@ package org.dynmap.hdmap;
 import static org.dynmap.JSONUtils.s;
 
 import java.io.IOException;
+import java.util.BitSet;
 import java.util.List;
 
 import org.dynmap.Color;
@@ -11,6 +12,7 @@ import org.dynmap.DynmapCore;
 import org.dynmap.MapManager;
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.exporter.OBJExport;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.DynLongHashMap;
 import org.dynmap.utils.MapChunkCache;
@@ -20,39 +22,44 @@ import org.json.simple.JSONObject;
 public class CaveHDShader implements HDShader {
     private String name;
     private boolean iflit;
-    private int[] hiddenids;
+    private BitSet hiddenids = new BitSet();
 
-    private void setHidden(int id) {
-        if((id >= 0) && (id < 65535)) {
-            hiddenids[id >> 5] |= (1 << (id & 0x1F));
+    private void setHidden(DynmapBlockState blk) {
+        hiddenids.set(blk.globalStateIndex);
+    }
+    private void setHidden(String blkname) {
+        DynmapBlockState bbs = DynmapBlockState.getBaseStateByName(blkname);
+        if (bbs.isNotAir()) {
+            for (int i = 0; i < bbs.getStateCount(); i++) {
+                setHidden(bbs.getState(i));
+            }
         }
     }
-    private boolean isHidden(int id) {
-        return (hiddenids[id >> 5] & (1 << (id & 0x1F))) != 0;
+    private boolean isHidden(DynmapBlockState blk) {
+        return hiddenids.get(blk.globalStateIndex);
     }
     public CaveHDShader(DynmapCore core, ConfigurationNode configuration) {
         name = (String) configuration.get("name");
         iflit = configuration.getBoolean("onlyiflit", false);
         
-        hiddenids = new int[2048];
-        setHidden(0); /* Air is hidden always */
-        List<Object> hidden = configuration.getList("hiddenids");
+        setHidden(DynmapBlockState.AIR); /* Air is hidden always */
+        List<Object> hidden = configuration.getList("hiddennames");
         if(hidden != null) {
             for(Object o : hidden) {
-                if(o instanceof Integer) {
-                    int v = ((Integer)o);
-                    setHidden(v);
+                if(o instanceof String) {
+                    setHidden((String) o);
                 }
             }
         }
         else {
-            setHidden(17);
-            setHidden(18);
-            setHidden(20);
-            setHidden(64);
-            setHidden(71);
-            setHidden(78);
-            setHidden(79);
+            setHidden(DynmapBlockState.LOG_BLOCK);
+            setHidden(DynmapBlockState.LEAVES_BLOCK);
+            setHidden(DynmapBlockState.GLASS_BLOCK);
+            setHidden(DynmapBlockState.WOODEN_DOOR_BLOCK);
+            setHidden(DynmapBlockState.IRON_DOOR_BLOCK);
+            setHidden(DynmapBlockState.SNOW_BLOCK);
+            setHidden(DynmapBlockState.ICE_BLOCK);
+            setHidden(DynmapBlockState.SNOW_LAYER_BLOCK);
         }
     }
     
@@ -119,6 +126,7 @@ public class CaveHDShader implements HDShader {
         /**
          * Get our shader
          */
+        @Override
         public HDShader getShader() {
             return CaveHDShader.this;
         }
@@ -126,6 +134,7 @@ public class CaveHDShader implements HDShader {
         /**
          * Get our map
          */
+        @Override
         public HDMap getMap() {
             return map;
         }
@@ -133,6 +142,7 @@ public class CaveHDShader implements HDShader {
         /**
          * Get our lighting
          */
+        @Override
         public HDLighting getLighting() {
             return map.getLighting();
         }
@@ -140,6 +150,7 @@ public class CaveHDShader implements HDShader {
         /**
          * Reset renderer state for new ray
          */
+        @Override
         public void reset(HDPerspectiveState ps) {
             color.setTransparent();
             air = true;
@@ -149,16 +160,17 @@ public class CaveHDShader implements HDShader {
          * Process next ray step - called for each block on route
          * @return true if ray is done, false if ray needs to continue
          */
+        @Override
         public boolean processBlock(HDPerspectiveState ps) {
-            int blocktype = ps.getBlockTypeID();
+            DynmapBlockState blocktype = ps.getBlockState();
             if (isHidden(blocktype)) {
-                blocktype = 0;
+                blocktype = DynmapBlockState.AIR;
             }
             else {
                 air = false;
                 return false;
             }
-            if ((blocktype == 0) && !air) {
+            if (blocktype.isAir() && !air) {
             	if(iflit && (ps.getMapIterator().getBlockEmittedLight() == 0)) {
             		return false;
             	}
@@ -201,6 +213,7 @@ public class CaveHDShader implements HDShader {
         /**
          * Ray ended - used to report that ray has exited map (called if renderer has not reported complete)
          */
+        @Override
         public void rayFinished(HDPerspectiveState ps) {
         }
         /**
@@ -208,12 +221,14 @@ public class CaveHDShader implements HDShader {
          * @param c - object to store color value in
          * @param index - index of color to request (renderer specific - 0=default, 1=day for night/day renderer
          */
+        @Override
         public void getRayColor(Color c, int index) {
             c.setColor(color);
         }
         /**
          * Clean up state object - called after last ray completed
          */
+        @Override
         public void cleanup() {
         }
         @Override
@@ -249,7 +264,7 @@ public class CaveHDShader implements HDShader {
     }
     private static final String[] nulllist = new String[0];
     @Override
-    public String[] getCurrentBlockMaterials(int blkid, int blkdata, MapIterator mapiter, int[] txtidx, BlockStep[] steps) {
+    public String[] getCurrentBlockMaterials(DynmapBlockState blk, MapIterator mapiter, int[] txtidx, BlockStep[] steps) {
         return nulllist;
     }
 }

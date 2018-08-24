@@ -4,12 +4,13 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.dynmap.renderer.CustomRenderer;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
 
 public class ThaumFurnaceRenderer extends CustomRenderer {
-    private int blkid;
+    private DynmapBlockState blkbs;
     
     private static final int TXTIDX_FIRST_GRID = 0; /* First 9 - 3 x 3 arrangement */
     private static final int TXTIDX_SECOND_GRID = 9; /* Second 9 - 3 x 3 arrangement */
@@ -22,42 +23,42 @@ public class ThaumFurnaceRenderer extends CustomRenderer {
     private static final int TXTIDX_LAVA = 24;     /* Lava */
     
     @Override
-    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
-        if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
+    public boolean initializeRenderer(RenderPatchFactory rpf, String blkname, int blockdatamask, Map<String,String> custparm) {
+        if(!super.initializeRenderer(rpf, blkname, blockdatamask, custparm))
             return false;
-        this.blkid = blkid; /* Remember our block ID */
+        blkbs = DynmapBlockState.getBaseStateByName(blkname); /* Remember our block ID */
 
         return true;
     }
 
-    private boolean blockTouching(MapDataContext ctx, int id, int meta, int side) {
-        if (    ((side > 3) && (ctx.getBlockTypeIDAt(0, 0, 1) == id) && (ctx.getBlockDataAt(0, 0, 1) == meta)) || 
-                ((side > 3) && (ctx.getBlockTypeIDAt(0, 0, -1) == id) && (ctx.getBlockDataAt(0, 0, -1) == meta)) || 
-                ((side > 1) && (side < 4) && (ctx.getBlockTypeIDAt(1, 0, 0) == id) && (ctx.getBlockDataAt(1, 0, 0) == meta)) || 
-                ((side > 1) && (side < 4) && (ctx.getBlockTypeIDAt(-1, 0, 0) == id) && (ctx.getBlockDataAt(-1, 0, 0) == meta)) || 
-                ((side > 1) && (ctx.getBlockTypeIDAt(0, 1, 0) == id) && (ctx.getBlockDataAt(0, 1, 0) == meta)) || 
-                ((side > 1) && (ctx.getBlockTypeIDAt(0, -1, 0) == id) && (ctx.getBlockDataAt(0, -1, 0) == meta))) {
+    private boolean blockTouching(MapDataContext ctx, DynmapBlockState blk, int side) {
+        if (    ((side > 3) && (ctx.getBlockTypeAt(0, 0, 1) == blk)) || 
+                ((side > 3) && (ctx.getBlockTypeAt(0, 0, -1) == blk)) || 
+                ((side > 1) && (side < 4) && (ctx.getBlockTypeAt(1, 0, 0) == blk)) || 
+                ((side > 1) && (side < 4) && (ctx.getBlockTypeAt(-1, 0, 0) == blk)) || 
+                ((side > 1) && (ctx.getBlockTypeAt(0, 1, 0) == blk)) || 
+                ((side > 1) && (ctx.getBlockTypeAt(0, -1, 0) == blk))) {
             return true;
         }
-        if (    ((side > 3) && (ctx.getBlockTypeIDAt(0, 1, 1) == id) && (ctx.getBlockDataAt(0, 1, 1) == meta)) ||
-                ((side > 3) && (ctx.getBlockTypeIDAt(0, 1, -1) == id) && (ctx.getBlockDataAt(0, 1, -1) == meta)) ||
-                ((side > 1) && (side < 4) && (ctx.getBlockTypeIDAt(1, 1, 0) == id) && (ctx.getBlockDataAt(1, 1, 0) == meta)) ||
-                ((side > 1) && (side < 4) && (ctx.getBlockTypeIDAt(-1, 1, 0) == id) && (ctx.getBlockDataAt(-1, 1, 0) == meta))) {
+        if (    ((side > 3) && (ctx.getBlockTypeAt(0, 1, 1) == blk)) ||
+                ((side > 3) && (ctx.getBlockTypeAt(0, 1, -1) == blk)) ||
+                ((side > 1) && (side < 4) && (ctx.getBlockTypeAt(1, 1, 0) == blk)) ||
+                ((side > 1) && (side < 4) && (ctx.getBlockTypeAt(-1, 1, 0) == blk))) {
             return true;
         }
-        if (    ((side > 3) && (ctx.getBlockTypeIDAt(0, -1, 1) == id) && (ctx.getBlockDataAt(0, -1, 1) == meta)) ||
-                ((side > 3) && (ctx.getBlockTypeIDAt(0, -1, -1) == id) && (ctx.getBlockDataAt(0, -1, -1) == meta)) ||
-                ((side > 1) && (side < 4) && (ctx.getBlockTypeIDAt(1, -1, 0) == id) && (ctx.getBlockDataAt(1, -1, 0) == meta)) ||
-                ((side > 1) && (side < 4) && (ctx.getBlockTypeIDAt(-1, -1, 0) == id) && (ctx.getBlockDataAt(-1, -1, 0) == meta))) {
+        if (    ((side > 3) && (ctx.getBlockTypeAt(0, -1, 1) == blk)) ||
+                ((side > 3) && (ctx.getBlockTypeAt(0, -1, -1) == blk)) ||
+                ((side > 1) && (side < 4) && (ctx.getBlockTypeAt(1, -1, 0) == blk)) ||
+                ((side > 1) && (side < 4) && (ctx.getBlockTypeAt(-1, -1, 0) == blk))) {
             return true;
         }
         switch (side) {
             case 0:
-                if ((ctx.getBlockTypeIDAt(0, -1, 0) != id) || (ctx.getBlockDataAt(0, -1, 0) != meta))
+                if (ctx.getBlockTypeAt(0, -1, 0) != blk)
                     break;
                 return true;
             case 1:
-                if ((ctx.getBlockTypeIDAt(0, 1, 0) != id) || (ctx.getBlockDataAt(0, 1, 0) != meta))
+                if (ctx.getBlockTypeAt(0, 1, 0) != blk)
                     break;
                 return true;
         }
@@ -66,10 +67,11 @@ public class ThaumFurnaceRenderer extends CustomRenderer {
 
     /* Calculate index of texture for given side */
     private int calcTexture(MapDataContext ctx, int side) {
-        int meta = ctx.getBlockData();
+        int meta = ctx.getBlockType().stateIndex;
         int lvl = calcLevel(ctx);
         int add = TXTIDX_FIRST_GRID;
-        if(blockTouching(ctx, blkid, 10, side)) {
+        DynmapBlockState sec = blkbs.getState(10);
+        if (blockTouching(ctx, sec, side)) {
             add = TXTIDX_SECOND_GRID;
         }
         switch (side) {
@@ -147,19 +149,18 @@ public class ThaumFurnaceRenderer extends CustomRenderer {
         }
         return add == 0 ? TXTIDX_SPECIAL_7 : TXTIDX_SPECIAL_6;
     }
+    
     private int calcLevel(MapDataContext ctx) {
-        int meta = ctx.getBlockData();
-        int metaA = ctx.getBlockDataAt(0,  1,  0);
-        if ((metaA == 10) || (metaA == 0))
-            metaA = meta;
-        int metaB = ctx.getBlockDataAt(0, -1, 0);
-        if ((metaB == 10) || (metaB == 0))
-            metaB = meta;
-        int blockA = ctx.getBlockTypeIDAt(0,  1,  0);
-        int blockB = ctx.getBlockTypeIDAt(0, -1, 0);
-        if ((meta == metaA) && (meta == metaB) && (blkid == blockA) && (blkid == blockB))
+        DynmapBlockState t = ctx.getBlockType();
+        DynmapBlockState tA = ctx.getBlockTypeAt(0,  1,  0);
+        DynmapBlockState tB = ctx.getBlockTypeAt(0,  -1,  0);
+        if ((tA.stateIndex == 10) || (tA.stateIndex == 0))
+            tA = t;
+        if ((tB.stateIndex == 10) || (tB.stateIndex == 0))
+            tB = t;
+        if ((t == tA) && (t == tB))
             return 1;
-        if ((meta == metaA) && (blkid == blockA) && ((meta != metaB) || (blkid != blockB)))
+        if ((t == tA) && (t != tB))
             return 2;
         return 0;
     }
@@ -173,7 +174,7 @@ public class ThaumFurnaceRenderer extends CustomRenderer {
     public RenderPatch[] getRenderPatchList(MapDataContext ctx) {
         ArrayList<RenderPatch> list = new ArrayList<RenderPatch>();
         int txtids[] = new int[6];
-        if(ctx.getBlockData() == 0) {
+        if (ctx.getBlockType().stateIndex == 0) {
             for(int i = 0; i < 6; i++) {
                 txtids[i] = TXTIDX_LAVA;
             }

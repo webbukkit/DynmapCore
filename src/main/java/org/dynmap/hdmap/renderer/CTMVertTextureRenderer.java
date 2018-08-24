@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import org.dynmap.renderer.CustomRenderer;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
@@ -15,7 +16,7 @@ public class CTMVertTextureRenderer extends CustomRenderer {
     private static final int TEXTURE_SIDE_ABOVE = 3;
     private static final int TEXTURE_SIDE_BELOW = 4;
     private static final int TEXTURE_SIDE_BOTH = 5;
-    private int blkid;
+    private DynmapBlockState blk;
 
     private RenderPatch[] mesh_no_neighbor;
     private RenderPatch[] mesh_above_neighbor;
@@ -23,10 +24,10 @@ public class CTMVertTextureRenderer extends CustomRenderer {
     private RenderPatch[] mesh_both_neighbor;
 
     @Override
-    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
-        if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
+    public boolean initializeRenderer(RenderPatchFactory rpf, String blkname, int blockdatamask, Map<String,String> custparm) {
+        if(!super.initializeRenderer(rpf, blkname, blockdatamask, custparm))
             return false;
-        this.blkid = blkid; /* Remember our block ID */
+        blk = DynmapBlockState.getBaseStateByName(blkname);
         ArrayList<RenderPatch> list = new ArrayList<RenderPatch>();
         /* Build no neighbors patches */
         addBox(rpf, list, 0, 1, 0, 1, 0, 1, new int[] { TEXTURE_BOTTOM, TEXTURE_TOP, TEXTURE_SIDE_NO_NEIGHBOR, TEXTURE_SIDE_NO_NEIGHBOR, TEXTURE_SIDE_NO_NEIGHBOR, TEXTURE_SIDE_NO_NEIGHBOR });
@@ -55,19 +56,20 @@ public class CTMVertTextureRenderer extends CustomRenderer {
     
     @Override
     public RenderPatch[] getRenderPatchList(MapDataContext mapDataCtx) {
-        int meta = mapDataCtx.getBlockData();
+        DynmapBlockState bs = mapDataCtx.getBlockType();
+        int meta = bs.stateIndex;
         boolean above = false;
-        int id_above = mapDataCtx.getBlockTypeIDAt(0,  1,  0);
-        if (id_above == blkid) {    /* MIght match */
-            int id_meta = mapDataCtx.getBlockDataAt(0,  1,  0);
+        DynmapBlockState id_above = mapDataCtx.getBlockTypeAt(0,  1,  0);
+        if (id_above.baseState == blk) {    /* MIght match */
+            int id_meta = id_above.stateIndex;
             if (meta == id_meta) {
                 above = true;
             }
         }
         boolean below = false;
-        int id_below = mapDataCtx.getBlockTypeIDAt(0,  -1,  0);
-        if (id_below == blkid) {    /* MIght match */
-            int id_meta = mapDataCtx.getBlockDataAt(0,  -1,  0);
+        DynmapBlockState id_below = mapDataCtx.getBlockTypeAt(0,  -1,  0);
+        if (id_below.baseState == blk) {    /* MIght match */
+            int id_meta = id_below.stateIndex;
             if (meta == id_meta) {
                 below = true;
             }

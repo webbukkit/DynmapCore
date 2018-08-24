@@ -20,8 +20,8 @@ public class DoorRenderer extends CustomRenderer {
     private RenderPatch[][] models = new RenderPatch[32][];
 
     @Override
-    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
-        if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
+    public boolean initializeRenderer(RenderPatchFactory rpf, String blkname, int blockdatamask, Map<String,String> custparm) {
+        if(!super.initializeRenderer(rpf, blkname, blockdatamask, custparm))
             return false;
         int[] txt = new int[6];
         for (int combined_meta = 0; combined_meta < 32; combined_meta++) {
@@ -83,12 +83,12 @@ public class DoorRenderer extends CustomRenderer {
         int top;
 
         if (isTop) {
-            bottom = ctx.getBlockDataAt(0,  -1,  0);
+            bottom = ctx.getBlockTypeAt(0,  -1,  0).stateIndex;
             top = meta;
         }
         else {
             bottom = meta;
-            top = ctx.getBlockDataAt(0,  1,  0);
+            top = ctx.getBlockTypeAt(0,  1,  0).stateIndex;
         }
         boolean isOpen = (top & 1) != 0;
         return (bottom & 7) | (isTop ? 8 : 0) | (isOpen ? 16 : 0);
@@ -198,7 +198,7 @@ public class DoorRenderer extends CustomRenderer {
 
     @Override
     public RenderPatch[] getRenderPatchList(MapDataContext ctx) {
-        int meta = ctx.getBlockData();  // Get our meta
+        int meta = ctx.getBlockType().stateIndex;  // Get our meta
         int combined_meta = getCombinedMeta(ctx, meta);
         
         return models[combined_meta];

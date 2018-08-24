@@ -42,8 +42,8 @@ public class RPRotatedBoxRenderer extends CustomRenderer {
     private String[] tileEntityAttribs = { "rot" };
 
     @Override
-    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
-        if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
+    public boolean initializeRenderer(RenderPatchFactory rpf, String blkname, int blockdatamask, Map<String,String> custparm) {
+        if(!super.initializeRenderer(rpf, blkname, blockdatamask, custparm))
             return false;
 
         models = new RenderPatch[rotTable.length][];
@@ -82,7 +82,7 @@ public class RPRotatedBoxRenderer extends CustomRenderer {
         if(rot instanceof Number) {
             idx = ((Number)rot).intValue();
         }
-        switch(rotalg[ctx.getBlockData()]) {
+        switch (rotalg[ctx.getBlockType().stateIndex]) {
             case 0: // Base rotation
                 idx = idx * 4;  // Map to equivalent index in "new" algorithm map
                 break;

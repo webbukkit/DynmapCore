@@ -13,6 +13,7 @@ import org.dynmap.Log;
 import org.dynmap.MapManager;
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.exporter.OBJExport;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.DynLongHashMap;
 import org.dynmap.utils.MapChunkCache;
@@ -152,7 +153,7 @@ public class InhabitedHDShader implements HDShader {
          * @return true if ray is done, false if ray needs to continue
          */
         public boolean processBlock(HDPerspectiveState ps) {
-            if (ps.getBlockTypeID() == 0) {
+            if (ps.getBlockState().isAir()) {
                 return false;
             }
             long ts = ps.getMapIterator().getInhabitedTicks() / 1200;   // Get time, in minutes
@@ -234,7 +235,7 @@ public class InhabitedHDShader implements HDShader {
     }
     private static final String[] nulllist = new String[0];
     @Override
-    public String[] getCurrentBlockMaterials(int blkid, int blkdata, MapIterator mapiter, int[] txtidx, BlockStep[] steps) {
+    public String[] getCurrentBlockMaterials(DynmapBlockState blk, MapIterator mapiter, int[] txtidx, BlockStep[] steps) {
         return nulllist;
     }
 }

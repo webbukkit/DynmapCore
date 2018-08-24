@@ -12,8 +12,8 @@ public class RPSupportFrameRenderer extends RPMicroRenderer {
     private int frame_txt_side;
     private int frame_txt_edge;
  
-    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
-        if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
+    public boolean initializeRenderer(RenderPatchFactory rpf, String blkname, int blockdatamask, Map<String,String> custparm) {
+        if(!super.initializeRenderer(rpf, blkname, blockdatamask, custparm))
             return false;
         frame_txt_side = super.getMaximumTextureCount();    /* Get index for side and edge textures */
         frame_txt_edge = frame_txt_side + 1;

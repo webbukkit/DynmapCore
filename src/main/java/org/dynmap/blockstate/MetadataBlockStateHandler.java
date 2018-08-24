@@ -9,6 +9,6 @@ public class MetadataBlockStateHandler implements IBlockStateHandler {
     }
     @Override
     public int getBlockStateIndex(MapDataContext mdc) {
-        return mdc.getBlockData();
+        return mdc.getBlockType().stateIndex;
     }
 }

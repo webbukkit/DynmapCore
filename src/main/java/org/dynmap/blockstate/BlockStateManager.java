@@ -1,6 +1,7 @@
 package org.dynmap.blockstate;
 
 import org.dynmap.DynmapCore;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.renderer.MapDataContext;
 
 // Handler for managing mapping of block states
@@ -32,10 +33,7 @@ public class BlockStateManager {
      * @return state index
      */
     public int getBlockStateIndex(MapDataContext mdc) {
-        int blkid = mdc.getBlockTypeID();
-        if ((blkid >= 0) && (blkid < blockHandlers.length)) {
-            return blockHandlers[blkid].getBlockStateIndex(mdc);
-        }
-        return DEFAULT.getBlockStateIndex(mdc);
+        DynmapBlockState blk = mdc.getBlockType();
+        return (blk != null) ? blk.stateIndex : 0;
     }
 }

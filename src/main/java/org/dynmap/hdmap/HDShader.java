@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.exporter.OBJExport;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.MapChunkCache;
 import org.dynmap.utils.MapIterator;
@@ -38,5 +39,5 @@ public interface HDShader {
     /* Export shader as material library */
     void exportAsMaterialLibrary(DynmapCommandSender sender, OBJExport exp) throws IOException;
     /* Get materials for each patch on the current block (with +N for N*90 degree rotations) */
-    String[] getCurrentBlockMaterials(int blkid, int blkdata, MapIterator mapiter, int[] txtidx, BlockStep[] steps);
+    String[] getCurrentBlockMaterials(DynmapBlockState blk, MapIterator mapiter, int[] txtidx, BlockStep[] steps);
 }

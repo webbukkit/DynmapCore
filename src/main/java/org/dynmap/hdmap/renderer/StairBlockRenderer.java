@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.dynmap.renderer.CustomRenderer;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
@@ -28,11 +29,19 @@ public class StairBlockRenderer extends CustomRenderer {
     private String[] tilefields = null;
     private String[] texturemap;
     
+    private void setID(String bname) {
+        DynmapBlockState bbs = DynmapBlockState.getBaseStateByName(bname);
+        if (bbs.isNotAir()) {
+            for (int i = 0; i < bbs.getStateCount(); i++) {
+                stair_ids.set(bbs.getState(i).globalStateIndex);
+            }
+        }
+    }
     @Override
-    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
-        if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
+    public boolean initializeRenderer(RenderPatchFactory rpf, String blkname, int blockdatamask, Map<String,String> custparm) {
+        if(!super.initializeRenderer(rpf, blkname, blockdatamask, custparm))
             return false;
-        stair_ids.set(blkid);   /* Mark block as a stair */
+        setID(blkname);   /* Mark block as a stair */
         /* Build step meshes */
         for(int i = 0; i < 8; i++) {
             stepmeshes[i] = buildStepMeshes(rpf, i);   
@@ -216,41 +225,41 @@ public class StairBlockRenderer extends CustomRenderer {
     }
     
     private RenderPatch[] getBaseRenderPatchList(MapDataContext ctx) {
-        int data = ctx.getBlockData() & 0x07;   /* Get block data */
+        int data = ctx.getBlockType().stateIndex & 0x07;   /* Get block data */
         /* Check block behind stair */
-        int cornerid = ctx.getBlockTypeIDAt(off_x[data], 0, off_z[data]);
-        if(stair_ids.get(cornerid)) {   /* If it is a stair */
-            int cornerdat = ctx.getBlockDataAt(off_x[data], 0, off_z[data]);
+        DynmapBlockState corner = ctx.getBlockTypeAt(off_x[data], 0, off_z[data]);
+        if (stair_ids.get(corner.globalStateIndex)) {   /* If it is a stair */
+            int cornerdat = corner.stateIndex & 0x07;
             if(cornerdat == match1[data]) {    /* If right orientation */
                 /* Make sure we don't have matching stair to side */
-                int sideid = ctx.getBlockTypeIDAt(-off_x[cornerdat], 0, -off_z[cornerdat]);
-                if((!stair_ids.get(sideid)) || (ctx.getBlockDataAt(-off_x[cornerdat], 0, -off_z[cornerdat]) != data)) {
+                DynmapBlockState side = ctx.getBlockTypeAt(-off_x[cornerdat], 0, -off_z[cornerdat]);
+                if((!stair_ids.get(side.globalStateIndex)) || ((side.stateIndex & 0x07) != data)) {
                     return step_1_4_meshes[corner1[data]];
                 }
             }
             else if(cornerdat == match2[data]) {   /* If other orientation */
                 /* Make sure we don't have matching stair to side */
-                int sideid = ctx.getBlockTypeIDAt(-off_x[cornerdat], 0, -off_z[cornerdat]);
-                if((!stair_ids.get(sideid)) || (ctx.getBlockDataAt(-off_x[cornerdat], 0, -off_z[cornerdat]) != data)) {
+                DynmapBlockState side = ctx.getBlockTypeAt(-off_x[cornerdat], 0, -off_z[cornerdat]);
+                if((!stair_ids.get(side.globalStateIndex)) || ((side.stateIndex & 0x07) != data)) {
                     return step_1_4_meshes[corner2[data]];
                 }
             }
         }
         /* Check block in front of stair */
-        cornerid = ctx.getBlockTypeIDAt(-off_x[data], 0, -off_z[data]);
-        if(stair_ids.get(cornerid)) {   /* If it is a stair */
-            int cornerdat = ctx.getBlockDataAt(-off_x[data], 0, -off_z[data]);
+        corner = ctx.getBlockTypeAt(-off_x[data], 0, -off_z[data]);
+        if(stair_ids.get(corner.globalStateIndex)) {   /* If it is a stair */
+            int cornerdat = corner.stateIndex & 0x07;
             if(cornerdat == match1[data]) {    /* If right orientation */
                 /* Make sure we don't have matching stair to side */
-                int sideid = ctx.getBlockTypeIDAt(off_x[cornerdat], 0, off_z[cornerdat]);
-                if((!stair_ids.get(sideid)) || (ctx.getBlockDataAt(off_x[cornerdat], 0, off_z[cornerdat]) != data)) {
+                DynmapBlockState side = ctx.getBlockTypeAt(off_x[cornerdat], 0, off_z[cornerdat]);
+                if((!stair_ids.get(side.globalStateIndex)) || ((side.stateIndex & 0x07) != data)) {
                     return step_3_4_meshes[icorner1[data]];
                 }
             }
             else if(cornerdat == match2[data]) {   /* If other orientation */
                 /* Make sure we don't have matching stair to side */
-                int sideid = ctx.getBlockTypeIDAt(off_x[cornerdat], 0, off_z[cornerdat]);
-                if((!stair_ids.get(sideid)) || (ctx.getBlockDataAt(off_x[cornerdat], 0, off_z[cornerdat]) != data)) {
+                DynmapBlockState side = ctx.getBlockTypeAt(off_x[cornerdat], 0, off_z[cornerdat]);
+                if((!stair_ids.get(side.globalStateIndex)) || ((side.stateIndex & 0x07) != data)) {
                     return step_3_4_meshes[icorner2[data]];
                 }
             }

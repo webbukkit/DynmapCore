@@ -1,6 +1,7 @@
 package org.dynmap.hdmap;
 
 import org.dynmap.utils.MapIterator;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.Vector3D;
 import org.dynmap.utils.LightLevels;
@@ -18,15 +19,10 @@ public interface HDPerspectiveState {
      */
     void getLightLevelsAtStep(BlockStep step, LightLevels ll);
     /**
-     * Get current block type ID
-     * @return block ID
+     * Get current block state
+     * @return block 
      */
-    int getBlockTypeID();
-    /**
-     * Get current block data
-     * @return meta value
-     */
-    int getBlockData();
+    DynmapBlockState getBlockState();
     /**
      * Get direction of last block step
      * @return last step direction

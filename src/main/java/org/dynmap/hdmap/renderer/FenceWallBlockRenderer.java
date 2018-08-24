@@ -5,9 +5,10 @@ import java.util.BitSet;
 import java.util.List;
 import java.util.Map;
 
+import org.dynmap.hdmap.HDBlockStateTextureMap;
 import org.dynmap.hdmap.TexturePack.BlockTransparency;
-import org.dynmap.hdmap.TexturePack.HDBlockTextureMap;
 import org.dynmap.renderer.CustomRenderer;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.renderer.MapDataContext;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory;
@@ -30,11 +31,20 @@ public class FenceWallBlockRenderer extends CustomRenderer {
     // Meshes, indexed by connection combination (bit 0=X+, bit 1=X-, bit 2=Z+, bit 3=Z-, bit 4=Y+)
     private RenderPatch[][] meshes = new RenderPatch[32][];
     
+    private void addIDs(String bn) {
+        DynmapBlockState bbs = DynmapBlockState.getBaseStateByName(bn);
+        if (bbs.isNotAir()) {
+            for (int i = 0; i < bbs.getStateCount(); i++) {
+                DynmapBlockState bs = bbs.getState(i);
+                link_ids.set(bs.globalStateIndex);
+            }
+        }
+    }
     @Override
-    public boolean initializeRenderer(RenderPatchFactory rpf, int blkid, int blockdatamask, Map<String,String> custparm) {
-        if(!super.initializeRenderer(rpf, blkid, blockdatamask, custparm))
+    public boolean initializeRenderer(RenderPatchFactory rpf, String blkname, int blockdatamask, Map<String,String> custparm) {
+        if(!super.initializeRenderer(rpf, blkname, blockdatamask, custparm))
             return false;
-        link_ids.set(blkid);    /* Link to self */
+        addIDs(blkname);
         /* Build models, based on type of fence/wall we're set to be */
         String type = custparm.get("type");
         if((type != null) && (type.equals("wall"))) {
@@ -47,7 +57,7 @@ public class FenceWallBlockRenderer extends CustomRenderer {
         for(int i = 0; true; i++) {
             String lid = custparm.get("link" + i);
             if(lid == null) break;
-            link_ids.set(Integer.parseInt(lid));
+            addIDs(lid);
         }
         return true;
     }
@@ -151,14 +161,14 @@ public class FenceWallBlockRenderer extends CustomRenderer {
         /* Build connection map - check each axis */
         int connect = 0;
         for(int i = 0; i < sides.length; i++) {
-            int id = ctx.getBlockTypeIDAt(sides[i][0], sides[i][1], sides[i][2]);
-            if(id == 0) continue;
-            if(link_ids.get(id) || (HDBlockTextureMap.getTransparency(id) == BlockTransparency.OPAQUE)) {
+            DynmapBlockState blk = ctx.getBlockTypeAt(sides[i][0], sides[i][1], sides[i][2]);
+            if (blk.isAir()) continue;
+            if (link_ids.get(blk.globalStateIndex) || (HDBlockStateTextureMap.getTransparency(blk) == BlockTransparency.OPAQUE)) {
                 connect |= sides[i][3];
             }
         }
         if(check_yplus) {
-            if(ctx.getBlockTypeIDAt(0, 1, 0) > 0) {
+            if (ctx.getBlockTypeAt(0, 1, 0).isNotAir()) {
                 connect |= SIDE_YP;
             }
         }

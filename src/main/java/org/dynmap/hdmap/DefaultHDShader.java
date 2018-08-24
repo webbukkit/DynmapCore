@@ -12,6 +12,7 @@ import org.dynmap.MapManager;
 import org.dynmap.common.BiomeMap;
 import org.dynmap.common.DynmapCommandSender;
 import org.dynmap.exporter.OBJExport;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.utils.BlockStep;
 import org.dynmap.utils.DynLongHashMap;
 import org.dynmap.utils.MapChunkCache;
@@ -138,7 +139,10 @@ public class DefaultHDShader implements HDShader {
             pixelodd = (ps.getPixelX() & 0x3) + (ps.getPixelY()<<1);
         }
         
-        protected Color[] getBlockColors(int blocktype, int blockdata) {
+        protected Color[] getBlockColors(DynmapBlockState block) {
+            //TODO: this will not work right on 1.13+, but thwo whole colorscheme thing is broken anyway...
+            int blocktype = block.globalStateIndex / 16;
+            int blockdata = block.globalStateIndex & 0x0F;
             if((blockdata != 0) && (colorScheme.datacolors[blocktype] != null))
                 return colorScheme.datacolors[blocktype][blockdata];
             else
@@ -151,10 +155,10 @@ public class DefaultHDShader implements HDShader {
          */
         public boolean processBlock(HDPerspectiveState ps) {
             int i;
-            int blocktype = ps.getBlockTypeID();
-            if(blocktype == 0)
+            DynmapBlockState blocktype = ps.getBlockState();
+            if (blocktype.isAir())
                 return false;
-            Color[] colors = getBlockColors(blocktype, ps.getBlockData());
+            Color[] colors = getBlockColors(blocktype);
             
             if (colors != null) {
                 int seq;
@@ -247,7 +251,8 @@ public class DefaultHDShader implements HDShader {
         private OurBiomeShaderState(MapIterator mapiter, HDMap map, MapChunkCache cache) {
             super(mapiter, map, cache);
         }
-        protected Color[] getBlockColors(int blocktype, int blockdata) {
+        @Override
+        protected Color[] getBlockColors(DynmapBlockState blk) {
             BiomeMap bio = mapiter.getBiome();
             if(bio != null)
                 return colorScheme.biomecolors[bio.ordinal()];
@@ -259,7 +264,8 @@ public class DefaultHDShader implements HDShader {
         private OurBiomeRainfallShaderState(MapIterator mapiter, HDMap map, MapChunkCache cache) {
             super(mapiter, map, cache);
         }
-        protected Color[] getBlockColors(int blocktype, int blockdata) {
+        @Override
+        protected Color[] getBlockColors(DynmapBlockState blk) {
             return colorScheme.getRainColor(mapiter.getBiome().getRainfall());
         }
     }
@@ -268,7 +274,8 @@ public class DefaultHDShader implements HDShader {
         private OurBiomeTempShaderState(MapIterator mapiter, HDMap map, MapChunkCache cache) {
             super(mapiter, map, cache);
         }
-        protected Color[] getBlockColors(int blocktype, int blockdata) {
+        @Override
+        protected Color[] getBlockColors(DynmapBlockState blk) {
             return colorScheme.getTempColor(mapiter.getBiome().getTemperature());
         }
     }
@@ -305,7 +312,8 @@ public class DefaultHDShader implements HDShader {
     }
     private static final String[] nulllist = new String[0];
     @Override
-    public String[] getCurrentBlockMaterials(int blkid, int blkdata, MapIterator mapiter, int[] txtidx, BlockStep[] steps) {
+    public String[] getCurrentBlockMaterials(DynmapBlockState blk, MapIterator mapiter, int[] txtidx,
+            BlockStep[] steps) {
         return nulllist;
     }
 }

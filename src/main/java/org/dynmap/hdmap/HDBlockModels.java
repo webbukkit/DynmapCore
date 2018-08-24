@@ -12,6 +12,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -22,7 +23,7 @@ import org.dynmap.Log;
 import org.dynmap.MapManager;
 import org.dynmap.debug.Debug;
 import org.dynmap.renderer.CustomRenderer;
-import org.dynmap.renderer.MapDataContext;
+import org.dynmap.renderer.DynmapBlockState;
 import org.dynmap.renderer.RenderPatch;
 import org.dynmap.renderer.RenderPatchFactory.SideVisible;
 import org.dynmap.utils.ForgeConfigFile;
@@ -35,422 +36,77 @@ import org.dynmap.utils.PatchDefinitionFactory;
  */
 public class HDBlockModels {
     private static int max_patches;
-    private static HashMap<Integer, HDBlockModel> models_by_id_data = new HashMap<Integer, HDBlockModel>();
-    private static PatchDefinitionFactory pdf = new PatchDefinitionFactory();
-    private static BitSet customModelsRequestingTileData = new BitSet(); // Index by 16*id + data
-    private static BitSet changeIgnoredBlocks = new BitSet();   // Index by 16*id + data
+    static HashMap<Integer, HDBlockModel> models_by_id_data = new HashMap<Integer, HDBlockModel>();
+    static PatchDefinitionFactory pdf = new PatchDefinitionFactory();
+    static BitSet customModelsRequestingTileData = new BitSet(); // Index by globalStateIndex
+    static BitSet changeIgnoredBlocks = new BitSet();   // Index by globalStateIndex
     private static HashSet<String> loadedmods = new HashSet<String>();
-    
+    private static HashMap<Integer, HDScaledBlockModels> scaled_models_by_scale = new HashMap<Integer, HDScaledBlockModels>();
+
     public static final int getMaxPatchCount() { return max_patches; }
     public static final PatchDefinitionFactory getPatchDefinitionFactory() { return pdf; }
     
     /* Reset model if defined by different block set */
-    public static boolean resetIfNotBlockSet(int blkid, int blkdata, String blockset) {
-        HDBlockModel bm = models_by_id_data.get((blkid << 4) | blkdata);
+    public static boolean resetIfNotBlockSet(DynmapBlockState blk, String blockset) {
+        HDBlockModel bm = models_by_id_data.get(blk.globalStateIndex);
         if((bm != null) && (bm.getBlockSet().equals(blockset) == false)) {
-            Debug.debug("Reset block model for " + blkid + ":" + blkdata + " from " + bm.getBlockSet() + " due to new def from " + blockset);
-            models_by_id_data.remove((blkid << 4) | blkdata);
+            Debug.debug("Reset block model for " + blk + " from " + bm.getBlockSet() + " due to new def from " + blockset);
+            models_by_id_data.remove(blk.globalStateIndex);
             return true;
         }
         return false;
     }
     /* Get texture count needed for model */
-    public static int getNeededTextureCount(int blkid, int blkdata) {
-        HDBlockModel bm = models_by_id_data.get((blkid << 4) | blkdata);
+    public static int getNeededTextureCount(DynmapBlockState blk) {
+        HDBlockModel bm = models_by_id_data.get(blk.globalStateIndex);
         if(bm != null) {
             return bm.getTextureCount();
         }
         return 6;
     }
     
-    public static final boolean isChangeIgnoredBlock(int blkid, int blkdata) {
-        return changeIgnoredBlocks.get((blkid << 4) | blkdata);
+    public static final boolean isChangeIgnoredBlock(DynmapBlockState blk) {
+        return changeIgnoredBlocks.get(blk.globalStateIndex);
     }
     
 
     /* Process any block aliases */
     public static void handleBlockAlias() {
-        for(int i = 0; i < DynmapCore.BLOCKTABLELEN; i++) {
-            int id = MapManager.mapman.getBlockIDAlias(i);
-            if(id != i) {   /* New mapping? */
-                remapModel(i, id);
+        Set<String> aliasedblocks = MapManager.mapman.getAliasedBlocks();
+        for (String bn : aliasedblocks) {
+            String newid = MapManager.mapman.getBlockAlias(bn);
+            if (newid.equals(bn) == false) {
+                remapModel(bn, newid);
             }
         }
     }
     
-    private static void remapModel(int id, int newid) {
-        if ((id > 0) && (id < DynmapCore.BLOCKTABLELEN) && (newid >= 0) && (newid < DynmapCore.BLOCKTABLELEN)) {
-            for (int meta = 0; meta < 16; meta++) {
-                int srcid = (newid * 16) + meta;
-                int destid = (id * 16) + meta;
-                HDBlockModel m = models_by_id_data.get(srcid);
-                if (m != null) {
-                    models_by_id_data.put(destid, m);
-                }
-                else {
-                    models_by_id_data.remove(destid);
-                }
-                customModelsRequestingTileData.set(destid, customModelsRequestingTileData.get(srcid));
-                changeIgnoredBlocks.set(destid, changeIgnoredBlocks.get(srcid));
+    private static void remapModel(String bn, String newbn) {
+        DynmapBlockState frombs = DynmapBlockState.getBaseStateByName(bn);
+        DynmapBlockState tobs = DynmapBlockState.getBaseStateByName(bn);
+        int minstate = Math.min(frombs.getStateCount(),  tobs.getStateCount());
+        for (int bs = 0; bs < minstate; bs++) {
+            DynmapBlockState fb = frombs.getState(bs);
+            DynmapBlockState tb = tobs.getState(bs);
+            HDBlockModel m = models_by_id_data.get(fb.globalStateIndex);
+            if (m != null) {
+                models_by_id_data.put(tb.globalStateIndex, m);
             }
-        }
-    }
-
-    public static class HDScaledBlockModels {
-        private short[][][] modelvectors;
-        private PatchDefinition[][][] patches;
-        private CustomBlockModel[][] custom;
-
-        public final short[] getScaledModel(int blocktype, int blockdata) {
-            short[][] m;
-            try {
-                if(modelvectors[blocktype] == null) {
-                    return null;
-                }
-                m = modelvectors[blocktype];
-            } catch (ArrayIndexOutOfBoundsException aioobx) {
-                short[][][] newmodels = new short[blocktype+1][][];
-                System.arraycopy(modelvectors, 0, newmodels, 0, modelvectors.length);
-                modelvectors = newmodels;
-                return null;
+            else {
+                models_by_id_data.remove(tb.globalStateIndex);
             }
-            return m[blockdata];
+            customModelsRequestingTileData.set(tb.globalStateIndex, customModelsRequestingTileData.get(fb.globalStateIndex));
+            changeIgnoredBlocks.set(tb.globalStateIndex, changeIgnoredBlocks.get(fb.globalStateIndex));
         }
-        public PatchDefinition[] getPatchModel(int blocktype, int blockdata) {
-            try {
-                if(patches[blocktype] == null) {
-                    return null;
-                }
-                return patches[blocktype][blockdata];
-            } catch (ArrayIndexOutOfBoundsException aioobx) {
-                PatchDefinition[][][] newpatches = new PatchDefinition[blocktype+1][][];
-                System.arraycopy(patches, 0, newpatches, 0, patches.length);
-                patches = newpatches;
-                return null;
-            }
-        }
-        public CustomBlockModel getCustomBlockModel(int blocktype, int blockdata) {
-            try {
-                if(custom[blocktype] == null) {
-                    return null;
-                }
-                return custom[blocktype][blockdata];
-            } catch (ArrayIndexOutOfBoundsException aioobx) {
-                CustomBlockModel[][] newcustom = new CustomBlockModel[blocktype+1][];
-                System.arraycopy(custom, 0, newcustom, 0, custom.length);
-                custom = newcustom;
-                return null;
-            }
-        }
-    }
-        
-    
-    private static HashMap<Integer, HDScaledBlockModels> scaled_models_by_scale = new HashMap<Integer, HDScaledBlockModels>();
-    
-    public static abstract class HDBlockModel {
-        private String blockset;
-        /**
-         * Block definition - positions correspond to Bukkit coordinates (+X is south, +Y is up, +Z is west)
-         * @param blockid - block ID
-         * @param databits - bitmap of block data bits matching this model (bit N is set if data=N would match)
-         * @param blockset - ID of block definition set
-         */
-        protected HDBlockModel(int blockid, int databits, String blockset) {
-            this.blockset = blockset;
-            if(blockid > 0) {
-                for(int i = 0; i < 16; i++) {
-                    if((databits & (1<<i)) != 0) {
-                        HDBlockModel prev = models_by_id_data.put((blockid<<4)+i, this);
-                        if((prev != null) && (prev != this)) {
-                            prev.removed(blockid, i);
-                        }
-                    }
-                }
-            }
-        }
-        public String getBlockSet() {
-            return blockset;
-        }
-        public abstract int getTextureCount();
-        
-        public void removed(int blkid, int blkdat) {
-        }
-    }
-    
-    public static class CustomBlockModel extends HDBlockModel {
-        public CustomRenderer render;
-        
-        public CustomBlockModel(int blockid, int databits, String classname, Map<String,String> classparm, String blockset) {
-            super(blockid, databits, blockset);
-            try {
-                Class<?> cls = Class.forName(classname);   /* Get class */
-                render = (CustomRenderer) cls.newInstance();
-                if(render.initializeRenderer(pdf, blockid, databits, classparm) == false) {
-                    Log.severe("Error loading custom renderer - " + classname);
-                    render = null;
-                }
-                else {
-                    if(render.getTileEntityFieldsNeeded() != null) {
-                        for(int i = 0; i < 16; i++) {
-                            if ((databits & (1 << i)) != 0) {
-                                customModelsRequestingTileData.set((blockid<<4) | i);
-                            }
-                        }
-                    }
-                }
-            } catch (Exception x) {
-                Log.severe("Error loading custom renderer - " + classname, x);
-                render = null;
-            }
-        }
-
-        @Override
-        public int getTextureCount() {
-            return render.getMaximumTextureCount(pdf);
-        }
-
-        private static final RenderPatch[] empty_list = new RenderPatch[0];
-        
-        public RenderPatch[] getMeshForBlock(MapDataContext ctx) {
-            if(render != null)
-                return render.getRenderPatchList(ctx);
-            else
-                return empty_list;
-        }
-        @Override
-        public void removed(int blkid, int blkdat) {
-            super.removed(blkid, blkdat);
-            customModelsRequestingTileData.clear((blkid<<4) | blkdat);
-        }
-    }
-    
-    public static class HDBlockVolumetricModel extends HDBlockModel {
-        /* Volumetric model specific attributes */
-        private long blockflags[];
-        private int nativeres;
-        private HashMap<Integer, short[]> scaledblocks;
-        /**
-         * Block definition - positions correspond to Bukkit coordinates (+X is south, +Y is up, +Z is west)
-         * (for volumetric models)
-         * @param blockid - block ID
-         * @param databits - bitmap of block data bits matching this model (bit N is set if data=N would match)
-         * @param nativeres - native subblocks per edge of cube (up to 64)
-         * @param blockflags - array of native^2 long integers representing volume of block (bit X of element (nativeres*Y+Z) is set if that subblock is filled)
-         *    if array is short, other elements area are assumed to be zero (fills from bottom of block up)
-         * @param blockset - ID of set of blocks defining model
-         */
-        public HDBlockVolumetricModel(int blockid, int databits, int nativeres, long[] blockflags, String blockset) {
-            super(blockid, databits, blockset);
-            
-            this.nativeres = nativeres;
-            this.blockflags = new long[nativeres * nativeres];
-            System.arraycopy(blockflags, 0, this.blockflags, 0, blockflags.length);
-        }
-        /**
-         * Test if given native block is filled (for volumetric model)
-         * 
-         * @param x - X coordinate
-         * @param y - Y coordinate
-         * @param z - Z coordinate
-         * @return true if set, false if not
-         */
-        public final boolean isSubblockSet(int x, int y, int z) {
-            return ((blockflags[nativeres*y+z] & (1 << x)) != 0);
-        }
-        /**
-         * Set subblock value (for volumetric model)
-         * 
-         * @param x - X coordinate
-         * @param y - Y coordinate
-         * @param z - Z coordinate
-         * @param isset - true = set, false = clear
-         */
-        public final void setSubblock(int x, int y, int z, boolean isset) {
-            if(isset)
-                blockflags[nativeres*y+z] |= (1 << x);
-            else
-                blockflags[nativeres*y+z] &= ~(1 << x);            
-        }
-        /**
-         * Get scaled map of block: will return array of alpha levels, corresponding to how much of the
-         * scaled subblocks are occupied by the original blocks (indexed by Y*res*res + Z*res + X)
-         * @param res - requested scale (res subblocks per edge of block)
-         * @return array of alpha values (0-255), corresponding to resXresXres subcubes of block
-         */
-        public short[] getScaledMap(int res) {
-            if(scaledblocks == null) { scaledblocks = new HashMap<Integer, short[]>(); }
-            short[] map = scaledblocks.get(Integer.valueOf(res));
-            if(map == null) {
-                map = new short[res*res*res];
-                if(res == nativeres) {
-                    for(int i = 0; i < blockflags.length; i++) {
-                        for(int j = 0; j < nativeres; j++) {
-                            if((blockflags[i] & (1 << j)) != 0)
-                                map[res*i+j] = 255;
-                        }
-                    }
-                }
-                /* If scaling from smaller sub-blocks to larger, each subblock contributes to 1-2 blocks
-                 * on each axis:  need to calculate crossovers for each, and iterate through smaller
-                 * blocks to accumulate contributions
-                 */
-                else if(res > nativeres) {
-                    int weights[] = new int[res];
-                    int offsets[] = new int[res];
-                    /* LCM of resolutions is used as length of line (res * nativeres)
-                     * Each native block is (res) long, each scaled block is (nativeres) long
-                     * Each scaled block overlaps 1 or 2 native blocks: starting with native block 'offsets[]' with
-                     * 'weights[]' of its (res) width in the first, and the rest in the second
-                     */
-                    for(int v = 0, idx = 0; v < res*nativeres; v += nativeres, idx++) {
-                        offsets[idx] = (v/res); /* Get index of the first native block we draw from */
-                        if((v+nativeres-1)/res == offsets[idx]) {   /* If scaled block ends in same native block */
-                            weights[idx] = nativeres;
-                        }
-                        else {  /* Else, see how much is in first one */
-                            weights[idx] = (offsets[idx] + res) - v;
-                            weights[idx] = (offsets[idx]*res + res) - v;
-                        }
-                    }
-                    /* Now, use weights and indices to fill in scaled map */
-                    for(int y = 0, off = 0; y < res; y++) {
-                        int ind_y = offsets[y];
-                        int wgt_y = weights[y];
-                        for(int z = 0; z < res; z++) {
-                            int ind_z = offsets[z];
-                            int wgt_z = weights[z];
-                            for(int x = 0; x < res; x++, off++) {
-                                int ind_x = offsets[x];
-                                int wgt_x = weights[x];
-                                int raw_w = 0;
-                                for(int xx = 0; xx < 2; xx++) {
-                                    int wx = (xx==0)?wgt_x:(nativeres-wgt_x);
-                                    if(wx == 0) continue;
-                                    for(int yy = 0; yy < 2; yy++) {
-                                        int wy = (yy==0)?wgt_y:(nativeres-wgt_y);
-                                        if(wy == 0) continue;
-                                        for(int zz = 0; zz < 2; zz++) {
-                                            int wz = (zz==0)?wgt_z:(nativeres-wgt_z);
-                                            if(wz == 0) continue;
-                                            if(isSubblockSet(ind_x+xx, ind_y+yy, ind_z+zz)) {
-                                                raw_w += wx*wy*wz;
-                                            }
-                                        }
-                                    }
-                                }
-                                map[off] = (short)((255*raw_w) / (nativeres*nativeres*nativeres));
-                                if(map[off] > 255) map[off] = 255;
-                                if(map[off] < 0) map[off] = 0;
-                            }
-                        }
-                    }
-                }
-                else {  /* nativeres > res */
-                    int weights[] = new int[nativeres];
-                    int offsets[] = new int[nativeres];
-                    /* LCM of resolutions is used as length of line (res * nativeres)
-                     * Each native block is (res) long, each scaled block is (nativeres) long
-                     * Each native block overlaps 1 or 2 scaled blocks: starting with scaled block 'offsets[]' with
-                     * 'weights[]' of its (res) width in the first, and the rest in the second
-                     */
-                    for(int v = 0, idx = 0; v < res*nativeres; v += res, idx++) {
-                        offsets[idx] = (v/nativeres); /* Get index of the first scaled block we draw to */
-                        if((v+res-1)/nativeres == offsets[idx]) {   /* If native block ends in same scaled block */
-                            weights[idx] = res;
-                        }
-                        else {  /* Else, see how much is in first one */
-                            weights[idx] = (offsets[idx]*nativeres + nativeres) - v;
-                        }
-                    }
-                    /* Now, use weights and indices to fill in scaled map */
-                    long accum[] = new long[map.length];
-                    for(int y = 0; y < nativeres; y++) {
-                        int ind_y = offsets[y];
-                        int wgt_y = weights[y];
-                        for(int z = 0; z < nativeres; z++) {
-                            int ind_z = offsets[z];
-                            int wgt_z = weights[z];
-                            for(int x = 0; x < nativeres; x++) {
-                                if(isSubblockSet(x, y, z)) {
-                                    int ind_x = offsets[x];
-                                    int wgt_x = weights[x];
-                                    for(int xx = 0; xx < 2; xx++) {
-                                        int wx = (xx==0)?wgt_x:(res-wgt_x);
-                                        if(wx == 0) continue;
-                                        for(int yy = 0; yy < 2; yy++) {
-                                            int wy = (yy==0)?wgt_y:(res-wgt_y);
-                                            if(wy == 0) continue;
-                                            for(int zz = 0; zz < 2; zz++) {
-                                                int wz = (zz==0)?wgt_z:(res-wgt_z);
-                                                if(wz == 0) continue;
-                                                accum[(ind_y+yy)*res*res + (ind_z+zz)*res + (ind_x+xx)] +=
-                                                    wx*wy*wz;
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    for(int i = 0; i < map.length; i++) {
-                        map[i] = (short)(accum[i]*255/nativeres/nativeres/nativeres);
-                        if(map[i] > 255) map[i] = 255;                            
-                        if(map[i] < 0) map[i] = 0;
-                    }
-                }
-                scaledblocks.put(Integer.valueOf(res), map);
-            }
-            return map;
-        }
-        @Override
-        public int getTextureCount() {
-            return 6;
-        }
-    }
-
-    public static class HDBlockPatchModel extends HDBlockModel {
-        /* Patch model specific attributes */
-        private PatchDefinition[] patches;
-        private final int max_texture;
-        /**
-         * Block definition - positions correspond to Bukkit coordinates (+X is south, +Y is up, +Z is west)
-         * (for patch models)
-         * @param blockid - block ID
-         * @param databits - bitmap of block data bits matching this model (bit N is set if data=N would match)
-         * @param patches - list of patches (surfaces composing model)
-         * @param blockset - ID of set of blocks defining model
-         */
-        public HDBlockPatchModel(int blockid, int databits, PatchDefinition[] patches, String blockset) {
-            super(blockid, databits, blockset);
-            this.patches = patches;
-            int max = 0;
-            for(int i = 0; i < patches.length; i++) {
-                if((patches[i] != null) && (patches[i].textureindex > max))
-                    max = patches[i].textureindex;
-            }
-            this.max_texture = max + 1;
-        }
-        /**
-         * Get patches for block model (if patch model)
-         * @return patches for model
-         */
-        public final PatchDefinition[] getPatches() {
-            return patches;
-        }
-        @Override
-        public int getTextureCount() {
-            return max_texture;
-        }
-    }
+    }        
     
     /**
      * Get list of tile entity fields needed for custom renderer at given ID and data value, if any
-     * @param blkid - block ID
-     * @param blkdat - block data
+     * @param blk - block state
      * @return null if none needed, else list of fields needed
      */
-    public static final String[] getTileEntityFieldsNeeded(int blkid, int blkdat) {
-        int idx = (blkid << 4) | blkdat;
+    public static final String[] getTileEntityFieldsNeeded(DynmapBlockState blk) {
+        int idx = blk.globalStateIndex;
         if(customModelsRequestingTileData.get(idx)) {
             HDBlockModel mod = models_by_id_data.get(idx);
             if(mod instanceof CustomBlockModel) {
@@ -467,64 +123,12 @@ public class HDBlockModels {
     public static HDScaledBlockModels   getModelsForScale(int scale) {
         HDScaledBlockModels model = scaled_models_by_scale.get(Integer.valueOf(scale));
         if(model == null) {
-            model = new HDScaledBlockModels();
-            short[][][] blockmodels = new short[DynmapCore.BLOCKTABLELEN][][];
-            PatchDefinition[][][] patches = new PatchDefinition[DynmapCore.BLOCKTABLELEN][][];
-            CustomBlockModel[][] custom = new CustomBlockModel[DynmapCore.BLOCKTABLELEN][];
-            
-            for(Integer id_data : models_by_id_data.keySet()) {
-                int blkid = id_data.intValue() >> 4;
-                int blkmeta = id_data.intValue() & 0xF;
-                HDBlockModel m = models_by_id_data.get(id_data);
-                
-                if(m instanceof HDBlockVolumetricModel) {
-                    short[][] row = blockmodels[blkid];
-                    if(row == null) {
-                        row = new short[16][];
-                        blockmodels[blkid] = row; 
-                    }
-                    HDBlockVolumetricModel vm = (HDBlockVolumetricModel)m;
-                    short[] smod = vm.getScaledMap(scale);
-                    /* See if scaled model is full block : much faster to not use it if it is */
-                    if(smod != null) {
-                        boolean keep = false;
-                        for(int i = 0; (!keep) && (i < smod.length); i++) {
-                            if(smod[i] == 0) keep = true;
-                        }
-                        if(keep) {
-                            row[blkmeta] = smod;
-                        }
-                    }
-                }
-                else if(m instanceof HDBlockPatchModel) {
-                    HDBlockPatchModel pm = (HDBlockPatchModel)m;
-                    PatchDefinition[] patch = pm.getPatches();
-                    PatchDefinition[][] row = patches[blkid];
-                    if(row == null) {
-                        row = new PatchDefinition[16][];
-                        patches[blkid] = row; 
-                    }
-                    if(patch != null) {
-                        row[blkmeta] = patch;
-                    }
-                }
-                else if(m instanceof CustomBlockModel) {
-                    CustomBlockModel cbm = (CustomBlockModel)m;
-                    CustomBlockModel[] row = custom[blkid];
-                    if(row == null) {
-                        row = new CustomBlockModel[16];
-                        custom[blkid] = row; 
-                    }
-                    row[blkmeta] = cbm;
-                }
-            }
-            model.modelvectors = blockmodels;
-            model.patches = patches;
-            model.custom = custom;
+            model = new HDScaledBlockModels(scale);
             scaled_models_by_scale.put(scale, model);
         }
         return model;
     }
+    
     private static void addFiles(ArrayList<String> files, File dir, String path) {
         File[] listfiles = dir.listFiles();
         if(listfiles == null) return;
@@ -659,6 +263,7 @@ public class HDBlockModels {
             }
         }
     }
+    
     private static Integer getIntValue(Map<String,Integer> vars, String val) throws NumberFormatException {
         char c = val.charAt(0);
         if(Character.isLetter(c) || (c == '%') || (c == '&')) {
@@ -686,7 +291,27 @@ public class HDBlockModels {
             return Integer.valueOf(val);
         }
     }
-    
+
+    private static String getBlockName(String modid, String val) throws NumberFormatException {
+        char c = val.charAt(0);
+        if(Character.isLetter(c) || (c == '%') || (c == '&')) {
+            if ((c == '%') || (c == '&')) {
+                val = val.substring(1);
+            }
+            int off = val.indexOf('+');
+            if (off > 0) {
+                val = val.substring(0,  off);
+            }
+            if (val.indexOf(':') < 0) {
+                val = modid + ":" + val;
+            }
+            return val;
+        }
+        else {
+            throw new NumberFormatException("invalid ID - " + val);
+        }
+    }
+
     // Patch index ordering, corresponding to BlockStep ordinal order
     public static final int boxPatchList[] = { 1, 4, 0, 3, 2, 5 };
 
@@ -699,7 +324,7 @@ public class HDBlockModels {
         int cnt = 0;
         boolean need_mod_cfg = false;
         boolean mod_cfg_loaded = false;
-        String modname = null;
+        String modname = "minecraft";
         String modversion = null;
         final String mcver = core.getDynmapPluginPlatformVersion();
         try {
@@ -737,7 +362,7 @@ public class HDBlockModels {
                     
                 }
                 else if(line.startsWith("block:")) {
-                    ArrayList<Integer> blkids = new ArrayList<Integer>();
+                    ArrayList<String> blknames = new ArrayList<String>();
                     int databits = 0;
                     scale = 0;
                     line = line.substring(6);
@@ -746,7 +371,7 @@ public class HDBlockModels {
                         String[] av = a.split("=");
                         if(av.length < 2) continue;
                         if(av[0].equals("id")) {
-                            blkids.add(getIntValue(varvals,av[1]));
+                            blknames.add(getBlockName(modname,av[1]));
                         }
                         else if(av[0].equals("data")) {
                             if(av[1].equals("*"))
@@ -759,11 +384,12 @@ public class HDBlockModels {
                         }
                     }
                     /* If we have everything, build block */
-                    if((blkids.size() > 0) && (databits != 0) && (scale > 0)) {
+                    if((blknames.size() > 0) && (databits != 0) && (scale > 0)) {
                         modlist.clear();
-                        for(Integer id : blkids) {
-                            if(id > 0) {
-                                modlist.add(new HDBlockVolumetricModel(id.intValue(), databits, scale, new long[0], blockset));
+                        for(String bname : blknames) {
+                            DynmapBlockState bblk = DynmapBlockState.getBaseStateByName(bname);
+                            if (bblk.isNotAir()) {
+                                modlist.add(new HDBlockVolumetricModel(bblk.blockName, databits, scale, new long[0], blockset));
                                 cnt++;
                             }
                         }
@@ -785,25 +411,28 @@ public class HDBlockModels {
                 else if(line.startsWith("rotate:")) {
                     line = line.substring(7);
                     String args[] = line.split(",");
-                    int id = -1;
+                    String id = null;
                     int data = -1;
                     int rot = -1;
                     for(String a : args) {
                         String[] av = a.split("=");
                         if(av.length < 2) continue;
                         if(av[0].equals("id")) {
-                            int newid = getIntValue(varvals,av[1]);
-                            if(newid > 0)
-                                id = newid;
+                            id = getBlockName(modname,av[1]);
                         }
                         if(av[0].equals("data")) { data = getIntValue(varvals,av[1]); }
                         if(av[0].equals("rot")) { rot = Integer.parseInt(av[1]); }
                     }
                     /* get old model to be rotated */
-                    HDBlockModel mod = models_by_id_data.get((id<<4)+data);
-                    if(modlist.isEmpty()) {
+                    DynmapBlockState bs = DynmapBlockState.getStateByNameAndIndex(id, (data > 0)?data:0);
+                    if (bs.isAir()) {
+                    	Log.severe("Invalid rotate ID: " + id + " on line " + rdr.getLineNumber());
+                    	return;
                     }
-                    else if((mod != null) && ((rot%90) == 0) && (mod instanceof HDBlockVolumetricModel)) {
+                    HDBlockModel mod = models_by_id_data.get(bs.globalStateIndex);
+                    if (modlist.isEmpty()) {
+                    }
+                    else if ((mod != null) && ((rot%90) == 0) && (mod instanceof HDBlockVolumetricModel)) {
                         HDBlockVolumetricModel vmod = (HDBlockVolumetricModel)mod;
                         for(int x = 0; x < scale; x++) {
                             for(int y = 0; y < scale; y++) {
@@ -843,7 +472,7 @@ public class HDBlockModels {
                 else if(line.startsWith("patchrotate:")) {
                     line = line.substring(12);
                     String args[] = line.split(",");
-                    int id = -1;
+                    String id = null;
                     int data = -1;
                     int rotx = 0;
                     int roty = 0;
@@ -852,10 +481,7 @@ public class HDBlockModels {
                         String[] av = a.split("=");
                         if(av.length < 2) continue;
                         if(av[0].equals("id")) {
-                            int newid = getIntValue(varvals,av[1]);
-                            if(newid > 0) {
-                                id = newid;
-                            }
+                            id = getBlockName(modname, av[1]);
                         }
                         if(av[0].equals("data")) { data = getIntValue(varvals,av[1]); }
                         if(av[0].equals("rot")) { roty = Integer.parseInt(av[1]); }
@@ -864,7 +490,12 @@ public class HDBlockModels {
                         if(av[0].equals("rotz")) { rotz = Integer.parseInt(av[1]); }
                     }
                     /* get old model to be rotated */
-                    HDBlockModel mod = models_by_id_data.get((id<<4)+data);
+                    DynmapBlockState bs = DynmapBlockState.getStateByNameAndIndex(id, (data > 0)?data:0);
+                    if (bs.isAir()) {
+                    	Log.severe("Invalid patchrotate id: " + id + " on line " + rdr.getLineNumber());
+                    	return;
+                    }
+                    HDBlockModel mod = models_by_id_data.get(bs.globalStateIndex);
                     if(pmodlist.isEmpty()) {
                     }
                     else if((mod != null) && (mod instanceof HDBlockPatchModel)) {
@@ -877,7 +508,7 @@ public class HDBlockModels {
                         if(patches.length > max_patches)
                             max_patches = patches.length;
                         for(HDBlockPatchModel patchmod : pmodlist) {
-                            patchmod.patches = newpatches;
+                            patchmod.setPatches(newpatches);
                         }
                     }
                     else {
@@ -886,7 +517,7 @@ public class HDBlockModels {
                     }
                 }
                 else if(line.startsWith("ignore-updates:")) {
-                    ArrayList<Integer> blkids = new ArrayList<Integer>();
+                    ArrayList<String> blknames = new ArrayList<String>();
                     int blkdat = 0;
                     line = line.substring(line.indexOf(':')+1);
                     String[] args = line.split(",");
@@ -894,7 +525,7 @@ public class HDBlockModels {
                         String[] av = a.split("=");
                         if(av.length < 2) continue;
                         if(av[0].equals("id")) {
-                            blkids.add(getIntValue(varvals,av[1]));
+                            blknames.add(getBlockName(modname,av[1]));
                         }
                         else if(av[0].equals("data")) {
                             if(av[1].equals("*"))
@@ -904,11 +535,14 @@ public class HDBlockModels {
                         }
                     }
                     if(blkdat == 0) blkdat = 0xFFFF;
-                    for(Integer id : blkids) {
-                        if(id <= 0) continue;
-                        for(int i = 0; i < 16; i++) {
-                            changeIgnoredBlocks.set(id*16 + i);
-                        }
+                    for (String nm : blknames) {
+                    	DynmapBlockState bbs = DynmapBlockState.getBaseStateByName(nm);
+                    	if (bbs.isNotAir()) {
+                    		for (int i = 0; i < bbs.getStateCount(); i++) {
+                    			DynmapBlockState bs = bbs.getState(i);
+                    			changeIgnoredBlocks.set(bs.globalStateIndex);
+                    		}
+                    	}
                     }
                 }
                 else if(line.startsWith("#") || line.startsWith(";")) {
@@ -1040,7 +674,7 @@ public class HDBlockModels {
                     }
                 }
                 else if(line.startsWith("patchblock:")) {
-                    ArrayList<Integer> blkids = new ArrayList<Integer>();
+                    ArrayList<String> blknames = new ArrayList<String>();
                     int databits = 0;
                     line = line.substring(11);
                     String[] args = line.split(",");
@@ -1049,7 +683,7 @@ public class HDBlockModels {
                         String[] av = a.split("=");
                         if(av.length < 2) continue;
                         if(av[0].equals("id")) {
-                            blkids.add(getIntValue(varvals,av[1]));
+                            blknames.add(getBlockName(modname,av[1]));
                         }
                         else if(av[0].equals("data")) {
                             if(av[1].equals("*"))
@@ -1090,14 +724,15 @@ public class HDBlockModels {
                     }
                     /* If we have everything, build block */
                     pmodlist.clear();
-                    if((blkids.size() > 0) && (databits != 0)) {
+                    if((blknames.size() > 0) && (databits != 0)) {
                         PatchDefinition[] patcharray = patches.toArray(new PatchDefinition[patches.size()]);
                         if(patcharray.length > max_patches)
                             max_patches = patcharray.length;
 
-                        for(Integer id : blkids) {
-                            if(id > 0) {
-                                pmodlist.add(new HDBlockPatchModel(id.intValue(), databits, patcharray, blockset));
+                        for(String nm : blknames) {
+                            DynmapBlockState bs = DynmapBlockState.getBaseStateByName(nm);
+                            if (bs.isNotAir()) {
+                                pmodlist.add(new HDBlockPatchModel(bs.blockName, databits, patcharray, blockset));
                                 cnt++;
                             }
                         }
@@ -1108,7 +743,7 @@ public class HDBlockModels {
                 }
                 // Shortcut for defining a patchblock that is a simple rectangular prism, with sidex corresponding to full block sides
                 else if(line.startsWith("boxblock:")) {
-                    ArrayList<Integer> blkids = new ArrayList<Integer>();
+                    ArrayList<String> blknames = new ArrayList<String>();
                     int databits = 0;
                     line = line.substring(9);
                     String[] args = line.split(",");
@@ -1117,7 +752,7 @@ public class HDBlockModels {
                         String[] av = a.split("=");
                         if(av.length < 2) continue;
                         if(av[0].equals("id")) {
-                            blkids.add(getIntValue(varvals,av[1]));
+                            blknames.add(getBlockName(modname,av[1]));
                         }
                         else if(av[0].equals("data")) {
                             if(av[1].equals("*"))
@@ -1146,7 +781,7 @@ public class HDBlockModels {
                     }
                     /* If we have everything, build block */
                     pmodlist.clear();
-                    if((blkids.size() > 0) && (databits != 0)) {
+                    if((blknames.size() > 0) && (databits != 0)) {
                         ArrayList<RenderPatch> pd = new ArrayList<RenderPatch>();
                         CustomRenderer.addBox(pdf, pd, xmin, xmax, ymin, ymax, zmin, zmax, boxPatchList);
                         PatchDefinition[] patcharray = new PatchDefinition[pd.size()];
@@ -1155,9 +790,10 @@ public class HDBlockModels {
                         }
                         if(patcharray.length > max_patches)
                             max_patches = patcharray.length;
-                        for(Integer id : blkids) {
-                            if(id > 0) {
-                                pmodlist.add(new HDBlockPatchModel(id.intValue(), databits, patcharray, blockset));
+                        for(String nm : blknames) {
+                            DynmapBlockState bs = DynmapBlockState.getBaseStateByName(nm);
+                            if (bs.isNotAir()) {
+                                pmodlist.add(new HDBlockPatchModel(bs.blockName, databits, patcharray, blockset));
                                 cnt++;
                             }
                         }
@@ -1167,7 +803,7 @@ public class HDBlockModels {
                     }
                 }
                 else if(line.startsWith("customblock:")) {
-                    ArrayList<Integer> blkids = new ArrayList<Integer>();
+                    ArrayList<String> blknames = new ArrayList<String>();
                     HashMap<String,String> custargs = new HashMap<String,String>();
                     int databits = 0;
                     line = line.substring(12);
@@ -1177,7 +813,7 @@ public class HDBlockModels {
                         String[] av = a.split("=");
                         if(av.length < 2) continue;
                         if(av[0].equals("id")) {
-                            blkids.add(getIntValue(varvals,av[1]));
+                            blknames.add(getBlockName(modname, av[1]));
                         }
                         else if(av[0].equals("data")) {
                             if(av[1].equals("*"))
@@ -1198,10 +834,11 @@ public class HDBlockModels {
                         }
                     }
                     /* If we have everything, build block */
-                    if((blkids.size() > 0) && (databits != 0) && (cls != null)) {
-                        for(Integer id : blkids) {
-                            if(id > 0) {
-                                CustomBlockModel cbm = new CustomBlockModel(id.intValue(), databits, cls, custargs, blockset);
+                    if((blknames.size() > 0) && (databits != 0) && (cls != null)) {
+                        for (String nm : blknames) {
+                            DynmapBlockState bs = DynmapBlockState.getBaseStateByName(nm);
+                            if (bs.isNotAir()) {
+                                CustomBlockModel cbm = new CustomBlockModel(bs.blockName, databits, cls, custargs, blockset);
                                 if(cbm.render == null) {
                                     Log.severe("Custom block model failed to initialize = line " + rdr.getLineNumber() + " of " + fname);
                                 }
